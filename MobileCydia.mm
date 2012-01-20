@@ -9037,7 +9037,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         UCLocalize("DEVELOPER"),
     nil];
     segment_ = [[[UISegmentedControl alloc] initWithItems:items] autorelease];
-    [segment_ setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin)];
     container_ = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, [[self view] frame].size.width, 44.0f)] autorelease];
     [container_ addSubview:segment_];
 }
@@ -9082,7 +9081,12 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self resizeSegmentedControl];
+}
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [segment_ setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin)];
     [self resizeSegmentedControl];
 }
 
