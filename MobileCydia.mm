@@ -10630,6 +10630,8 @@ int main(int argc, char *argv[]) {
     setuid(0);
     setgid(0);
 
+    system("mkdir -p /var/root/Library/Keyboard; cp -af /var/mobile/Library/Keyboard/UserDictionary.sqlite /var/root/Library/Keyboard/");
+
     /*Method alloc = class_getClassMethod([NSObject class], @selector(alloc));
     alloc_ = alloc->method_imp;
     alloc->method_imp = (IMP) &Alloc_;*/
