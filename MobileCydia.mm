@@ -7520,7 +7520,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     Section *section = nil;
     int index = [indexPath row];
     if (![self isEditing]) {
-        index -= 1; 
+        index -= 1;
         if (index >= 0)
             section = [filtered_ objectAtIndex:index];
     } else {
