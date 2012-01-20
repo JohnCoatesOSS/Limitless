@@ -9340,6 +9340,14 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 @implementation Cydia
 
+- (void) lockSuspend {
+    ++locked_;
+}
+
+- (void) unlockSuspend {
+    --locked_;
+}
+
 - (void) beginUpdate {
     [tabbar_ beginUpdate];
 }
@@ -9709,9 +9717,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (void) confirmWithNavigationController:(UINavigationController *)navigation {
     Queuing_ = false;
-    ++locked_;
+    [self lockSuspend];
     [self detachNewProgressSelector:@selector(perform_) toTarget:self forController:navigation title:@"RUNNING"];
-    --locked_;
+    [self unlockSuspend];
 }
 
 - (void) showSettings {
@@ -9876,12 +9884,12 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     [hud showInView:[target view]];
 
-    ++locked_;
+    [self lockSuspend];
     return hud;
 }
 
 - (void) removeProgressHUD:(UIProgressHUD *)hud {
-    --locked_;
+    [self unlockSuspend];
     [hud hide];
     [hud removeFromSuperview];
     [window_ setUserInteractionEnabled:YES];
@@ -10067,7 +10075,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) addStashController {
-    ++locked_;
+    [self lockSuspend];
     stash_ = [[[StashController alloc] init] autorelease];
     [window_ addSubview:[stash_ view]];
 }
@@ -10075,7 +10083,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (void) removeStashController {
     [[stash_ view] removeFromSuperview];
     stash_ = nil;
-    --locked_;
+    [self unlockSuspend];
 }
 
 - (void) stash {
