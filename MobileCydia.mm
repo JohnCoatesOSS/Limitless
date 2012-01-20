@@ -9452,7 +9452,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     //  - We already refreshed recently.
     //  - We already auto-refreshed this launch.
     //  - Auto-refresh is disabled.
-    if (recently || loaded_ || ManualRefresh) {
+    //  - Cydia's server is not reachable
+    if (recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com")) {
         // If we are cancelling, we need to make sure it knows it's already loaded.
         loaded_ = true;
 
@@ -9461,9 +9462,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         // We are going to load, so remember that.
         loaded_ = true;
 
-        // If we can reach the server, auto-refresh!
-        if (IsReachable("cydia.saurik.com"))
-            [tabbar_ performSelectorOnMainThread:@selector(setUpdate:) withObject:update waitUntilDone:NO];
+        [tabbar_ performSelectorOnMainThread:@selector(setUpdate:) withObject:update waitUntilDone:NO];
     }
 
     [pool release];
