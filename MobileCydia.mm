@@ -262,6 +262,8 @@ static NSString *Warning_;
 
 static bool AprilFools_;
 
+static void (*$SBSSetInterceptsMenuButtonForever)(bool);
+
 static bool IsReachable(const char *name) {
     SCNetworkReachabilityFlags flags; {
         SCNetworkReachabilityRef reachability(SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, name));
@@ -9341,11 +9343,17 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 @implementation Cydia
 
 - (void) lockSuspend {
-    ++locked_;
+    if (locked_++ == 0) {
+        if ($SBSSetInterceptsMenuButtonForever != NULL)
+            (*$SBSSetInterceptsMenuButtonForever)(true);
+    }
 }
 
 - (void) unlockSuspend {
-    --locked_;
+    if (--locked_ == 0) {
+        if ($SBSSetInterceptsMenuButtonForever != NULL)
+            (*$SBSSetInterceptsMenuButtonForever)(false);
+    }
 }
 
 - (void) beginUpdate {
@@ -10828,6 +10836,8 @@ int main(int argc, char *argv[]) {
     // XXX: I have a feeling this was important
     //UIKeyboardDisableAutomaticAppearance();
     /* }}} */
+
+    $SBSSetInterceptsMenuButtonForever = reinterpret_cast<void (*)(bool)>(dlsym(RTLD_DEFAULT, "SBSSetInterceptsMenuButtonForever"));
 
     BOOL (*GSSystemHasCapability)(CFStringRef) = reinterpret_cast<BOOL (*)(CFStringRef)>(dlsym(RTLD_DEFAULT, "GSSystemHasCapability"));
     bool fast = GSSystemHasCapability != NULL && GSSystemHasCapability(CFSTR("armv7"));
