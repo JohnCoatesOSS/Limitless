@@ -10784,7 +10784,7 @@ int main(int argc, char *argv[]) {
 
     int version([[NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"] intValue]);
 
-    if (access("/User", F_OK) != 0 || version != 5) {
+    if (access("/User", F_OK) != 0 || version != 6) {
         _trace();
         system("/usr/libexec/cydia/firmware.sh");
         _trace();
