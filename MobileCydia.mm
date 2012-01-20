@@ -9356,7 +9356,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             initWithTitle:(count == 1 ? UCLocalize("HALFINSTALLED_PACKAGE") : [NSString stringWithFormat:UCLocalize("HALFINSTALLED_PACKAGES"), count])
             message:UCLocalize("HALFINSTALLED_PACKAGE_EX")
             delegate:self
-            cancelButtonTitle:UCLocalize("FORCIBLY_CLEAR")
+            cancelButtonTitle:[NSString stringWithFormat:UCLocalize("PARENTHETICAL"), UCLocalize("FORCIBLY_CLEAR"), UCLocalize("UNSAFE")]
             otherButtonTitles:
                 UCLocalize("TEMPORARY_IGNORE"),
             nil
