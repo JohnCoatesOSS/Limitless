@@ -1,4 +1,4 @@
-dev := /Developer/Platforms/iPhoneOS.platform/Developer
+dev := $(shell xcode-select --print-path)/Platforms/iPhoneOS.platform/Developer
 sdks := $(dev)/SDKs
 ioss := $(sort $(patsubst $(sdks)/iPhoneOS%.sdk,%,$(wildcard $(sdks)/iPhoneOS*.sdk)))
 ios := $(word $(words $(ioss)),$(ioss))
