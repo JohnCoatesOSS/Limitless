@@ -128,7 +128,7 @@ Objects/%.o: %.mm $(header)
 	@echo "[cycc] $<"
 	@$(cycc) -c $< $(flags) $(xflags)
 
-Objects/Version.o: version.h
+Objects/Version.o: Version.h
 
 Images/%.png: %.png
 	@mkdir -p $(dir $@)
