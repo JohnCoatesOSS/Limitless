@@ -2321,9 +2321,14 @@ struct PackageNameOrdering :
             pkgCache::TagIterator tag(iterator.TagList());
             if (!tag.end()) {
                 tags_ = [NSMutableArray arrayWithCapacity:8];
-                do {
+
+                goto tag; for (; !tag.end(); ++tag) tag: {
                     const char *name(tag.Name());
-                    [tags_ addObject:[(NSString *)CYStringCreate(name) autorelease]];
+                    NSString *string((NSString *) CYStringCreate(name));
+                    if (string == nil)
+                        continue;
+
+                    [tags_ addObject:[string autorelease]];
 
                     if (role_ == 0 && strncmp(name, "role::", 6) == 0 /*&& strcmp(name, "role::leaper") != 0*/) {
                         if (strcmp(name + 6, "enduser") == 0)
@@ -2344,9 +2349,7 @@ struct PackageNameOrdering :
                         else if (strcmp(name + 7, "obsolete") == 0)
                             obsolete_ = true;
                     }
-
-                    ++tag;
-                } while (!tag.end());
+                }
             }
         _end
 
