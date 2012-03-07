@@ -260,6 +260,8 @@ NSString *Elision_;
 static NSString *Error_;
 static NSString *Warning_;
 
+static NSString *Cache_;
+
 static bool AprilFools_;
 
 static void (*$SBSSetInterceptsMenuButtonForever)(bool);
@@ -10183,7 +10185,7 @@ _trace();
     [NSURLCache setSharedURLCache:[[[CYURLCache alloc]
         initWithMemoryCapacity:524288
         diskCapacity:10485760
-        diskPath:[NSString stringWithFormat:@"%@/Library/Caches/com.saurik.Cydia/SDURLCache", @"/var/root"]
+        diskPath:[NSString stringWithFormat:@"%@/SDURLCache", Cache_]
     ] autorelease]];
 
     [CydiaWebViewController _initialize];
@@ -10635,6 +10637,8 @@ int main(int argc, char *argv[]) {
 
     if (access("/var/mobile/Library/Keyboard/UserDictionary.sqlite", F_OK) == 0)
         system("mkdir -p /var/root/Library/Keyboard; cp -af /var/mobile/Library/Keyboard/UserDictionary.sqlite /var/root/Library/Keyboard/");
+
+    Cache_ = [[NSString stringWithFormat:@"%@/Library/Caches/com.saurik.Cydia", @"/var/root"] retain];
 
     /*Method alloc = class_getClassMethod([NSObject class], @selector(alloc));
     alloc_ = alloc->method_imp;
