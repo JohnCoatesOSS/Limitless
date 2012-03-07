@@ -10482,6 +10482,14 @@ static CGSize $WAKWindow$screenSize(WAKWindow *self, SEL _cmd) {
     return size;
 }
 
+Class $NSUserDefaults;
+
+MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSString *key) {
+    if ([key respondsToSelector:@selector(isEqualToString:)] && [key isEqualToString:@"WebKitLocalStorageDatabasePathPreferenceKey"])
+        return [NSString stringWithFormat:@"%@/LocalStorage", Cache_];
+    return _NSUserDefaults$objectForKey$(self, _cmd, key);
+}
+
 int main(int argc, char *argv[]) {
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
@@ -10572,6 +10580,13 @@ int main(int argc, char *argv[]) {
     if (NSURLConnection$init$ != NULL) {
         _NSURLConnection$init$ = reinterpret_cast<id (*)(NSURLConnection *, SEL, NSURLRequest *, id, BOOL, int64_t, BOOL, NSDictionary *)>(method_getImplementation(NSURLConnection$init$));
         method_setImplementation(NSURLConnection$init$, reinterpret_cast<IMP>(&$NSURLConnection$init$));
+    }
+
+    $NSUserDefaults = objc_getClass("NSUserDefaults");
+    Method NSUserDefaults$objectForKey$(class_getInstanceMethod($NSUserDefaults, @selector(objectForKey:)));
+    if (NSUserDefaults$objectForKey$ != NULL) {
+        _NSUserDefaults$objectForKey$ = reinterpret_cast<id (*)(NSUserDefaults *, SEL, NSString *)>(method_getImplementation(NSUserDefaults$objectForKey$));
+        method_setImplementation(NSUserDefaults$objectForKey$, reinterpret_cast<IMP>(&$NSUserDefaults$objectForKey$));
     }
     /* }}} */
     /* Set Locale {{{ */
