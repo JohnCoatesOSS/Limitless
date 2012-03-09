@@ -1,5 +1,5 @@
 /* Cydia - iPhone UIKit Front-End for Debian APT
- * Copyright (C) 2008-2011  Jay Freeman (saurik)
+ * Copyright (C) 2008-2012  Jay Freeman (saurik)
 */
 
 /* Modified BSD License {{{ */
@@ -6666,7 +6666,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [alert setCancelButtonIndex:0];
 
     [alert setMessage:
-        @"Copyright \u00a9 2008-2011\n"
+        @"Copyright \u00a9 2008-2012\n"
         "SaurikIT, LLC\n"
         "\n"
         "Jay Freeman (saurik)\n"
