@@ -8575,7 +8575,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     _H<NSError> error_;
 
     //NSURLConnection *installer_;
-    NSURLConnection *trivial_;
     NSURLConnection *trivial_bz2_;
     NSURLConnection *trivial_gz_;
     //NSURLConnection *automatic_;
@@ -8600,7 +8599,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (void) dealloc {
     //[self _releaseConnection:installer_];
-    [self _releaseConnection:trivial_];
     [self _releaseConnection:trivial_gz_];
     [self _releaseConnection:trivial_bz2_];
     //[self _releaseConnection:automatic_];
@@ -8708,9 +8706,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     // XXX: the memory management in this method is horribly awkward
 
     NSURLConnection **field = NULL;
-    if (connection == trivial_)
-        field = &trivial_;
-    else if (connection == trivial_bz2_)
+    if (connection == trivial_bz2_)
         field = &trivial_bz2_;
     else if (connection == trivial_gz_)
         field = &trivial_gz_;
@@ -8719,7 +8715,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     *field = nil;
 
     if (
-        trivial_ == nil &&
         trivial_bz2_ == nil &&
         trivial_gz_ == nil
     ) {
@@ -8841,7 +8836,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
                 else
                     href_ = href;
 
-                trivial_ = [[self _requestHRef:[href_ stringByAppendingString:@"Packages"] method:@"HEAD"] retain];
                 trivial_bz2_ = [[self _requestHRef:[href_ stringByAppendingString:@"Packages.bz2"] method:@"HEAD"] retain];
                 trivial_gz_ = [[self _requestHRef:[href_ stringByAppendingString:@"Packages.gz"] method:@"HEAD"] retain];
                 //trivial_bz2_ = [[self _requestHRef:[href stringByAppendingString:@"dists/Release"] method:@"HEAD"] retain];
