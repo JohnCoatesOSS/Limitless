@@ -2885,7 +2885,8 @@ struct PackageNameOrdering :
 
                 NSString *bundle([file stringByDeletingLastPathComponent]);
                 NSString *icon([info objectForKey:@"CFBundleIconFile"]);
-                if (icon == nil || [icon length] == 0)
+                // XXX: maybe this should check if this is really a string, not just for length
+                if (icon == nil || ![icon respondsToSelector:@selector(length)] || [icon length] == 0)
                     icon = @"icon.png";
                 NSURL *url([NSURL fileURLWithPath:[bundle stringByAppendingPathComponent:icon]]);
 
