@@ -9499,7 +9499,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
 @synchronized (self) {
     UIProgressHUD *hud(loaded_ ? [self addProgressHUD] : nil);
-    [hud setText:UCLocalize("RELOADING_DATA")];
+    if (hud != nil)
+        [hud setText:UCLocalize("RELOADING_DATA")];
 
     [database_ yieldToSelector:@selector(reloadDataWithInvocation:) withObject:invocation];
 
