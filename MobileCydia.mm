@@ -4137,7 +4137,7 @@ static _H<NSMutableSet> Diversions_;
     else if (selector == @selector(stringWithFormat:arguments:))
         return @"format";
     else if (selector == @selector(getAllSources))
-        return @"getAllSourcs";
+        return @"getAllSources";
     else if (selector == @selector(getKernelNumber:))
         return @"getKernelNumber";
     else if (selector == @selector(getKernelString:))
