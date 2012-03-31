@@ -9350,11 +9350,15 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     if (locked_++ == 0) {
         if ($SBSSetInterceptsMenuButtonForever != NULL)
             (*$SBSSetInterceptsMenuButtonForever)(true);
+
+        [self setIdleTimerDisabled:YES];
     }
 }
 
 - (void) unlockSuspend {
     if (--locked_ == 0) {
+        [self setIdleTimerDisabled:NO];
+
         if ($SBSSetInterceptsMenuButtonForever != NULL)
             (*$SBSSetInterceptsMenuButtonForever)(false);
     }
@@ -10099,8 +10103,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) stash {
-    [self setIdleTimerDisabled:YES];
-
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     UpdateExternalStatus(1);
     [self yieldToSelector:@selector(system:) withObject:@"/usr/libexec/cydia/free.sh"];
