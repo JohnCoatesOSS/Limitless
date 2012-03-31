@@ -10873,12 +10873,7 @@ int main(int argc, char *argv[]) {
     Error_ = UCLocalize("ERROR");
     Warning_ = UCLocalize("WARNING");
 
-#if !ForRelease
-    AprilFools_ = true;
-#else
-    CFGregorianDate date(CFAbsoluteTimeGetGregorianDate(CFAbsoluteTimeGetCurrent(), CFTimeZoneCopySystem()));
-    AprilFools_ = date.month == 4 && date.day == 1;
-#endif
+    AprilFools_ = false;
 
     _trace();
     int value(UIApplicationMain(argc, argv, @"Cydia", @"Cydia"));
