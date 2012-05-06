@@ -107,6 +107,10 @@ class MenesObjectHandle {
         return value_;
     }
 
+    _finline Type_ *operator ->() const {
+        return value_;
+    }
+
     _finline MenesObjectHandle &operator =(Type_ *value) {
         if (value_ != value) {
             Type_ *old(value_);
@@ -122,5 +126,26 @@ class MenesObjectHandle {
 };
 
 #define _H MenesObjectHandle
+
+#define rproperty_(Class, field) \
+    - (typeof(((Class*)nil)->_##field.operator->())) field { \
+        return _##field; \
+    }
+
+#define wproperty_(Class, field, Field) \
+    - (void) set##Field:(typeof(((Class*)nil)->_##field.operator->()))field { \
+        _##field = field; \
+    }
+
+#define roproperty(Class, field) \
+@implementation Class (Menes_##field) \
+rproperty_(Class, field) \
+@end
+
+#define rwproperty(Class, field, Field) \
+@implementation Class (Menes_##field) \
+rproperty_(Class, field) \
+wproperty_(Class, field, Field) \
+@end
 
 #endif//Menes_ObjectHandle_H
