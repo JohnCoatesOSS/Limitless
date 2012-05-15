@@ -87,6 +87,10 @@
     } return self;
 }
 
+- (id) delegate {
+    return [webview_ delegate];
+}
+
 - (void) setDelegate:(id)delegate {
     [webview_ setDelegate:delegate];
 }

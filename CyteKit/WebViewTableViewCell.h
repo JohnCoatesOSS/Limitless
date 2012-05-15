@@ -55,6 +55,7 @@
 + (CyteWebViewTableViewCell *) cellWithRequest:(NSURLRequest *)request;
 - (id) initWithRequest:(NSURLRequest *)request;
 
+- (id) delegate;
 - (void) setDelegate:(id)delegate;
 
 @end

@@ -44,8 +44,11 @@
     _transient volatile id delegate_;
 }
 
+- (id) delegate;
 - (void) setDelegate:(id)delegate;
+
 - (id) initWithDelegate:(id)delegate;
+
 @end
 
 #endif//CyteKit_IndirectDelegate_H

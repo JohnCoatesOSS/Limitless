@@ -54,6 +54,7 @@
     _transient id<CyteTableViewCellDelegate> delegate_;
 }
 
+- (id) delegate;
 - (void) setDelegate:(id<CyteTableViewCellDelegate>)delegate;
 
 @end

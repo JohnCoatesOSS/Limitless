@@ -49,6 +49,10 @@
     } return self;
 }
 
+- (id) delegate {
+    return delegate_;
+}
+
 - (void) setDelegate:(id<CyteTableViewCellDelegate>)delegate {
     delegate_ = delegate;
 }

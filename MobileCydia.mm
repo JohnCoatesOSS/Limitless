@@ -5128,6 +5128,10 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     } return self;
 }
 
+- (id) delegate {
+    return delegate_;
+}
+
 - (void) setDelegate:(id)delegate {
     delegate_ = delegate;
 }
@@ -5531,7 +5535,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (NSString *) accessibilityLabel {
-    return [NSString stringWithFormat:UCLocalize("COLON_DELIMITED"), (id) name_, (id) description_];
+    return name_;
 }
 
 - (void) setPackage:(Package *)package asSummary:(bool)summary {

@@ -59,6 +59,10 @@ float CYScrollViewDecelerationRateNormal;
 /* Indirect Delegate {{{ */
 @implementation IndirectDelegate
 
+- (id) delegate {
+    return delegate_;
+}
+
 - (void) setDelegate:(id)delegate {
     delegate_ = delegate;
 }
