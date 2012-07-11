@@ -6754,7 +6754,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 @interface RefreshBar : UINavigationBar {
     _H<UIProgressIndicator> indicator_;
     _H<UITextLabel> prompt_;
-    _H<UIProgressBar> progress_;
     _H<UINavigationButton> cancel_;
 }
 
@@ -6768,13 +6767,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     frame.origin.x = [self frame].size.width - frame.size.width - 5;
     frame.origin.y = ([self frame].size.height - frame.size.height) / 2;
     [cancel_ setFrame:frame];
-
-    CGSize prgsize = {75, 100};
-    CGRect prgrect = {{
-        [self frame].size.width - prgsize.width - 10,
-        ([self frame].size.height - prgsize.height) / 2
-    } , prgsize};
-    [progress_ setFrame:prgrect];
 
     CGSize indsize([UIProgressIndicator defaultSizeForStyle:[indicator_ activityIndicatorViewStyle]]);
     unsigned indoffset = ([self frame].size.height - indsize.height) / 2;
@@ -6818,11 +6810,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         [prompt_ setFont:[UIFont systemFontOfSize:15]];
         [self addSubview:prompt_];
 
-        progress_ = [[[UIProgressBar alloc] initWithFrame:CGRectZero] autorelease];
-        [progress_ setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin];
-        [(UIProgressBar *) progress_ setStyle:0];
-        [self addSubview:progress_];
-
         cancel_ = [[[UINavigationButton alloc] initWithTitle:UCLocalize("CANCEL") style:UINavigationButtonStyleHighlighted] autorelease];
         [cancel_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
         [cancel_ addTarget:delegate action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -6841,7 +6828,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (void) start {
     [prompt_ setText:UCLocalize("UPDATING_DATABASE")];
-    [progress_ setProgress:0];
 }
 
 - (void) stop {
@@ -6853,7 +6839,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) setProgress:(float)progress {
-    [progress_ setProgress:progress];
 }
 
 @end
