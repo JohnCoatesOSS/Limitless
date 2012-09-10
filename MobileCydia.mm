@@ -6054,15 +6054,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     }
 }
 
-// We don't want to allow non-commercial packages to do custom things to the install button,
-// so it must call customButtonClicked with a custom commercial_ == 1 fallthrough.
-- (void) customButtonClicked {
-    if (commercial_)
-        [super customButtonClicked];
-    else
-        [self _customButtonClicked];
-}
-
 - (void) reloadButtonClicked {
     // Don't reload a commerical package by tapping the loading button,
     // but if it's not an Install button, we should forward it on.
