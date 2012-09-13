@@ -69,6 +69,7 @@
 #include <QuartzCore/CALayer.h>
 
 #include <WebCore/WebCoreThread.h>
+#include <WebKit/DOMHTMLIFrameElement.h>
 
 #include <algorithm>
 #include <iomanip>
@@ -4169,6 +4170,8 @@ static _H<NSMutableSet> Diversions_;
         return @"popViewController";
     else if (selector == @selector(refreshSources))
         return @"refreshSources";
+    else if (selector == @selector(registerFrame:))
+        return @"registerFrame";
     else if (selector == @selector(removeButton))
         return @"removeButton";
     else if (selector == @selector(saveConfig))
@@ -4293,6 +4296,11 @@ static _H<NSMutableSet> Diversions_;
 @synchronized (Values_) {
     return [Values_ allKeys];
 } }
+
+- (void) registerFrame:(DOMHTMLIFrameElement *)iframe {
+    WebFrame *frame([iframe contentFrame]);
+    [indirect_ registerFrame:frame];
+}
 
 - (void) _setShowPromoted:(NSNumber *)value {
     [Metadata_ setObject:value forKey:@"ShowPromoted"];
