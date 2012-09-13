@@ -514,6 +514,9 @@ float CYScrollViewDecelerationRateNormal;
 }
 
 - (void) webView:(WebView *)view didClearWindowObject:(WebScriptObject *)window forFrame:(WebFrame *)frame {
+#if LogBrowser
+    NSLog(@"didClearWindowObject:%@ forFrame:%@", window, frame);
+#endif
 }
 
 - (void) webView:(WebView *)view didCommitLoadForFrame:(WebFrame *)frame {
