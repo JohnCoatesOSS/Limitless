@@ -18,5 +18,6 @@ if [[ ${#debs[@]} -ne 0 && -f ${debs[0]} ]]; then
 fi
 
 if [[ ${cache+@} ]]; then
+    sbdidlaunch
     su -c uicache mobile
 fi
