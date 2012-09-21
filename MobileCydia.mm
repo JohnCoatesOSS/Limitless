@@ -5287,6 +5287,13 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (void) reloadSpringBoard {
+    if (kCFCoreFoundationVersionNumber > 700) { // XXX: iOS 6.x
+        system("/bin/launchctl stop com.apple.backboardd");
+        sleep(15);
+        system("/usr/bin/killall backboardd SpringBoard sbreload");
+        return;
+    }
+
     pid_t pid(ExecFork());
     if (pid == 0) {
         pid_t pid(ExecFork());
@@ -5302,7 +5309,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     ReapZombie(pid);
 
     sleep(15);
-    system("/usr/bin/killall SpringBoard");
+    system("/usr/bin/killall backboardd SpringBoard sbreload");
 }
 
 - (void) close {
