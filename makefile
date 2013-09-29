@@ -144,11 +144,13 @@ sysroot: sysroot.sh
 
 MobileCydia: sysroot $(object) entitlements.xml
 	@echo "[link] $(object:Objects/%=%)"
-	@$(cycc) $(filter %.o,$^) $(flags) $(link) $(libs) $(uikit)
+	@$(cycc) $(filter %.o,$^) $(flags) $(link) $(libs) $(uikit) -Wl,-sdk_version,7.0
 	@mkdir -p bins
 	@cp -a $@ bins/$@-$(version)
 	@echo "[strp] $@"
 	@strip -no_uuid $@
+	@echo "[uikt] $@"
+	@./uikit.sh $@
 	@echo "[sign] $@"
 	@ldid -T0 -Sentitlements.xml $@ || { rm -f $@ && false; }
 
