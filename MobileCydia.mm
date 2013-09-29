@@ -267,6 +267,15 @@ static bool AprilFools_;
 
 static void (*$SBSSetInterceptsMenuButtonForever)(bool);
 
+static CFStringRef (*$MGCopyAnswer)(CFStringRef);
+
+static NSString *UniqueIdentifier(UIDevice *device = nil) {
+    if (kCFCoreFoundationVersionNumber < 800) // iOS 7.x
+        return [device ?: [UIDevice currentDevice] uniqueIdentifier];
+    else
+        return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
+}
+
 static bool IsReachable(const char *name) {
     SCNetworkReachabilityFlags flags; {
         SCNetworkReachabilityRef reachability(SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, name));
@@ -725,7 +734,7 @@ static NSString *SerialNumber_ = nil;
 static NSString *ChipID_ = nil;
 static NSString *BBSNum_ = nil;
 static _H<NSString> Token_;
-static NSString *UniqueID_ = nil;
+static _H<NSString> UniqueID_;
 static _H<NSString> UserAgent_;
 static _H<NSString> Product_;
 static _H<NSString> Safari_;
@@ -4059,7 +4068,7 @@ static _H<NSMutableSet> Diversions_;
 }
 
 - (NSString *) device {
-    return [[UIDevice currentDevice] uniqueIdentifier];
+    return UniqueIdentifier();
 }
 
 - (NSString *) firmware {
@@ -10657,6 +10666,9 @@ int main(int argc, char *argv[]) {
     dealloc_ = dealloc->method_imp;
     dealloc->method_imp = (IMP) &Dealloc_;*/
 
+    void *gestalt(dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY));
+    $MGCopyAnswer = reinterpret_cast<CFStringRef (*)(CFStringRef)>(dlsym(gestalt, "MGCopyAnswer"));
+
     /* System Information {{{ */
     size_t size;
 
@@ -10688,7 +10700,7 @@ int main(int argc, char *argv[]) {
     ChipID_ = [CYHex((NSData *) CYIOGetValue("IODeviceTree:/chosen", @"unique-chip-id"), true) uppercaseString];
     BBSNum_ = CYHex((NSData *) CYIOGetValue("IOService:/AppleARMPE/baseband", @"snum"), false);
 
-    UniqueID_ = [device uniqueIdentifier];
+    UniqueID_ = UniqueIdentifier(device);
 
     if (NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile:@"/Applications/MobileSafari.app/Info.plist"]) {
         Product_ = [info objectForKey:@"SafariProductVersion"];
