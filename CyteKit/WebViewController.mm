@@ -850,14 +850,24 @@ float CYScrollViewDecelerationRateNormal;
         ] autorelease];
 
         loadingitem_ = [[[UIBarButtonItem alloc]
-            initWithTitle:@" "
+            initWithTitle:(kCFCoreFoundationVersionNumber >= 800 ? @"       " : @" ")
             style:UIBarButtonItemStylePlain
             target:self
             action:@selector(reloadButtonClicked)
         ] autorelease];
 
-        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite] autorelease];
-        [indicator_ setFrame:CGRectMake(15, 5, [indicator_ frame].size.width, [indicator_ frame].size.height)];
+        UIActivityIndicatorViewStyle style;
+        float left;
+        if (kCFCoreFoundationVersionNumber >= 800) {
+            style = UIActivityIndicatorViewStyleGray;
+            left = 7;
+        } else {
+            style = UIActivityIndicatorViewStyleWhite;
+            left = 15;
+        }
+
+        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style] autorelease];
+        [indicator_ setFrame:CGRectMake(left, 5, [indicator_ frame].size.width, [indicator_ frame].size.height)];
         [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
 
         [self applyLeftButton];
