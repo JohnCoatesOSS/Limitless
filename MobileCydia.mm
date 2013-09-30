@@ -5757,6 +5757,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 - (id) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if ((self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) != nil) {
         icon_ = [UIImage applicationImageNamed:@"folder.png"];
+        // XXX: this initial frame is wrong, but is fixed later
         switch_ = [[[UISwitch alloc] initWithFrame:CGRectMake(218, 9, 60, 25)] autorelease];
         [switch_ addTarget:self action:@selector(onSwitch:) forEvents:UIControlEventValueChanged];
 
@@ -5821,7 +5822,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     [super setFrame:frame];
 
     CGRect rect([switch_ frame]);
-    [switch_ setFrame:CGRectMake(frame.size.width - 102, 9, rect.size.width, rect.size.height)];
+    [switch_ setFrame:CGRectMake(frame.size.width - rect.size.width - 9, 9, rect.size.width, rect.size.height)];
 }
 
 - (NSString *) accessibilityLabel {
