@@ -5667,7 +5667,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         [badge_ drawInRect:rect];
     }
 
-    if (highlighted)
+    if (highlighted && kCFCoreFoundationVersionNumber < 800)
         UISetColor(White_);
 
     if (!highlighted)
@@ -5710,7 +5710,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         [badge_ drawInRect:rect];
     }
 
-    if (highlighted)
+    if (highlighted && kCFCoreFoundationVersionNumber < 800)
         UISetColor(White_);
 
     if (!highlighted)
@@ -5834,7 +5834,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     [icon_ drawInRect:CGRectMake(8, 7, 32, 32)];
 
-    if (highlighted)
+    if (highlighted && kCFCoreFoundationVersionNumber < 800)
         UISetColor(White_);
 
     float width(rect.size.width);
@@ -8492,7 +8492,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         [icon_ drawInRect:rect];
     }
 
-    if (highlighted)
+    if (highlighted && kCFCoreFoundationVersionNumber < 800)
         UISetColor(White_);
 
     if (!highlighted)
