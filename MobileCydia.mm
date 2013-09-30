@@ -5839,7 +5839,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     float width(rect.size.width);
     if (editing_)
-        width -= 87;
+        width -= 9 + [switch_ frame].size.width;
 
     if (!highlighted)
         UISetColor(Black_);
