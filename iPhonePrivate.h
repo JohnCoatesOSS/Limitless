@@ -410,6 +410,10 @@ extern float const UIScrollViewDecelerationRateNormal;
 #define kCFCoreFoundationVersionNumber_iPhoneOS_4_0 550.32
 #endif
 
+@interface UITabBarItem (iOS_7_0)
+- (id) initWithTitle:(NSString *)title image:(UIImage *)image selectedImage:(UIImage *)selectedImage;
+@end
+
 @interface UIScreen (iOS_4_0)
 @property(nonatomic,readonly) CGFloat scale;
 @end
