@@ -2118,6 +2118,8 @@ struct PackageNameOrdering :
         return @"clear";
     else if (selector == @selector(getField:))
         return @"getField";
+    else if (selector == @selector(getRecord))
+        return @"getRecord";
     else if (selector == @selector(hasTag:))
         return @"hasTag";
     else if (selector == @selector(install))
@@ -2198,6 +2200,19 @@ struct PackageNameOrdering :
     const char *start, *end;
     if (!parser.Find([name UTF8String], start, end))
         return (NSString *) [NSNull null];
+
+    return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
+} }
+
+- (NSString *) getRecord {
+@synchronized (database_) {
+    if ([database_ era] != era_ || file_.end())
+        return nil;
+
+    pkgRecords::Parser &parser([database_ records]->Lookup(file_));
+
+    const char *start, *end;
+    parser.GetRec(start, end);
 
     return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
 } }
