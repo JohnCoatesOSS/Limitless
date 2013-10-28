@@ -1846,8 +1846,6 @@ struct ParsedPackage {
 
     CYString depiction_;
     CYString homepage_;
-
-    CYString sponsor_;
     CYString author_;
 
     CYString bugs_;
@@ -2161,7 +2159,6 @@ struct PackageNameOrdering :
         @"simpleSection",
         @"size",
         @"source",
-        @"sponsor",
         @"state",
         @"support",
         @"tags",
@@ -2236,7 +2233,6 @@ struct PackageNameOrdering :
                 {"website", &website},
                 {"bugs", &parsed->bugs_},
                 {"support", &parsed->support_},
-                {"sponsor", &parsed->sponsor_},
                 {"author", &parsed->author_},
                 {"md5sum", &parsed->md5sum_},
             };
@@ -2730,10 +2726,6 @@ struct PackageNameOrdering :
 
 - (NSString *) depiction {
     return parsed_ != NULL && !parsed_->depiction_.empty() ? parsed_->depiction_ : [[self source] depictionForPackage:id_];
-}
-
-- (MIMEAddress *) sponsor {
-    return parsed_ == NULL || parsed_->sponsor_.empty() ? nil : [MIMEAddress addressWithString:parsed_->sponsor_];
 }
 
 - (MIMEAddress *) author {
