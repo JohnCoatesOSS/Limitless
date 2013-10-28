@@ -1848,7 +1848,6 @@ struct ParsedPackage {
     CYString homepage_;
     CYString author_;
 
-    CYString bugs_;
     CYString support_;
 };
 
@@ -2234,6 +2233,7 @@ struct PackageNameOrdering :
             parser = &[database_ records]->Lookup(file_);
         _end
 
+        CYString bugs;
         CYString website;
 
         _profile(Package$parse$Find)
@@ -2246,7 +2246,7 @@ struct PackageNameOrdering :
                 {"depiction", &parsed->depiction_},
                 {"homepage", &parsed->homepage_},
                 {"website", &website},
-                {"bugs", &parsed->bugs_},
+                {"bugs", &bugs},
                 {"support", &parsed->support_},
                 {"author", &parsed->author_},
                 {"md5sum", &parsed->md5sum_},
@@ -2281,6 +2281,8 @@ struct PackageNameOrdering :
                 parsed->homepage_ = website;
             if (parsed->homepage_ == parsed->depiction_)
                 parsed->homepage_.clear();
+            if (parsed->support_.empty())
+                parsed->support_ = bugs;
         _end
     _end
 } }
@@ -2748,7 +2750,7 @@ struct PackageNameOrdering :
 }
 
 - (NSString *) support {
-    return parsed_ != NULL && !parsed_->bugs_.empty() ? parsed_->bugs_ : [[self source] supportForPackage:id_];
+    return parsed_ != NULL && !parsed_->support_.empty() ? parsed_->support_ : [[self source] supportForPackage:id_];
 }
 
 - (NSArray *) files {
