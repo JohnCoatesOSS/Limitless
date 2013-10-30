@@ -10866,10 +10866,6 @@ int main(int argc, char *argv[]) {
     RemovingColor_ = [UIColor colorWithRed:1.00f green:0.88f blue:0.88f alpha:1.00f];
     /* }}}*/
     /* UIKit Configuration {{{ */
-    void (*$GSFontSetUseLegacyFontMetrics)(BOOL)(reinterpret_cast<void (*)(BOOL)>(dlsym(RTLD_DEFAULT, "GSFontSetUseLegacyFontMetrics")));
-    if ($GSFontSetUseLegacyFontMetrics != NULL)
-        $GSFontSetUseLegacyFontMetrics(YES);
-
     // XXX: I have a feeling this was important
     //UIKeyboardDisableAutomaticAppearance();
     /* }}} */
