@@ -578,19 +578,16 @@ float CYScrollViewDecelerationRateNormal;
                             float blue([[rgb blue] getFloatValue:DOM_CSS_NUMBER]);
                             float alpha([[rgb alpha] getFloatValue:DOM_CSS_NUMBER]);
 
-                            if (red == 0xc7 && green == 0xce && blue == 0xd5)
-                                uic = [UIColor pinStripeColor];
-                            else if (alpha != 0)
-                                uic = [UIColor
-                                    colorWithRed:(red / 255)
-                                    green:(green / 255)
-                                    blue:(blue / 255)
-                                    alpha:alpha
-                                ];
+                            uic = [UIColor
+                                colorWithRed:(red / 255)
+                                green:(green / 255)
+                                blue:(blue / 255)
+                                alpha:alpha
+                            ];
                         }
                     }
 
-                    [scroller_ setBackgroundColor:(uic ?: [UIColor clearColor])];
+                    [scroller_ setBackgroundColor:uic];
                     break;
                 }
     }
@@ -898,11 +895,6 @@ float CYScrollViewDecelerationRateNormal;
     // XXX: I think this improves scrolling; the hardcoded-ness sucks
     [document setTileSize:CGSizeMake(320, 500)];
 
-    [document setBackgroundColor:[UIColor clearColor]];
-
-    // XXX: this is terribly (too?) expensive
-    [document setDrawsBackground:NO];
-
     WebView *webview([document webView]);
     WebPreferences *preferences([webview preferences]);
 
@@ -958,7 +950,7 @@ float CYScrollViewDecelerationRateNormal;
     }
 
     [scroller_ setFixedBackgroundPattern:YES];
-    [scroller_ setBackgroundColor:[UIColor clearColor]];
+    [scroller_ setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
     [scroller_ setClipsSubviews:YES];
 
     [scroller_ setBounces:YES];
@@ -967,11 +959,6 @@ float CYScrollViewDecelerationRateNormal;
 
     [self setViewportWidth:width_];
 
-    UITableView *table([[[UITableView alloc] initWithFrame:[webview_ bounds] style:UITableViewStyleGrouped] autorelease]);
-    [table setScrollsToTop:NO];
-    [webview_ insertSubview:table atIndex:0];
-
-    [table setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
     [webview_ setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 
     ready_ = false;
