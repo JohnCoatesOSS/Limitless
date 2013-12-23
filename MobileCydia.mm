@@ -5296,6 +5296,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     pid_t pid(ExecFork());
     if (pid == 0) {
+        if (setsid() == -1)
+            perror("setsid");
+
         pid_t pid(ExecFork());
         if (pid == 0) {
             execl("/usr/bin/sbreload", "sbreload", NULL);
