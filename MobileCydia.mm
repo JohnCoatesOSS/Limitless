@@ -7102,10 +7102,12 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     CGRect barframe([refreshbar_ frame]);
 
-    if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_3_0) // XXX: _UIApplicationLinkedOnOrAfter(4)
+    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iPhoneOS_3_0) // XXX: _UIApplicationLinkedOnOrAfter(4)
+        barframe.origin.y = 0;
+    else if (kCFCoreFoundationVersionNumber < 800)
         barframe.origin.y = CYStatusBarHeight();
     else
-        barframe.origin.y = 0;
+        barframe.origin.y = -barframe.size.height;
 
     [refreshbar_ setFrame:barframe];
 
