@@ -418,6 +418,7 @@ float CYScrollViewDecelerationRateNormal;
 
     if (page == nil) {
         CyteWebViewController *browser([[[class_ alloc] init] autorelease]);
+        [browser setColor:color_];
         [browser setRequest:request];
         page = browser;
     }
@@ -587,6 +588,10 @@ float CYScrollViewDecelerationRateNormal;
                         }
                     }
 
+                    if (uic == nil)
+                        uic = [UIColor groupTableViewBackgroundColor];
+
+                    color_ = uic;
                     [scroller_ setBackgroundColor:uic];
                     break;
                 }
@@ -833,6 +838,8 @@ float CYScrollViewDecelerationRateNormal;
         width_ = width;
         class_ = _class;
 
+        color_ = [UIColor groupTableViewBackgroundColor];
+
         allowsNavigationAction_ = true;
 
         loading_ = [NSMutableSet setWithCapacity:5];
@@ -950,7 +957,7 @@ float CYScrollViewDecelerationRateNormal;
     }
 
     [scroller_ setFixedBackgroundPattern:YES];
-    [scroller_ setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+    [scroller_ setBackgroundColor:color_];
     [scroller_ setClipsSubviews:YES];
 
     [scroller_ setBounces:YES];
@@ -991,6 +998,10 @@ float CYScrollViewDecelerationRateNormal;
     if ((self = [self init]) != nil) {
         [self setRequest:request];
     } return self;
+}
+
+- (void) setColor:(UIColor *)color {
+    color_ = color;
 }
 
 - (void) callFunction:(WebScriptObject *)function {

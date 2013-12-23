@@ -71,6 +71,7 @@
 
     float width_;
     Class class_;
+    _H<UIColor> color_;
 
     _H<UIBarButtonItem> reloaditem_;
     _H<UIBarButtonItem> loadingitem_;
@@ -101,6 +102,8 @@
 
 - (id) initWithWidth:(float)width;
 - (id) initWithWidth:(float)width ofClass:(Class)_class;
+
+- (void) setColor:(UIColor *)color;
 
 - (void) callFunction:(WebScriptObject *)function;
 
