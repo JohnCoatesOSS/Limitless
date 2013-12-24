@@ -7104,7 +7104,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     else if (kCFCoreFoundationVersionNumber < 800)
         return [self _transitionView];
     else
-        return [[self _transitionView] superview];
+        return [[[self _transitionView] superview] superview];
 }
 
 - (void) dropBar:(BOOL)animated {
@@ -7122,7 +7122,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     else if (kCFCoreFoundationVersionNumber < 800)
         barframe.origin.y = CYStatusBarHeight();
     else
-        barframe.origin.y = -barframe.size.height;
+        barframe.origin.y = -barframe.size.height + CYStatusBarHeight();
 
     [refreshbar_ setFrame:barframe];
 
@@ -7130,8 +7130,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         [UIView beginAnimations:nil context:NULL];
 
     CGRect viewframe = [transition frame];
-    viewframe.origin.y += barframe.size.height;
-    viewframe.size.height -= barframe.size.height;
+    float adjust(barframe.size.height);
+    if (kCFCoreFoundationVersionNumber >= 800)
+        adjust -= CYStatusBarHeight();
+    viewframe.origin.y += adjust;
+    viewframe.size.height -= adjust;
     [transition setFrame:viewframe];
 
     if (animated)
@@ -7156,8 +7159,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         [UIView beginAnimations:nil context:NULL];
 
     CGRect viewframe = [transition frame];
-    viewframe.origin.y -= barframe.size.height;
-    viewframe.size.height += barframe.size.height;
+    float adjust(barframe.size.height);
+    if (kCFCoreFoundationVersionNumber >= 800)
+        adjust -= CYStatusBarHeight();
+    viewframe.origin.y -= adjust;
+    viewframe.size.height += adjust;
     [transition setFrame:viewframe];
 
     if (animated)
