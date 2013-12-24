@@ -246,10 +246,6 @@ typedef enum {
 - (void) addTarget:(id)target action:(SEL)action forEvents:(NSInteger)events;
 @end
 
-@interface UIDevice (Apple)
-- (BOOL) isWildcat;
-@end
-
 @interface UIImage (Apple)
 + (UIImage *) applicationImageNamed:(NSString *)name;
 + (UIImage *) imageAtPath:(NSString *)path;

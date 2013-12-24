@@ -10524,12 +10524,6 @@ int main(int argc, char *argv[]) {
 
     UpdateExternalStatus(0);
 
-    if (Class $UIDevice = objc_getClass("UIDevice")) {
-        UIDevice *device([$UIDevice currentDevice]);
-        IsWildcat_ = [device respondsToSelector:@selector(isWildcat)] && [device isWildcat];
-    } else
-        IsWildcat_ = false;
-
     UIScreen *screen([UIScreen mainScreen]);
     if ([screen respondsToSelector:@selector(scale)])
         ScreenScale_ = [screen scale];
@@ -10537,17 +10531,13 @@ int main(int argc, char *argv[]) {
         ScreenScale_ = 1;
 
     UIDevice *device([UIDevice currentDevice]);
-    if (![device respondsToSelector:@selector(userInterfaceIdiom)])
-        Idiom_ = @"iphone";
-    else {
+    if ([device respondsToSelector:@selector(userInterfaceIdiom)]) {
         UIUserInterfaceIdiom idiom([device userInterfaceIdiom]);
-        if (idiom == UIUserInterfaceIdiomPhone)
-            Idiom_ = @"iphone";
-        else if (idiom == UIUserInterfaceIdiomPad)
-            Idiom_ = @"ipad";
-        else
-            NSLog(@"unknown UIUserInterfaceIdiom!");
+        if (idiom == UIUserInterfaceIdiomPad)
+            IsWildcat_ = true;
     }
+
+    Idiom_ = IsWildcat_ ? @"ipad" : @"iphone";
 
     Pcre pattern("^([0-9]+\\.[0-9]+)");
 
