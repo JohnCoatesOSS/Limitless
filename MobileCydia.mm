@@ -689,6 +689,7 @@ static bool Queuing_;
 static CYColor Blue_;
 static CYColor Blueish_;
 static CYColor Black_;
+static CYColor Folder_;
 static CYColor Off_;
 static CYColor White_;
 static CYColor Gray_;
@@ -5625,14 +5626,11 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         if (NSString *mode = [package mode]) {
             if ([mode isEqualToString:@"REMOVE"] || [mode isEqualToString:@"PURGE"]) {
                 color = RemovingColor_;
-                //placard = @"removing";
+                placard = @"removing";
             } else {
                 color = InstallingColor_;
-                //placard = @"installing";
+                placard = @"installing";
             }
-
-            // XXX: the removing/installing placards are not @2x
-            placard = nil;
         } else {
             color = [UIColor whiteColor];
 
@@ -5665,8 +5663,8 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             rect.size.height /= 2;
         }
 
-        rect.origin.x = 18 - rect.size.width / 2;
-        rect.origin.y = 18 - rect.size.height / 2;
+        rect.origin.x = 19 - rect.size.width / 2;
+        rect.origin.y = 19 - rect.size.height / 2;
 
         [icon_ drawInRect:rect];
     }
@@ -5678,8 +5676,8 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         rect.size.width /= 4;
         rect.size.height /= 4;
 
-        rect.origin.x = 23 - rect.size.width / 2;
-        rect.origin.y = 23 - rect.size.height / 2;
+        rect.origin.x = 25 - rect.size.width / 2;
+        rect.origin.y = 25 - rect.size.height / 2;
 
         [badge_ drawInRect:rect];
     }
@@ -5692,7 +5690,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     [name_ drawAtPoint:CGPointMake(36, 8) forWidth:(width - (placard_ == nil ? 68 : 94)) withFont:Font18Bold_ lineBreakMode:UILineBreakModeTailTruncation];
 
     if (placard_ != nil)
-        [placard_ drawAtPoint:CGPointMake(width - 52, 9)];
+        [placard_ drawAtPoint:CGPointMake(width - 52, 11)];
 }
 
 - (void) drawNormalContentRect:(CGRect)rect {
@@ -5849,7 +5847,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 - (void) drawContentRect:(CGRect)rect {
     bool highlighted(highlighted_ && !editing_);
 
-    [icon_ drawInRect:CGRectMake(8, 7, 32, 32)];
+    [icon_ drawInRect:CGRectMake(7, 7, 32, 32)];
 
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
         UISetColor(White_);
@@ -5864,9 +5862,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     CGSize size = [count_ sizeWithFont:Font14_];
 
-    UISetColor(White_);
+    UISetColor(Folder_);
     if (count_ != nil)
-        [count_ drawAtPoint:CGPointMake(13 + (29 - size.width) / 2, 16) withFont:Font12Bold_];
+        [count_ drawAtPoint:CGPointMake(10 + (30 - size.width) / 2, 18) withFont:Font12Bold_];
 }
 
 @end
@@ -7591,7 +7589,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (void) loadView {
     list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
     [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-    [list_ setRowHeight:45.0f];
+    [list_ setRowHeight:46];
     [(UITableView *) list_ setDataSource:self];
     [list_ setDelegate:self];
     [self setView:list_];
@@ -8513,8 +8511,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             rect.size.height /= 2;
         }
 
-        rect.origin.x = 25 - rect.size.width / 2;
-        rect.origin.y = 25 - rect.size.height / 2;
+        rect.origin.x = 26 - rect.size.width / 2;
+        rect.origin.y = 26 - rect.size.height / 2;
 
         [icon_ drawInRect:rect];
     }
@@ -8524,11 +8522,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     if (!highlighted)
         UISetColor(Black_);
-    [origin_ drawAtPoint:CGPointMake(48, 8) forWidth:(width - 65) withFont:Font18Bold_ lineBreakMode:UILineBreakModeTailTruncation];
+    [origin_ drawAtPoint:CGPointMake(52, 8) forWidth:(width - 61) withFont:Font18Bold_ lineBreakMode:UILineBreakModeTailTruncation];
 
     if (!highlighted)
         UISetColor(Gray_);
-    [label_ drawAtPoint:CGPointMake(48, 29) forWidth:(width - 65) withFont:Font12_ lineBreakMode:UILineBreakModeTailTruncation];
+    [label_ drawAtPoint:CGPointMake(52, 29) forWidth:(width - 61) withFont:Font12_ lineBreakMode:UILineBreakModeTailTruncation];
 }
 
 @end
@@ -10880,6 +10878,7 @@ int main(int argc, char *argv[]) {
     Blue_.Set(space_, 0.2, 0.2, 1.0, 1.0);
     Blueish_.Set(space_, 0x19/255.f, 0x32/255.f, 0x50/255.f, 1.0);
     Black_.Set(space_, 0.0, 0.0, 0.0, 1.0);
+    Folder_.Set(space_, 0x8e/255.f, 0x8e/255.f, 0x93/255.f, 1.0);
     Off_.Set(space_, 0.9, 0.9, 0.9, 1.0);
     White_.Set(space_, 1.0, 1.0, 1.0, 1.0);
     Gray_.Set(space_, 0.4, 0.4, 0.4, 1.0);
