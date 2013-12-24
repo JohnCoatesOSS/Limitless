@@ -418,12 +418,12 @@ float CYScrollViewDecelerationRateNormal;
 
     if (page == nil) {
         CyteWebViewController *browser([[[class_ alloc] init] autorelease]);
-        [browser setColor:color_];
         [browser setRequest:request];
         page = browser;
     }
 
     [page setDelegate:delegate_];
+    [page setPageColor:color_];
 
     if (!pop) {
         [[self navigationItem] setTitle:title_];
@@ -579,20 +579,18 @@ float CYScrollViewDecelerationRateNormal;
                             float blue([[rgb blue] getFloatValue:DOM_CSS_NUMBER]);
                             float alpha([[rgb alpha] getFloatValue:DOM_CSS_NUMBER]);
 
-                            uic = [UIColor
-                                colorWithRed:(red / 255)
-                                green:(green / 255)
-                                blue:(blue / 255)
-                                alpha:alpha
-                            ];
+                            if (alpha == 1)
+                                uic = [UIColor
+                                    colorWithRed:(red / 255)
+                                    green:(green / 255)
+                                    blue:(blue / 255)
+                                    alpha:alpha
+                                ];
                         }
                     }
 
-                    if (uic == nil)
-                        uic = [UIColor groupTableViewBackgroundColor];
-
-                    color_ = uic;
-                    [scroller_ setBackgroundColor:uic];
+                    [self setPageColor:uic];
+                    [scroller_ setBackgroundColor:color_];
                     break;
                 }
     }
@@ -838,7 +836,7 @@ float CYScrollViewDecelerationRateNormal;
         width_ = width;
         class_ = _class;
 
-        color_ = [UIColor groupTableViewBackgroundColor];
+        [self setPageColor:nil];
 
         allowsNavigationAction_ = true;
 
@@ -956,6 +954,9 @@ float CYScrollViewDecelerationRateNormal;
         //[scroller setAllowsRubberBanding:YES];
     }
 
+    [webview_ setOpaque:NO];
+    [webview_ setBackgroundColor:color_];
+
     [scroller_ setFixedBackgroundPattern:YES];
     [scroller_ setBackgroundColor:color_];
     [scroller_ setClipsSubviews:YES];
@@ -998,10 +999,6 @@ float CYScrollViewDecelerationRateNormal;
     if ((self = [self init]) != nil) {
         [self setRequest:request];
     } return self;
-}
-
-- (void) setColor:(UIColor *)color {
-    color_ = color;
 }
 
 - (void) callFunction:(WebScriptObject *)function {

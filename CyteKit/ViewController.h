@@ -26,6 +26,8 @@
 
 #include <UIKit/UIKit.h>
 
+#include <Menes/ObjectHandle.h>
+
 @interface UIViewController (Cydia)
 - (BOOL) hasLoaded;
 - (void) reloadData;
@@ -36,6 +38,7 @@
 @interface CyteViewController : UIViewController {
     _transient id delegate_;
     BOOL loaded_;
+    _H<UIColor> color_;
 }
 
 // The default implementation of this method is essentially a no-op,
@@ -61,6 +64,8 @@
 // happen when more memory is needed by the system or whenever the controller
 // just happens not to be visible.
 - (void) releaseSubviews;
+
+- (void) setPageColor:(UIColor *)color;
 
 @end
 

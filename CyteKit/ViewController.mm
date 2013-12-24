@@ -24,6 +24,8 @@
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
 
+#include "iPhonePrivate.h"
+
 extern bool IsWildcat_;
 
 @implementation UIViewController (Cydia)
@@ -108,6 +110,15 @@ extern bool IsWildcat_;
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
     return IsWildcat_ || orientation == UIInterfaceOrientationPortrait;
+}
+
+- (void) setPageColor:(UIColor *)color {
+    if (color == nil) {
+        color = [UIColor groupTableViewBackgroundColor];
+        if ([color isEqual:[UIColor clearColor]])
+            color = [UIColor pinStripeColor];
+            //color = [UIColor colorWithRed:(215.0/255.0) green:(217.0/255.0) blue:(223.0/255.0) alpha:1.0];
+    } color_ = color;
 }
 
 @end
