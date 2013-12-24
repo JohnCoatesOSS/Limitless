@@ -7121,14 +7121,16 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     else if (kCFCoreFoundationVersionNumber < 800)
         barframe.origin.y = CYStatusBarHeight();
     else
-        barframe.origin.y = -barframe.size.height + CYStatusBarHeight();
+        barframe.origin.y = 0; //-barframe.size.height + CYStatusBarHeight();
 
     [refreshbar_ setFrame:barframe];
 
+    CGRect viewframe = [transition frame];
+
+if (kCFCoreFoundationVersionNumber < 800) {
     if (animated)
         [UIView beginAnimations:nil context:NULL];
 
-    CGRect viewframe = [transition frame];
     float adjust(barframe.size.height);
     if (kCFCoreFoundationVersionNumber >= 800)
         adjust -= CYStatusBarHeight();
@@ -7138,6 +7140,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     if (animated)
         [UIView commitAnimations];
+}
 
     // Ensure bar has the proper width for our view, it might have changed
     barframe.size.width = viewframe.size.width;
@@ -7154,6 +7157,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     CGRect barframe([refreshbar_ frame]);
 
+if (kCFCoreFoundationVersionNumber < 800) {
     if (animated)
         [UIView beginAnimations:nil context:NULL];
 
@@ -7167,6 +7171,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     if (animated)
         [UIView commitAnimations];
+}
 }
 
 - (void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
