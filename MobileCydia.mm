@@ -10271,7 +10271,6 @@ _trace();
     //Stash_("/usr/bin");
     Stash_("/usr/include");
     Stash_("/usr/lib/pam");
-    Stash_("/usr/libexec");
     Stash_("/usr/share");
     //Stash_("/var/lib");
 
