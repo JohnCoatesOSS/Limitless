@@ -4140,6 +4140,8 @@ static _H<NSMutableSet> Diversions_;
         return @"format";
     else if (selector == @selector(getAllSources))
         return @"getAllSources";
+    else if (selector == @selector(getApplicationInfo:value:))
+        return @"getApplicationInfoValue";
     else if (selector == @selector(getKernelNumber:))
         return @"getKernelNumber";
     else if (selector == @selector(getKernelString:))
@@ -4246,6 +4248,16 @@ static _H<NSMutableSet> Diversions_;
 
 - (void) addInternalRedirect:(NSString *)from :(NSString *)to {
     [CydiaWebViewController performSelectorOnMainThread:@selector(addDiversion:) withObject:[[[Diversion alloc] initWithFrom:from to:to] autorelease] waitUntilDone:NO];
+}
+
+- (NSDictionary *) getApplicationInfo:(NSString *)display value:(NSString *)key {
+    char path[1024];
+    if (SBBundlePathForDisplayIdentifier(SBSSpringBoardServerPort(), [display UTF8String], path) != 0)
+        return (id) [NSNull null];
+    NSDictionary *info([NSDictionary dictionaryWithContentsOfFile:[[NSString stringWithUTF8String:path] stringByAppendingString:@"/Info.plist"]]);
+    if (info == nil)
+        return (id) [NSNull null];
+    return [info objectForKey:key];
 }
 
 - (NSNumber *) getKernelNumber:(NSString *)name {
