@@ -708,6 +708,7 @@ static BOOL Ignored_;
 static _H<UIFont> Font12_;
 static _H<UIFont> Font12Bold_;
 static _H<UIFont> Font14_;
+static _H<UIFont> Font18_;
 static _H<UIFont> Font18Bold_;
 static _H<UIFont> Font22Bold_;
 
@@ -5858,7 +5859,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     if (!highlighted)
         UISetColor(Black_);
-    [name_ drawAtPoint:CGPointMake(48, 9) forWidth:(width - 70) withFont:Font22Bold_ lineBreakMode:UILineBreakModeTailTruncation];
+    [name_ drawAtPoint:CGPointMake(48, 12) forWidth:(width - 58) withFont:Font18_ lineBreakMode:UILineBreakModeTailTruncation];
 
     CGSize size = [count_ sizeWithFont:Font14_];
 
@@ -10228,6 +10229,7 @@ _trace();
     Font12_ = [UIFont systemFontOfSize:12];
     Font12Bold_ = [UIFont boldSystemFontOfSize:12];
     Font14_ = [UIFont systemFontOfSize:14];
+    Font18_ = [UIFont systemFontOfSize:18];
     Font18Bold_ = [UIFont boldSystemFontOfSize:18];
     Font22Bold_ = [UIFont boldSystemFontOfSize:22];
 
