@@ -9573,6 +9573,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         return;
 
     [window_ addSubview:[tabbar_ view]];
+    if ([window_ respondsToSelector:@selector(setRootViewController:)])
+        [window_ setRootViewController:tabbar_];
     [[emulated_ view] removeFromSuperview];
     emulated_ = nil;
     [window_ setUserInteractionEnabled:YES];
@@ -10282,6 +10284,8 @@ _trace();
 
     emulated_ = [[[CydiaLoadingViewController alloc] init] autorelease];
     [window_ addSubview:[emulated_ view]];
+    if ([window_ respondsToSelector:@selector(setRootViewController:)])
+        [window_ setRootViewController:emulated_];
 
     [self performSelector:@selector(loadData) withObject:nil afterDelay:0];
 _trace();

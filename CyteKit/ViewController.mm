@@ -112,6 +112,14 @@ extern bool IsWildcat_;
     return IsWildcat_ || orientation == UIInterfaceOrientationPortrait;
 }
 
+- (NSUInteger) supportedInterfaceOrientations {
+    return IsWildcat_ ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
+}
+
+- (BOOL) shouldAutorotate {
+    return YES;
+}
+
 - (void) setPageColor:(UIColor *)color {
     if (color == nil) {
         color = [UIColor groupTableViewBackgroundColor];
