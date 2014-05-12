@@ -1364,26 +1364,6 @@ static void PackageImport(const void *key, const void *value, void *context) {
 
 @implementation Source
 
-- (void) _clear {
-    uri_.clear();
-    distribution_.clear();
-    type_.clear();
-
-    base_.clear();
-
-    description_.clear();
-    label_.clear();
-    origin_.clear();
-    depiction_.clear();
-    support_.clear();
-    version_.clear();
-    defaultIcon_.clear();
-
-    record_ = nil;
-    host_ = nil;
-    authority_ = nil;
-}
-
 + (NSString *) webScriptNameForSelector:(SEL)selector {
     if (false);
     else if (selector == @selector(addSection:))
@@ -1434,8 +1414,6 @@ static void PackageImport(const void *key, const void *value, void *context) {
 }
 
 - (void) setMetaIndex:(metaIndex *)index inPool:(apr_pool_t *)pool {
-    [self _clear];
-
     trusted_ = index->IsTrusted();
 
     uri_.set(pool, index->GetURI());
