@@ -236,8 +236,6 @@ union SplitHash {
 };
 // }}}
 
-static bool ShowPromoted_;
-
 static NSString *Colon_;
 NSString *Elision_;
 static NSString *Error_;
@@ -4162,8 +4160,6 @@ static _H<NSMutableSet> Diversions_;
         return @"setMetadataValue";
     else if (selector == @selector(setSessionValue::))
         return @"setSessionValue";
-    else if (selector == @selector(setShowPromoted:))
-        return @"setShowPromoted";
     else if (selector == @selector(substitutePackageNames:))
         return @"substitutePackageNames";
     else if (selector == @selector(scrollToBottom:))
@@ -4292,15 +4288,6 @@ static _H<NSMutableSet> Diversions_;
 - (void) registerFrame:(DOMHTMLIFrameElement *)iframe {
     WebFrame *frame([iframe contentFrame]);
     [indirect_ registerFrame:frame];
-}
-
-- (void) _setShowPromoted:(NSNumber *)value {
-    [Metadata_ setObject:value forKey:@"ShowPromoted"];
-    Changed_ = true;
-}
-
-- (void) setShowPromoted:(NSNumber *)value {
-    [self performSelectorOnMainThread:@selector(_setShowPromoted:) withObject:value waitUntilDone:NO];
 }
 
 - (id) getMetadataValue:(NSString *)key {
@@ -7316,10 +7303,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
 
 /* Section Controller {{{ */
 @interface SectionController : FilteredPackageListController {
-    _H<IndirectDelegate, 1> indirect_;
-    _H<CydiaObject> cydia_;
     _H<NSString> section_;
-    std::vector< _H<CyteWebViewTableViewCell, 1> > promoted_;
 }
 
 - (id) initWithDatabase:(Database *)database section:(NSString *)section;
@@ -7354,108 +7338,8 @@ if (kCFCoreFoundationVersionNumber < 800) {
         title = UCLocalize("NO_SECTION");
 
     if ((self = [super initWithDatabase:database title:title filter:@selector(isVisibleInSection:) with:name]) != nil) {
-        indirect_ = [[[IndirectDelegate alloc] initWithDelegate:self] autorelease];
-        cydia_ = [[[CydiaObject alloc] initWithDelegate:indirect_] autorelease];
         section_ = name;
     } return self;
-}
-
-- (NSInteger) numberOfSectionsInTableView:(UITableView *)list {
-    return [super numberOfSectionsInTableView:list] + 1;
-}
-
-- (NSString *) tableView:(UITableView *)list titleForHeaderInSection:(NSInteger)section {
-    return section == 0 ? nil : [super tableView:list titleForHeaderInSection:(section - 1)];
-}
-
-- (NSInteger) tableView:(UITableView *)list numberOfRowsInSection:(NSInteger)section {
-    return section == 0 ? promoted_.size() : [super tableView:list numberOfRowsInSection:(section - 1)];
-}
-
-+ (NSIndexPath *) adjustedIndexPath:(NSIndexPath *)path {
-    return [NSIndexPath indexPathForRow:[path row] inSection:([path section] - 1)];
-}
-
-- (UITableViewCell *) tableView:(UITableView *)table cellForRowAtIndexPath:(NSIndexPath *)path {
-    if ([path section] != 0)
-        return [super tableView:table cellForRowAtIndexPath:[SectionController adjustedIndexPath:path]];
-
-    return promoted_[[path row]];
-}
-
-- (void) tableView:(UITableView *)table didSelectRowAtIndexPath:(NSIndexPath *)path {
-    if ([path section] != 0)
-        return [super tableView:table didSelectRowAtIndexPath:[SectionController adjustedIndexPath:path]];
-}
-
-- (NSInteger) tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    NSInteger section([super tableView:tableView sectionForSectionIndexTitle:title atIndex:index]);
-    return section == 0 ? 0 : section + 1;
-}
-
-- (void) webView:(WebView *)view decidePolicyForNewWindowAction:(NSDictionary *)action request:(NSURLRequest *)request newFrameName:(NSString *)frame decisionListener:(id<WebPolicyDecisionListener>)listener {
-    NSURL *url([request URL]);
-    if (url == nil)
-        return;
-
-    if ([frame isEqualToString:@"_open"])
-        [delegate_ openURL:url];
-    else {
-        WebFrame *frame(nil);
-        if (NSDictionary *WebActionElement = [action objectForKey:@"WebActionElementKey"])
-            frame = [WebActionElement objectForKey:@"WebElementFrame"];
-        if (frame == nil)
-            frame = [view mainFrame];
-
-        WebDataSource *source([frame provisionalDataSource] ?: [frame dataSource]);
-
-        CyteViewController *controller([delegate_ pageForURL:url forExternal:NO withReferrer:([request valueForHTTPHeaderField:@"Referer"] ?: [[[source request] URL] absoluteString])] ?: [[[CydiaWebViewController alloc] initWithRequest:request] autorelease]);
-        [controller setDelegate:delegate_];
-        [[self navigationController] pushViewController:controller animated:YES];
-    }
-
-    [listener ignore];
-}
-
-- (NSURLRequest *) webView:(WebView *)view resource:(id)resource willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response fromDataSource:(WebDataSource *)source {
-    return [CydiaWebViewController requestWithHeaders:request];
-}
-
-- (void) webView:(WebView *)view didClearWindowObject:(WebScriptObject *)window forFrame:(WebFrame *)frame {
-    [CydiaWebViewController didClearWindowObject:window forFrame:frame withCydia:cydia_];
-}
-
-- (void) loadView {
-    [super loadView];
-
-    // XXX: this code is horrible. I mean, wtf Jay?
-    if (ShowPromoted_ && [[Metadata_ objectForKey:@"ShowPromoted"] boolValue]) {
-        promoted_.resize(1);
-
-        for (unsigned i(0); i != promoted_.size(); ++i) {
-            CyteWebViewTableViewCell *promoted([CyteWebViewTableViewCell cellWithRequest:[NSURLRequest
-                requestWithURL:[Diversion divertURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/#!/sectionhead/%u/%@",
-                    UI_, i, section_ == nil ? @"" : [section_ stringByAddingPercentEscapesIncludingReserved]]
-                ]]
-
-                cachePolicy:NSURLRequestUseProtocolCachePolicy
-                timeoutInterval:120
-            ]]);
-
-            [promoted setDelegate:self];
-            promoted_[i] = promoted;
-        }
-    }
-}
-
-- (void) setDelegate:(id)delegate {
-    [super setDelegate:delegate];
-    [cydia_ setDelegate:delegate];
-}
-
-- (void) releaseSubviews {
-    promoted_.clear();
-    [super releaseSubviews];
 }
 
 @end
@@ -10871,7 +10755,6 @@ int main(int argc, char *argv[]) {
     BOOL (*GSSystemHasCapability)(CFStringRef) = reinterpret_cast<BOOL (*)(CFStringRef)>(dlsym(RTLD_DEFAULT, symbol));
     bool fast = GSSystemHasCapability != NULL && GSSystemHasCapability(CFSTR("armv7"));
 
-    ShowPromoted_ = fast;
     PulseInterval_ = fast ? 50000 : 500000;
 
     Colon_ = UCLocalize("COLON_DELIMITED");
