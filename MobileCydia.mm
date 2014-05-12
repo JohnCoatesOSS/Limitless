@@ -7864,7 +7864,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
 - (void) viewDidLoad {
     [super viewDidLoad];
 
-    [[self navigationItem] setTitle:(AprilFools_ ? @"Timeline" : UCLocalize("CHANGES"))];
+    [[self navigationItem] setTitle:UCLocalize("CHANGES")];
 }
 
 - (void) releaseSubviews {
@@ -10121,7 +10121,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
         items = [NSMutableArray arrayWithObjects:
             [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage applicationImageNamed:@"home.png"] tag:0] autorelease],
             [[[UITabBarItem alloc] initWithTitle:UCLocalize("SECTIONS") image:[UIImage applicationImageNamed:@"install.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:(AprilFools_ ? @"Timeline" : UCLocalize("CHANGES")) image:[UIImage applicationImageNamed:@"changes.png"] tag:0] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage applicationImageNamed:@"changes.png"] tag:0] autorelease],
             [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage applicationImageNamed:@"search.png"] tag:0] autorelease],
         nil];
 
@@ -10135,7 +10135,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
         items = [NSMutableArray arrayWithObjects:
             [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage applicationImageNamed:@"home7.png"] selectedImage:[UIImage applicationImageNamed:@"home7s.png"]] autorelease],
             [[[UITabBarItem alloc] initWithTitle:UCLocalize("SECTIONS") image:[UIImage applicationImageNamed:@"install7.png"] selectedImage:[UIImage applicationImageNamed:@"install7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:(AprilFools_ ? @"Timeline" : UCLocalize("CHANGES")) image:[UIImage applicationImageNamed:@"changes7.png"] selectedImage:[UIImage applicationImageNamed:@"changes7s.png"]] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage applicationImageNamed:@"changes7.png"] selectedImage:[UIImage applicationImageNamed:@"changes7s.png"]] autorelease],
             [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage applicationImageNamed:@"search7.png"] selectedImage:[UIImage applicationImageNamed:@"search7s.png"]] autorelease],
         nil];
 
