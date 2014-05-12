@@ -4484,7 +4484,7 @@ static _H<NSMutableSet> Diversions_;
         }
 
         fclose(du);
-    } else _assert(close(fds[0]));
+    } else _assert(close(fds[0]) != -1);
 
     ReapZombie(pid);
 
