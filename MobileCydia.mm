@@ -4466,27 +4466,25 @@ static _H<NSMutableSet> Diversions_;
         /* XXX: this should probably not use du */
         execl("/usr/libexec/cydia/du", "du", "-s", [path UTF8String], NULL);
         exit(1);
-        _assert(false);
-    }
+    } else {
+        _assert(close(fds[1]) != -1);
 
-    _assert(close(fds[1]) != -1);
-
-    if (FILE *du = fdopen(fds[0], "r")) {
-        char line[1024];
-        while (fgets(line, sizeof(line), du) != NULL) {
-            size_t length(strlen(line));
-            while (length != 0 && line[length - 1] == '\n')
-                line[--length] = '\0';
-            if (char *tab = strchr(line, '\t')) {
-                *tab = '\0';
-                value = [NSNumber numberWithUnsignedLong:strtoul(line, NULL, 0)];
+        if (FILE *du = fdopen(fds[0], "r")) {
+            char line[1024];
+            while (fgets(line, sizeof(line), du) != NULL) {
+                size_t length(strlen(line));
+                while (length != 0 && line[length - 1] == '\n')
+                    line[--length] = '\0';
+                if (char *tab = strchr(line, '\t')) {
+                    *tab = '\0';
+                    value = [NSNumber numberWithUnsignedLong:strtoul(line, NULL, 0)];
+                }
             }
-        }
 
-        fclose(du);
-    } else _assert(close(fds[0]) != -1);
-
-    ReapZombie(pid);
+            fclose(du);
+        } else
+            _assert(close(fds[0]) != -1);
+    } ReapZombie(pid);
 
     return value;
 }
@@ -5317,13 +5315,12 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         if (pid == 0) {
             execl("/usr/bin/sbreload", "sbreload", NULL);
             perror("sbreload");
+
             exit(0);
-        }
+        } ReapZombie(pid);
 
         exit(0);
-    }
-
-    ReapZombie(pid);
+    } ReapZombie(pid);
 
     sleep(15);
     system("/usr/bin/killall backboardd SpringBoard sbreload");
@@ -8259,10 +8256,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
         pclose(dpkg);
 
         exit(0);
-        _assert(false);
-    }
-
-    ReapZombie(pid);
+    } ReapZombie(pid);
 }
 
 - (void) onIgnored:(id)control {
@@ -10136,10 +10130,9 @@ if (kCFCoreFoundationVersionNumber < 800) {
     if (pid == 0) {
         execlp("launchctl", "launchctl", "stop", "com.apple.SpringBoard", NULL);
         perror("launchctl stop");
-        exit(0);
-    }
 
-    ReapZombie(pid);
+        exit(0);
+    } ReapZombie(pid);
 }
 
 - (void) setupViewControllers {
