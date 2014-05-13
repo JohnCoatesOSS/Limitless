@@ -9677,20 +9677,20 @@ if (kCFCoreFoundationVersionNumber < 800) {
             controller = [[[InstalledController alloc] initWithDatabase:database_] autorelease];
         }
     } else if ([components count] == 2) {
-        NSString *argument = [components objectAtIndex:1];
+        NSString *argument = [[components objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
         if ([base isEqualToString:@"package"]) {
             controller = [self pageForPackage:argument withReferrer:referrer];
         }
 
         if (!external && [base isEqualToString:@"search"]) {
-            controller = [[[SearchController alloc] initWithDatabase:database_ query:[argument stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] autorelease];
+            controller = [[[SearchController alloc] initWithDatabase:database_ query:argument] autorelease];
         }
 
         if (!external && [base isEqualToString:@"sections"]) {
             if ([argument isEqualToString:@"all"])
                 argument = nil;
-            controller = [[[SectionController alloc] initWithDatabase:database_ section:[argument stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] autorelease];
+            controller = [[[SectionController alloc] initWithDatabase:database_ section:argument] autorelease];
         }
 
         if (!external && [base isEqualToString:@"sources"]) {
@@ -9698,7 +9698,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
                 controller = [[[SourcesController alloc] initWithDatabase:database_] autorelease];
                 [(SourcesController *)controller showAddSourcePrompt];
             } else {
-                Source *source = [database_ sourceWithKey:[argument stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                Source *source([database_ sourceWithKey:argument]);
                 controller = [[[SourceController alloc] initWithDatabase:database_ source:source] autorelease];
             }
         }
@@ -9708,8 +9708,8 @@ if (kCFCoreFoundationVersionNumber < 800) {
             return nil;
         }
     } else if (!external && [components count] == 3) {
-        NSString *arg1 = [components objectAtIndex:1];
-        NSString *arg2 = [components objectAtIndex:2];
+        NSString *arg1 = [[components objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *arg2 = [[components objectAtIndex:2] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
         if ([base isEqualToString:@"package"]) {
             if ([arg2 isEqualToString:@"settings"]) {
