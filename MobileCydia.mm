@@ -8183,7 +8183,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
 }
 
 - (NSString *) accessibilityLabel {
-    return label_;
+    return origin_;
 }
 
 - (void) drawContentRect:(CGRect)rect {
