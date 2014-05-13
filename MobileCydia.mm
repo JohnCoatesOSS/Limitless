@@ -112,6 +112,7 @@ extern "C" {
 #include "CyteKit/IndirectDelegate.h"
 #include "CyteKit/PerlCompatibleRegEx.hpp"
 #include "CyteKit/TableViewCell.h"
+#include "CyteKit/TabBarController.h"
 #include "CyteKit/WebScriptObject-Cyte.h"
 #include "CyteKit/WebViewController.h"
 #include "CyteKit/WebViewTableViewCell.h"
@@ -6827,7 +6828,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 /* }}} */
 
 /* Cydia Tab Bar Controller {{{ */
-@interface CYTabBarController : UITabBarController <
+@interface CydiaTabBarController : CyteTabBarController <
     UITabBarControllerDelegate,
     ProgressDelegate
 > {
@@ -6838,9 +6839,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     bool updating_;
     // XXX: ok, "updatedelegate_"?...
     _transient NSObject<CydiaDelegate> *updatedelegate_;
-
-    _H<UIViewController> remembered_;
-    _transient UIViewController *transient_;
 }
 
 - (NSArray *) navigationURLCollection;
@@ -6848,74 +6846,10 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (void) beginUpdate;
 - (void) raiseBar:(BOOL)animated;
 - (BOOL) updating;
-- (void) unloadData;
 
 @end
 
-@implementation CYTabBarController
-
-- (void) didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-
-    // presenting a UINavigationController on 2.x does not update its transitionView
-    // it thereby will not allow its topViewController to be unloaded by memory pressure
-    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iPhoneOS_3_0) {
-        UIViewController *selected([self selectedViewController]);
-        for (UINavigationController *controller in [self viewControllers])
-            if (controller != selected)
-                if (UIViewController *top = [controller topViewController])
-                    [top unloadView];
-    }
-}
-
-- (void) setUnselectedViewController:(UIViewController *)transient {
-    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iPhoneOS_3_0) {
-        if (transient != nil) {
-            [[[self viewControllers] objectAtIndex:0] pushViewController:transient animated:YES];
-            [self setSelectedIndex:0];
-        } return;
-    }
-
-    NSMutableArray *controllers = [[[self viewControllers] mutableCopy] autorelease];
-    if (transient != nil) {
-        UINavigationController *navigation([[[UINavigationController alloc] init] autorelease]);
-        [navigation setViewControllers:[NSArray arrayWithObject:transient]];
-        transient = navigation;
-
-        if (transient_ == nil)
-            remembered_ = [controllers objectAtIndex:0];
-        transient_ = transient;
-        [transient_ setTabBarItem:[remembered_ tabBarItem]];
-        [controllers replaceObjectAtIndex:0 withObject:transient_];
-        [self setSelectedIndex:0];
-        [self setViewControllers:controllers];
-        [self concealTabBarSelection];
-    } else if (remembered_ != nil) {
-        [remembered_ setTabBarItem:[transient_ tabBarItem]];
-        transient_ = transient;
-        [controllers replaceObjectAtIndex:0 withObject:remembered_];
-        remembered_ = nil;
-        [self setViewControllers:controllers];
-        [self revealTabBarSelection];
-    }
-}
-
-- (UIViewController *) unselectedViewController {
-    return transient_;
-}
-
-- (void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
-    if ([self unselectedViewController])
-        [self setUnselectedViewController:nil];
-
-    // presenting a UINavigationController on 2.x does not update its transitionView
-    // if this view was unloaded, the tranitionView may currently be presenting nothing
-    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iPhoneOS_3_0) {
-        UINavigationController *navigation((UINavigationController *) viewController);
-        [navigation pushViewController:[[[UIViewController alloc] init] autorelease] animated:NO];
-        [navigation popViewControllerAnimated:NO];
-    }
-}
+@implementation CydiaTabBarController
 
 - (NSArray *) navigationURLCollection {
     NSMutableArray *items([NSMutableArray array]);
@@ -6928,28 +6862,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     }
 
     return items;
-}
-
-- (void) dismissModalViewControllerAnimated:(BOOL)animated {
-    if ([self modalViewController] == nil && [self unselectedViewController] != nil)
-        [self setUnselectedViewController:nil];
-    else
-        [super dismissModalViewControllerAnimated:YES];
-}
-
-- (void) unloadData {
-    [super unloadData];
-
-    for (UINavigationController *controller in [self viewControllers])
-        [controller unloadData];
-
-    if (UIViewController *selected = [self selectedViewController])
-        [selected reloadData];
-
-    if (UIViewController *unselected = [self unselectedViewController]) {
-        [unselected unloadData];
-        [unselected reloadData];
-    }
 }
 
 - (void) dealloc {
@@ -9111,7 +9023,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
     UITabBarControllerDelegate
 > {
     _H<UIWindow> window_;
-    _H<CYTabBarController> tabbar_;
+    _H<CydiaTabBarController> tabbar_;
     _H<CydiaLoadingViewController> emulated_;
 
     _H<NSMutableArray> essential_;
@@ -9912,7 +9824,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
 }
 
 - (void) setupViewControllers {
-    tabbar_ = [[[CYTabBarController alloc] initWithDatabase:database_] autorelease];
+    tabbar_ = [[[CydiaTabBarController alloc] initWithDatabase:database_] autorelease];
 
     NSMutableArray *items;
     if (kCFCoreFoundationVersionNumber < 800) {
