@@ -727,7 +727,6 @@ static CGColorSpaceRef space_;
 static NSDictionary *SectionMap_;
 static NSMutableDictionary *Metadata_;
 static _transient NSMutableDictionary *Settings_;
-static _transient NSString *Role_;
 static _transient NSMutableDictionary *Packages_;
 static _transient NSMutableDictionary *Values_;
 static _transient NSMutableDictionary *Sections_;
@@ -882,7 +881,6 @@ static NSString *CYHex(NSData *data, bool reverse = false) {
 - (void) syncData;
 - (void) addSource:(NSDictionary *)source;
 - (void) addTrivialSource:(NSString *)href;
-- (void) showSettings;
 - (UIProgressHUD *) addProgressHUD;
 - (void) removeProgressHUD:(UIProgressHUD *)hud;
 - (void) showActionSheet:(UIActionSheet *)sheet fromItem:(UIBarButtonItem *)item;
@@ -1926,7 +1924,6 @@ struct ParsedPackage {
 - (uint32_t) rank;
 - (BOOL) matches:(NSArray *)query;
 
-- (bool) hasSupportingRole;
 - (BOOL) hasTag:(NSString *)tag;
 - (NSString *) primaryPurpose;
 - (NSArray *) purposes;
@@ -2602,8 +2599,8 @@ struct PackageNameOrdering :
             return false;
     _end
 
-    _profile(Package$unfiltered$hasSupportingRole)
-        if (_unlikely(![self hasSupportingRole]))
+    _profile(Package$unfiltered$role)
+        if (_unlikely(role_ > 3))
             return false;
     _end
 
@@ -2937,24 +2934,6 @@ struct PackageNameOrdering :
     }
 
     return rank_ != 0;
-}
-
-- (bool) hasSupportingRole {
-    if (role_ == 0)
-        return true;
-    if (role_ == 1)
-        return true;
-    if ([Role_ isEqualToString:@"User"])
-        return false;
-    if (role_ == 2)
-        return true;
-    if ([Role_ isEqualToString:@"Hacker"])
-        return false;
-    if (role_ == 3)
-        return true;
-    if ([Role_ isEqualToString:@"Developer"])
-        return false;
-    _assert(false);
 }
 
 - (NSArray *) tags {
@@ -4085,7 +4064,7 @@ static _H<NSMutableSet> Diversions_;
 }
 
 - (NSString *) role {
-    return (id) Role_ ?: [NSNull null];
+    return (id) [NSNull null];
 }
 
 - (NSString *) model {
@@ -8090,13 +8069,12 @@ if (kCFCoreFoundationVersionNumber < 800) {
 }
 
 - (void) updateRoleButton {
-    if (Role_ != nil && ![Role_ isEqualToString:@"Developer"])
-        [[self navigationItem] setRightBarButtonItem:[[[UIBarButtonItem alloc]
-            initWithTitle:(expert_ ? UCLocalize("EXPERT") : UCLocalize("SIMPLE"))
-            style:(expert_ ? UIBarButtonItemStyleDone : UIBarButtonItemStylePlain)
-            target:self
-            action:@selector(roleButtonClicked)
-        ] autorelease]];
+    [[self navigationItem] setRightBarButtonItem:[[[UIBarButtonItem alloc]
+        initWithTitle:(expert_ ? UCLocalize("EXPERT") : UCLocalize("SIMPLE"))
+        style:(expert_ ? UIBarButtonItemStyleDone : UIBarButtonItemStylePlain)
+        target:self
+        action:@selector(roleButtonClicked)
+    ] autorelease]];
 }
 
 - (void) roleButtonClicked {
@@ -8663,18 +8641,6 @@ if (kCFCoreFoundationVersionNumber < 800) {
         target:self
         action:@selector(editButtonClicked)
     ] autorelease] animated:animated];
-
-    if (!editing)
-        [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
-            initWithTitle:UCLocalize("SETTINGS")
-            style:UIBarButtonItemStylePlain
-            target:self
-            action:@selector(settingsButtonClicked)
-        ] autorelease]];
-}
-
-- (void) settingsButtonClicked {
-    [delegate_ showSettings];
 }
 
 - (void) editButtonClicked {
@@ -8685,200 +8651,6 @@ if (kCFCoreFoundationVersionNumber < 800) {
 @end
 /* }}} */
 
-/* Settings Controller {{{ */
-@interface SettingsController : CyteViewController <
-    UITableViewDataSource,
-    UITableViewDelegate
-> {
-    _transient Database *database_;
-    // XXX: ok, "roledelegate_"?...
-    _transient id roledelegate_;
-    _H<UITableView, 2> table_;
-    _H<UISegmentedControl> segment_;
-    _H<UIView> container_;
-}
-
-- (void) showDoneButton;
-- (void) resizeSegmentedControl;
-
-@end
-
-@implementation SettingsController
-
-- (void) loadView {
-    table_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStyleGrouped] autorelease];
-    [table_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-    [table_ setDelegate:self];
-    [(UITableView *) table_ setDataSource:self];
-    [self setView:table_];
-
-    NSArray *items = [NSArray arrayWithObjects:
-        UCLocalize("USER"),
-        UCLocalize("HACKER"),
-        UCLocalize("DEVELOPER"),
-    nil];
-    segment_ = [[[UISegmentedControl alloc] initWithItems:items] autorelease];
-    container_ = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, [[self view] frame].size.width, 44.0f)] autorelease];
-    [container_ addSubview:segment_];
-}
-
-- (void) viewDidLoad {
-    [super viewDidLoad];
-
-    [[self navigationItem] setTitle:UCLocalize("WHO_ARE_YOU")];
-
-    int index = -1;
-    if ([Role_ isEqualToString:@"User"]) index = 0;
-    if ([Role_ isEqualToString:@"Hacker"]) index = 1;
-    if ([Role_ isEqualToString:@"Developer"]) index = 2;
-    if (index != -1) {
-        [segment_ setSelectedSegmentIndex:index];
-        [self showDoneButton];
-    }
-
-    [segment_ addTarget:self action:@selector(segmentChanged:) forControlEvents:UIControlEventValueChanged];
-    [self resizeSegmentedControl];
-}
-
-- (void) releaseSubviews {
-    table_ = nil;
-    segment_ = nil;
-    container_ = nil;
-
-    [super releaseSubviews];
-}
-
-- (id) initWithDatabase:(Database *)database delegate:(id)delegate {
-    if ((self = [super init]) != nil) {
-        database_ = database;
-        roledelegate_ = delegate;
-    } return self;
-}
-
-- (void) resizeSegmentedControl {
-    CGFloat width = [[self view] frame].size.width;
-    [segment_ setFrame:CGRectMake(width / 32.0f, 0, width - (width / 32.0f * 2.0f), 44.0f)];
-}
-
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self resizeSegmentedControl];
-}
-
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [segment_ setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin)];
-    [self resizeSegmentedControl];
-}
-
-- (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
-    [self resizeSegmentedControl];
-}
-
-- (void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [self resizeSegmentedControl];
-}
-
-- (void) save {
-    NSString *role(nil);
-
-    switch ([segment_ selectedSegmentIndex]) {
-        case 0: role = @"User"; break;
-        case 1: role = @"Hacker"; break;
-        case 2: role = @"Developer"; break;
-
-        _nodefault
-    }
-
-    if (![role isEqualToString:Role_]) {
-        bool rolling(Role_ == nil);
-        Role_ = role;
-
-        Settings_ = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-            Role_, @"Role",
-        nil];
-
-        [Metadata_ setObject:Settings_ forKey:@"Settings"];
-        Changed_ = true;
-
-        if (rolling)
-            [roledelegate_ loadData];
-        else
-            [roledelegate_ updateData];
-    }
-}
-
-- (void) segmentChanged:(UISegmentedControl *)control {
-    [self showDoneButton];
-}
-
-- (void) saveAndClose {
-    [self save];
-
-    [[self navigationItem] setRightBarButtonItem:nil];
-    [[self navigationController] dismissModalViewControllerAnimated:YES];
-}
-
-- (void) doneButtonClicked {
-    UIActivityIndicatorView *spinner = [[[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 20.0f, 20.0f)] autorelease];
-    [spinner startAnimating];
-    UIBarButtonItem *spinItem = [[[UIBarButtonItem alloc] initWithCustomView:spinner] autorelease];
-    [[self navigationItem] setRightBarButtonItem:spinItem];
-
-    [self performSelector:@selector(saveAndClose) withObject:nil afterDelay:0];
-}
-
-- (void) showDoneButton {
-    [[self navigationItem] setRightBarButtonItem:[[[UIBarButtonItem alloc]
-        initWithTitle:UCLocalize("DONE")
-        style:UIBarButtonItemStyleDone
-        target:self
-        action:@selector(doneButtonClicked)
-    ] autorelease] animated:([[self navigationItem] rightBarButtonItem] == nil)];
-}
-
-- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    // XXX: For not having a single cell in the table, this sure is a lot of sections.
-    return 6;
-}
-
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0; // :(
-}
-
-- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return nil; // This method is required by the protocol.
-}
-
-- (NSString *) tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == 1)
-        return UCLocalize("ROLE_EX");
-    if (section == 4)
-        return [NSString stringWithFormat:
-            @"%@: %@\n%@: %@\n%@: %@",
-            UCLocalize("USER"), UCLocalize("USER_EX"),
-            UCLocalize("HACKER"), UCLocalize("HACKER_EX"),
-            UCLocalize("DEVELOPER"), UCLocalize("DEVELOPER_EX")
-        ];
-    else return nil;
-}
-
-- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return section == 3 ? 44.0f : 0;
-}
-
-- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return section == 3 ? container_ : nil;
-}
-
-- (void) reloadData {
-    [super reloadData];
-
-    [table_ reloadData];
-}
-
-@end
-/* }}} */
 /* Stash Controller {{{ */
 @interface StashController : CyteViewController {
     _H<UIActivityIndicatorView> spinner_;
@@ -9422,10 +9194,6 @@ if (kCFCoreFoundationVersionNumber < 800) {
     [self unlockSuspend];
 }
 
-- (void) showSettings {
-    [self presentModalViewController:[[[SettingsController alloc] initWithDatabase:database_ delegate:self] autorelease] force:NO];
-}
-
 - (void) retainNetworkActivityIndicator {
     if (activity_++ == 0)
         [self setNetworkActivityIndicatorVisible:YES];
@@ -9957,15 +9725,9 @@ _trace();
 
 - (void) loadData {
 _trace();
-    if (Role_ == nil) {
-        [window_ setUserInteractionEnabled:YES];
-        [self showSettings];
-        return;
-    } else {
-        if ([emulated_ modalViewController] != nil)
-            [emulated_ dismissModalViewControllerAnimated:YES];
-        [window_ setUserInteractionEnabled:NO];
-    }
+    if ([emulated_ modalViewController] != nil)
+        [emulated_ dismissModalViewControllerAnimated:YES];
+    [window_ setUserInteractionEnabled:NO];
 
     [self reloadDataWithInvocation:nil];
     [self refreshIfPossible];
@@ -10406,9 +10168,6 @@ int main(int argc, char *argv[]) {
 
         Version_ = [Metadata_ objectForKey:@"Version"];
     }
-
-    if (Settings_ != nil)
-        Role_ = [Settings_ objectForKey:@"Role"];
 
     if (Values_ == nil) {
         Values_ = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
