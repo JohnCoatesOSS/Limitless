@@ -55,6 +55,7 @@
 
 #include <algorithm>
 #include <iomanip>
+#include <set>
 #include <sstream>
 #include <string>
 
@@ -863,6 +864,16 @@ static NSString *CYHex(NSData *data, bool reverse = false) {
 
 @class CYPackageController;
 
+@protocol SourceDelegate
+- (void) setFetch:(NSNumber *)fetch;
+@end
+
+@protocol FetchDelegate
+- (bool) isSourceCancelled;
+- (void) startSourceFetch:(NSString *)uri;
+- (void) stopSourceFetch:(NSString *)uri;
+@end
+
 @protocol CydiaDelegate
 - (void) returnToCydia;
 - (void) saveState;
@@ -889,27 +900,17 @@ static NSString *CYHex(NSData *data, bool reverse = false) {
 @end
 /* }}} */
 
-/* Status Delegation {{{ */
-class Status :
+/* CancelStatus {{{ */
+class CancelStatus :
     public pkgAcquireStatus
 {
   private:
-    _transient NSObject<ProgressDelegate> *delegate_;
     bool cancelled_;
 
   public:
-    Status() :
-        delegate_(nil),
+    CancelStatus() :
         cancelled_(false)
     {
-    }
-
-    void setDelegate(NSObject<ProgressDelegate> *delegate) {
-        delegate_ = delegate;
-    }
-
-    NSObject<ProgressDelegate> *getDelegate() const {
-        return delegate_;
     }
 
     virtual bool MediaChange(std::string media, std::string drive) {
@@ -918,6 +919,39 @@ class Status :
 
     virtual void IMSHit(pkgAcquire::ItemDesc &item) {
         Done(item);
+    }
+
+    virtual bool Pulse_(pkgAcquire *Owner) = 0;
+
+    virtual bool Pulse(pkgAcquire *Owner) {
+        if (pkgAcquireStatus::Pulse(Owner) && Pulse_(Owner))
+            return true;
+        else {
+            cancelled_ = true;
+            return false;
+        }
+    }
+
+    _finline bool WasCancelled() const {
+        return cancelled_;
+    }
+};
+/* }}} */
+/* DelegateStatus {{{ */
+class CydiaStatus :
+    public CancelStatus
+{
+  private:
+    _transient NSObject<ProgressDelegate> *delegate_;
+
+  public:
+    CydiaStatus() :
+        delegate_(nil)
+    {
+    }
+
+    void setDelegate(NSObject<ProgressDelegate> *delegate) {
+        delegate_ = delegate;
     }
 
     virtual void Fetch(pkgAcquire::ItemDesc &item) {
@@ -947,9 +981,7 @@ class Status :
         [delegate_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
     }
 
-    virtual bool Pulse(pkgAcquire *Owner) {
-        bool value = pkgAcquireStatus::Pulse(Owner);
-
+    virtual bool Pulse_(pkgAcquire *Owner) {
         double percent(
             double(CurrentBytes + CurrentItems) /
             double(TotalBytes + TotalItems)
@@ -963,16 +995,7 @@ class Status :
             [NSNumber numberWithDouble:CurrentCPS], @"Speed",
         nil] waitUntilDone:YES];
 
-        if (value && ![delegate_ isProgressCancelled])
-            return true;
-        else {
-            cancelled_ = true;
-            return false;
-        }
-    }
-
-    _finline bool WasCancelled() const {
-        return cancelled_;
+        return ![delegate_ isProgressCancelled];
     }
 
     virtual void Start() {
@@ -1013,7 +1036,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
     _transient NSObject<DatabaseDelegate> *delegate_;
     _transient NSObject<ProgressDelegate> *progress_;
 
-    Status status_;
+    CydiaStatus status_;
 
     int cydiafd_;
     int statusfd_;
@@ -1050,7 +1073,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 - (bool) upgrade;
 - (void) update;
 
-- (void) updateWithStatus:(Status &)status;
+- (void) updateWithStatus:(CancelStatus &)status;
 
 - (void) setDelegate:(NSObject<DatabaseDelegate> *)delegate;
 
@@ -1058,10 +1081,54 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 - (NSObject<ProgressDelegate> *) progressDelegate;
 
 - (Source *) getSource:(pkgCache::PkgFileIterator)file;
+- (void) setFetch:(bool)fetch forURI:(const char *)uri;
 
 - (NSString *) mappedSectionForPointer:(const char *)pointer;
 
 @end
+/* }}} */
+/* SourceStatus {{{ */
+class SourceStatus :
+    public CancelStatus
+{
+  private:
+    _transient NSObject<FetchDelegate> *delegate_;
+    _transient Database *database_;
+
+  public:
+    SourceStatus(NSObject<FetchDelegate> *delegate, Database *database) :
+        delegate_(delegate),
+        database_(database)
+    {
+    }
+
+    void Set(bool fetch, pkgAcquire::ItemDesc &desc) {
+        desc.Owner->ID = 0;
+        [database_ setFetch:fetch forURI:desc.Owner->DescURI().c_str()];
+    }
+
+    virtual void Fetch(pkgAcquire::ItemDesc &desc) {
+        Set(true, desc);
+    }
+
+    virtual void Done(pkgAcquire::ItemDesc &desc) {
+        Set(false, desc);
+    }
+
+    virtual void Fail(pkgAcquire::ItemDesc &desc) {
+        Set(false, desc);
+    }
+
+    virtual bool Pulse_(pkgAcquire *Owner) {
+        for (pkgAcquire::ItemCIterator item = Owner->ItemsBegin(); item != Owner->ItemsEnd(); ++item)
+            if ((*item)->ID != 0);
+            else if ((*item)->Status == pkgAcquire::Item::StatIdle) {
+                (*item)->ID = 1;
+                [database_ setFetch:true forURI:(*item)->DescURI().c_str()];
+            } else (*item)->ID = 0;
+        return ![delegate_ isSourceCancelled];
+    }
+};
 /* }}} */
 /* ProgressEvent Implementation {{{ */
 @implementation CydiaProgressEvent
@@ -1327,6 +1394,10 @@ static void PackageImport(const void *key, const void *value, void *context) {
 
     _H<NSMutableDictionary> record_;
     BOOL trusted_;
+
+    std::set<std::string> fetches_;
+    std::set<std::string> files_;
+    _transient NSObject<SourceDelegate> *delegate_;
 }
 
 - (Source *) initWithMetaIndex:(metaIndex *)index forDatabase:(Database *)database inPool:(apr_pool_t *)pool;
@@ -1355,6 +1426,8 @@ static void PackageImport(const void *key, const void *value, void *context) {
 
 - (NSString *) defaultIcon;
 - (NSURL *) iconURL;
+
+- (void) setFetch:(bool)fetch forURI:(const char *)uri;
 
 @end
 
@@ -1418,7 +1491,19 @@ static void PackageImport(const void *key, const void *value, void *context) {
 
     debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(index));
     if (dindex != NULL) {
-        base_.set(pool, dindex->MetaIndexURI(""));
+        std::string file(dindex->MetaIndexURI(""));
+        files_.insert(file + "Release.gpg");
+        files_.insert(file + "Release");
+        base_.set(pool, file);
+
+        std::vector<IndexTarget *> *targets(dindex->ComputeIndexTargets());
+        for (std::vector<IndexTarget *>::const_iterator target(targets->begin()); target != targets->end(); ++target) {
+            std::string file((*target)->URI);
+            files_.insert(file);
+            files_.insert(file + ".gz");
+            files_.insert(file + ".bz2");
+            files_.insert(file + "Index");
+        } delete targets;
 
         FileFd fd;
         if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly))
@@ -1652,6 +1737,26 @@ static void PackageImport(const void *key, const void *value, void *context) {
 
 - (NSString *) defaultIcon {
     return defaultIcon_;
+}
+
+- (void) setDelegate:(NSObject<SourceDelegate> *)delegate {
+    delegate_ = delegate;
+}
+
+- (bool) fetch {
+    return !fetches_.empty();
+}
+
+- (void) setFetch:(bool)fetch forURI:(const char *)uri {
+    if (!fetch) {
+        if (fetches_.erase(uri) == 0)
+            return;
+    } else if (files_.find(uri) == files_.end())
+        return;
+    else if (!fetches_.insert(uri).second)
+        return;
+
+    [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:[self fetch]] waitUntilDone:NO];
 }
 
 @end
@@ -3810,7 +3915,7 @@ class CydiaLogCleaner :
     [self updateWithStatus:status_];
 }
 
-- (void) updateWithStatus:(Status &)status {
+- (void) updateWithStatus:(CancelStatus &)status {
     NSString *title(UCLocalize("REFRESHING_DATA"));
 
     pkgSourceList list;
@@ -3852,6 +3957,11 @@ class CydiaLogCleaner :
 - (Source *) getSource:(pkgCache::PkgFileIterator)file {
     SourceMap::const_iterator i(sourceMap_.find(file->ID));
     return i == sourceMap_.end() ? nil : i->second;
+}
+
+- (void) setFetch:(bool)fetch forURI:(const char *)uri {
+    for (Source *source in (id) sourceList_)
+        [source setFetch:fetch forURI:uri];
 }
 
 - (NSString *) mappedSectionForPointer:(const char *)section {
@@ -6696,7 +6806,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 /* Cydia Tab Bar Controller {{{ */
 @interface CydiaTabBarController : CyteTabBarController <
     UITabBarControllerDelegate,
-    ProgressDelegate
+    FetchDelegate
 > {
     _transient Database *database_;
 
@@ -6767,8 +6877,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (void) performUpdate {
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
-    Status status;
-    status.setDelegate(self);
+    SourceStatus status(self, database_);
     [database_ updateWithStatus:status];
 
     [self
@@ -6811,22 +6920,14 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     return updating_;
 }
 
-- (void) addProgressEvent:(CydiaProgressEvent *)event {
-}
-
-- (bool) isProgressCancelled {
+- (bool) isSourceCancelled {
     return !updating_;
 }
 
-- (void) setProgressCancellable:(NSNumber *)cancellable {
+- (void) startSourceFetch:(NSString *)uri {
 }
 
-- (void) setProgressPercent:(NSNumber *)percent {
-}
-
-- (void) setProgressStatus:(NSDictionary *)status {
-    if (status != nil)
-        [self setProgressPercent:[status objectForKey:@"Percent"]];
+- (void) stopSourceFetch:(NSString *)uri {
 }
 
 - (void) setUpdateDelegate:(id)delegate {
@@ -7903,15 +8004,19 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 /* Source Cell {{{ */
 @interface SourceCell : CyteTableViewCell <
-    CyteTableViewCellDelegate
+    CyteTableViewCellDelegate,
+    SourceDelegate
 > {
+    _H<Source, 1> source_;
     _H<NSURL> url_;
     _H<UIImage> icon_;
     _H<NSString> origin_;
     _H<NSString> label_;
+    _H<UIActivityIndicatorView> indicator_;
 }
 
 - (void) setSource:(Source *)source;
+- (void) setFetch:(NSNumber *)fetch;
 
 @end
 
@@ -7944,6 +8049,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) setSource:(Source *)source {
+    source_ = source;
+    [source_ setDelegate:self];
+
+    [self setFetch:[NSNumber numberWithBool:[source_ fetch]]];
+
     icon_ = [UIImage applicationImageNamed:@"unknown.png"];
 
     origin_ = [source name];
@@ -7956,6 +8066,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) setAllSource {
+    source_ = nil;
+    [indicator_ stopAnimating];
+
     icon_ = [UIImage applicationImageNamed:@"folder.png"];
     origin_ = UCLocalize("ALL_SOURCES");
     label_ = UCLocalize("ALL_SOURCES_EX");
@@ -7975,8 +8088,27 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         [content_ setDelegate:self];
         [content_ setOpaque:YES];
 
+        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
+        [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
+        [content addSubview:indicator_];
+
         [[content_ layer] setContentsGravity:kCAGravityTopLeft];
     } return self;
+}
+
+- (void) layoutSubviews {
+    [super layoutSubviews];
+
+    UIView *content([self contentView]);
+    CGRect bounds([content bounds]);
+
+    CGRect frame([indicator_ frame]);
+    frame.origin.x = bounds.size.width - frame.size.width;
+    frame.origin.y = (bounds.size.height - frame.size.height) / 2;
+
+    if (kCFCoreFoundationVersionNumber < 800)
+        frame.origin.x -= 8;
+    [indicator_ setFrame:frame];
 }
 
 - (NSString *) accessibilityLabel {
@@ -8012,6 +8144,13 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     if (!highlighted)
         UISetColor(Gray_);
     [label_ drawAtPoint:CGPointMake(52, 29) forWidth:(width - 61) withFont:Font12_ lineBreakMode:UILineBreakModeTailTruncation];
+}
+
+- (void) setFetch:(NSNumber *)fetch {
+    if ([fetch boolValue])
+        [indicator_ startAnimating];
+    else
+        [indicator_ stopAnimating];
 }
 
 @end
