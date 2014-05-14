@@ -29,14 +29,9 @@ typedef enum {
     UINavigationButtonStyleDestructive
 } UINavigationButtonStyle;
 
-typedef enum {
-    UIProgressIndicatorStyleLargeWhite,
-    UIProgressIndicatorStyleMediumWhite,
-    UIProgressIndicatorStyleMediumBrown,
-    UIProgressIndicatorStyleSmallWhite,
-    UIProgressIndicatorStyleSmallBlack,
-    UIProgressIndicatorStyleTinyWhite,
-} UIProgressIndicatorStyle;
+static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteSmall(static_cast<UIActivityIndicatorViewStyle>(3));
+static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleGraySmall(static_cast<UIActivityIndicatorViewStyle>(4));
+static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(static_cast<UIActivityIndicatorViewStyle>(5));
 // }}}
 // #define * * {{{
 #define UIDataDetectorTypeAutomatic 0x80000000
@@ -70,13 +65,6 @@ typedef enum {
 - (void) hide;
 - (void) setText:(NSString *)text;
 - (void) showInView:(UIView *)view;
-@end
-
-@interface UIProgressIndicator : UIView
-+ (CGSize) defaultSizeForStyle:(NSUInteger)style;
-- (NSUInteger) activityIndicatorViewStyle;
-- (void) setStyle:(UIProgressIndicatorStyle)style;
-- (void) startAnimation;
 @end
 
 @interface UIScroller : UIView
@@ -273,6 +261,7 @@ typedef enum {
 
 @interface UITabBarItem (Apple)
 - (void) setAnimatedBadge:(BOOL)animated;
+- (UIView *) view;
 @end
 
 @interface UITableViewCell (Apple)
@@ -302,6 +291,7 @@ typedef enum {
 - (void) setValue:(NSValue *)value forGestureAttribute:(NSInteger)attribute;
 - (void) setZoomScale:(float)scale duration:(double)duration;
 - (void) _setZoomScale:(float)scale duration:(double)duration;
+- (void) setOrigin:(CGPoint)origin;
 @end
 
 @interface UIViewController (Apple)

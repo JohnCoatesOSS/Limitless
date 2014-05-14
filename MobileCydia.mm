@@ -874,6 +874,7 @@ static NSString *CYHex(NSData *data, bool reverse = false) {
 - (void) removePackage:(Package *)package;
 - (void) beginUpdate;
 - (BOOL) updating;
+- (bool) requestUpdate;
 - (void) distUpgrade;
 - (void) loadData;
 - (void) updateData;
@@ -6683,100 +6684,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 @end
 /* }}} */
 
-/* Refresh Bar {{{ */
-@interface RefreshBar : UINavigationBar {
-    _H<UIProgressIndicator> indicator_;
-    _H<UITextLabel> prompt_;
-    _H<UINavigationButton> cancel_;
-}
-
-@end
-
-@implementation RefreshBar
-
-- (void) positionViews {
-    CGRect frame = [cancel_ frame];
-    frame.size = [cancel_ sizeThatFits:frame.size];
-    frame.origin.x = [self frame].size.width - frame.size.width - 5;
-    frame.origin.y = ([self frame].size.height - frame.size.height) / 2;
-    [cancel_ setFrame:frame];
-
-    CGSize indsize([UIProgressIndicator defaultSizeForStyle:[indicator_ activityIndicatorViewStyle]]);
-    unsigned indoffset = ([self frame].size.height - indsize.height) / 2;
-    CGRect indrect = {{indoffset, indoffset}, indsize};
-    [indicator_ setFrame:indrect];
-
-    CGSize prmsize = {215, indsize.height + 4};
-    CGRect prmrect = {{
-        indoffset * 2 + indsize.width,
-        unsigned([self frame].size.height - prmsize.height) / 2 - 1
-    }, prmsize};
-    [prompt_ setFrame:prmrect];
-}
-
-- (void) setFrame:(CGRect)frame {
-    [super setFrame:frame];
-    [self positionViews];
-}
-
-- (id) initWithFrame:(CGRect)frame delegate:(id)delegate {
-    if ((self = [super initWithFrame:frame]) != nil) {
-        [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-
-        [self setBarStyle:UIBarStyleBlack];
-
-        UIBarStyle barstyle([self _barStyle:NO]);
-        bool ugly(barstyle == UIBarStyleDefault);
-
-        UIProgressIndicatorStyle style = ugly ?
-            UIProgressIndicatorStyleMediumBrown :
-            UIProgressIndicatorStyleMediumWhite;
-
-        indicator_ = [[[UIProgressIndicator alloc] initWithFrame:CGRectZero] autorelease];
-        [(UIProgressIndicator *) indicator_ setStyle:style];
-        [indicator_ startAnimation];
-        [self addSubview:indicator_];
-
-        prompt_ = [[[UITextLabel alloc] initWithFrame:CGRectZero] autorelease];
-        [prompt_ setColor:[UIColor colorWithCGColor:(ugly ? Blueish_ : Off_)]];
-        [prompt_ setBackgroundColor:[UIColor clearColor]];
-        [prompt_ setFont:[UIFont systemFontOfSize:15]];
-        [self addSubview:prompt_];
-
-        cancel_ = [[[UINavigationButton alloc] initWithTitle:UCLocalize("CANCEL") style:UINavigationButtonStyleHighlighted] autorelease];
-        [cancel_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
-        [cancel_ addTarget:delegate action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-        [cancel_ setBarStyle:barstyle];
-
-        [self positionViews];
-    } return self;
-}
-
-- (void) setCancellable:(bool)cancellable {
-    if (cancellable)
-        [self addSubview:cancel_];
-    else
-        [cancel_ removeFromSuperview];
-}
-
-- (void) start {
-    [prompt_ setText:UCLocalize("UPDATING_DATABASE")];
-}
-
-- (void) stop {
-    [self setCancellable:NO];
-}
-
-- (void) setPrompt:(NSString *)prompt {
-    [prompt_ setText:prompt];
-}
-
-- (void) setProgress:(float)progress {
-}
-
-@end
-/* }}} */
-
 /* Cydia Navigation Controller Interface {{{ */
 @interface UINavigationController (Cydia)
 
@@ -6792,18 +6699,16 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     ProgressDelegate
 > {
     _transient Database *database_;
-    _H<RefreshBar, 1> refreshbar_;
 
-    bool dropped_;
+    _H<UIActivityIndicatorView> indicator_;
+
     bool updating_;
     // XXX: ok, "updatedelegate_"?...
     _transient NSObject<CydiaDelegate> *updatedelegate_;
 }
 
 - (NSArray *) navigationURLCollection;
-- (void) dropBar:(BOOL)animated;
 - (void) beginUpdate;
-- (void) raiseBar:(BOOL)animated;
 - (BOOL) updating;
 
 @end
@@ -6823,21 +6728,15 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     return items;
 }
 
-- (void) dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-    [super dealloc];
-}
-
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super init]) != nil) {
         database_ = database;
         [self setDelegate:self];
 
-        [[self view] setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameChanged:) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteTiny] autorelease];
+        [indicator_ setOrigin:CGPointMake(kCFCoreFoundationVersionNumber >= 800 ? 2 : 4, 2)];
 
-        refreshbar_ = [[[RefreshBar alloc] initWithFrame:CGRectMake(0, 0, [[self view] frame].size.width, [UINavigationBar defaultSize].height) delegate:self] autorelease];
+        [[self view] setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
     } return self;
 }
 
@@ -6846,8 +6745,14 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) beginUpdate {
-    [(RefreshBar *) refreshbar_ start];
-    [self dropBar:YES];
+    UIViewController *controller([[self viewControllers] objectAtIndex:1]);
+    UITabBarItem *item([controller tabBarItem]);
+
+    [item setBadgeValue:@""];
+    UIView *badge(MSHookIvar<UIView *>([item view], "_badge"));
+
+    [indicator_ startAnimating];
+    [badge addSubview:indicator_];
 
     [updatedelegate_ retainNetworkActivityIndicator];
     updating_ = true;
@@ -6879,8 +6784,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     updating_ = false;
     [updatedelegate_ releaseNetworkActivityIndicator];
 
-    [self raiseBar:YES];
-    [refreshbar_ stop];
+    UIViewController *controller([[self viewControllers] objectAtIndex:1]);
+    [[controller tabBarItem] setBadgeValue:nil];
+
+    [indicator_ removeFromSuperview];
+    [indicator_ stopAnimating];
 
     [updatedelegate_ performSelector:selector withObject:nil afterDelay:0];
 }
@@ -6904,7 +6812,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) addProgressEvent:(CydiaProgressEvent *)event {
-    [refreshbar_ setPrompt:[event compoundMessage]];
 }
 
 - (bool) isProgressCancelled {
@@ -6912,11 +6819,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) setProgressCancellable:(NSNumber *)cancellable {
-    [refreshbar_ setCancellable:(updating_ && [cancellable boolValue])];
 }
 
 - (void) setProgressPercent:(NSNumber *)percent {
-    [refreshbar_ setProgress:[percent floatValue]];
 }
 
 - (void) setProgressStatus:(NSDictionary *)status {
@@ -6935,93 +6840,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         return [self _transitionView];
     else
         return [[[self _transitionView] superview] superview];
-}
-
-- (void) dropBar:(BOOL)animated {
-    if (dropped_)
-        return;
-    dropped_ = true;
-
-    UIView *transition([self transitionView]);
-    [[self view] addSubview:refreshbar_];
-
-    CGRect barframe([refreshbar_ frame]);
-
-    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iPhoneOS_3_0) // XXX: _UIApplicationLinkedOnOrAfter(4)
-        barframe.origin.y = 0;
-    else if (kCFCoreFoundationVersionNumber < 800)
-        barframe.origin.y = CYStatusBarHeight();
-    else
-        barframe.origin.y = 0; //-barframe.size.height + CYStatusBarHeight();
-
-    [refreshbar_ setFrame:barframe];
-
-    CGRect viewframe = [transition frame];
-
-if (kCFCoreFoundationVersionNumber < 800) {
-    if (animated)
-        [UIView beginAnimations:nil context:NULL];
-
-    float adjust(barframe.size.height);
-    if (kCFCoreFoundationVersionNumber >= 800)
-        adjust -= CYStatusBarHeight();
-    viewframe.origin.y += adjust;
-    viewframe.size.height -= adjust;
-    [transition setFrame:viewframe];
-
-    if (animated)
-        [UIView commitAnimations];
-}
-
-    // Ensure bar has the proper width for our view, it might have changed
-    barframe.size.width = viewframe.size.width;
-    [refreshbar_ setFrame:barframe];
-}
-
-- (void) raiseBar:(BOOL)animated {
-    if (!dropped_)
-        return;
-    dropped_ = false;
-
-    UIView *transition([self transitionView]);
-    [refreshbar_ removeFromSuperview];
-
-    CGRect barframe([refreshbar_ frame]);
-
-if (kCFCoreFoundationVersionNumber < 800) {
-    if (animated)
-        [UIView beginAnimations:nil context:NULL];
-
-    CGRect viewframe = [transition frame];
-    float adjust(barframe.size.height);
-    if (kCFCoreFoundationVersionNumber >= 800)
-        adjust -= CYStatusBarHeight();
-    viewframe.origin.y -= adjust;
-    viewframe.size.height += adjust;
-    [transition setFrame:viewframe];
-
-    if (animated)
-        [UIView commitAnimations];
-}
-}
-
-- (void) didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    bool dropped(dropped_);
-
-    if (dropped)
-        [self raiseBar:NO];
-
-    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-
-    if (dropped)
-        [self dropBar:NO];
-}
-
-- (void) statusBarFrameChanged:(NSNotification *)notification {
-    if (dropped_) {
-        [self raiseBar:NO];
-        [self dropBar:NO];
-    }
 }
 
 @end
@@ -7518,22 +7336,30 @@ if (kCFCoreFoundationVersionNumber < 800) {
         [alert dismissWithClickedButtonIndex:-1 animated:YES];
 }
 
-- (void) refreshButtonClicked {
-    if (IsReachable("cydia.saurik.com")) {
-        [delegate_ beginUpdate];
-        [[self navigationItem] setLeftBarButtonItem:nil animated:YES];
-    } else {
-        UIAlertView *alert = [[[UIAlertView alloc]
-            initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("REFRESH")]
-            message:@"Host Unreachable" // XXX: Localize
-            delegate:self
-            cancelButtonTitle:UCLocalize("OK")
-            otherButtonTitles:nil
-        ] autorelease];
+- (void) setLeftBarButtonItem {
+    if ([delegate_ updating])
+        [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
+            initWithTitle:UCLocalize("CANCEL")
+            style:UIBarButtonItemStyleDone
+            target:self
+            action:@selector(cancelButtonClicked)
+        ] autorelease] animated:YES];
+    else
+        [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
+            initWithTitle:UCLocalize("REFRESH")
+            style:UIBarButtonItemStylePlain
+            target:self
+            action:@selector(refreshButtonClicked)
+        ] autorelease] animated:YES];
+}
 
-        [alert setContext:@"norefresh"];
-        [alert show];
-    }
+- (void) refreshButtonClicked {
+    if ([delegate_ requestUpdate])
+        [self setLeftBarButtonItem];
+}
+
+- (void) cancelButtonClicked {
+    [delegate_ cancelUpdate];
 }
 
 - (void) upgradeButtonClicked {
@@ -7598,6 +7424,8 @@ if (kCFCoreFoundationVersionNumber < 800) {
 } }
 
 - (void) _reloadData {
+    [self setLeftBarButtonItem];
+
     NSMutableArray *packages;
 
   reload:
@@ -7685,13 +7513,6 @@ if (kCFCoreFoundationVersionNumber < 800) {
         style:UIBarButtonItemStylePlain
         target:self
         action:@selector(upgradeButtonClicked)
-    ] autorelease]) animated:YES];
-
-    [[self navigationItem] setLeftBarButtonItem:([delegate_ updating] ? nil : [[[UIBarButtonItem alloc]
-        initWithTitle:UCLocalize("REFRESH")
-        style:UIBarButtonItemStylePlain
-        target:self
-        action:@selector(refreshButtonClicked)
     ] autorelease]) animated:YES];
 
     PrintTimes();
@@ -8535,6 +8356,39 @@ if (kCFCoreFoundationVersionNumber < 800) {
     }
 }
 
+- (void) updateButtonsForEditingStatusAnimated:(BOOL)animated {
+    BOOL editing([list_ isEditing]);
+
+    if (editing)
+        [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
+            initWithTitle:UCLocalize("ADD")
+            style:UIBarButtonItemStylePlain
+            target:self
+            action:@selector(addButtonClicked)
+        ] autorelease] animated:animated];
+    else if ([delegate_ updating])
+        [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
+            initWithTitle:UCLocalize("CANCEL")
+            style:UIBarButtonItemStyleDone
+            target:self
+            action:@selector(cancelButtonClicked)
+        ] autorelease] animated:animated];
+    else
+        [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
+            initWithTitle:UCLocalize("REFRESH")
+            style:UIBarButtonItemStylePlain
+            target:self
+            action:@selector(refreshButtonClicked)
+        ] autorelease] animated:animated];
+
+    [[self navigationItem] setRightBarButtonItem:[[[UIBarButtonItem alloc]
+        initWithTitle:(editing ? UCLocalize("DONE") : UCLocalize("EDIT"))
+        style:(editing ? UIBarButtonItemStyleDone : UIBarButtonItemStylePlain)
+        target:self
+        action:@selector(editButtonClicked)
+    ] autorelease] animated:animated];
+}
+
 - (void) loadView {
     list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain] autorelease];
     [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
@@ -8574,6 +8428,7 @@ if (kCFCoreFoundationVersionNumber < 800) {
 
 - (void) reloadData {
     [super reloadData];
+    [self updateButtonsForEditingStatusAnimated:YES];
 
 @synchronized (database_) {
     era_ = [database_ era];
@@ -8625,22 +8480,13 @@ if (kCFCoreFoundationVersionNumber < 800) {
     [self showAddSourcePrompt];
 }
 
-- (void) updateButtonsForEditingStatusAnimated:(BOOL)animated { 
-    BOOL editing([list_ isEditing]);
+- (void) refreshButtonClicked {
+    if ([delegate_ requestUpdate])
+        [self updateButtonsForEditingStatusAnimated:YES];
+}
 
-    [[self navigationItem] setLeftBarButtonItem:(editing ? [[[UIBarButtonItem alloc]
-        initWithTitle:UCLocalize("ADD")
-        style:UIBarButtonItemStylePlain
-        target:self
-        action:@selector(addButtonClicked)
-    ] autorelease] : [[self navigationItem] backBarButtonItem]) animated:animated];
-
-    [[self navigationItem] setRightBarButtonItem:[[[UIBarButtonItem alloc]
-        initWithTitle:(editing ? UCLocalize("DONE") : UCLocalize("EDIT"))
-        style:(editing ? UIBarButtonItemStyleDone : UIBarButtonItemStylePlain)
-        target:self
-        action:@selector(editButtonClicked)
-    ] autorelease] animated:animated];
+- (void) cancelButtonClicked {
+    [delegate_ cancelUpdate];
 }
 
 - (void) editButtonClicked {
@@ -8819,6 +8665,30 @@ if (kCFCoreFoundationVersionNumber < 800) {
 
 - (void) beginUpdate {
     [tabbar_ beginUpdate];
+}
+
+- (void) cancelUpdate {
+    [tabbar_ cancelUpdate];
+}
+
+- (bool) requestUpdate {
+    if (IsReachable("cydia.saurik.com")) {
+        [self beginUpdate];
+        return true;
+    } else {
+        UIAlertView *alert = [[[UIAlertView alloc]
+            initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("REFRESH")]
+            message:@"Host Unreachable" // XXX: Localize
+            delegate:self
+            cancelButtonTitle:UCLocalize("OK")
+            otherButtonTitles:nil
+        ] autorelease];
+
+        [alert setContext:@"norefresh"];
+        [alert show];
+
+        return false;
+    }
 }
 
 - (BOOL) updating {
