@@ -1082,6 +1082,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 
 - (Source *) getSource:(pkgCache::PkgFileIterator)file;
 - (void) setFetch:(bool)fetch forURI:(const char *)uri;
+- (void) resetFetch;
 
 - (NSString *) mappedSectionForPointer:(const char *)pointer;
 
@@ -1127,6 +1128,11 @@ class SourceStatus :
                 [database_ setFetch:true forURI:(*item)->DescURI().c_str()];
             } else (*item)->ID = 0;
         return ![delegate_ isSourceCancelled];
+    }
+
+    virtual void Stop() {
+        pkgAcquireStatus::Stop();
+        [database_ resetFetch];
     }
 };
 /* }}} */
@@ -1428,6 +1434,7 @@ static void PackageImport(const void *key, const void *value, void *context) {
 - (NSURL *) iconURL;
 
 - (void) setFetch:(bool)fetch forURI:(const char *)uri;
+- (void) resetFetch;
 
 @end
 
@@ -1757,6 +1764,11 @@ static void PackageImport(const void *key, const void *value, void *context) {
         return;
 
     [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:[self fetch]] waitUntilDone:NO];
+}
+
+- (void) resetFetch {
+    fetches_.clear();
+    [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
 }
 
 @end
@@ -3962,6 +3974,11 @@ class CydiaLogCleaner :
 - (void) setFetch:(bool)fetch forURI:(const char *)uri {
     for (Source *source in (id) sourceList_)
         [source setFetch:fetch forURI:uri];
+}
+
+- (void) resetFetch {
+    for (Source *source in (id) sourceList_)
+        [source resetFetch];
 }
 
 - (NSString *) mappedSectionForPointer:(const char *)section {
