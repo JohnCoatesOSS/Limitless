@@ -8454,6 +8454,22 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             case 1: {
                 NSString *href = [[alert textField] text];
 
+                static Pcre href_r("^http(s?)://[^# ]*$");
+                if (!href_r(href)) {
+                    UIAlertView *alert = [[[UIAlertView alloc]
+                        initWithTitle:Error_
+                        message:UCLocalize("INVALID_URL")
+                        delegate:self
+                        cancelButtonTitle:UCLocalize("OK")
+                        otherButtonTitles:nil
+                    ] autorelease];
+
+                    [alert setContext:@"badurl"];
+                    [alert show];
+
+                    break;
+                }
+
                 if (![href hasSuffix:@"/"])
                     href_ = [href stringByAppendingString:@"/"];
                 else
@@ -10213,6 +10229,16 @@ int main(int argc, char *argv[]) {
 
         Changed_ = true;
     }
+
+    _H<NSMutableArray> broken([NSMutableArray array]);
+    for (NSString *key in (id) Sources_)
+        if ([key rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"# "]].location != NSNotFound)
+            [broken addObject:key];
+    if ([broken count] != 0) {
+        for (NSString *key in (id) broken)
+            [Sources_ removeObjectForKey:key];
+        Changed_ = true;
+    } broken = nil;
     /* }}} */
 
     CydiaWriteSources();

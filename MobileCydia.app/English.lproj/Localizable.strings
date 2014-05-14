@@ -94,6 +94,7 @@
 "INSTALLED_BY_PACKAGE" = "Installed by Package";
 "INSTALLED_DETAILS" = "Installed Package";
 "INSTALLED_FILES" = "Installed Files";
+"INVALID_URL" = "Invalid URL";
 "KEEP_OLD_COPY" = "Keep My Old Copy";
 "LOADING" = "Loading";
 "LOADING_DATA" = "Loading Data";
