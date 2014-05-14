@@ -8188,10 +8188,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     _H<UIProgressHUD> hud_;
     _H<NSError> error_;
 
-    //NSURLConnection *installer_;
     NSURLConnection *trivial_bz2_;
     NSURLConnection *trivial_gz_;
-    //NSURLConnection *automatic_;
 
     BOOL cydia_;
 }
@@ -8212,10 +8210,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) dealloc {
-    //[self _releaseConnection:installer_];
     [self _releaseConnection:trivial_gz_];
     [self _releaseConnection:trivial_bz2_];
-    //[self _releaseConnection:automatic_];
 
     [super dealloc];
 }
@@ -8458,8 +8454,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             case 1: {
                 NSString *href = [[alert textField] text];
 
-                //installer_ = [[self _requestHRef:href method:@"GET"] retain];
-
                 if (![href hasSuffix:@"/"])
                     href_ = [href stringByAppendingString:@"/"];
                 else
@@ -8467,7 +8461,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
                 trivial_bz2_ = [[self _requestHRef:[href_ stringByAppendingString:@"Packages.bz2"] method:@"HEAD"] retain];
                 trivial_gz_ = [[self _requestHRef:[href_ stringByAppendingString:@"Packages.gz"] method:@"HEAD"] retain];
-                //trivial_bz2_ = [[self _requestHRef:[href stringByAppendingString:@"dists/Release"] method:@"HEAD"] retain];
 
                 cydia_ = false;
 
