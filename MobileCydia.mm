@@ -7841,12 +7841,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 /* Installed Controller {{{ */
 @interface InstalledController : FilteredPackageListController {
-    BOOL expert_;
 }
 
 - (id) initWithDatabase:(Database *)database;
-
-- (void) updateRoleButton;
 - (void) queueStatusDidChange;
 
 @end
@@ -7863,7 +7860,13 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED") filter:@selector(isInstalledAndUnfiltered:) with:[NSNumber numberWithBool:YES]]) != nil) {
-        [self updateRoleButton];
+        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("SIMPLE"), UCLocalize("EXPERT"), nil]] autorelease]);
+        [segmented setSelectedSegmentIndex:0];
+        [segmented setSegmentedControlStyle:UISegmentedControlStyleBar];
+        [[self navigationItem] setTitleView:segmented];
+
+        [segmented addTarget:self action:@selector(modeChanged:) forEvents:UIControlEventValueChanged];
+
         [self queueStatusDidChange];
     } return self;
 }
@@ -7889,21 +7892,10 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 #endif
 }
 
-- (void) updateRoleButton {
-    [[self navigationItem] setRightBarButtonItem:[[[UIBarButtonItem alloc]
-        initWithTitle:(expert_ ? UCLocalize("EXPERT") : UCLocalize("SIMPLE"))
-        style:(expert_ ? UIBarButtonItemStyleDone : UIBarButtonItemStylePlain)
-        target:self
-        action:@selector(roleButtonClicked)
-    ] autorelease]];
-}
-
-- (void) roleButtonClicked {
-    [self setObject:[NSNumber numberWithBool:expert_]];
+- (void) modeChanged:(UISegmentedControl *)segmented {
+    bool simple([segmented selectedSegmentIndex] == 0);
+    [self setObject:[NSNumber numberWithBool:simple]];
     [self reloadData];
-    expert_ = !expert_;
-
-    [self updateRoleButton];
 }
 
 @end
