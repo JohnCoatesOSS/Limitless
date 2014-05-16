@@ -8302,6 +8302,10 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     }
 }
 
+- (void) tableView:(UITableView *)tableView didEndEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self updateButtonsForEditingStatusAnimated:YES];
+}
+
 - (void) complete {
     [delegate_ addTrivialSource:href_];
     href_ = nil;
