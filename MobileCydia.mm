@@ -3173,7 +3173,7 @@ struct PackageNameOrdering :
 }
 
 - (bool) isInstalledAndUnfiltered:(NSNumber *)number {
-    return ![self uninstalled] && (![number boolValue] && role_ != 7 || [self unfiltered]);
+    return ![self uninstalled] && role_ <= ([number boolValue] ? 1 : 3);
 }
 
 - (bool) isVisibleInSection:(NSString *)name source:(Source *)source {
