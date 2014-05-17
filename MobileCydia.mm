@@ -6606,16 +6606,14 @@ typedef Function<void, NSMutableArray *> PackageSorter;
 } }
 
 - (NSMutableArray *) _reloadPackages {
-    NSMutableArray *filtered;
-    PackageSorter sorter;
-
 @synchronized (database_) {
     era_ = [database_ era];
-    NSArray *packages([database_ packages]);
 
-    filtered = [NSMutableArray arrayWithCapacity:[packages count]];
+    NSArray *packages([database_ packages]);
+    NSMutableArray *filtered([NSMutableArray arrayWithCapacity:[packages count]]);
 
     PackageFilter filter;
+    PackageSorter sorter;
 
     @synchronized (self) {
         filter = filter_;
@@ -6627,12 +6625,11 @@ typedef Function<void, NSMutableArray *> PackageSorter;
             if ([package valid] && filter(package))
                 [filtered addObject:package];
     _end
-}
 
     if (sorter)
         sorter(filtered);
     return filtered;
-}
+} }
 
 - (id) initWithDatabase:(Database *)database title:(NSString *)title filter:(PackageFilter)filter {
     if ((self = [super initWithDatabase:database title:title]) != nil) {
