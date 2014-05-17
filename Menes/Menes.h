@@ -22,6 +22,7 @@
 #ifndef Menes_Menes_H
 #define Menes_Menes_H
 
+#include "Menes/Function.h"
 #include "Menes/ObjectHandle.h"
 
 #include "Menes/invocationWithSelector.h"

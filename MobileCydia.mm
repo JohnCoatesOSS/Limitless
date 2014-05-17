@@ -1949,7 +1949,7 @@ struct ParsedPackage {
 
 @interface Package : NSObject {
     uint32_t era_ : 25;
-    uint32_t role_ : 3;
+    @public uint32_t role_ : 3;
     uint32_t essential_ : 1;
     uint32_t obsolete_ : 1;
     uint32_t ignored_ : 1;
@@ -2059,12 +2059,6 @@ struct ParsedPackage {
 
 - (void) install;
 - (void) remove;
-
-- (bool) isUnfilteredAndSearchedForBy:(NSArray *)query;
-- (bool) isUnfilteredAndSelectedForBy:(NSString *)search;
-- (bool) isInstalledAndUnfiltered:(NSNumber *)number;
-- (bool) isVisibleInSection:(NSString *)section source:(Source *)source;
-- (bool) isVisibleInSource:(Source *)source;
 
 @end
 
@@ -3148,62 +3142,6 @@ struct PackageNameOrdering :
     cache->SetReInstall(iterator_, false);
     cache->MarkDelete(iterator_, true);
 } }
-
-- (bool) isUnfilteredAndSearchedForBy:(NSArray *)query {
-    _profile(Package$isUnfilteredAndSearchedForBy)
-        bool value(true);
-
-        _profile(Package$isUnfilteredAndSearchedForBy$Unfiltered)
-            value &= [self unfiltered];
-        _end
-
-        _profile(Package$isUnfilteredAndSearchedForBy$Match)
-            value &= [self matches:query];
-        _end
-
-        return value;
-    _end
-}
-
-- (bool) isUnfilteredAndSelectedForBy:(NSString *)search {
-    if ([search length] == 0)
-        return false;
-
-    _profile(Package$isUnfilteredAndSelectedForBy)
-        bool value(true);
-
-        _profile(Package$isUnfilteredAndSelectedForBy$Unfiltered)
-            value &= [self unfiltered];
-        _end
-
-        _profile(Package$isUnfilteredAndSelectedForBy$Match)
-            value &= [[self name] compare:search options:MatchCompareOptions_ range:NSMakeRange(0, [search length])] == NSOrderedSame;
-        _end
-
-        return value;
-    _end
-}
-
-- (bool) isInstalledAndUnfiltered:(NSNumber *)number {
-    return ![self uninstalled] && role_ <= ([number boolValue] ? 1 : 3);
-}
-
-- (bool) isVisibleInSection:(NSString *)name source:(Source *)source {
-    NSString *section([self section]);
-
-    return (
-        name == nil ||
-        section == nil && [name length] == 0 ||
-        [name isEqualToString:section]
-    ) && (
-        source == nil ||
-        [self source] == source
-    ) && [self visible];
-}
-
-- (bool) isVisibleInSource:(Source *)source {
-    return [self source] == source && [self visible];
-}
 
 @end
 /* }}} */
@@ -6638,113 +6576,64 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 @end
 /* }}} */
 /* Filtered Package List Controller {{{ */
+typedef Function<bool, Package *> PackageFilter;
+typedef Function<void, NSMutableArray *> PackageSorter;
 @interface FilteredPackageListController : PackageListController {
-    SEL filter_;
-    IMP imp_;
-    _H<NSObject> object_;
-    _H<NSObject> stuff_;
+    PackageFilter filter_;
+    PackageSorter sorter_;
 }
 
-- (void) setObject:(id)object;
-- (void) setStuff:(id)object;
-- (void) setObject:(id)object andStuff:(id)stuff;
+- (id) initWithDatabase:(Database *)database title:(NSString *)title filter:(PackageFilter)filter;
 
-- (void) setObject:(id)object forFilter:(SEL)filter;
-- (void) setObject:(id)object andStuff:(id)stuff forFilter:(SEL)filter;
-
-- (SEL) filter;
-- (void) setFilter:(SEL)filter;
-
-- (id) initWithDatabase:(Database *)database title:(NSString *)title filter:(SEL)filter with:(id)object;
+- (void) setFilter:(PackageFilter)filter;
+- (void) setSorter:(PackageSorter)sorter;
 
 @end
 
 @implementation FilteredPackageListController
 
-- (SEL) filter {
-    return filter_;
-}
-
-- (void) setFilter:(SEL)filter {
+- (void) setFilter:(PackageFilter)filter {
 @synchronized (self) {
     filter_ = filter;
-
-    /* XXX: this is an unsafe optimization of doomy hell */
-    Method method(class_getInstanceMethod([Package class], filter));
-    _assert(method != NULL);
-    imp_ = method_getImplementation(method);
-    _assert(imp_ != NULL);
 } }
 
-- (void) setObject:(id)object {
+- (void) setSorter:(PackageSorter)sorter {
 @synchronized (self) {
-    object_ = object;
-} }
-
-- (void) setStuff:(id)stuff {
-@synchronized (self) {
-    stuff_ = stuff;
-} }
-
-- (void) setObject:(id)object andStuff:(id)stuff {
-@synchronized (self) {
-    object_ = object;
-    stuff_ = stuff;
-} }
-
-- (void) setObject:(id)object forFilter:(SEL)filter {
-@synchronized (self) {
-    [self setFilter:filter];
-    object_ = object;
-} }
-
-- (void) setObject:(id)object andStuff:(id)stuff forFilter:(SEL)filter {
-@synchronized (self) {
-    [self setFilter:filter];
-    object_ = object;
-    stuff_ = stuff;
+    sorter_ = sorter;
 } }
 
 - (NSMutableArray *) _reloadPackages {
+    NSMutableArray *filtered;
+    PackageSorter sorter;
+
 @synchronized (database_) {
     era_ = [database_ era];
     NSArray *packages([database_ packages]);
 
-    NSMutableArray *filtered([NSMutableArray arrayWithCapacity:[packages count]]);
+    filtered = [NSMutableArray arrayWithCapacity:[packages count]];
 
-    IMP imp;
-    SEL filter;
-    _H<NSObject> object;
-    _H<NSObject> stuff;
+    PackageFilter filter;
 
     @synchronized (self) {
-        imp = imp_;
         filter = filter_;
-        object = object_;
-        stuff = stuff_;
+        sorter = sorter_;
     }
 
     _profile(PackageTable$reloadData$Filter)
         for (Package *package in packages)
-            if ([package valid] && (*reinterpret_cast<bool (*)(id, SEL, id, id)>(imp))(package, filter, object, stuff))
+            if ([package valid] && filter(package))
                 [filtered addObject:package];
     _end
-
-    return filtered;
-} }
-
-- (id) initWithDatabase:(Database *)database title:(NSString *)title filter:(SEL)filter with:(id)object {
-    if ((self = [super initWithDatabase:database title:title]) != nil) {
-        [self setFilter:filter];
-        object_ = object;
-    } return self;
 }
 
-- (id) initWithDatabase:(Database *)database title:(NSString *)title filter:(SEL)filter with:(id)object with:(id)stuff {
+    if (sorter)
+        sorter(filtered);
+    return filtered;
+}
+
+- (id) initWithDatabase:(Database *)database title:(NSString *)title filter:(PackageFilter)filter {
     if ((self = [super initWithDatabase:database title:title]) != nil) {
         [self setFilter:filter];
-        object_ = object;
-        stuff_ = stuff;
     } return self;
 }
 
@@ -7158,14 +7047,29 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     else
         title = UCLocalize("NO_SECTION");
 
-    if ((self = [super initWithDatabase:database title:title filter:@selector(isVisibleInSection:source:) with:section with:source]) != nil) {
+    if ((self = [super initWithDatabase:database title:title]) != nil) {
         key_ = [source key];
         section_ = section;
     } return self;
 }
 
 - (void) reloadData {
-    [super setStuff:[database_ sourceWithKey:key_]];
+    Source *source([database_ sourceWithKey:key_]);
+    _H<NSString> name(section_);
+
+    [self setFilter:[=](Package *package) {
+        NSString *section([package section]);
+
+        return (
+            name == nil ||
+            section == nil && [name length] == 0 ||
+            [name isEqualToString:section]
+        ) && (
+            source == nil ||
+            [package source] == source
+        ) && [package visible];
+    }];
+
     [super reloadData];
 }
 
@@ -7664,6 +7568,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 > {
     _H<UISearchBar, 1> search_;
     BOOL searchloaded_;
+    bool summary_;
 }
 
 - (id) initWithDatabase:(Database *)database query:(NSString *)query;
@@ -7694,15 +7599,51 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) useSearch {
-    [self setObject:[self termsForQuery:[search_ text]] forFilter:@selector(isUnfilteredAndSearchedForBy:)];
+    _H<NSArray> query([self termsForQuery:[search_ text]]);
+    summary_ = false;
+
+@synchronized (self) {
+    [self setFilter:[=](Package *package) {
+        if (![package unfiltered])
+            return false;
+        if (![package matches:query])
+            return false;
+        return true;
+    }];
+
+    [self setSorter:[](NSMutableArray *packages) {
+        [packages radixSortUsingSelector:@selector(rank)];
+    }];
+}
+
     [self clearData];
     [self reloadData];
 }
 
-- (void) searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    [self setObject:[search_ text] forFilter:@selector(isUnfilteredAndSelectedForBy:)];
-    [self clearData];
+- (void) usePrefix:(NSString *)prefix {
+    _H<NSString> query(prefix);
+    summary_ = true;
+
+@synchronized (self) {
+    [self setFilter:[=](Package *package) {
+        if ([query length] == 0)
+            return false;
+        if (![package unfiltered])
+            return false;
+        if ([[package name] compare:query options:MatchCompareOptions_ range:NSMakeRange(0, [query length])] != NSOrderedSame)
+            return false;
+        return true;
+    }];
+
+    [self setSorter:nullptr];
+}
+
     [self reloadData];
+}
+
+- (void) searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    [self clearData];
+    [self usePrefix:[search_ text]];
 }
 
 - (void) searchBarButtonClicked:(UISearchBar *)searchBar {
@@ -7720,8 +7661,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)text {
-    [self setObject:text forFilter:@selector(isUnfilteredAndSelectedForBy:)];
-    [self reloadData];
+    [self usePrefix:text];
 }
 
 - (bool) shouldYield {
@@ -7729,31 +7669,25 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (bool) shouldBlock {
-    return [self filter] == @selector(isUnfilteredAndSearchedForBy:);
+    return !summary_;
 }
 
 - (bool) isSummarized {
-    return [self filter] == @selector(isUnfilteredAndSelectedForBy:);
+    return summary_;
 }
 
 - (bool) showsSections {
     return false;
 }
 
-- (NSMutableArray *) _reloadPackages {
-    NSMutableArray *packages([super _reloadPackages]);
-    if ([self filter] == @selector(isUnfilteredAndSearchedForBy:))
-        [packages radixSortUsingSelector:@selector(rank)];
-    return packages;
-}
-
 - (id) initWithDatabase:(Database *)database query:(NSString *)query {
-    if ((self = [super initWithDatabase:database title:UCLocalize("SEARCH") filter:@selector(isUnfilteredAndSearchedForBy:) with:[self termsForQuery:query]])) {
+    if ((self = [super initWithDatabase:database title:UCLocalize("SEARCH")])) {
         search_ = [[[UISearchBar alloc] init] autorelease];
         [search_ setDelegate:self];
 
         if (query != nil)
             [search_ setText:query];
+        [self useSearch];
     } return self;
 }
 
@@ -7782,13 +7716,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) reloadData {
-    id object([search_ text]);
-    if ([self filter] == @selector(isUnfilteredAndSearchedForBy:))
-        object = [self termsForQuery:object];
-
-    [self setObject:object];
     [self resetCursor];
-
     [super reloadData];
 }
 
@@ -7991,14 +7919,24 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     return [NSURL URLWithString:@"cydia://installed"];
 }
 
+- (void) useFilter:(UISegmentedControl *)segmented {
+    bool simple([segmented selectedSegmentIndex] == 0);
+
+@synchronized (self) {
+    [self setFilter:[=](Package *package) {
+        return ![package uninstalled] && package->role_ <= (simple ? 1 : 3);
+    }];
+} }
+
 - (id) initWithDatabase:(Database *)database {
-    if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED") filter:@selector(isInstalledAndUnfiltered:) with:[NSNumber numberWithBool:YES]]) != nil) {
+    if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
         UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("SIMPLE"), UCLocalize("EXPERT"), nil]] autorelease]);
         [segmented setSelectedSegmentIndex:0];
         [segmented setSegmentedControlStyle:UISegmentedControlStyleBar];
         [[self navigationItem] setTitleView:segmented];
 
         [segmented addTarget:self action:@selector(modeChanged:) forEvents:UIControlEventValueChanged];
+        [self useFilter:segmented];
 
         [self queueStatusDidChange];
     } return self;
@@ -8026,8 +7964,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) modeChanged:(UISegmentedControl *)segmented {
-    bool simple([segmented selectedSegmentIndex] == 0);
-    [self setObject:[NSNumber numberWithBool:simple]];
+    [self useFilter:segmented];
     [self reloadData];
 }
 
