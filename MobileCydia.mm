@@ -1970,6 +1970,7 @@ struct ParsedPackage {
 
     CYString latest_;
     CYString installed_;
+    time_t updated_;
 
     const char *section_;
     _transient NSString *section$_;
@@ -2458,13 +2459,21 @@ struct PackageNameOrdering :
         _profile(Package$initWithVersion$Metadata)
             const char *mixed(iterator.Name());
             size_t size(strlen(mixed));
-            char lower[size + 1];
+            static const size_t prefix(sizeof("/var/lib/dpkg/info/") - 1);
+            char lower[prefix + size + 5 + 1];
 
             for (size_t i(0); i != size; ++i)
-                lower[i] = mixed[i] | 0x20;
-            lower[size] = '\0';
+                lower[prefix + i] = mixed[i] | 0x20;
 
-            PackageValue *metadata(PackageFind(lower, size));
+            if (!installed_.empty()) {
+                memcpy(lower, "/var/lib/dpkg/info/", prefix);
+                memcpy(lower + prefix + size, ".list", 6);
+                struct stat info;
+                if (stat(lower, &info) != -1)
+                    updated_ = info.st_birthtime;
+            }
+
+            PackageValue *metadata(PackageFind(lower + prefix, size));
             metadata_ = metadata;
 
             id_.set(NULL, metadata->name_, size);
