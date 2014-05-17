@@ -1304,7 +1304,7 @@ static PackageValue *PackageFind(const char *name, size_t length, bool *fail = N
     PackageValue *metadata;
 
     Cytore::Offset<PackageValue> *offset(&MetaFile_->packages_[nhash.u16[0]]);
-    offset: if (offset->IsNull()) {
+    for (;; offset = &metadata->next_) { if (offset->IsNull()) {
         *offset = MetaFile_.New<PackageValue>(length + 1);
         metadata = &MetaFile_.Get(*offset);
 
@@ -1316,16 +1316,18 @@ static PackageValue *PackageFind(const char *name, size_t length, bool *fail = N
             memset(metadata, 0, sizeof(*metadata));
         }
 
-        memcpy(metadata->name_, name, length + 1);
+        memcpy(metadata->name_, name, length);
+        metadata->name_[length] = '\0';
         metadata->nhash_ = nhash.u16[1];
     } else {
         metadata = &MetaFile_.Get(*offset);
-
-        if (metadata->nhash_ != nhash.u16[1] || strncmp(metadata->name_, name, length + 1) != 0) {
-            offset = &metadata->next_;
-            goto offset;
-        }
-    }
+        if (metadata->nhash_ != nhash.u16[1])
+            continue;
+        if (strncmp(metadata->name_, name, length) != 0)
+            continue;
+        if (metadata->name_[length] != '\0')
+            continue;
+    } break; }
 
     return metadata;
 }
