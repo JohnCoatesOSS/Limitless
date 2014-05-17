@@ -38,7 +38,6 @@
 #include <CoreFoundation/CFInternal.h>
 #endif
 
-#include <CoreFoundation/CFPriv.h>
 #include <CoreFoundation/CFUniChar.h>
 
 #include <SystemConfiguration/SystemConfiguration.h>
@@ -5024,7 +5023,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                                 reason = @"virtual";
                         }
 
-                        NSDictionary *version(start.TargetVer() == 0 ? [NSNull null] : [NSDictionary dictionaryWithObjectsAndKeys:
+                        NSDictionary *version(start.TargetVer() == 0 ? (NSDictionary *) [NSNull null] : [NSDictionary dictionaryWithObjectsAndKeys:
                             [NSString stringWithUTF8String:start.CompType()], @"operator",
                             [NSString stringWithUTF8String:start.TargetVer()], @"value",
                         nil]);
@@ -5893,7 +5892,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         section_ = [section localized];
 
         name_  = section_ == nil || [section_ length] == 0 ? UCLocalize("NO_SECTION") : (NSString *) section_;
-        count_ = [NSString stringWithFormat:@"%d", [section count]];
+        count_ = [NSString stringWithFormat:@"%zd", [section count]];
 
         if (editing_)
             [switch_ setOn:(isSectionVisible(basic_) ? 1 : 0) animated:NO];

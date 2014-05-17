@@ -234,6 +234,10 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 - (void) addTarget:(id)target action:(SEL)action forEvents:(NSInteger)events;
 @end
 
+@interface UIDevice (Apple)
+- (NSString *) uniqueIdentifier;
+@end
+
 @interface UIImage (Apple)
 + (UIImage *) applicationImageNamed:(NSString *)name;
 + (UIImage *) imageAtPath:(NSString *)path;
@@ -407,17 +411,6 @@ extern float const UIScrollViewDecelerationRateNormal;
 @interface DOMHTMLIFrameElement (IDL)
 - (WebFrame *) contentFrame;
 @end
-
-typedef enum {
-    UIInterfaceOrientationMaskPortrait = (1 << UIInterfaceOrientationPortrait),
-    UIInterfaceOrientationMaskLandscapeLeft = (1 << UIInterfaceOrientationLandscapeLeft),
-    UIInterfaceOrientationMaskLandscapeRight = (1 << UIInterfaceOrientationLandscapeRight),
-    UIInterfaceOrientationMaskPortraitUpsideDown = (1 << UIInterfaceOrientationPortraitUpsideDown),
-    UIInterfaceOrientationMaskLandscape = (UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight),
-    UIInterfaceOrientationMaskAll = (UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft |
-    UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskPortraitUpsideDown),
-    UIInterfaceOrientationMaskAllButUpsideDown = (UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight),
-} UIInterfaceOrientationMask;
 
 // extern *; {{{
 extern CFStringRef const kGSDisplayIdentifiersCapability;

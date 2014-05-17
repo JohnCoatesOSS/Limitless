@@ -111,7 +111,6 @@ cd usr/include
 
 mkdir CoreFoundation
 wget -O CoreFoundation/CFBundlePriv.h "http://www.opensource.apple.com/source/CF/CF-550/CFBundlePriv.h?txt"
-wget -O CoreFoundation/CFPriv.h "http://www.opensource.apple.com/source/CF/CF-550/CFPriv.h?txt"
 wget -O CoreFoundation/CFUniChar.h "http://www.opensource.apple.com/source/CF/CF-550/CFUniChar.h?txt"
 
 if true; then
