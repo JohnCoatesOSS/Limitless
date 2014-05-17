@@ -6872,6 +6872,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) beginUpdate {
+    if (updating_)
+        return;
+
     UIViewController *controller([[self viewControllers] objectAtIndex:1]);
     UITabBarItem *item([controller tabBarItem]);
 
