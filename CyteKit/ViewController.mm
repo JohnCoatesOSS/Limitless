@@ -123,9 +123,13 @@ extern bool IsWildcat_;
 - (void) setPageColor:(UIColor *)color {
     if (color == nil) {
         color = [UIColor groupTableViewBackgroundColor];
-        if ([color isEqual:[UIColor clearColor]])
-            color = [UIColor pinStripeColor];
-            //color = [UIColor colorWithRed:(215.0/255.0) green:(217.0/255.0) blue:(223.0/255.0) alpha:1.0];
+        // on iOS 6 they removed groupTableViewBackgroundColor (it is present on iOS 5 and iOS 6)
+        if ([color isEqual:[UIColor clearColor]]) {
+            if (!IsWildcat_) // on devices that aren't iPads, we can just fall back to pinStripeColor
+                color = [UIColor pinStripeColor];
+            else // I don't remember where I got this color, but it is only an approximation of a gradient
+                color = [UIColor colorWithRed:(215.0/255.0) green:(217.0/255.0) blue:(223.0/255.0) alpha:1.0];
+        }
     } color_ = color;
 }
 
