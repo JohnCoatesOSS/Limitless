@@ -99,7 +99,7 @@ Objects/%.o: %.m $(header)
 Objects/%.o: %.mm $(header)
 	@mkdir -p $(dir $@)
 	@echo "[cycc] $<"
-	@$(cycc) -c $< $(flags) $(xflags)
+	@$(cycc) -std=c++11 -c $< $(flags) $(xflags)
 
 Objects/Version.o: Version.h
 

@@ -2154,9 +2154,9 @@ CFComparisonResult PackageNameCompare(Package *lhs, Package *rhs, void *arg) {
         CFStringRef lhn(lhi), rhn(rhi);
 
         if (lhn == NULL)
-            return rhn == NULL ? NSOrderedSame : NSOrderedAscending;
+            return rhn == NULL ? kCFCompareEqualTo : kCFCompareLessThan;
         else if (rhn == NULL)
-            return NSOrderedDescending;
+            return kCFCompareGreaterThan;
 
         _profile(PackageNameCompare$NumbersLast)
             if (!lhi.empty() && !rhi.empty()) {
@@ -2164,7 +2164,7 @@ CFComparisonResult PackageNameCompare(Package *lhs, Package *rhs, void *arg) {
                 UniChar rhc(CFStringGetCharacterAtIndex(rhn, 0));
                 bool lha(CFUniCharIsMemberOf(lhc, kCFUniCharLetterCharacterSet));
                 if (lha != CFUniCharIsMemberOf(rhc, kCFUniCharLetterCharacterSet))
-                    return lha ? NSOrderedAscending : NSOrderedDescending;
+                    return lha ? kCFCompareLessThan : kCFCompareGreaterThan;
             }
         _end
 
@@ -2184,7 +2184,7 @@ struct PackageNameOrdering :
     std::binary_function<Package *, Package *, bool>
 {
     _finline bool operator ()(Package *lhs, Package *rhs) const {
-        return PackageNameCompare(lhs, rhs, NULL) == NSOrderedAscending;
+        return PackageNameCompare(lhs, rhs, NULL) == kCFCompareLessThan;
     }
 };
 
@@ -2758,7 +2758,7 @@ struct PackageNameOrdering :
 - (BOOL) hasMode {
 @synchronized (database_) {
     if ([database_ era] != era_ || iterator_.end())
-        return nil;
+        return NO;
 
     pkgDepCache::StateCache &state([database_ cache][iterator_]);
     return state.Mode != pkgDepCache::ModeKeep;
@@ -5758,7 +5758,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     if (!highlighted)
         UISetColor(commercial_ ? Purple_ : Black_);
-    [name_ drawAtPoint:CGPointMake(36, 8) forWidth:(width - (placard_ == nil ? 68 : 94)) withFont:Font18Bold_ lineBreakMode:UILineBreakModeTailTruncation];
+    [name_ drawAtPoint:CGPointMake(36, 8) forWidth:(width - (placard_ == nil ? 68 : 94)) withFont:Font18Bold_ lineBreakMode:NSLineBreakByTruncatingTail];
 
     if (placard_ != nil)
         [placard_ drawAtPoint:CGPointMake(width - 52, 11)];
@@ -5801,12 +5801,12 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     if (!highlighted)
         UISetColor(commercial_ ? Purple_ : Black_);
-    [name_ drawAtPoint:CGPointMake(48, 8) forWidth:(width - (placard_ == nil ? 80 : 106)) withFont:Font18Bold_ lineBreakMode:UILineBreakModeTailTruncation];
-    [source_ drawAtPoint:CGPointMake(58, 29) forWidth:(width - 95) withFont:Font12_ lineBreakMode:UILineBreakModeTailTruncation];
+    [name_ drawAtPoint:CGPointMake(48, 8) forWidth:(width - (placard_ == nil ? 80 : 106)) withFont:Font18Bold_ lineBreakMode:NSLineBreakByTruncatingTail];
+    [source_ drawAtPoint:CGPointMake(58, 29) forWidth:(width - 95) withFont:Font12_ lineBreakMode:NSLineBreakByTruncatingTail];
 
     if (!highlighted)
         UISetColor(commercial_ ? Purplish_ : Gray_);
-    [description_ drawAtPoint:CGPointMake(12, 46) forWidth:(width - 46) withFont:Font14_ lineBreakMode:UILineBreakModeTailTruncation];
+    [description_ drawAtPoint:CGPointMake(12, 46) forWidth:(width - 46) withFont:Font14_ lineBreakMode:NSLineBreakByTruncatingTail];
 
     if (placard_ != nil)
         [placard_ drawAtPoint:CGPointMake(width - 52, 9)];
@@ -5929,7 +5929,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     if (!highlighted)
         UISetColor(Black_);
-    [name_ drawAtPoint:CGPointMake(48, 12) forWidth:(width - 58) withFont:Font18_ lineBreakMode:UILineBreakModeTailTruncation];
+    [name_ drawAtPoint:CGPointMake(48, 12) forWidth:(width - 58) withFont:Font18_ lineBreakMode:NSLineBreakByTruncatingTail];
 
     CGSize size = [count_ sizeWithFont:Font14_];
 
@@ -8158,11 +8158,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     if (!highlighted)
         UISetColor(Black_);
-    [origin_ drawAtPoint:CGPointMake(52, 8) forWidth:(width - 61) withFont:Font18Bold_ lineBreakMode:UILineBreakModeTailTruncation];
+    [origin_ drawAtPoint:CGPointMake(52, 8) forWidth:(width - 61) withFont:Font18Bold_ lineBreakMode:NSLineBreakByTruncatingTail];
 
     if (!highlighted)
         UISetColor(Gray_);
-    [label_ drawAtPoint:CGPointMake(52, 29) forWidth:(width - 61) withFont:Font12_ lineBreakMode:UILineBreakModeTailTruncation];
+    [label_ drawAtPoint:CGPointMake(52, 29) forWidth:(width - 61) withFont:Font12_ lineBreakMode:NSLineBreakByTruncatingTail];
 }
 
 - (void) setFetch:(NSNumber *)fetch {
@@ -8699,7 +8699,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [caption_ setTextColor:[UIColor whiteColor]];
     [caption_ setBackgroundColor:[UIColor clearColor]];
     [caption_ setShadowColor:[UIColor blackColor]];
-    [caption_ setTextAlignment:UITextAlignmentCenter];
+    [caption_ setTextAlignment:NSTextAlignmentCenter];
     [view addSubview:caption_];
 
     CGRect statusrect;
@@ -8714,7 +8714,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [status_ setTextColor:[UIColor whiteColor]];
     [status_ setBackgroundColor:[UIColor clearColor]];
     [status_ setShadowColor:[UIColor blackColor]];
-    [status_ setTextAlignment:UITextAlignmentCenter];
+    [status_ setTextAlignment:NSTextAlignmentCenter];
     [view addSubview:status_];
 }
 
