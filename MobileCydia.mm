@@ -7683,7 +7683,18 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (id) initWithDatabase:(Database *)database query:(NSString *)query {
     if ((self = [super initWithDatabase:database title:UCLocalize("SEARCH")])) {
         search_ = [[[UISearchBar alloc] init] autorelease];
+        [search_ setPlaceholder:UCLocalize("SEARCH_EX")];
         [search_ setDelegate:self];
+
+        UITextField *textField;
+        if ([search_ respondsToSelector:@selector(searchField)])
+            textField = [search_ searchField];
+        else
+            textField = MSHookIvar<UITextField *>(search_, "_searchField");
+
+        [textField setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
+        [textField setEnablesReturnKeyAutomatically:NO];
+        [[self navigationItem] setTitleView:textField];
 
         if (query != nil)
             [search_ setText:query];
@@ -7698,17 +7709,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         searchloaded_ = YES;
         [search_ setFrame:CGRectMake(0, 0, [[self view] bounds].size.width, 44.0f)];
         [search_ layoutSubviews];
-        [search_ setPlaceholder:UCLocalize("SEARCH_EX")];
-
-        UITextField *textField;
-        if ([search_ respondsToSelector:@selector(searchField)])
-            textField = [search_ searchField];
-        else
-            textField = MSHookIvar<UITextField *>(search_, "_searchField");
-
-        [textField setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
-        [textField setEnablesReturnKeyAutomatically:NO];
-        [[self navigationItem] setTitleView:textField];
     }
 
     if ([self isSummarized])
