@@ -1498,18 +1498,20 @@ static void PackageImport(const void *key, const void *value, void *context) {
     debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(index));
     if (dindex != NULL) {
         std::string file(dindex->MetaIndexURI(""));
-        files_.insert(file + "Release.gpg");
-        files_.insert(file + "Release");
         base_.set(pool, file);
 
-        std::vector<IndexTarget *> *targets(dindex->ComputeIndexTargets());
-        for (std::vector<IndexTarget *>::const_iterator target(targets->begin()); target != targets->end(); ++target) {
-            std::string file((*target)->URI);
+        pkgAcquire acquire;
+        dindex->GetIndexes(&acquire, true);
+        for (pkgAcquire::ItemIterator item(acquire.ItemsBegin()); item != acquire.ItemsEnd(); item++) {
+            std::string file((*item)->DescURI());
+            files_.insert(file);
+            if (file.length() < sizeof("Packages.bz2") || file.substr(file.length() - sizeof("Packages.bz2")) != "/Packages.bz2")
+                continue;
+            file = file.substr(0, file.length() - 4);
             files_.insert(file);
             files_.insert(file + ".gz");
-            files_.insert(file + ".bz2");
             files_.insert(file + "Index");
-        } delete targets;
+        }
 
         FileFd fd;
         if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly))
