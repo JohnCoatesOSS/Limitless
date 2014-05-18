@@ -3013,6 +3013,10 @@ struct PackageNameOrdering :
     return source_ == (Source *) [NSNull null] ? nil : source_;
 }
 
+- (uint32_t) updated {
+    return std::numeric_limits<uint32_t>::max() - updated_;
+}
+
 - (uint32_t) rank {
     return rank_;
 }
@@ -7808,6 +7812,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 /* Installed Controller {{{ */
 @interface InstalledController : FilteredPackageListController {
+    bool sectioned_;
 }
 
 - (id) initWithDatabase:(Database *)database;
@@ -7825,18 +7830,41 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     return [NSURL URLWithString:@"cydia://installed"];
 }
 
+- (bool) showsSections {
+    return sectioned_;
+}
+
+- (void) useUpdated {
+    sectioned_ = false;
+
+@synchronized (self) {
+    [self setFilter:[](Package *package) {
+        return ![package uninstalled] && package->role_ < 7;
+    }];
+
+    [self setSorter:[](NSMutableArray *packages) {
+        [packages radixSortUsingSelector:@selector(updated)];
+    }];
+} }
+
 - (void) useFilter:(UISegmentedControl *)segmented {
-    bool simple([segmented selectedSegmentIndex] == 0);
+    NSInteger selected([segmented selectedSegmentIndex]);
+    if (selected == 2)
+        return [self useUpdated];
+    bool simple(selected == 0);
+    sectioned_ = true;
 
 @synchronized (self) {
     [self setFilter:[=](Package *package) {
         return ![package uninstalled] && package->role_ <= (simple ? 1 : 3);
     }];
+
+    [self setSorter:nullptr];
 } }
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
-        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("SIMPLE"), UCLocalize("EXPERT"), nil]] autorelease]);
+        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("SIMPLE"), UCLocalize("EXPERT"), UCLocalize("RECENT"), nil]] autorelease]);
         [segmented setSelectedSegmentIndex:0];
         [segmented setSegmentedControlStyle:UISegmentedControlStyleBar];
         [[self navigationItem] setTitleView:segmented];
