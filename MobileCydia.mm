@@ -205,7 +205,7 @@ extern NSString *Cydia_;
 
 #define ForRelease 1
 #define TraceLogging (1 && !ForRelease)
-#define HistogramInsertionSort (!ForRelease ? 0 : 0)
+#define HistogramInsertionSort (0 && !ForRelease)
 #define ProfileTimes (0 && !ForRelease)
 #define ForSaurik (0 && !ForRelease)
 #define LogBrowser (0 && !ForRelease)
