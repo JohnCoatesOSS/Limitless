@@ -159,7 +159,7 @@ class ProfileTime {
 
     void Print() {
         if (total_ != 0)
-            std::cerr << std::setw(5) << count_ << ", " << std::setw(7) << total_ << " : " << name_ << std::endl;
+            std::cerr << std::setw(7) << count_ << ", " << std::setw(7) << total_ << " : " << name_ << std::endl;
         total_ = 0;
         count_ = 0;
     }
