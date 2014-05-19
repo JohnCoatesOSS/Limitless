@@ -1503,7 +1503,10 @@ static void PackageImport(const void *key, const void *value, void *context) {
         base_.set(pool, file);
 
         pkgAcquire acquire;
+        _profile(Source$setMetaIndex$GetIndexes)
         dindex->GetIndexes(&acquire, true);
+        _end
+        _profile(Source$setMetaIndex$DescURI)
         for (pkgAcquire::ItemIterator item(acquire.ItemsBegin()); item != acquire.ItemsEnd(); item++) {
             std::string file((*item)->DescURI());
             files_.insert(file);
@@ -1514,6 +1517,7 @@ static void PackageImport(const void *key, const void *value, void *context) {
             files_.insert(file + ".gz");
             files_.insert(file + "Index");
         }
+        _end
 
         FileFd fd;
         if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly))
@@ -1568,7 +1572,9 @@ static void PackageImport(const void *key, const void *value, void *context) {
         database_ = database;
         index_ = index;
 
+        _profile(Source$initWithMetaIndex$setMetaIndex)
         [self setMetaIndex:index inPool:pool];
+        _end
     } return self;
 }
 
@@ -3589,18 +3595,26 @@ class CydiaLogCleaner :
     NSString *title(UCLocalize("DATABASE"));
 
     list_ = new pkgSourceList();
+    _profile(reloadDataWithInvocation$ReadMainList)
     if ([self popErrorWithTitle:title forOperation:list_->ReadMainList()])
         return;
+    _end
 
+    _profile(reloadDataWithInvocation$Source$initWithMetaIndex)
     for (pkgSourceList::const_iterator source = list_->begin(); source != list_->end(); ++source) {
         Source *object([[[Source alloc] initWithMetaIndex:*source forDatabase:self inPool:pool_] autorelease]);
         [sourceList_ addObject:object];
     }
+    _end
 
     _trace();
     OpProgress progress;
+    bool opened;
   open:
-    if (!cache_.Open(progress, true)) {
+    _profile(reloadDataWithInvocation$pkgCacheFile)
+        opened = cache_.Open(progress, true);
+    _end
+    if (!opened) {
         // XXX: what if there are errors, but Open() == true? this should be merged with popError:
         while (!_error->empty()) {
             std::string error;
@@ -3647,20 +3661,26 @@ class CydiaLogCleaner :
         return;
     }
 
+    _profile(reloadDataWithInvocation$pkgApplyStatus)
     if ([self popErrorWithTitle:title forOperation:pkgApplyStatus(cache_)])
         return;
+    _end
 
     if (cache_->BrokenCount() != 0) {
+        _profile(pkgApplyStatus$pkgFixBroken)
         if ([self popErrorWithTitle:title forOperation:pkgFixBroken(cache_)])
             return;
+        _end
 
         if (cache_->BrokenCount() != 0) {
             [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:UCLocalize("STILL_BROKEN_EX") ofType:kCydiaProgressEventTypeError] forTask:title];
             return;
         }
 
+        _profile(pkgApplyStatus$pkgMinimizeUpgrade)
         if ([self popErrorWithTitle:title forOperation:pkgMinimizeUpgrade(cache_)])
             return;
+        _end
     }
 
     for (Source *object in (id) sourceList_) {
@@ -3680,14 +3700,13 @@ class CydiaLogCleaner :
         packages.reserve(std::max(10000U, [packages_ count] + 1000));
         packages_ = nil;*/
 
-        _trace();
-
+        _profile(reloadDataWithInvocation$packageWithIterator)
         for (pkgCache::PkgIterator iterator = cache_->PkgBegin(); !iterator.end(); ++iterator)
             if (Package *package = [Package packageWithIterator:iterator withZone:zone_ inPool:pool_ database:self])
                 //packages.push_back(package);
                 CFArrayAppendValue(packages_, CFRetain(package));
+        _end
 
-        _trace();
 
         /*if (packages.empty())
             packages_ = [[NSArray alloc] init];
@@ -3695,35 +3714,43 @@ class CydiaLogCleaner :
             packages_ = [[NSArray alloc] initWithObjects:&packages.front() count:packages.size()];
         _trace();*/
 
+        _profile(reloadDataWithInvocation$radix$8)
         [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(8)];
+        _end
+
+        _profile(reloadDataWithInvocation$radix$4)
         [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(4)];
+        _end
+
+        _profile(reloadDataWithInvocation$radix$0)
         [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(0)];
+        _end
 
-        /*_trace();
-        PrintTimes();
-        _trace();*/
-
-        _trace();
-
-        /*if (!packages.empty())
-            CFQSortArray(&packages.front(), packages.size(), sizeof(packages.front()), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare_), NULL);*/
-        //std::sort(packages.begin(), packages.end(), PackageNameOrdering());
-
-        //CFArraySortValues((CFMutableArrayRef) packages_, CFRangeMake(0, [packages_ count]), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare), NULL);
-
+        _profile(reloadDataWithInvocation$insertion)
         CFArrayInsertionSortValues(packages_, CFRangeMake(0, CFArrayGetCount(packages_)), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare), NULL);
+        _end
 
-        //[packages_ sortUsingFunction:reinterpret_cast<NSComparisonResult (*)(id, id, void *)>(&PackageNameCompare) context:NULL];
+        /*_profile(reloadDataWithInvocation$CFQSortArray)
+        CFQSortArray(&packages.front(), packages.size(), sizeof(packages.front()), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare_), NULL);
+        _end*/
 
-        _trace();
+        /*_profile(reloadDataWithInvocation$stdsort)
+        std::sort(packages.begin(), packages.end(), PackageNameOrdering());
+        _end*/
+
+        /*_profile(reloadDataWithInvocation$CFArraySortValues)
+        CFArraySortValues((CFMutableArrayRef) packages_, CFRangeMake(0, [packages_ count]), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare), NULL);
+        _end*/
+
+        /*_profile(reloadDataWithInvocation$sortUsingFunction)
+        [packages_ sortUsingFunction:reinterpret_cast<NSComparisonResult (*)(id, id, void *)>(&PackageNameCompare) context:NULL];
+        _end*/
+
 
         size_t count(CFArrayGetCount(packages_));
         MetaFile_->active_ = count;
-
         for (size_t index(0); index != count; ++index)
             [(Package *) CFArrayGetValueAtIndex(packages_, index) setIndex:index];
-
-        _trace();
     }
 } }
 
@@ -6477,7 +6504,10 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         [(UITableView *) list_ setDataSource:self];
         [list_ reloadData];
     _end
-} }
+}
+
+    PrintTimes();
+}
 
 - (NSArray *) sectionsForPackages:(NSMutableArray *)packages {
     NSMutableArray *sections([NSMutableArray arrayWithCapacity:16]);
@@ -7466,7 +7496,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         action:@selector(upgradeButtonClicked)
     ] autorelease]) animated:YES];
 
-    PrintTimes();
     return sections;
 }
 
@@ -8867,6 +8896,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
+_profile(reloadDataWithInvocation)
 @synchronized (self) {
     UIProgressHUD *hud(loaded_ ? [self addProgressHUD] : nil);
     if (hud != nil)
@@ -8879,6 +8909,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [essential_ removeAllObjects];
     [broken_ removeAllObjects];
 
+    _profile(reloadDataWithInvocation$Essential)
     NSArray *packages([database_ packages]);
     for (Package *package in packages) {
         if ([package half])
@@ -8889,6 +8920,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             ++changes;
         }
     }
+    _end
 
     UITabBarItem *changesItem = [[[tabbar_ viewControllers] objectAtIndex:2] tabBarItem];
     if (changes != 0) {
@@ -8908,7 +8940,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     if (hud != nil)
         [self removeProgressHUD:hud];
-} }
+}
+_end
+
+    PrintTimes();
+}
 
 - (void) updateData {
     [self _updateData];
@@ -9652,8 +9688,6 @@ _trace();
 
     [self reloadDataWithInvocation:nil];
     [self refreshIfPossible];
-    PrintTimes();
-
     [self disemulate];
 
     int savedIndex = [[Metadata_ objectForKey:@"InterfaceIndex"] intValue];
