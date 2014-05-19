@@ -13,6 +13,9 @@ flags += -fmessage-length=0
 flags += -g0 -O2
 flags += -fvisibility=hidden
 
+flags += -idirafter icu/icuSources/common
+flags += -idirafter icu/icuSources/i18n
+
 flags += -Wall
 
 flags += -Wno-unknown-warning-option
@@ -41,6 +44,7 @@ libs += -framework WebKit
 
 libs += -lapr-1
 libs += -lapt-pkg
+libs += -licucore
 libs += -lpcre
 
 uikit := 

@@ -1,3 +1,6 @@
 [submodule "SDURLCache"]
 	path = SDURLCache
 	url = https://github.com/SaurikIT/SDURLCache.git
+[submodule "icu"]
+	path = icu
+	url = git://git.saurik.com/apple/icu.git
