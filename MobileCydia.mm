@@ -213,7 +213,6 @@ extern NSString *Cydia_;
 #define ManualRefresh (1 && !ForRelease)
 #define ShowInternals (0 && !ForRelease)
 #define AlwaysReload (0 && !ForRelease)
-#define TryIndexedCollation (0 && !ForRelease)
 
 #if !TraceLogging
 #undef _trace
@@ -314,7 +313,7 @@ static CGFloat CYStatusBarHeight() {
 /* NSForcedOrderingSearch doesn't work on the iPhone */
 static const NSStringCompareOptions MatchCompareOptions_ = NSLiteralSearch | NSCaseInsensitiveSearch;
 static const NSStringCompareOptions LaxCompareOptions_ = NSNumericSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch | NSCaseInsensitiveSearch;
-static const CFStringCompareFlags LaxCompareFlags_ = kCFCompareCaseInsensitive | kCFCompareNonliteral | kCFCompareLocalized | kCFCompareNumerically | kCFCompareWidthInsensitive | kCFCompareForcedOrdering;
+static const CFStringCompareFlags LaxCompareFlags_ = kCFCompareNumerically | kCFCompareWidthInsensitive | kCFCompareForcedOrdering;
 
 /* Insertion Sort {{{ */
 
@@ -719,6 +718,13 @@ static _H<NSString> UniqueID_;
 static _H<NSString> UserAgent_;
 static _H<NSString> Product_;
 static _H<NSString> Safari_;
+
+static _H<NSLocale> CollationLocale_;
+static _H<NSArray> CollationThumbs_;
+static std::vector<NSInteger> CollationOffset_;
+static _H<NSArray> CollationTitles_;
+static _H<NSArray> CollationStarts_;
+static Function<NSString *, NSString *> CollationModify_;
 
 static CFLocaleRef Locale_;
 static NSArray *Languages_;
@@ -2095,9 +2101,11 @@ uint32_t PackageChangesRadix(Package *self, void *) {
     return _not(uint32_t) - value.key;
 }
 
+CYString &(*PackageName)(Package *self, SEL sel);
+
 uint32_t PackagePrefixRadix(Package *self, void *context) {
     size_t offset(reinterpret_cast<size_t>(context));
-    CYString &name([self cyname]);
+    CYString &name(PackageName(self, @selector(cyname)));
 
     size_t size(name.size());
     if (size == 0)
@@ -2150,21 +2158,17 @@ uint32_t PackagePrefixRadix(Package *self, void *context) {
     return OSSwapInt32(*reinterpret_cast<uint32_t *>(data));
 }
 
-CYString &(*PackageName)(Package *self, SEL sel);
-
-CFComparisonResult PackageNameCompare(Package *lhs, Package *rhs, void *arg) {
+CFComparisonResult StringNameCompare(CFStringRef lhn, CFStringRef rhn, void *arg) {
     _profile(PackageNameCompare)
-        CYString &lhi(PackageName(lhs, @selector(cyname)));
-        CYString &rhi(PackageName(rhs, @selector(cyname)));
-        CFStringRef lhn(lhi), rhn(rhi);
-
         if (lhn == NULL)
             return rhn == NULL ? kCFCompareEqualTo : kCFCompareLessThan;
         else if (rhn == NULL)
             return kCFCompareGreaterThan;
 
+        CFIndex lhl(CFStringGetLength(lhn));
+
         _profile(PackageNameCompare$NumbersLast)
-            if (!lhi.empty() && !rhi.empty()) {
+            if (lhl != 0 && CFStringGetLength(rhn) != 0) {
                 UniChar lhc(CFStringGetCharacterAtIndex(lhn, 0));
                 UniChar rhc(CFStringGetCharacterAtIndex(rhn, 0));
                 bool lha(CFUniCharIsMemberOf(lhc, kCFUniCharLetterCharacterSet));
@@ -2173,16 +2177,21 @@ CFComparisonResult PackageNameCompare(Package *lhs, Package *rhs, void *arg) {
             }
         _end
 
-        CFIndex length = CFStringGetLength(lhn);
-
         _profile(PackageNameCompare$Compare)
-            return CFStringCompareWithOptionsAndLocale(lhn, rhn, CFRangeMake(0, length), LaxCompareFlags_, Locale_);
+            return CFStringCompareWithOptionsAndLocale(lhn, rhn, CFRangeMake(0, lhl), LaxCompareFlags_, (CFLocaleRef) (id) CollationLocale_);
         _end
     _end
 }
 
-CFComparisonResult PackageNameCompare_(Package **lhs, Package **rhs, void *context) {
-    return PackageNameCompare(*lhs, *rhs, context);
+CFComparisonResult PackageNameCompare(Package *lhs, Package *rhs, void *arg) {
+    CYString &lhi(PackageName(lhs, @selector(cyname)));
+    CYString &rhi(PackageName(rhs, @selector(cyname)));
+    CFStringRef lhn(lhi), rhn(rhi);
+    return StringNameCompare(lhn, rhn, arg);
+}
+
+CFComparisonResult PackageNameCompare_(Package **lhs, Package **rhs, void *arg) {
+    return PackageNameCompare(*lhs, *rhs, arg);
 }
 
 struct PackageNameOrdering :
@@ -3158,7 +3167,6 @@ struct PackageNameOrdering :
 /* Section Class {{{ */
 @interface Section : NSObject {
     _H<NSString> name_;
-    unichar index_;
     size_t row_;
     size_t count_;
     _H<NSString> localized_;
@@ -3168,9 +3176,9 @@ struct PackageNameOrdering :
 - (Section *) initWithName:(NSString *)name localized:(NSString *)localized;
 - (Section *) initWithName:(NSString *)name localize:(BOOL)localize;
 - (Section *) initWithName:(NSString *)name row:(size_t)row localize:(BOOL)localize;
-- (Section *) initWithIndex:(unichar)index row:(size_t)row;
+
 - (NSString *) name;
-- (unichar) index;
+- (void) setName:(NSString *)name;
 
 - (size_t) row;
 - (size_t) count;
@@ -3216,19 +3224,9 @@ struct PackageNameOrdering :
 - (Section *) initWithName:(NSString *)name row:(size_t)row localize:(BOOL)localize {
     if ((self = [super init]) != nil) {
         name_ = name;
-        index_ = '\0';
         row_ = row;
         if (localize)
             localized_ = LocalizeSection(name_);
-    } return self;
-}
-
-/* XXX: localize the index thingees */
-- (Section *) initWithIndex:(unichar)index row:(size_t)row {
-    if ((self = [super init]) != nil) {
-        name_ = [NSString stringWithCharacters:&index length:1];
-        index_ = index;
-        row_ = row;
     } return self;
 }
 
@@ -3236,8 +3234,8 @@ struct PackageNameOrdering :
     return name_;
 }
 
-- (unichar) index {
-    return index_;
+- (void) setName:(NSString *)name {
+    name_ = name;
 }
 
 - (size_t) row {
@@ -6210,7 +6208,10 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     _H<NSArray> packages_;
     _H<NSArray> sections_;
     _H<UITableView, 2> list_;
-    _H<NSMutableArray> index_;
+
+    _H<NSArray> thumbs_;
+    std::vector<NSInteger> offset_;
+
     _H<NSString> title_;
     unsigned reloading_;
 }
@@ -6333,12 +6334,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     [[self navigationController] pushViewController:view animated:YES];
 }
 
-#if TryIndexedCollation
-+ (BOOL) hasIndexedCollation {
-    return NO; // XXX: objc_getClass("UILocalizedIndexedCollation") != nil;
-}
-#endif
-
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)list {
     NSInteger count([sections_ count]);
     return count == 0 ? 1 : count;
@@ -6384,20 +6379,11 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (NSArray *) sectionIndexTitlesForTableView:(UITableView *)tableView {
-    if (![self showsSections])
-        return nil;
-
-    return index_;
+    return thumbs_;
 }
 
 - (NSInteger) tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-#if TryIndexedCollation
-    if ([[self class] hasIndexedCollation]) {
-        return [[objc_getClass("UILocalizedIndexedCollation") currentCollation] sectionForSectionIndexTitleAtIndex:index];
-    }
-#endif
-
-    return index;
+    return offset_[index];
 }
 
 - (void) updateHeight {
@@ -6435,7 +6421,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     packages_ = nil;
     sections_ = nil;
-    index_ = nil;
+
+    thumbs_ = nil;
+    offset_.clear();
 
     [super releaseSubviews];
 }
@@ -6495,8 +6483,18 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         goto reload;
     reloading_ = 0;
 
+    thumbs_ = nil;
+    offset_.clear();
+
     packages_ = packages;
-    sections_ = [self sectionsForPackages:packages];
+
+    if ([self showsSections])
+        sections_ = [self sectionsForPackages:packages];
+    else {
+        Section *section([[[Section alloc] initWithName:nil row:0 localize:NO] autorelease]);
+        [section setCount:[packages_ count]];
+        sections_ = [NSArray arrayWithObject:section];
+    }
 
     [self updateHeight];
 
@@ -6510,79 +6508,53 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (NSArray *) sectionsForPackages:(NSMutableArray *)packages {
+    Section *prefix([[[Section alloc] initWithName:nil row:0 localize:NO] autorelease]);
+    size_t end([packages count]);
+
     NSMutableArray *sections([NSMutableArray arrayWithCapacity:16]);
+    Section *section(prefix);
 
-    Section *section = nil;
+    thumbs_ = CollationThumbs_;
+    offset_ = CollationOffset_;
 
-#if TryIndexedCollation
-    if ([[self class] hasIndexedCollation]) {
-        index_ = [[objc_getClass("UILocalizedIndexedCollation") currentCollation] sectionIndexTitles];
+    size_t offset(0);
+    size_t offsets([CollationStarts_ count]);
 
-        id collation = [objc_getClass("UILocalizedIndexedCollation") currentCollation];
-        NSArray *titles = [collation sectionIndexTitles];
-        int secidx = -1;
+    NSString *start([CollationStarts_ objectAtIndex:offset]);
+    size_t length([start length]);
 
-        _profile(PackageTable$reloadData$Section)
-            for (size_t offset(0), end([packages count]); offset != end; ++offset) {
-                Package *package;
-                int index;
+    for (size_t index(0); index != end; ++index) {
+        if (start != nil) {
+            Package *package([packages objectAtIndex:index]);
+            NSString *name([package name]);
 
-                _profile(PackageTable$reloadData$Section$Package)
-                    package = [packages objectAtIndex:offset];
-                    index = [collation sectionForObject:package collationStringSelector:@selector(name)];
-                _end
+            //while ([start compare:name options:NSNumericSearch range:NSMakeRange(0, length) locale:CollationLocale_] != NSOrderedDescending) {
+            while (StringNameCompare((CFStringRef) start, (CFStringRef) name, NULL) != kCFCompareGreaterThan) {
+                NSString *title([CollationTitles_ objectAtIndex:offset]);
+                section = [[[Section alloc] initWithName:title row:index localize:NO] autorelease];
+                [sections addObject:section];
 
-                while (secidx < index) {
-                    secidx += 1;
-
-                    _profile(PackageTable$reloadData$Section$Allocate)
-                        section = [[[Section alloc] initWithName:[titles objectAtIndex:secidx] row:offset localize:NO] autorelease];
-                    _end
-
-                    _profile(PackageTable$reloadData$Section$Add)
-                        [sections addObject:section];
-                    _end
-                }
-
-                [section addToCount];
+                start = ++offset == offsets ? nil : [CollationStarts_ objectAtIndex:offset];
+                if (start == nil)
+                    break;
+                length = [start length];
             }
-        _end
-    } else
-#endif
-    {
-        index_ = [NSMutableArray arrayWithCapacity:32];
-
-        bool sectioned([self showsSections]);
-        if (!sectioned) {
-            section = [[[Section alloc] initWithName:nil localize:false] autorelease];
-            [sections addObject:section];
         }
 
-        _profile(PackageTable$reloadData$Section)
-            for (size_t offset(0), end([packages count]); offset != end; ++offset) {
-                Package *package;
-                unichar index;
+        [section addToCount];
+    }
 
-                _profile(PackageTable$reloadData$Section$Package)
-                    package = [packages objectAtIndex:offset];
-                    index = [package index];
-                _end
+    for (; offset != offsets; ++offset) {
+        NSString *title([CollationTitles_ objectAtIndex:offset]);
+        Section *section([[[Section alloc] initWithName:title row:end localize:NO] autorelease]);
+        [sections addObject:section];
+    }
 
-                if (sectioned && (section == nil || [section index] != index)) {
-                    _profile(PackageTable$reloadData$Section$Allocate)
-                        section = [[[Section alloc] initWithIndex:index row:offset] autorelease];
-                    _end
-
-                    [index_ addObject:[section name]];
-
-                    _profile(PackageTable$reloadData$Section$Add)
-                        [sections addObject:section];
-                    _end
-                }
-
-                [section addToCount];
-            }
-        _end
+    if ([prefix count] != 0) {
+        Section *suffix([sections lastObject]);
+        [prefix setName:[suffix name]];
+        [suffix setName:nil];
+        [sections insertObject:prefix atIndex:(offsets - 1)];
     }
 
     return sections;
@@ -10002,6 +9974,36 @@ int main(int argc, char *argv[]) {
     if (lang != NULL) {
         setenv("LANG", lang, true);
         std::setlocale(LC_ALL, lang);
+    }
+    /* }}} */
+    /* Index Collation {{{ */
+    if (Class $UILocalizedIndexedCollation = objc_getClass("UILocalizedIndexedCollation")) {
+        NSBundle *bundle([NSBundle bundleForClass:$UILocalizedIndexedCollation]);
+        NSString *path([bundle pathForResource:@"UITableViewLocalizedSectionIndex" ofType:@"plist"]);
+        //path = @"/System/Library/Frameworks/UIKit.framework/.lproj/UITableViewLocalizedSectionIndex.plist";
+        NSDictionary *dictionary([NSDictionary dictionaryWithContentsOfFile:path]);
+        _H<UILocalizedIndexedCollation> collation([[[UILocalizedIndexedCollation alloc] initWithDictionary:dictionary] autorelease]);
+
+        CollationLocale_ = MSHookIvar<NSLocale *>(collation, "_locale");
+
+        CollationThumbs_ = [collation sectionIndexTitles];
+        for (size_t index(0), end([CollationThumbs_ count]); index != end; ++index)
+            CollationOffset_.push_back([collation sectionForSectionIndexTitleAtIndex:index]);
+
+        CollationTitles_ = [collation sectionTitles];
+        CollationStarts_ = MSHookIvar<NSArray *>(collation, "_sectionStartStrings");
+
+        if ([collation respondsToSelector:@selector(transformedCollationStringForString:)])
+            CollationModify_ = [=](NSString *value) { return [collation transformedCollationStringForString:value]; };
+    } else {
+        CollationLocale_ = [[[NSLocale alloc] initWithLocaleIdentifier:@"en@collation=dictionary"] autorelease];
+
+        CollationThumbs_ = [NSArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",@"#",nil];
+        for (NSInteger offset(0); offset != 28; ++offset)
+            CollationOffset_.push_back(offset);
+
+        CollationTitles_ = [NSArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",@"#",nil];
+        CollationStarts_ = [NSArray arrayWithObjects:@"a",@"b",@"c",@"d",@"e",@"f",@"g",@"h",@"i",@"j",@"k",@"l",@"m",@"n",@"o",@"p",@"q",@"r",@"s",@"t",@"u",@"v",@"w",@"x",@"y",@"z",@"ʒ",nil];
     }
     /* }}} */
 

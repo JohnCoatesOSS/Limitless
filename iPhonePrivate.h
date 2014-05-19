@@ -243,6 +243,11 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 + (UIImage *) imageAtPath:(NSString *)path;
 @end
 
+@interface UILocalizedIndexedCollation (Apple)
+- (id) initWithDictionary:(NSDictionary *)dictionary;
+- (NSString *) transformedCollationStringForString:(NSString *)string;
+@end
+
 @interface UINavigationBar (Apple)
 + (CGSize) defaultSize;
 - (UIBarStyle) _barStyle:(BOOL)style;
