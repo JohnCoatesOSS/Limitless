@@ -26,6 +26,9 @@
 #include "CyteKit/UCPlatform.h"
 #include "CyteKit/Localize.h"
 
+#include <unicode/ustring.h>
+#include <unicode/utrans.h>
+
 #include <objc/objc.h>
 #include <objc/runtime.h>
 
@@ -724,7 +727,50 @@ static _H<NSArray> CollationThumbs_;
 static std::vector<NSInteger> CollationOffset_;
 static _H<NSArray> CollationTitles_;
 static _H<NSArray> CollationStarts_;
-static Function<NSString *, NSString *> CollationModify_;
+static UTransliterator *CollationTransl_;
+//static Function<NSString *, NSString *> CollationModify_;
+
+typedef std::basic_string<UChar> ustring;
+static ustring CollationString_;
+
+#define CUC const ustring &str(*reinterpret_cast<const ustring *>(rep))
+#define UC ustring &str(*reinterpret_cast<ustring *>(rep))
+static struct UReplaceableCallbacks CollationUCalls_ = {
+    .length = [](const UReplaceable *rep) -> int32_t { CUC;
+        return str.size();
+    },
+
+    .charAt = [](const UReplaceable *rep, int32_t offset) -> UChar { CUC;
+        //fprintf(stderr, "charAt(%d) : %d\n", offset, str.size());
+        if (offset >= str.size())
+            return 0xffff;
+        return str[offset];
+    },
+
+    .char32At = [](const UReplaceable *rep, int32_t offset) -> UChar32 { CUC;
+        //fprintf(stderr, "char32At(%d) : %d\n", offset, str.size());
+        if (offset >= str.size())
+            return 0xffff;
+        UChar32 c;
+        U16_GET(str.data(), 0, offset, str.size(), c);
+        return c;
+    },
+
+    .replace = [](UReplaceable *rep, int32_t start, int32_t limit, const UChar *text, int32_t length) -> void { UC;
+        //fprintf(stderr, "replace(%d, %d, %d) : %d\n", start, limit, length, str.size());
+        str.replace(start, limit - start, text, length);
+    },
+
+    .extract = [](UReplaceable *rep, int32_t start, int32_t limit, UChar *dst) -> void { UC;
+        //fprintf(stderr, "extract(%d, %d) : %d\n", start, limit, str.size());
+        str.copy(dst, limit - start, start);
+    },
+
+    .copy = [](UReplaceable *rep, int32_t start, int32_t limit, int32_t dest) -> void { UC;
+        //fprintf(stderr, "copy(%d, %d, %d) : %d\n", start, limit, dest, str.size());
+        str.replace(dest, 0, str, start, limit - start);
+    },
+};
 
 static CFLocaleRef Locale_;
 static NSArray *Languages_;
@@ -1979,6 +2025,7 @@ struct ParsedPackage {
 
     CYString id_;
     CYString name_;
+    CYString transform_;
 
     CYString latest_;
     CYString installed_;
@@ -2158,17 +2205,17 @@ uint32_t PackagePrefixRadix(Package *self, void *context) {
     return OSSwapInt32(*reinterpret_cast<uint32_t *>(data));
 }
 
-CFComparisonResult StringNameCompare(CFStringRef lhn, CFStringRef rhn, void *arg) {
+CFComparisonResult StringNameCompare(CFStringRef lhn, CFStringRef rhn, size_t length) {
     _profile(PackageNameCompare)
         if (lhn == NULL)
             return rhn == NULL ? kCFCompareEqualTo : kCFCompareLessThan;
         else if (rhn == NULL)
             return kCFCompareGreaterThan;
 
-        CFIndex lhl(CFStringGetLength(lhn));
+        CFIndex length(CFStringGetLength(lhn));
 
         _profile(PackageNameCompare$NumbersLast)
-            if (lhl != 0 && CFStringGetLength(rhn) != 0) {
+            if (length != 0 && CFStringGetLength(rhn) != 0) {
                 UniChar lhc(CFStringGetCharacterAtIndex(lhn, 0));
                 UniChar rhc(CFStringGetCharacterAtIndex(rhn, 0));
                 bool lha(CFUniCharIsMemberOf(lhc, kCFUniCharLetterCharacterSet));
@@ -2178,16 +2225,19 @@ CFComparisonResult StringNameCompare(CFStringRef lhn, CFStringRef rhn, void *arg
         _end
 
         _profile(PackageNameCompare$Compare)
-            return CFStringCompareWithOptionsAndLocale(lhn, rhn, CFRangeMake(0, lhl), LaxCompareFlags_, (CFLocaleRef) (id) CollationLocale_);
+            return CFStringCompareWithOptionsAndLocale(lhn, rhn, CFRangeMake(0, length), LaxCompareFlags_, (CFLocaleRef) (id) CollationLocale_);
         _end
     _end
 }
 
+_finline CFComparisonResult StringNameCompare(NSString *lhn, NSString*rhn, size_t length) {
+    return StringNameCompare((CFStringRef) lhn, (CFStringRef) rhn, length);
+}
+
 CFComparisonResult PackageNameCompare(Package *lhs, Package *rhs, void *arg) {
-    CYString &lhi(PackageName(lhs, @selector(cyname)));
-    CYString &rhi(PackageName(rhs, @selector(cyname)));
-    CFStringRef lhn(lhi), rhn(rhi);
-    return StringNameCompare(lhn, rhn, arg);
+    CYString &lhn(PackageName(lhs, @selector(cyname)));
+    NSString *rhn(PackageName(rhs, @selector(cyname)));
+    return StringNameCompare(lhn, rhn, lhn.size());
 }
 
 CFComparisonResult PackageNameCompare_(Package **lhs, Package **rhs, void *arg) {
@@ -2428,6 +2478,60 @@ struct PackageNameOrdering :
             if (!current.end())
                 installed_.set(NULL, StripVersion_(current.VerStr()));
         _end
+
+        _profile(Package$initWithVersion$Transliterate) do {
+            if (CollationTransl_ == NULL)
+                break;
+            if (name_.empty())
+                break;
+
+            _profile(Package$initWithVersion$Transliterate$utf8)
+            const uint8_t *data(reinterpret_cast<const uint8_t *>(name_.data()));
+            for (size_t i(0), e(name_.size()); i != e; ++i)
+                if (data[i] >= 0x80)
+                    goto extended;
+            break; extended:;
+            _end
+
+            UErrorCode code(U_ZERO_ERROR);
+            int32_t length;
+
+            _profile(Package$initWithVersion$Transliterate$u_strFromUTF8WithSub)
+            CollationString_.resize(name_.size());
+            u_strFromUTF8WithSub(&CollationString_[0], CollationString_.size(), &length, name_.data(), name_.size(), 0xfffd, NULL, &code);
+            if (!U_SUCCESS(code))
+                break;
+            CollationString_.resize(length);
+            _end
+
+            _profile(Package$initWithVersion$Transliterate$utrans_trans)
+            length = CollationString_.size();
+            utrans_trans(CollationTransl_, reinterpret_cast<UReplaceable *>(&CollationString_), &CollationUCalls_, 0, &length, &code);
+            if (!U_SUCCESS(code))
+                break;
+            _assert(CollationString_.size() == length);
+            _end
+
+            _profile(Package$initWithVersion$Transliterate$u_strToUTF8WithSub$preflight)
+            u_strToUTF8WithSub(NULL, 0, &length, CollationString_.data(), CollationString_.size(), 0xfffd, NULL, &code);
+            if (code == U_BUFFER_OVERFLOW_ERROR)
+                code = U_ZERO_ERROR;
+            else if (!U_SUCCESS(code))
+                break;
+            _end
+
+            char *transform;
+            _profile(Package$initWithVersion$Transliterate$apr_palloc)
+            transform = static_cast<char *>(apr_palloc(pool_, length));
+            _end
+            _profile(Package$initWithVersion$Transliterate$u_strToUTF8WithSub$transform)
+            u_strToUTF8WithSub(transform, length, NULL, CollationString_.data(), CollationString_.size(), 0xfffd, NULL, &code);
+            if (!U_SUCCESS(code))
+                break;
+            _end
+
+            transform_.set(NULL, transform, length);
+        } while (false); _end
 
         _profile(Package$initWithVersion$Tags)
             pkgCache::TagIterator tag(iterator.TagList());
@@ -3112,7 +3216,7 @@ struct PackageNameOrdering :
 }
 
 - (CYString &) cyname {
-    return name_.empty() ? id_ : name_;
+    return !transform_.empty() ? transform_ : !name_.empty() ? name_ : id_;
 }
 
 - (uint32_t) compareBySection:(NSArray *)sections {
@@ -6526,10 +6630,10 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     for (size_t index(0); index != end; ++index) {
         if (start != nil) {
             Package *package([packages objectAtIndex:index]);
-            NSString *name([package name]);
+            NSString *name(PackageName(package, @selector(cyname)));
 
             //while ([start compare:name options:NSNumericSearch range:NSMakeRange(0, length) locale:CollationLocale_] != NSOrderedDescending) {
-            while (StringNameCompare((CFStringRef) start, (CFStringRef) name, NULL) != kCFCompareGreaterThan) {
+            while (StringNameCompare(start, name, length) != kCFCompareGreaterThan) {
                 NSString *title([CollationTitles_ objectAtIndex:offset]);
                 section = [[[Section alloc] initWithName:title row:index localize:NO] autorelease];
                 [sections addObject:section];
@@ -9993,8 +10097,16 @@ int main(int argc, char *argv[]) {
         CollationTitles_ = [collation sectionTitles];
         CollationStarts_ = MSHookIvar<NSArray *>(collation, "_sectionStartStrings");
 
-        if ([collation respondsToSelector:@selector(transformedCollationStringForString:)])
-            CollationModify_ = [=](NSString *value) { return [collation transformedCollationStringForString:value]; };
+        NSString *&transform(MSHookIvar<NSString *>(collation, "_transform"));
+        if (&transform != NULL && transform != nil) {
+            /*if ([collation respondsToSelector:@selector(transformedCollationStringForString:)])
+                CollationModify_ = [=](NSString *value) { return [collation transformedCollationStringForString:value]; };*/
+            const UChar *uid(reinterpret_cast<const UChar *>([transform cStringUsingEncoding:NSUnicodeStringEncoding]));
+            UErrorCode code(U_ZERO_ERROR);
+            CollationTransl_ = utrans_openU(uid, -1, UTRANS_FORWARD, NULL, 0, NULL, &code);
+            if (!U_SUCCESS(code))
+                NSLog(@"%s", u_errorName(code));
+        }
     } else {
         CollationLocale_ = [[[NSLocale alloc] initWithLocaleIdentifier:@"en@collation=dictionary"] autorelease];
 
