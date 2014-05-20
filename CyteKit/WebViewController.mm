@@ -636,6 +636,49 @@ float CYScrollViewDecelerationRateNormal;
     [self _didStartLoading];
 }
 
+- (void) webView:(WebView *)view resource:(id)identifier didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge fromDataSource:(WebDataSource *)source {
+    challenge_ = [challenge retain];
+
+    NSURLProtectionSpace *space([challenge protectionSpace]);
+    NSString *realm([space realm]);
+    if (realm == nil)
+        realm = @"";
+
+    UIAlertView *alert = [[[UIAlertView alloc]
+        initWithTitle:realm
+        message:nil
+        delegate:self
+        cancelButtonTitle:UCLocalize("CANCEL")
+        otherButtonTitles:UCLocalize("LOGIN"), nil
+    ] autorelease];
+
+    [alert setContext:@"challenge"];
+    [alert setNumberOfRows:1];
+
+    [alert addTextFieldWithValue:@"" label:UCLocalize("USERNAME")];
+    [alert addTextFieldWithValue:@"" label:UCLocalize("PASSWORD")];
+
+    UITextField *username([alert textFieldAtIndex:0]); {
+        UITextInputTraits *traits([username textInputTraits]);
+        [traits setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+        [traits setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [traits setKeyboardType:UIKeyboardTypeASCIICapable];
+        [traits setReturnKeyType:UIReturnKeyNext];
+    }
+
+    UITextField *password([alert textFieldAtIndex:1]); {
+        UITextInputTraits *traits([password textInputTraits]);
+        [traits setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+        [traits setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [traits setKeyboardType:UIKeyboardTypeASCIICapable];
+        // XXX: UIReturnKeyDone
+        [traits setReturnKeyType:UIReturnKeyNext];
+        [traits setSecureTextEntry:YES];
+    }
+
+    [alert show];
+}
+
 - (NSURLRequest *) webView:(WebView *)view resource:(id)identifier willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response fromDataSource:(WebDataSource *)source {
 #if LogBrowser
     NSLog(@"resource:%@ willSendRequest:%@ redirectResponse:%@ fromDataSource:%@", identifier, request, response, source);
@@ -683,21 +726,15 @@ float CYScrollViewDecelerationRateNormal;
     } else if ([context isEqualToString:@"challenge"]) {
         id<NSURLAuthenticationChallengeSender> sender([challenge_ sender]);
 
-        switch (button) {
-            case 1: {
-                NSString *username([[alert textFieldAtIndex:0] text]);
-                NSString *password([[alert textFieldAtIndex:1] text]);
+        if (button == [alert cancelButtonIndex])
+            [sender cancelAuthenticationChallenge:challenge_];
+        else if (button == [alert firstOtherButtonIndex]) {
+            NSString *username([[alert textFieldAtIndex:0] text]);
+            NSString *password([[alert textFieldAtIndex:1] text]);
 
-                NSURLCredential *credential([NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceForSession]);
+            NSURLCredential *credential([NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceForSession]);
 
-                [sender useCredential:credential forAuthenticationChallenge:challenge_];
-            } break;
-
-            case 2:
-                [sender cancelAuthenticationChallenge:challenge_];
-            break;
-
-            _nodefault
+            [sender useCredential:credential forAuthenticationChallenge:challenge_];
         }
 
         challenge_ = nil;

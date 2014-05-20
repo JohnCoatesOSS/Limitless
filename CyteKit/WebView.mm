@@ -260,6 +260,24 @@ static void $UIWebViewWebViewDelegate$webView$didReceiveTitle$forFrame$(UIWebVie
         [super webView:view didStartProvisionalLoadForFrame:frame];
 }
 // }}}
+// webView:resource:didCancelAuthenticationChallenge:fromDataSource: {{{
+- (void) webView:(WebView *)view resource:(id)identifier didCancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge fromDataSource:(WebDataSource *)source {
+    id<CyteWebViewDelegate> delegate([self delegate]);
+    if ([UIWebView respondsToSelector:@selector(webView:resource:didCancelAuthenticationChallenge:fromDataSource:)])
+        [super webView:view resource:identifier didCancelAuthenticationChallenge:challenge fromDataSource:source];
+    if ([delegate respondsToSelector:@selector(webView:resource:didCancelAuthenticationChallenge:fromDataSource:)])
+        [delegate webView:view resource:identifier didCancelAuthenticationChallenge:challenge fromDataSource:source];
+}
+// }}}
+// webView:resource:didReceiveAuthenticationChallenge:fromDataSource: {{{
+- (void) webView:(WebView *)view resource:(id)identifier didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge fromDataSource:(WebDataSource *)source {
+    id<CyteWebViewDelegate> delegate([self delegate]);
+    if ([UIWebView respondsToSelector:@selector(webView:resource:didReceiveAuthenticationChallenge:fromDataSource:)])
+        [super webView:view resource:identifier didReceiveAuthenticationChallenge:challenge fromDataSource:source];
+    if ([delegate respondsToSelector:@selector(webView:resource:didReceiveAuthenticationChallenge:fromDataSource:)])
+        [delegate webView:view resource:identifier didReceiveAuthenticationChallenge:challenge fromDataSource:source];
+}
+// }}}
 // webView:resource:willSendRequest:redirectResponse:fromDataSource: (3.2+) {{{
 static NSURLRequest *$UIWebViewWebViewDelegate$webView$resource$willSendRequest$redirectResponse$fromDataSource$(UIWebViewWebViewDelegate *self, SEL sel, WebView *view, id identifier, NSURLRequest *request, NSURLResponse *response, WebDataSource *source) {
     UIWebView *uiWebView(MSHookIvar<UIWebView *>(self, "uiWebView"));
