@@ -7495,6 +7495,16 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     } return self;
 }
 
+- (void) viewDidLoad {
+    [super viewDidLoad];
+    [self setLeftBarButtonItem];
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setLeftBarButtonItem];
+}
+
 - (void) reloadData {
     [self setLeftBarButtonItem];
     [super reloadData];
