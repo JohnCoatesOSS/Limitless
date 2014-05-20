@@ -834,7 +834,7 @@ NSString *LocalizeSection(NSString *section) {
 
 NSString *Simplify(NSString *title) {
     const char *data = [title UTF8String];
-    size_t size = [title length];
+    size_t size = [title lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
 
     static Pcre square_r("^\\[(.*)\\]$");
     if (square_r(data, size))

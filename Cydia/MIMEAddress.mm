@@ -61,7 +61,7 @@
 - (id) initWithString:(NSString *)string {
     if ((self = [super init]) != nil) {
         const char *data = [string UTF8String];
-        size_t size = [string length];
+        size_t size = [string lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
 
         static Pcre address_r("^\"?(.*)\"? <([^>]*)>$");
 
