@@ -9836,7 +9836,7 @@ _trace();
 
     // (Try to) show the startup URL.
     if (starturl_ != nil) {
-        [self openCydiaURL:starturl_ forExternal:NO];
+        [self openCydiaURL:starturl_ forExternal:YES];
         starturl_ = nil;
     }
 }
