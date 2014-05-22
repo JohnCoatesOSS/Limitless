@@ -9344,6 +9344,9 @@ _end
         return false;
     }
 
+    if ([tabbar_ modalViewController] != nil)
+        return false;
+
     // Use external process status API internally.
     // This is probably a really bad idea.
     // XXX: what is the point of this? does this solve anything at all?
