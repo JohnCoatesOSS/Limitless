@@ -7987,9 +7987,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     CFDateFormatterRef formatter(CFDateFormatterCreate(NULL, Locale_, kCFDateFormatterLongStyle, kCFDateFormatterNoStyle));
 
     NSMutableArray *sections([NSMutableArray arrayWithCapacity:16]);
-
-    Section *section;
-
+    Section *section(nil);
     time_t last(0);
 
     for (size_t offset(0), count([packages count]); offset != count; ++offset) {
@@ -7998,7 +7996,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         time_t updated([package updated]);
         updated -= updated % (60 * 60 * 24);
 
-        if (updated != last) {
+        if (section == nil || updated != last) {
             last = updated;
 
             NSString *name;
