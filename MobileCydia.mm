@@ -3153,6 +3153,7 @@ struct PackageNameOrdering :
     string = [self name];
     length = [string length];
 
+    if (length != 0)
     for (NSString *term in query) {
         range = [string rangeOfString:term options:MatchCompareOptions_];
         if (range.location != NSNotFound)
@@ -3163,6 +3164,7 @@ struct PackageNameOrdering :
         string = [self id];
         length = [string length];
 
+        if (length != 0)
         for (NSString *term in query) {
             range = [string rangeOfString:term options:MatchCompareOptions_];
             if (range.location != NSNotFound)
@@ -3174,6 +3176,7 @@ struct PackageNameOrdering :
     length = [string length];
     NSUInteger stop(std::min<NSUInteger>(length, 200));
 
+    if (length != 0)
     for (NSString *term in query) {
         range = [string rangeOfString:term options:MatchCompareOptions_ range:NSMakeRange(0, stop)];
         if (range.location != NSNotFound)
