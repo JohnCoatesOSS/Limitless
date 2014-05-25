@@ -10035,6 +10035,7 @@ int main(int argc, char *argv[]) {
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
 
     MobilizedFiles_ = [NSMutableSet setWithObjects:
+        @"Library/Preferences/.GlobalPreferences.plist",
         @"Library/Preferences/com.apple.Accessibility.plist",
         @"Library/Preferences/com.apple.preferences.sounds.plist",
     nil];
