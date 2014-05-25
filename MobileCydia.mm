@@ -3132,7 +3132,11 @@ struct PackageNameOrdering :
     return source_ == (Source *) [NSNull null] ? nil : source_;
 }
 
-- (uint32_t) updated {
+- (time_t) updated {
+    return updated_;
+}
+
+- (uint32_t) updatedRadix {
     return std::numeric_limits<uint32_t>::max() - updated_;
 }
 
@@ -7948,10 +7952,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     return [NSURL URLWithString:@"cydia://installed"];
 }
 
-- (bool) showsSections {
-    return sectioned_;
-}
-
 - (void) useUpdated {
     sectioned_ = false;
 
@@ -7961,7 +7961,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     }];
 
     [self setSorter:[](NSMutableArray *packages) {
-        [packages radixSortUsingSelector:@selector(updated)];
+        [packages radixSortUsingSelector:@selector(updatedRadix)];
     }];
 } }
 
@@ -7979,6 +7979,42 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     [self setSorter:nullptr];
 } }
+
+- (NSArray *) sectionsForPackages:(NSMutableArray *)packages {
+    if (sectioned_)
+        return [super sectionsForPackages:packages];
+
+    CFDateFormatterRef formatter(CFDateFormatterCreate(NULL, Locale_, kCFDateFormatterLongStyle, kCFDateFormatterNoStyle));
+
+    NSMutableArray *sections([NSMutableArray arrayWithCapacity:16]);
+
+    Section *section;
+
+    time_t last(0);
+
+    for (size_t offset(0), count([packages count]); offset != count; ++offset) {
+        Package *package([packages objectAtIndex:offset]);
+
+        time_t updated([package updated]);
+        updated -= updated % (60 * 60 * 24);
+
+        if (updated != last) {
+            last = updated;
+
+            NSString *name;
+            name = (NSString *) CFDateFormatterCreateStringWithDate(NULL, formatter, (CFDateRef) [NSDate dateWithTimeIntervalSince1970:updated]);
+            [name autorelease];
+
+            section = [[[Section alloc] initWithName:name row:offset localize:NO] autorelease];
+            [sections addObject:section];
+        }
+
+        [section addToCount];
+    }
+
+    CFRelease(formatter);
+    return sections;
+}
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
