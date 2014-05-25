@@ -9903,10 +9903,15 @@ Class $CFXPreferencesPropertyListSource;
 MSHook(BOOL, CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync, CFXPreferencesPropertyListSource *self, SEL _cmd) {
     NSURL *&url(MSHookIvar<NSURL *>(self, "_url")), *old(url);
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
+
     url = MobilizeURL(url);
-    BOOL value(_CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync(self, _cmd));
-    //NSLog(@"%@ %s", [url absoluteString], value ? "YES" : "NO");
-    url = old;
+    BOOL value; @try {
+        value = _CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync(self, _cmd);
+        //NSLog(@"CFX %@ %s", [url absoluteString], value ? "YES" : "NO");
+    } @finally {
+        url = old;
+    }
+
     [pool release];
     return value;
 }
@@ -9914,10 +9919,15 @@ MSHook(BOOL, CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync,
 MSHook(void *, CFXPreferencesPropertyListSource$createPlistFromDisk, CFXPreferencesPropertyListSource *self, SEL _cmd) {
     NSURL *&url(MSHookIvar<NSURL *>(self, "_url")), *old(url);
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
+
     url = MobilizeURL(url);
-    void *value(_CFXPreferencesPropertyListSource$createPlistFromDisk(self, _cmd));
-    //NSLog(@"%@ %@", [url absoluteString], value);
-    url = old;
+    void *value; @try {
+        value = _CFXPreferencesPropertyListSource$createPlistFromDisk(self, _cmd);
+        //NSLog(@"CFX %@ %@", [url absoluteString], value);
+    } @finally {
+        url = old;
+    }
+
     [pool release];
     return value;
 }
