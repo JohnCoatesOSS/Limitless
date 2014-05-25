@@ -5,7 +5,6 @@
 #include <sys/sysctl.h>
 
 #include <CydiaSubstrate/CydiaSubstrate.h>
-#include "CyteKit/PerlCompatibleRegEx.hpp"
 
 _H<NSMutableDictionary> Sources_;
 bool Changed_;
