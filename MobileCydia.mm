@@ -10047,7 +10047,9 @@ int main(int argc, char *argv[]) {
         if (Method method = class_getInstanceMethod($WAKWindow, @selector(screenSize)))
             method_setImplementation(method, (IMP) &$WAKWindow$screenSize);
 
-    $CFXPreferencesPropertyListSource = objc_getClass("CFXPreferencesPropertyListSource");
+    $CFXPreferencesPropertyListSource = objc_getClass("CFXPreferencesPropertyListSourceSynchronizer");
+    if ($CFXPreferencesPropertyListSource == Nil)
+        $CFXPreferencesPropertyListSource = objc_getClass("CFXPreferencesPropertyListSource");
 
     Method CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync(class_getInstanceMethod($CFXPreferencesPropertyListSource, @selector(_backingPlistChangedSinceLastSync)));
     if (CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync != NULL) {
