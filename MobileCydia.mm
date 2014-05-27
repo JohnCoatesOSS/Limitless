@@ -2318,6 +2318,7 @@ struct PackageNameOrdering :
         @"state",
         @"support",
         @"tags",
+        @"upgraded",
         @"warnings",
     nil];
 }
