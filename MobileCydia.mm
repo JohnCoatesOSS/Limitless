@@ -2029,7 +2029,7 @@ struct ParsedPackage {
 
     CYString latest_;
     CYString installed_;
-    time_t updated_;
+    time_t upgraded_;
 
     const char *section_;
     _transient NSString *section$_;
@@ -2583,7 +2583,7 @@ struct PackageNameOrdering :
                 memcpy(lower + prefix + size, ".list", 6);
                 struct stat info;
                 if (stat(lower, &info) != -1)
-                    updated_ = info.st_birthtime;
+                    upgraded_ = info.st_birthtime;
             }
 
             PackageValue *metadata(PackageFind(lower + prefix, size));
@@ -3132,12 +3132,12 @@ struct PackageNameOrdering :
     return source_ == (Source *) [NSNull null] ? nil : source_;
 }
 
-- (time_t) updated {
-    return updated_;
+- (time_t) upgraded {
+    return upgraded_;
 }
 
-- (uint32_t) updatedRadix {
-    return std::numeric_limits<uint32_t>::max() - updated_;
+- (uint32_t) recent {
+    return std::numeric_limits<uint32_t>::max() - upgraded_;
 }
 
 - (uint32_t) rank {
@@ -7952,7 +7952,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     return [NSURL URLWithString:@"cydia://installed"];
 }
 
-- (void) useUpdated {
+- (void) useRecent {
     sectioned_ = false;
 
 @synchronized (self) {
@@ -7961,14 +7961,14 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     }];
 
     [self setSorter:[](NSMutableArray *packages) {
-        [packages radixSortUsingSelector:@selector(updatedRadix)];
+        [packages radixSortUsingSelector:@selector(recent)];
     }];
 } }
 
 - (void) useFilter:(UISegmentedControl *)segmented {
     NSInteger selected([segmented selectedSegmentIndex]);
     if (selected == 2)
-        return [self useUpdated];
+        return [self useRecent];
     bool simple(selected == 0);
     sectioned_ = true;
 
@@ -7993,14 +7993,14 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     for (size_t offset(0), count([packages count]); offset != count; ++offset) {
         Package *package([packages objectAtIndex:offset]);
 
-        time_t updated([package updated]);
-        updated -= updated % (60 * 60 * 24);
+        time_t upgraded([package upgraded]);
+        upgraded -= upgraded % (60 * 60 * 24);
 
-        if (section == nil || updated != last) {
-            last = updated;
+        if (section == nil || upgraded != last) {
+            last = upgraded;
 
             NSString *name;
-            name = (NSString *) CFDateFormatterCreateStringWithDate(NULL, formatter, (CFDateRef) [NSDate dateWithTimeIntervalSince1970:updated]);
+            name = (NSString *) CFDateFormatterCreateStringWithDate(NULL, formatter, (CFDateRef) [NSDate dateWithTimeIntervalSince1970:upgraded]);
             [name autorelease];
 
             section = [[[Section alloc] initWithName:name row:offset localize:NO] autorelease];
