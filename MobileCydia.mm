@@ -8500,8 +8500,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
                 static Pcre href_r("^http(s?)://[^# ]*$");
                 if (!href_r(href)) {
                     UIAlertView *alert = [[[UIAlertView alloc]
-                        initWithTitle:Error_
-                        message:UCLocalize("INVALID_URL")
+                        initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
+                        message:UCLocalize("INVALID_URL_EX")
                         delegate:self
                         cancelButtonTitle:UCLocalize("OK")
                         otherButtonTitles:nil

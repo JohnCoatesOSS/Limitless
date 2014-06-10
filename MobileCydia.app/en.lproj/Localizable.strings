@@ -95,6 +95,7 @@
 "INSTALLED_DETAILS" = "Installed Package";
 "INSTALLED_FILES" = "Installed Files";
 "INVALID_URL" = "Invalid URL";
+"INVALID_URL_EX" = "That is not a valid source URL. Please check it and try again.";
 "KEEP_OLD_COPY" = "Keep My Old Copy";
 "LOADING" = "Loading";
 "LOADING_DATA" = "Loading Data";
