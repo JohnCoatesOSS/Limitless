@@ -8000,14 +8000,21 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         Package *package([packages objectAtIndex:offset]);
 
         time_t upgraded([package upgraded]);
-        upgraded -= upgraded % (60 * 60 * 24);
+        if (upgraded < 1168364520)
+            upgraded = 0;
+        else
+            upgraded -= upgraded % (60 * 60 * 24);
 
         if (section == nil || upgraded != last) {
             last = upgraded;
 
             NSString *name;
-            name = (NSString *) CFDateFormatterCreateStringWithDate(NULL, formatter, (CFDateRef) [NSDate dateWithTimeIntervalSince1970:upgraded]);
-            [name autorelease];
+            if (upgraded == 0)
+                continue; // XXX: name = UCLocalize("...");
+            else {
+                name = (NSString *) CFDateFormatterCreateStringWithDate(NULL, formatter, (CFDateRef) [NSDate dateWithTimeIntervalSince1970:upgraded]);
+                [name autorelease];
+            }
 
             section = [[[Section alloc] initWithName:name row:offset localize:NO] autorelease];
             [sections addObject:section];
