@@ -3056,6 +3056,7 @@ struct PackageNameOrdering :
         bool user = false;
         bool _private = false;
         bool stash = false;
+        bool dsstore = false;
 
         bool repository = [[self section] isEqualToString:@"Repositories"];
 
@@ -3069,6 +3070,8 @@ struct PackageNameOrdering :
                     _private = true;
                 else if (!stash && [file isEqualToString:@"/var/stash"])
                     stash = true;
+                else if (!dsstore && [file hasSuffix:@"/.DS_Store"])
+                    dsstore = true;
 
         /* XXX: this is not sensitive enough. only some folders are valid. */
         if (cydia && !repository)
@@ -3079,6 +3082,8 @@ struct PackageNameOrdering :
             [warnings addObject:[NSString stringWithFormat:UCLocalize("FILES_INSTALLED_TO"), @"/private"]];
         if (stash)
             [warnings addObject:[NSString stringWithFormat:UCLocalize("FILES_INSTALLED_TO"), @"/var/stash"]];
+        if (dsstore)
+            [warnings addObject:[NSString stringWithFormat:UCLocalize("FILES_INSTALLED_TO"), @".DS_Store"]];
     }
 
     return [warnings count] == 0 ? nil : warnings;
