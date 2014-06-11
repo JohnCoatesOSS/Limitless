@@ -78,9 +78,17 @@
         <string>icon.png</string>
         <string>icon-72.png</string>
         <string>icon@2x.png</string>
+
+        <string>Icon-60.png</string>
+        <string>Icon-60@2x.png</string>
+        <string>Icon-76.png</string>
+        <string>Icon-76@2x.png</string>
+
         <string>Icon-Small.png</string>
-        <string>Icon-Small-50.png</string>
         <string>Icon-Small@2x.png</string>
+
+        <string>Icon-Small-40.png</string>
+        <string>Icon-Small-50.png</string>
     </array>
 
 
