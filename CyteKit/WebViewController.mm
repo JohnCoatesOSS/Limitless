@@ -589,7 +589,7 @@ float CYScrollViewDecelerationRateNormal;
                         }
                     }
 
-                    [self setPageColor:uic];
+                    [super setPageColor:uic];
                     [scroller_ setBackgroundColor:color_];
                     break;
                 }
@@ -873,7 +873,7 @@ float CYScrollViewDecelerationRateNormal;
         width_ = width;
         class_ = _class;
 
-        [self setPageColor:nil];
+        [super setPageColor:nil];
 
         allowsNavigationAction_ = true;
 

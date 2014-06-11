@@ -6279,6 +6279,10 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 #endif
 
+- (void) setPageColor:(UIColor *)color {
+    return [super setPageColor:nil];
+}
+
 - (id) initWithDatabase:(Database *)database forPackage:(NSString *)name withReferrer:(NSString *)referrer {
     if ((self = [super init]) != nil) {
         database_ = database;
