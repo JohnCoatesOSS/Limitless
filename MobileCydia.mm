@@ -8819,9 +8819,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 @interface Cydia : UIApplication <
     ConfirmationControllerDelegate,
     DatabaseDelegate,
-    CydiaDelegate,
-    UINavigationControllerDelegate,
-    UITabBarControllerDelegate
+    CydiaDelegate
 > {
     _H<UIWindow> window_;
     _H<CydiaTabBarController> tabbar_;
