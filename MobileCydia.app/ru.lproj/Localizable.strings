@@ -6,6 +6,8 @@
 "ADD_SOURCE" = "Добавить";
 "ADMINISTRATIVE_INFORMATION" = "Административная информация";
 "ALL_PACKAGES" = "Все пакеты";
+"ALL_SOURCES" = "Все источники";
+"ALL_SOURCES_EX" = "объединенный список пакетов из источников ниже";
 "APPLE" = "Apple";
 "AUTHOR" = "Автор ";
 "AVAILABLE_UPGRADES" = "Доступные обновления";
@@ -69,10 +71,13 @@
 "IGNORE_UPGRADES" = "Пропускать обновления";
 "IGNORE_UPGRADES_EX" = "Не обновлять этот пакет при нажатии \"Обновить все\".";
 "ILLEGAL_PACKAGE_IDENTIFIER" = "Недопустимый идентификатор пакета";
+"INDIVIDUAL_SOURCES" = "Отдельные источники";
 "INSTALL" = "Установить";
 "INSTALLED" = "Установлено";
 "INSTALLED_DETAILS" = "Установленный пакет";
 "INSTALLED_FILES" = "Установленные файлы";
+"INVALID_URL" = "Недействительный URL-адрес";
+"INVALID_URL_EX" = "Этот URL-адрес не действителен. Проверьте и попробуйте еще раз.";
 "KEEP_OLD_COPY" = "Сохранить старую копию";
 "LOADING" = "Загрузка";
 "LOADING_DATA" = "Загрузка данных";
@@ -113,6 +118,7 @@
 "QUEUE" = "Очередь";
 "Q_D" = "+1";
 "REBOOT_DEVICE" = "Перезагрузить устройство";
+"RECENT" = "Недавние";
 "REFRESH" = "Обновить";
 "REFRESHING_DATA" = "Обновление данных";
 "REINSTALL" = "Переустановить";
