@@ -812,6 +812,26 @@ inline float Interpolate(float begin, float end, float fraction) {
     return (end - begin) * fraction + begin;
 }
 
+static inline double Retina(double value) {
+    value *= ScreenScale_;
+    value = round(value);
+    value /= ScreenScale_;
+    return value;
+}
+
+static inline CGRect Retina(CGRect value) {
+    value.origin.x *= ScreenScale_;
+    value.origin.y *= ScreenScale_;
+    value.size.width *= ScreenScale_;
+    value.size.height *= ScreenScale_;
+    value = CGRectIntegral(value);
+    value.origin.x /= ScreenScale_;
+    value.origin.y /= ScreenScale_;
+    value.size.width /= ScreenScale_;
+    value.size.height /= ScreenScale_;
+    return value;
+}
+
 static _finline const char *StripVersion_(const char *version) {
     const char *colon(strchr(version, ':'));
     return colon == NULL ? version : colon + 1;
@@ -5834,7 +5854,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         rect.origin.x = 19 - rect.size.width / 2;
         rect.origin.y = 19 - rect.size.height / 2;
 
-        [icon_ drawInRect:rect];
+        [icon_ drawInRect:Retina(rect)];
     }
 
     if (badge_ != nil) {
@@ -5847,7 +5867,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         rect.origin.x = 25 - rect.size.width / 2;
         rect.origin.y = 25 - rect.size.height / 2;
 
-        [badge_ drawInRect:rect];
+        [badge_ drawInRect:Retina(rect)];
     }
 
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
@@ -5877,7 +5897,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         rect.origin.x = 25 - rect.size.width / 2;
         rect.origin.y = 25 - rect.size.height / 2;
 
-        [icon_ drawInRect:rect];
+        [icon_ drawInRect:Retina(rect)];
     }
 
     if (badge_ != nil) {
@@ -5890,7 +5910,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         rect.origin.x = 36 - rect.size.width / 2;
         rect.origin.y = 36 - rect.size.height / 2;
 
-        [badge_ drawInRect:rect];
+        [badge_ drawInRect:Retina(rect)];
     }
 
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
@@ -6032,7 +6052,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     UISetColor(Folder_);
     if (count_ != nil)
-        [count_ drawAtPoint:CGPointMake(10 + (30 - size.width) / 2, 18) withFont:Font12Bold_];
+        [count_ drawAtPoint:CGPointMake(Retina(10 + (30 - size.width) / 2), 18) withFont:Font12Bold_];
 }
 
 @end
@@ -6403,7 +6423,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     UIViewAnimationCurve curve;
     [self getKeyboardCurve:&curve duration:&duration forNotification:notification];
 
-    CGRect kbframe = CGRectMake(round(center.x - bounds.size.width / 2.0), round(center.y - bounds.size.height / 2.0), bounds.size.width, bounds.size.height);
+    CGRect kbframe = CGRectMake(Retina(center.x - bounds.size.width / 2), Retina(center.y - bounds.size.height / 2), bounds.size.width, bounds.size.height);
     UIViewController *base = self;
     while ([base parentOrPresentingViewController] != nil)
         base = [base parentOrPresentingViewController];
@@ -8163,7 +8183,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     CGRect frame([indicator_ frame]);
     frame.origin.x = bounds.size.width - frame.size.width;
-    frame.origin.y = (bounds.size.height - frame.size.height) / 2;
+    frame.origin.y = Retina((bounds.size.height - frame.size.height) / 2);
 
     if (kCFCoreFoundationVersionNumber < 800)
         frame.origin.x -= 8;
@@ -8190,7 +8210,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         rect.origin.x = 26 - rect.size.width / 2;
         rect.origin.y = 26 - rect.size.height / 2;
 
-        [icon_ drawInRect:rect];
+        [icon_ drawInRect:Retina(rect)];
     }
 
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
@@ -8720,7 +8740,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     spinner_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge] autorelease];
     CGRect spinrect = [spinner_ frame];
-    spinrect.origin.x = ([[self view] frame].size.width / 2) - (spinrect.size.width / 2);
+    spinrect.origin.x = Retina([[self view] frame].size.width / 2 - spinrect.size.width / 2);
     spinrect.origin.y = [[self view] frame].size.height - 80.0f;
     [spinner_ setFrame:spinrect];
     [spinner_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin];
@@ -8731,7 +8751,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     captrect.size.width = [[self view] frame].size.width;
     captrect.size.height = 40.0f;
     captrect.origin.x = 0;
-    captrect.origin.y = ([[self view] frame].size.height / 2) - (captrect.size.height * 2);
+    captrect.origin.y = Retina([[self view] frame].size.height / 2 - captrect.size.height * 2);
     caption_ = [[[UILabel alloc] initWithFrame:captrect] autorelease];
     [caption_ setText:UCLocalize("PREPARING_FILESYSTEM")];
     [caption_ setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
@@ -8746,7 +8766,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     statusrect.size.width = [[self view] frame].size.width;
     statusrect.size.height = 30.0f;
     statusrect.origin.x = 0;
-    statusrect.origin.y = ([[self view] frame].size.height / 2) - statusrect.size.height;
+    statusrect.origin.y = Retina([[self view] frame].size.height / 2 - statusrect.size.height);
     status_ = [[[UILabel alloc] initWithFrame:statusrect] autorelease];
     [status_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
     [status_ setText:UCLocalize("EXIT_WHEN_COMPLETE")];
