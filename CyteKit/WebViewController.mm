@@ -992,7 +992,7 @@ float CYScrollViewDecelerationRateNormal;
     }
 
     [webview_ setOpaque:NO];
-    [webview_ setBackgroundColor:color_];
+    [webview_ setBackgroundColor:nil];
 
     [scroller_ setFixedBackgroundPattern:YES];
     [scroller_ setBackgroundColor:color_];
