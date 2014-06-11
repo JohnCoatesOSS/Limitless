@@ -6978,15 +6978,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     updatedelegate_ = delegate;
 }
 
-- (UIView *) transitionView {
-    if (![self respondsToSelector:@selector(_transitionView)])
-        return MSHookIvar<id>(self, "_viewControllerTransitionView");
-    else if (kCFCoreFoundationVersionNumber < 800)
-        return [self _transitionView];
-    else
-        return [[[self _transitionView] superview] superview];
-}
-
 @end
 /* }}} */
 
