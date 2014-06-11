@@ -1004,6 +1004,13 @@ float CYScrollViewDecelerationRateNormal;
 
     [self setViewportWidth:width_];
 
+    if ([[UIColor groupTableViewBackgroundColor] isEqual:[UIColor clearColor]]) {
+        UITableView *table([[[UITableView alloc] initWithFrame:[webview_ bounds] style:UITableViewStyleGrouped] autorelease]);
+        [table setScrollsToTop:NO];
+        [webview_ insertSubview:table atIndex:0];
+        [table setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+    }
+
     [webview_ setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
 
     ready_ = false;
