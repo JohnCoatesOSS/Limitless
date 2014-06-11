@@ -8823,7 +8823,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 > {
     _H<UIWindow> window_;
     _H<CydiaTabBarController> tabbar_;
-    _H<CydiaLoadingViewController> emulated_;
+    _H<CyteTabBarController> emulated_;
 
     _H<NSMutableArray> essential_;
     _H<NSMutableArray> broken_;
@@ -9788,7 +9788,15 @@ _trace();
     [window_ setUserInteractionEnabled:NO];
     [self setupViewControllers];
 
-    emulated_ = [[[CydiaLoadingViewController alloc] init] autorelease];
+    CydiaLoadingViewController *loading([[[CydiaLoadingViewController alloc] init] autorelease]);
+    UINavigationController *navigation([[[UINavigationController alloc] init] autorelease]);
+    [navigation setViewControllers:[NSArray arrayWithObject:loading]];
+
+    emulated_ = [[[CyteTabBarController alloc] init] autorelease];
+    [emulated_ setViewControllers:[NSArray arrayWithObject:navigation]];
+    [emulated_ setSelectedIndex:0];
+    [emulated_ concealTabBarSelection];
+
     if ([window_ respondsToSelector:@selector(setRootViewController:)])
         [window_ setRootViewController:emulated_];
     else

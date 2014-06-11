@@ -22,13 +22,9 @@
 #ifndef Cydia_LoadingViewController_H
 #define Cydia_LoadingViewController_H
 
-#include "Cydia/LoadingView.h"
 #include "CyteKit/ViewController.h"
 
 @interface CydiaLoadingViewController : CyteViewController {
-    _H<CydiaLoadingView> indicator_;
-    _H<UITabBar> tabbar_;
-    _H<UINavigationBar> navbar_;
 }
 
 @end
