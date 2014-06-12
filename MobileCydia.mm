@@ -6232,7 +6232,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     _H<Package> package_;
     _H<NSString> name_;
     bool commercial_;
-    _H<NSMutableArray> buttons_;
+    std::vector<std::pair<_H<NSString>, _H<NSString>>> buttons_;
     _H<UIBarButtonItem> button_;
 }
 
@@ -6246,17 +6246,16 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     return [NSURL URLWithString:[NSString stringWithFormat:@"cydia://package/%@", (id) name_]];
 }
 
-/* XXX: this is not safe at all... localization of /fail/ */
 - (void) _clickButtonWithName:(NSString *)name {
-    if ([name isEqualToString:UCLocalize("CLEAR")])
+    if ([name isEqualToString:@"CLEAR"])
         [delegate_ clearPackage:package_];
-    else if ([name isEqualToString:UCLocalize("INSTALL")])
+    else if ([name isEqualToString:@"INSTALL"])
         [delegate_ installPackage:package_];
-    else if ([name isEqualToString:UCLocalize("REINSTALL")])
+    else if ([name isEqualToString:@"REINSTALL"])
         [delegate_ installPackage:package_];
-    else if ([name isEqualToString:UCLocalize("REMOVE")])
+    else if ([name isEqualToString:@"REMOVE"])
         [delegate_ removePackage:package_];
-    else if ([name isEqualToString:UCLocalize("UPGRADE")])
+    else if ([name isEqualToString:@"UPGRADE"])
         [delegate_ installPackage:package_];
     else _assert(false);
 }
@@ -6266,8 +6265,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     if ([context isEqualToString:@"modify"]) {
         if (button != [sheet cancelButtonIndex]) {
-            NSString *buttonName = [buttons_ objectAtIndex:button];
-            [self _clickButtonWithName:buttonName];
+            [self _clickButtonWithName:buttons_[button].first];
         }
 
         [sheet dismissWithClickedButtonIndex:-1 animated:YES];
@@ -6280,15 +6278,16 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 #if !AlwaysReload
 - (void) _customButtonClicked {
-    int count([buttons_ count]);
+    size_t count(buttons_.size());
     if (count == 0)
         return;
 
     if (count == 1)
-        [self _clickButtonWithName:[buttons_ objectAtIndex:0]];
+        [self _clickButtonWithName:buttons_[0].first];
     else {
         NSMutableArray *buttons = [NSMutableArray arrayWithCapacity:count];
-        [buttons addObjectsFromArray:buttons_];
+        for (const auto &button : buttons_)
+            [buttons addObject:button.second];
 
         UIActionSheet *sheet = [[[UIActionSheet alloc]
             initWithTitle:nil
@@ -6331,7 +6330,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 - (id) initWithDatabase:(Database *)database forPackage:(NSString *)name withReferrer:(NSString *)referrer {
     if ((self = [super init]) != nil) {
         database_ = database;
-        buttons_ = [NSMutableArray arrayWithCapacity:4];
         name_ = name == nil ? @"" : [NSString stringWithString:name];
         [self setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/#!/package/%@", UI_, (id) name_]] withReferrer:referrer];
     } return self;
@@ -6342,7 +6340,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     package_ = [database_ packageWithName:name_];
 
-    [buttons_ removeAllObjects];
+    buttons_.clear();
 
     if (package_ != nil) {
         [(Package *) package_ parse];
@@ -6350,22 +6348,22 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         commercial_ = [package_ isCommercial];
 
         if ([package_ mode] != nil)
-            [buttons_ addObject:UCLocalize("CLEAR")];
+            buttons_.push_back(std::make_pair(@"CLEAR", UCLocalize("CLEAR")));
         if ([package_ source] == nil);
         else if ([package_ upgradableAndEssential:NO])
-            [buttons_ addObject:UCLocalize("UPGRADE")];
+            buttons_.push_back(std::make_pair(@"UPGRADE", UCLocalize("UPGRADE")));
         else if ([package_ uninstalled])
-            [buttons_ addObject:UCLocalize("INSTALL")];
+            buttons_.push_back(std::make_pair(@"INSTALL", UCLocalize("INSTALL")));
         else
-            [buttons_ addObject:UCLocalize("REINSTALL")];
+            buttons_.push_back(std::make_pair(@"REINSTALL", UCLocalize("REINSTALL")));
         if (![package_ uninstalled])
-            [buttons_ addObject:UCLocalize("REMOVE")];
+            buttons_.push_back(std::make_pair(@"REMOVE", UCLocalize("REMOVE")));
     }
 
     NSString *title;
-    switch ([buttons_ count]) {
+    switch (buttons_.size()) {
         case 0: title = nil; break;
-        case 1: title = [buttons_ objectAtIndex:0]; break;
+        case 1: title = buttons_[0].second; break;
         default: title = UCLocalize("MODIFY"); break;
     }
 
