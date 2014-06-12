@@ -10338,7 +10338,7 @@ int main(int argc, char *argv[]) {
     else
         Machine_ = machine;
 
-    int64_t usermem;
+    int64_t usermem(0);
     size = sizeof(usermem);
     if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1)
         usermem = 0;
