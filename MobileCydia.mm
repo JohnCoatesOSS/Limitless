@@ -10336,6 +10336,11 @@ int main(int argc, char *argv[]) {
     else
         Machine_ = machine;
 
+    int64_t usermem;
+    size = sizeof(usermem);
+    if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1)
+        usermem = 0;
+
     SerialNumber_ = (NSString *) CYIOGetValue("IOService:/", @"IOPlatformSerialNumber");
     ChipID_ = [CYHex((NSData *) CYIOGetValue("IODeviceTree:/chosen", @"unique-chip-id"), true) uppercaseString];
     BBSNum_ = CYHex((NSData *) CYIOGetValue("IOService:/AppleARMPE/baseband", @"snum"), false);
@@ -10492,7 +10497,7 @@ int main(int argc, char *argv[]) {
     // XXX: this timeout might be important :(
     //_config->Set("Acquire::http::Timeout", 15);
 
-    _config->Set("Acquire::http::MaxParallel", 3);
+    _config->Set("Acquire::http::MaxParallel", usermem >= 384 * 1024 * 1024 ? 16 : 3);
     /* }}} */
     /* Color Choices {{{ */
     space_ = CGColorSpaceCreateDeviceRGB();
