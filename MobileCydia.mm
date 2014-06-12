@@ -9864,7 +9864,9 @@ _trace();
     emulated_ = [[[CyteTabBarController alloc] init] autorelease];
     [emulated_ setViewControllers:[NSArray arrayWithObject:navigation]];
     [emulated_ setSelectedIndex:0];
-    [emulated_ concealTabBarSelection];
+
+    if ([emulated_ respondsToSelector:@selector(concealTabBarSelection)])
+        [emulated_ concealTabBarSelection];
 
     if ([window_ respondsToSelector:@selector(setRootViewController:)])
         [window_ setRootViewController:emulated_];
@@ -10228,7 +10230,7 @@ int main(int argc, char *argv[]) {
         NSString *path([bundle pathForResource:@"UITableViewLocalizedSectionIndex" ofType:@"plist"]);
         //path = @"/System/Library/Frameworks/UIKit.framework/.lproj/UITableViewLocalizedSectionIndex.plist";
         NSDictionary *dictionary([NSDictionary dictionaryWithContentsOfFile:path]);
-        _H<UILocalizedIndexedCollation> collation([[[UILocalizedIndexedCollation alloc] initWithDictionary:dictionary] autorelease]);
+        _H<UILocalizedIndexedCollation> collation([[[$UILocalizedIndexedCollation alloc] initWithDictionary:dictionary] autorelease]);
 
         CollationLocale_ = MSHookIvar<NSLocale *>(collation, "_locale");
 
