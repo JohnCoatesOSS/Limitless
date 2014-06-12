@@ -71,14 +71,19 @@ static bool FixApplications() {
             fprintf(stderr, "/Applications damaged -- DO NOT REBOOT\n");
         goto undo;
     } else {
-        if (symlink(destiny, APPLICATIONS) == -1)
+        bool success;
+        if (symlink(destiny, APPLICATIONS) != -1)
+            success = true;
+        else {
             fprintf(stderr, "/var/stash/Applications damaged -- DO NOT REBOOT\n");
+            success = false;
+        }
 
         // unneccessary, but feels better (I'm nervous)
         symlink(destiny, target);
 
         [@APPLICATIONS writeToFile:[NSString stringWithFormat:@"%s.lnk", temp] atomically:YES encoding:NSNonLossyASCIIStringEncoding error:NULL];
-        return true;
+        return success;
     }
 }
 
