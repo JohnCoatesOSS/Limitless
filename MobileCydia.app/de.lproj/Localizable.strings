@@ -84,7 +84,7 @@
 "HACKER_EX" = "Fügt Kommandozeilentool hinzu.";
 "HALFINSTALLED_PACKAGE" = "Teilinstalliertes Paket";
 "HALFINSTALLED_PACKAGES" = "%d teilinstallierte Pakete";
-"HALFINSTALLED_PACKAGE_EX" = "Wenn die an Pakete gebundenen Skripte fehlschlagen, werden sie in einem schlechten Status (halb konfiguriert oder halb installiert) zurückgelassen. Diese Fehler sind dauerhaft und erzeugen weitere Probleme. Diese fehlerhaften Skripte und Pakete können entfernt werden.";
+"HALFINSTALLED_PACKAGE_EX" = "Wenn die an Pakete gebundenen Skripte fehlschlagen, werden sie in einem schlechten Status (halb konfiguriert oder halb installiert) zurückgelassen. Dieser Fehler ist dauerhaft und erzeugt weitere Probleme. Diese fehlerhaften Skripte und Pakete können entfernt werden.";
 "HOME" = "Startseite";
 "ID" = "ID";
 "IGNORED_UPGRADES" = "Ignorierte Aktualisierungen";
