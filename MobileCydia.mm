@@ -10223,7 +10223,7 @@ int main(int argc, char *argv[]) {
     }
     /* }}} */
     /* Index Collation {{{ */
-    if (Class $UILocalizedIndexedCollation = objc_getClass("UILocalizedIndexedCollation")) {
+    if (Class $UILocalizedIndexedCollation = objc_getClass("UILocalizedIndexedCollation")) { @try {
         NSBundle *bundle([NSBundle bundleForClass:$UILocalizedIndexedCollation]);
         NSString *path([bundle pathForResource:@"UITableViewLocalizedSectionIndex" ofType:@"plist"]);
         //path = @"/System/Library/Frameworks/UIKit.framework/.lproj/UITableViewLocalizedSectionIndex.plist";
@@ -10259,7 +10259,10 @@ int main(int argc, char *argv[]) {
         }
 
         }
-    } else {
+    } @catch (NSException *e) {
+        NSLog(@"%@", e);
+        goto hard;
+    } } else hard: {
         CollationLocale_ = [[[NSLocale alloc] initWithLocaleIdentifier:@"en@collation=dictionary"] autorelease];
 
         CollationThumbs_ = [NSArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",@"#",nil];
