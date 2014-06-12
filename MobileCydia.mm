@@ -8110,14 +8110,14 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (void) queueStatusDidChange {
 #if !AlwaysReload
     if (Queuing_) {
-        [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
+        [[self navigationItem] setRightBarButtonItem:[[[UIBarButtonItem alloc]
             initWithTitle:UCLocalize("QUEUE")
             style:UIBarButtonItemStyleDone
             target:self
             action:@selector(queueButtonClicked)
         ] autorelease]];
     } else {
-        [[self navigationItem] setLeftBarButtonItem:nil];
+        [[self navigationItem] setRightBarButtonItem:nil];
     }
 #endif
 }
