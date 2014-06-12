@@ -8267,11 +8267,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     if (!highlighted)
         UISetColor(Black_);
-    [origin_ drawAtPoint:CGPointMake(52, 8) forWidth:(width - 61) withFont:Font18Bold_ lineBreakMode:NSLineBreakByTruncatingTail];
+    [origin_ drawAtPoint:CGPointMake(52, 8) forWidth:(width - 49) withFont:Font18Bold_ lineBreakMode:NSLineBreakByTruncatingTail];
 
     if (!highlighted)
         UISetColor(Gray_);
-    [label_ drawAtPoint:CGPointMake(52, 29) forWidth:(width - 61) withFont:Font12_ lineBreakMode:NSLineBreakByTruncatingTail];
+    [label_ drawAtPoint:CGPointMake(52, 29) forWidth:(width - 49) withFont:Font12_ lineBreakMode:NSLineBreakByTruncatingTail];
 }
 
 - (void) setFetch:(NSNumber *)fetch {
