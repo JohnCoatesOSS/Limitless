@@ -988,8 +988,8 @@ class CancelStatus :
         return false;
     }
 
-    virtual void IMSHit(pkgAcquire::ItemDesc &item) {
-        Done(item);
+    virtual void IMSHit(pkgAcquire::ItemDesc &desc) {
+        Done(desc);
     }
 
     virtual bool Pulse_(pkgAcquire *Owner) = 0;
@@ -1025,30 +1025,30 @@ class CydiaStatus :
         delegate_ = delegate;
     }
 
-    virtual void Fetch(pkgAcquire::ItemDesc &item) {
-        NSString *name([NSString stringWithUTF8String:item.ShortDesc.c_str()]);
-        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithFormat:UCLocalize("DOWNLOADING_"), name] ofType:kCydiaProgressEventTypeStatus forItem:item]);
+    virtual void Fetch(pkgAcquire::ItemDesc &desc) {
+        NSString *name([NSString stringWithUTF8String:desc.ShortDesc.c_str()]);
+        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithFormat:UCLocalize("DOWNLOADING_"), name] ofType:kCydiaProgressEventTypeStatus forItemDesc:desc]);
         [delegate_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
     }
 
-    virtual void Done(pkgAcquire::ItemDesc &item) {
-        NSString *name([NSString stringWithUTF8String:item.ShortDesc.c_str()]);
-        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithFormat:Colon_, UCLocalize("DONE"), name] ofType:kCydiaProgressEventTypeStatus forItem:item]);
+    virtual void Done(pkgAcquire::ItemDesc &desc) {
+        NSString *name([NSString stringWithUTF8String:desc.ShortDesc.c_str()]);
+        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithFormat:Colon_, UCLocalize("DONE"), name] ofType:kCydiaProgressEventTypeStatus forItemDesc:desc]);
         [delegate_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
     }
 
-    virtual void Fail(pkgAcquire::ItemDesc &item) {
+    virtual void Fail(pkgAcquire::ItemDesc &desc) {
         if (
-            item.Owner->Status == pkgAcquire::Item::StatIdle ||
-            item.Owner->Status == pkgAcquire::Item::StatDone
+            desc.Owner->Status == pkgAcquire::Item::StatIdle ||
+            desc.Owner->Status == pkgAcquire::Item::StatDone
         )
             return;
 
-        std::string &error(item.Owner->ErrorText);
+        std::string &error(desc.Owner->ErrorText);
         if (error.empty())
             return;
 
-        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:kCydiaProgressEventTypeError forItem:item]);
+        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:kCydiaProgressEventTypeError forItemDesc:desc]);
         [delegate_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
     }
 
@@ -1220,10 +1220,10 @@ class SourceStatus :
     return event;
 }
 
-+ (CydiaProgressEvent *) eventWithMessage:(NSString *)message ofType:(NSString *)type forItem:(pkgAcquire::ItemDesc &)item {
++ (CydiaProgressEvent *) eventWithMessage:(NSString *)message ofType:(NSString *)type forItemDesc:(pkgAcquire::ItemDesc &)desc {
     CydiaProgressEvent *event([self eventWithMessage:message ofType:type]);
 
-    NSString *description([NSString stringWithUTF8String:item.Description.c_str()]);
+    NSString *description([NSString stringWithUTF8String:desc.Description.c_str()]);
     NSArray *fields([description componentsSeparatedByString:@" "]);
     [event setItem:fields];
 
@@ -1232,7 +1232,7 @@ class SourceStatus :
         [event setVersion:[fields objectAtIndex:3]];
     }
 
-    [event setURL:[NSString stringWithUTF8String:item.URI.c_str()]];
+    [event setURL:[NSString stringWithUTF8String:desc.URI.c_str()]];
 
     return event;
 }

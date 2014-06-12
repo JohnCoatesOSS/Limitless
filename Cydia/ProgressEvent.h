@@ -40,7 +40,7 @@
 
 + (CydiaProgressEvent *) eventWithMessage:(NSString *)message ofType:(NSString *)type;
 + (CydiaProgressEvent *) eventWithMessage:(NSString *)message ofType:(NSString *)type forPackage:(NSString *)package;
-+ (CydiaProgressEvent *) eventWithMessage:(NSString *)message ofType:(NSString *)type forItem:(pkgAcquire::ItemDesc &)item;
++ (CydiaProgressEvent *) eventWithMessage:(NSString *)message ofType:(NSString *)type forItemDesc:(pkgAcquire::ItemDesc &)desc;
 
 - (id) initWithMessage:(NSString *)message ofType:(NSString *)type;
 
