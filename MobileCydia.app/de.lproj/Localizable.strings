@@ -53,9 +53,9 @@
 "DOUBLE_QUOTED" = "„%@“";
 "DOWNGRADE" = "Downgrade";
 "DOWNLOADING" = "Wird heruntergeladen";
-"DOWNLOADING_" = "mailto:%@ wird heruntergeladen";
+"DOWNLOADING_" = "%@ wird heruntergeladen";
 "EDIT" = "Bearbeiten";
-"ELISION" = "mailto:%@ ...";
+"ELISION" = "%@ ...";
 "ENTERED_BY_USER" = "Vom Benutzer eingegeben";
 "ENTER_APT_URL" = "Cydia/APT URL eingeben";
 "ERROR" = "Fehler";
