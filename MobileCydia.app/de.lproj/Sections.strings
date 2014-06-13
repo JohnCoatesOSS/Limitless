@@ -20,11 +20,11 @@
 "Java" = "Java";
 "Keyboards" = "Tastatur";
 "Localization" = "Lokalisierung";
-"LockScreen" = "Lockscreen";
-"Messaging" = "Messaging";
+"LockScreen" = "Sperrbildschirm";
+"Messaging" = "Nachrichtendienste";
 "Multimedia" = "Multimedia";
 "Navigation" = "Navigation";
-"Networking" = "Netzwerken";
+"Networking" = "Netzwerk";
 "Notifications" = "Mitteilugen";
 "Packaging" = "Paketerstellung";
 "Productivity" = "Produktivität";
@@ -33,7 +33,7 @@
 "SMS" = "SMS";
 "Scripting" = "Scripting";
 "Security" = "Sicherheit";
-"Site-Specific Apps" = "Site-spezifische Apps";
+"Site-Specific Apps" = "Seitenspezifische Apps";
 "Sliders" = "Slider";
 "Social" = "Social";
 "Soundboards" = "Soundboards";
@@ -43,9 +43,9 @@
 "Themes" = "Designs";
 "Toys" = "Spielzeuge";
 "Tweaks" = "Tweaks";
-"Utilities" = "Utilities";
-"Wallpaper" = "Wallpaper";
+"Utilities" = "Dienstprogramme";
+"Wallpaper" = "Hintergrundbilder";
 "Weather" = "Wetter";
-"WebClips" = "Web-Schnipsel";
+"WebClips" = "WebClips";
 "Widgets" = "Widgets";
 "eBooks" = "eBooks";

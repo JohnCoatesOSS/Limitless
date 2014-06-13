@@ -1,6 +1,6 @@
 "ABOUT" = "Über";
 "ABOUT_CYDIA" = "Über Cydia Installer";
-"ACCEPT_NEW_COPY" = "Neue Kopie annehmen";
+"ACCEPT_NEW_COPY" = "Neue Version verwenden";
 "ADD" = "Hinzufügen";
 "ADD_ANYWAY" = "Trotzdem hinzufügen";
 "ADD_SOURCE" = "Quelle hinzufügen";
@@ -8,7 +8,7 @@
 "ADVANCED_SEARCH" = "Erweiterte Suche";
 "ALL_PACKAGES" = "Alle Pakete";
 "ALL_SOURCES" = "Alle Quellen";
-"ALL_SOURCES_EX" = "kombinierte Paketliste von folgenden Quellen";
+"ALL_SOURCES_EX" = "Kombinierte Paketliste von folgenden Quellen";
 "APPLE" = "Apple";
 "AUTHOR" = "Autor";
 "AVAILABLE_UPGRADES" = "Vorhandene Aktualisierungen";
@@ -61,7 +61,7 @@
 "ERROR" = "Fehler";
 "ESSENTIAL_UPGRADE" = "Wichtige Aktualisierung";
 "ESSENTIAL_UPGRADES" = "%d wichtige Aktualisierungen";
-"ESSENTIAL_UPGRADE_EX" = "Ein oder mehr wichtige Pakete sind veraltet. Um Fehler zu vermeiden, sollten die Aktualisierungen installiert werden.";
+"ESSENTIAL_UPGRADE_EX" = "Ein oder mehrere wichtige Pakete sind veraltet. Um Fehler zu vermeiden, sollten die Aktualisierungen installiert werden.";
 "EXCLAMATION" = "%@!";
 "EXIT_WHEN_COMPLETE" = "(Cydia wird danach beendet.)";
 "EXPANDED_SIZE" = "Entpackte Größe";
@@ -81,7 +81,7 @@
 "FROWNY_PANTS" = ":-(";
 "FUTURE_FEATURE_ROADMAP" = "Übersicht geplanter Funktionen";
 "HACKER" = "Hacker";
-"HACKER_EX" = "Fügt Kommandozeilentool hinzu.";
+"HACKER_EX" = "Fügt Kommandozeilentools hinzu.";
 "HALFINSTALLED_PACKAGE" = "Teilinstalliertes Paket";
 "HALFINSTALLED_PACKAGES" = "%d teilinstallierte Pakete";
 "HALFINSTALLED_PACKAGE_EX" = "Wenn die an Pakete gebundenen Skripte fehlschlagen, werden sie in einem schlechten Status (halb konfiguriert oder halb installiert) zurückgelassen. Dieser Fehler ist dauerhaft und erzeugt weitere Probleme. Diese fehlerhaften Skripte und Pakete können entfernt werden.";
@@ -89,7 +89,7 @@
 "ID" = "ID";
 "IGNORED_UPGRADES" = "Ignorierte Aktualisierungen";
 "IGNORE_UPGRADES" = "Aktualisierungen ignorieren";
-"IGNORE_UPGRADES_EX" = "Dieses Paket bei „Alle aktualisieren“ ausschließen.";
+"IGNORE_UPGRADES_EX" = "Dieses Paket bei „Alle aktualisieren“ ausblenden.";
 "ILLEGAL_PACKAGE_IDENTIFIER" = "Unerlaubte Paketkennung";
 "INDIVIDUAL_SOURCES" = "Einzelne Quellen";
 "INSTALL" = "Installieren";
@@ -99,7 +99,7 @@
 "INSTALLED_FILES" = "Installierte Dateien";
 "INVALID_URL" = "Ungültige URL";
 "INVALID_URL_EX" = "Dies ist keine gültige Quellen-URL. Bitte prüfen und erneut versuchen.";
-"KEEP_OLD_COPY" = "Meine alte Kopie behalten";
+"KEEP_OLD_COPY" = "Meine Version behalten";
 "LOADING" = "Wird geladen";
 "LOADING_DATA" = "Daten werden geladen";
 "LOCAL" = "Lokal";
