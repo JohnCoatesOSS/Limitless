@@ -78,20 +78,30 @@
 
     <key>CFBundleIconFiles</key>
     <array>
+        <!-- iOS 6 iPhone (home) [59x60] -->
         <string>icon.png</string>
-        <string>icon-72.png</string>
         <string>icon@2x.png</string>
 
-        <string>Icon-60.png</string>
-        <string>Icon-60@2x.png</string>
-        <string>Icon-76.png</string>
-        <string>Icon-76@2x.png</string>
+        <!-- iOS 6 iPad (home) [74x76] -->
+        <string>icon-72.png</string>
+        <string>icon-72@2x.png</string>
 
+        <!-- iOS 7 iPhone (home) [60x60] -->
+        <string>Icon-60</string>
+
+        <!-- iOS 7 iPad (home) [76x76] -->
+        <string>Icon-76</string>
+
+        <!-- iOS 7 (spotlight) [40x40] -->
+        <string>Icon-Small-40</string>
+
+        <!-- iOS 6 iPhone (spotlight) [29x29] -->
         <string>Icon-Small.png</string>
         <string>Icon-Small@2x.png</string>
 
-        <string>Icon-Small-40.png</string>
+        <!-- iOS 6 iPad (spotlight) [50x50] -->
         <string>Icon-Small-50.png</string>
+        <string>Icon-Small-50@2x.png</string>
     </array>
 
 
