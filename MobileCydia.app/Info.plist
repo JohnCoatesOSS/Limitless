@@ -73,6 +73,9 @@
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
 
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <true/>
+
     <key>CFBundleIconFile</key>
     <string>iconClassic.png</string>
 
