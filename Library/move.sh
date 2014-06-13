@@ -24,6 +24,9 @@ function mv_() {
     tmp=$(mktemp -d /var/stash/_.XXXXXX)
     dst=${tmp}/${src##*/}
 
+    chmod 755 "${tmp}"
+    chown root.admin "${tmp}"
+
     mkdir -- "${dst}" || {
         rmdir -- "${tmp}"
         exit 1

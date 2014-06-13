@@ -24,6 +24,33 @@ void Finish(const char *finish) {
     fclose(fout);
 }
 
+static void FixPermissions() {
+    DIR *stash(opendir("/var/stash"));
+    if (stash == NULL)
+        return;
+
+    while (dirent *entry = readdir(stash)) {
+        const char *folder(entry->d_name);
+        if (strlen(folder) != 8)
+            continue;
+        if (strncmp(folder, "_.", 2) != 0)
+            continue;
+
+        char path[1024];
+        sprintf(path, "/var/stash/%s", folder);
+
+        struct stat stat;
+        if (lstat(path, &stat) == -1)
+            continue;
+        if (!S_ISDIR(stat.st_mode))
+            continue;
+
+        chmod(path, 0755);
+    }
+
+    closedir(stash);
+}
+
 #define APPLICATIONS "/Applications"
 static bool FixApplications() {
     char target[1024];
@@ -125,6 +152,8 @@ int main(int argc, const char *argv[]) {
     }
 
     CydiaWriteSources();
+
+    FixPermissions();
 
     if (FixApplications())
         Finish("restart");
