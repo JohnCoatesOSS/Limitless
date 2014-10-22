@@ -239,7 +239,6 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 @end
 
 @interface UIImage (Apple)
-+ (UIImage *) applicationImageNamed:(NSString *)name;
 + (UIImage *) imageAtPath:(NSString *)path;
 @end
 

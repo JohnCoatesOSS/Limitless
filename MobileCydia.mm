@@ -3016,7 +3016,7 @@ struct PackageNameOrdering :
         if ([dicon hasPrefix:@"file:///"])
             icon = [UIImage imageAtPath:[[dicon substringFromIndex:7] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     if (icon == nil)
-        icon = [UIImage applicationImageNamed:@"unknown.png"];
+        icon = [UIImage imageNamed:@"unknown.png"];
     return icon;
 }
 
@@ -6004,7 +6004,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 - (id) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if ((self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) != nil) {
-        icon_ = [UIImage applicationImageNamed:@"folder.png"];
+        icon_ = [UIImage imageNamed:@"folder.png"];
         // XXX: this initial frame is wrong, but is fixed later
         switch_ = [[[UISwitch alloc] initWithFrame:CGRectMake(218, 9, 60, 25)] autorelease];
         [switch_ addTarget:self action:@selector(onSwitch:) forEvents:UIControlEventValueChanged];
@@ -7178,7 +7178,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         UIImage *icon([UIImage imageAtPath:[NSString stringWithFormat:@"%@/Sections/%@.png", App_, [path stringByReplacingOccurrencesOfString:@" " withString:@"_"]]]);
         if (icon == nil)
-            icon = [UIImage applicationImageNamed:@"unknown.png"];
+            icon = [UIImage imageNamed:@"unknown.png"];
         [self _returnPNGWithImage:icon forRequest:request];
     } else fail: {
         [client URLProtocol:self didFailWithError:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil]];
@@ -8180,7 +8180,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     [self setFetch:[NSNumber numberWithBool:[source_ fetch]]];
 
-    icon_ = [UIImage applicationImageNamed:@"unknown.png"];
+    icon_ = [UIImage imageNamed:@"unknown.png"];
 
     origin_ = [source name];
     label_ = [source rooturi];
@@ -8195,7 +8195,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     source_ = nil;
     [indicator_ stopAnimating];
 
-    icon_ = [UIImage applicationImageNamed:@"folder.png"];
+    icon_ = [UIImage imageNamed:@"folder.png"];
     origin_ = UCLocalize("ALL_SOURCES");
     label_ = UCLocalize("ALL_SOURCES_EX");
     [content_ setNeedsDisplay];
@@ -9726,19 +9726,19 @@ _end
     NSMutableArray *items;
     if (kCFCoreFoundationVersionNumber < 800) {
         items = [NSMutableArray arrayWithObjects:
-            [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage applicationImageNamed:@"home.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage applicationImageNamed:@"install.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage applicationImageNamed:@"changes.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage applicationImageNamed:@"manage.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage applicationImageNamed:@"search.png"] tag:0] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage imageNamed:@"home.png"] tag:0] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage imageNamed:@"install.png"] tag:0] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage imageNamed:@"changes.png"] tag:0] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage imageNamed:@"manage.png"] tag:0] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage imageNamed:@"search.png"] tag:0] autorelease],
         nil];
     } else {
         items = [NSMutableArray arrayWithObjects:
-            [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage applicationImageNamed:@"home7.png"] selectedImage:[UIImage applicationImageNamed:@"home7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage applicationImageNamed:@"install7.png"] selectedImage:[UIImage applicationImageNamed:@"install7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage applicationImageNamed:@"changes7.png"] selectedImage:[UIImage applicationImageNamed:@"changes7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage applicationImageNamed:@"manage7.png"] selectedImage:[UIImage applicationImageNamed:@"manage7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage applicationImageNamed:@"search7.png"] selectedImage:[UIImage applicationImageNamed:@"search7s.png"]] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage imageNamed:@"home7.png"] selectedImage:[UIImage imageNamed:@"home7s.png"]] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage imageNamed:@"install7.png"] selectedImage:[UIImage imageNamed:@"install7s.png"]] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage imageNamed:@"changes7.png"] selectedImage:[UIImage imageNamed:@"changes7s.png"]] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage imageNamed:@"manage7.png"] selectedImage:[UIImage imageNamed:@"manage7s.png"]] autorelease],
+            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage imageNamed:@"search7.png"] selectedImage:[UIImage imageNamed:@"search7s.png"]] autorelease],
         nil];
     }
 
