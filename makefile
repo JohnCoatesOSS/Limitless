@@ -153,8 +153,8 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion $
 	cp -a sysroot/usr/bin/du _/usr/libexec/cydia
 	cp -a cfversion _/usr/libexec/cydia
 	
-	mkdir -p _/System/Library
-	cp -a LaunchDaemons _/System/Library/LaunchDaemons
+	mkdir -p _/Library
+	cp -a LaunchDaemons _/Library/LaunchDaemons
 	
 	mkdir -p _/Applications
 	cp -a MobileCydia.app _/Applications/Cydia.app
