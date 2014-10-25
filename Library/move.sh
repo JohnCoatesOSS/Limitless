@@ -21,6 +21,8 @@ function mv_() {
     src=$1
 
     mkdir -p /var/stash
+    /usr/libexec/cydia/setnsfpn /var/stash
+
     tmp=$(mktemp -d /var/stash/_.XXXXXX)
     dst=${tmp}/${src##*/}
 

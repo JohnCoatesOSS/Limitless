@@ -136,11 +136,15 @@ cfversion: cfversion.mm
 	$(cycc) $(filter %.mm,$^) $(flags) $(link) -framework CoreFoundation
 	@ldid -T0 -S $@
 
-postinst: postinst.mm Sources.mm Sources.h CyteKit/stringWithUTF8Bytes.mm CyteKit/stringWithUTF8Bytes.h CyteKit/UCPlatform.h
-	$(cycc) $(filter %.mm,$^) $(flags) $(link) -framework CoreFoundation -framework Foundation -framework UIKit -lpcre
+setnsfpn: setnsfpn.cpp
+	$(cycc) $(filter %.cpp,$^) $(flags) $(link)
 	@ldid -T0 -S $@
 
-debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion $(images) $(shell find MobileCydia.app) cydia.control Library/firmware.sh Library/startup
+postinst: postinst.mm Sources.mm Sources.h CyteKit/stringWithUTF8Bytes.mm CyteKit/stringWithUTF8Bytes.h CyteKit/UCPlatform.h
+	$(cycc) -std=c++11 $(filter %.mm,$^) $(flags) $(link) -framework CoreFoundation -framework Foundation -framework UIKit -lpcre
+	@ldid -T0 -S $@
+
+debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion setnsfpn $(images) $(shell find MobileCydia.app) cydia.control Library/firmware.sh Library/startup
 	sudo rm -rf _
 	mkdir -p _/var/lib/cydia
 	
@@ -152,6 +156,7 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion $
 	cp -a Library _/usr/libexec/cydia
 	cp -a sysroot/usr/bin/du _/usr/libexec/cydia
 	cp -a cfversion _/usr/libexec/cydia
+	cp -a setnsfpn _/usr/libexec/cydia
 	
 	mkdir -p _/Library
 	cp -a LaunchDaemons _/Library/LaunchDaemons

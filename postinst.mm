@@ -24,6 +24,17 @@ void Finish(const char *finish) {
     fclose(fout);
 }
 
+static bool FixProtections() {
+    for (const char *path : (const char *[]) {"/var/lib", "/var/cache", "/var/stash"}) {
+        mkdir(path, 0755);
+        if (system([[NSString stringWithFormat:@"/usr/libexec/cydia/setnsfpn %s", path] UTF8String]) != 0) {
+            fprintf(stderr, "failed to setnsfpn %s\n", path);
+            return false;
+        }
+    }
+    return true;
+}
+
 static void FixPermissions() {
     DIR *stash(opendir("/var/stash"));
     if (stash == NULL)
@@ -124,6 +135,10 @@ int main(int argc, const char *argv[]) {
         return 0;
 
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
+
+    if (kCFCoreFoundationVersionNumber >= 1000)
+        if (!FixProtections())
+            return 1;
 
     size_t size;
     sysctlbyname("kern.osversion", NULL, &size, NULL, 0);
