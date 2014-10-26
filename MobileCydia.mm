@@ -239,12 +239,40 @@ union SplitHash {
 };
 // }}}
 
+struct Root {
+    static bool root_;
+
+    Root(bool real) {
+        _assert(!root_);
+        root_ = true;
+        _trace();
+        _assert(setreuid(real ? 0 : 501, 0) != -1);
+    }
+
+    ~Root() {
+        root_ = false;
+        _trace();
+        _assert(setreuid(501, 501) != -1);
+    }
+
+    operator bool() const {
+        return true;
+    }
+};
+
+bool Root::root_;
+
+#define _root(real) \
+    if (__attribute__((__unused__)) const Root &root = Root(real))
+
 static NSString *Colon_;
 NSString *Elision_;
 static NSString *Error_;
 static NSString *Warning_;
 
 static NSString *Cache_;
+#define Cache(file) \
+    [NSString stringWithFormat:@"%@/%s", Cache_, file]
 
 static void (*$SBSSetInterceptsMenuButtonForever)(bool);
 
@@ -3792,7 +3820,7 @@ class CydiaLogCleaner :
     bool opened;
   open:
     _profile(reloadDataWithInvocation$pkgCacheFile)
-        opened = cache_.Open(progress, true);
+        opened = cache_.Open(progress, false);
     _end
     if (!opened) {
         // XXX: what if there are errors, but Open() == true? this should be merged with popError:
@@ -4051,7 +4079,8 @@ class CydiaLogCleaner :
         RestartSubstrate_ = true;
 
     _system->UnLock();
-    pkgPackageManager::OrderResult result = manager_->DoInstall(statusfd_);
+    pkgPackageManager::OrderResult result;
+    _root(true) result = manager_->DoInstall(statusfd_);
     if ([self popErrorWithTitle:title])
         return;
 
@@ -9016,7 +9045,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         if (NSData *data = [NSPropertyListSerialization dataFromPropertyList:Metadata_ format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error]) {
             _trace();
             NSError *error(nil);
-            if (![data writeToFile:@"/var/lib/cydia/metadata.plist" options:NSAtomicWrite error:&error])
+            _root(true) if (![data writeToFile:@"/var/lib/cydia/metadata.plist" options:NSAtomicWrite error:&error])
                 NSLog(@"failure to save metadata data: %@", error);
             _trace();
 
@@ -9318,7 +9347,7 @@ _end
 
 - (void) _uicache {
     _trace();
-    system("su -c /usr/bin/uicache mobile");
+    system("/usr/bin/uicache");
     _trace();
 }
 
@@ -9389,7 +9418,7 @@ _end
     } else if ([context isEqualToString:@"fixhalf"]) {
         if (button == [alert cancelButtonIndex]) {
             @synchronized (self) {
-                for (Package *broken in (id) broken_) {
+                _root(false) for (Package *broken in (id) broken_) {
                     [broken remove];
 
                     NSString *id = [broken id];
@@ -9706,7 +9735,7 @@ _end
 - (void) stash {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     UpdateExternalStatus(1);
-    [self yieldToSelector:@selector(system:) withObject:@"/usr/libexec/cydia/free.sh"];
+    _root(true) [self yieldToSelector:@selector(system:) withObject:@"/usr/libexec/cydia/free.sh"];
     UpdateExternalStatus(0);
 
     [self removeStashController];
@@ -9787,7 +9816,7 @@ _trace();
     [NSURLCache setSharedURLCache:[[[CYURLCache alloc]
         initWithMemoryCapacity:524288
         diskCapacity:10485760
-        diskPath:[NSString stringWithFormat:@"%@/SDURLCache", Cache_]
+        diskPath:Cache("SDURLCache")
     ] autorelease]];
 
     [CydiaWebViewController _initialize];
@@ -10000,54 +10029,6 @@ id Dealloc_(id self, SEL selector) {
     return object;
 }*/
 
-static NSSet *MobilizedFiles_;
-
-static NSURL *MobilizeURL(NSURL *url) {
-    NSString *path([url path]);
-    if ([path hasPrefix:@"/var/root/"]) {
-        NSString *file([path substringFromIndex:10]);
-        if ([MobilizedFiles_ containsObject:file])
-            url = [NSURL fileURLWithPath:[@"/var/mobile/" stringByAppendingString:file] isDirectory:NO];
-    }
-
-    return url;
-}
-
-Class $CFXPreferencesPropertyListSource;
-@class CFXPreferencesPropertyListSource;
-
-MSHook(BOOL, CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync, CFXPreferencesPropertyListSource *self, SEL _cmd) {
-    NSURL *&url(MSHookIvar<NSURL *>(self, "_url")), *old(url);
-    NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
-
-    url = MobilizeURL(url);
-    BOOL value; @try {
-        value = _CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync(self, _cmd);
-        //NSLog(@"CFX %@ %s", [url absoluteString], value ? "YES" : "NO");
-    } @finally {
-        url = old;
-    }
-
-    [pool release];
-    return value;
-}
-
-MSHook(void *, CFXPreferencesPropertyListSource$createPlistFromDisk, CFXPreferencesPropertyListSource *self, SEL _cmd) {
-    NSURL *&url(MSHookIvar<NSURL *>(self, "_url")), *old(url);
-    NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
-
-    url = MobilizeURL(url);
-    void *value; @try {
-        value = _CFXPreferencesPropertyListSource$createPlistFromDisk(self, _cmd);
-        //NSLog(@"CFX %@ %@", [url absoluteString], value);
-    } @finally {
-        url = old;
-    }
-
-    [pool release];
-    return value;
-}
-
 Class $NSURLConnection;
 
 MSHook(id, NSURLConnection$init$, NSURLConnection *self, SEL _cmd, NSURLRequest *request, id delegate, BOOL usesCache, int64_t maxContentLength, BOOL startImmediately, NSDictionary *connectionProperties) {
@@ -10098,11 +10079,13 @@ Class $NSUserDefaults;
 
 MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSString *key) {
     if ([key respondsToSelector:@selector(isEqualToString:)] && [key isEqualToString:@"WebKitLocalStorageDatabasePathPreferenceKey"])
-        return [NSString stringWithFormat:@"%@/LocalStorage", Cache_];
+        return Cache("LocalStorage");
     return _NSUserDefaults$objectForKey$(self, _cmd, key);
 }
 
 int main(int argc, char *argv[]) {
+    seteuid(501);
+
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
     _trace();
@@ -10150,12 +10133,6 @@ int main(int argc, char *argv[]) {
 
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
 
-    MobilizedFiles_ = [NSMutableSet setWithObjects:
-        @"Library/Preferences/.GlobalPreferences.plist",
-        @"Library/Preferences/com.apple.Accessibility.plist",
-        @"Library/Preferences/com.apple.preferences.sounds.plist",
-    nil];
-
     /* Library Hacks {{{ */
     class_addMethod(objc_getClass("DOMNodeList"), @selector(countByEnumeratingWithState:objects:count:), (IMP) &DOMNodeList$countByEnumeratingWithState$objects$count$, "I20@0:4^{NSFastEnumerationState}8^@12I16");
 
@@ -10163,22 +10140,6 @@ int main(int argc, char *argv[]) {
     if ($WAKWindow != NULL)
         if (Method method = class_getInstanceMethod($WAKWindow, @selector(screenSize)))
             method_setImplementation(method, (IMP) &$WAKWindow$screenSize);
-
-    $CFXPreferencesPropertyListSource = objc_getClass("CFXPreferencesPropertyListSourceSynchronizer");
-    if ($CFXPreferencesPropertyListSource == Nil)
-        $CFXPreferencesPropertyListSource = objc_getClass("CFXPreferencesPropertyListSource");
-
-    Method CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync(class_getInstanceMethod($CFXPreferencesPropertyListSource, @selector(_backingPlistChangedSinceLastSync)));
-    if (CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync != NULL) {
-        _CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync = reinterpret_cast<BOOL (*)(CFXPreferencesPropertyListSource *, SEL)>(method_getImplementation(CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync));
-        method_setImplementation(CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync, reinterpret_cast<IMP>(&$CFXPreferencesPropertyListSource$_backingPlistChangedSinceLastSync));
-    }
-
-    Method CFXPreferencesPropertyListSource$createPlistFromDisk(class_getInstanceMethod($CFXPreferencesPropertyListSource, @selector(createPlistFromDisk)));
-    if (CFXPreferencesPropertyListSource$createPlistFromDisk != NULL) {
-        _CFXPreferencesPropertyListSource$createPlistFromDisk = reinterpret_cast<void *(*)(CFXPreferencesPropertyListSource *, SEL)>(method_getImplementation(CFXPreferencesPropertyListSource$createPlistFromDisk));
-        method_setImplementation(CFXPreferencesPropertyListSource$createPlistFromDisk, reinterpret_cast<IMP>(&$CFXPreferencesPropertyListSource$createPlistFromDisk));
-    }
 
     $NSURLConnection = objc_getClass("NSURLConnection");
     Method NSURLConnection$init$(class_getInstanceMethod($NSURLConnection, @selector(_initWithRequest:delegate:usesCache:maxContentLength:startImmediately:connectionProperties:)));
@@ -10303,13 +10264,7 @@ int main(int argc, char *argv[]) {
     App_ = [[NSBundle mainBundle] bundlePath];
     Advanced_ = YES;
 
-    setuid(0);
-    setgid(0);
-
-    if (access("/var/mobile/Library/Keyboard/UserDictionary.sqlite", F_OK) == 0)
-        system("mkdir -p /var/root/Library/Keyboard; cp -af /var/mobile/Library/Keyboard/UserDictionary.sqlite /var/root/Library/Keyboard/");
-
-    Cache_ = [[NSString stringWithFormat:@"%@/Library/Caches/com.saurik.Cydia", @"/var/root"] retain];
+    Cache_ = [[NSString stringWithFormat:@"%@/Library/Caches/com.saurik.Cydia", @"/var/mobile"] retain];
 
     /*Method alloc = class_getClassMethod([NSObject class], @selector(alloc));
     alloc_ = alloc->method_imp;
@@ -10446,7 +10401,7 @@ int main(int argc, char *argv[]) {
     CydiaWriteSources();
 
     _trace();
-    MetaFile_.Open("/var/lib/cydia/metadata.cb0");
+    _root(true) MetaFile_.Open("/var/lib/cydia/metadata.cb0");
     _trace();
 
     if (Packages_ != nil) {
@@ -10480,23 +10435,16 @@ int main(int argc, char *argv[]) {
 
     int version([[NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"] intValue]);
 
-    if (access("/User", F_OK) != 0 || version != 6) {
+    _root(true) if (access("/User", F_OK) != 0 || version != 6) {
         _trace();
         system("/usr/libexec/cydia/firmware.sh");
         _trace();
     }
 
-    _assert([[NSFileManager defaultManager]
-        createDirectoryAtPath:@"/var/cache/apt/archives/partial"
-        withIntermediateDirectories:YES
-        attributes:nil
-        error:NULL
-    ]);
-
     if (access("/tmp/cydia.chk", F_OK) == 0) {
-        if (unlink("/var/cache/apt/pkgcache.bin") == -1)
+        if (unlink([Cache("pkgcache.bin") UTF8String]) == -1)
             _assert(errno == ENOENT);
-        if (unlink("/var/cache/apt/srcpkgcache.bin") == -1)
+        if (unlink([Cache("srcpkgcache.bin") UTF8String]) == -1)
             _assert(errno == ENOENT);
     }
 
@@ -10511,6 +10459,16 @@ int main(int argc, char *argv[]) {
     //_config->Set("Acquire::http::Timeout", 15);
 
     _config->Set("Acquire::http::MaxParallel", usermem >= 384 * 1024 * 1024 ? 16 : 3);
+
+    mkdir([Cache_ UTF8String], 0755);
+    mkdir([Cache("archives") UTF8String], 0755);
+    mkdir([Cache("archives/partial") UTF8String], 0755);
+    _config->Set("Dir::Cache", [Cache_ UTF8String]);
+
+    mkdir([Cache("lists") UTF8String], 0755);
+    mkdir([Cache("lists/partial") UTF8String], 0755);
+    mkdir([Cache("periodic") UTF8String], 0755);
+    _config->Set("Dir::State", [Cache_ UTF8String]);
     /* }}} */
     /* Color Choices {{{ */
     space_ = CGColorSpaceCreateDeviceRGB();
