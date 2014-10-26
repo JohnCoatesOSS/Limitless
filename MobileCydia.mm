@@ -3815,6 +3815,8 @@ class CydiaLogCleaner :
     }
     _end
 
+    _root(true) _system->Lock();
+
     _trace();
     OpProgress progress;
     bool opened;
@@ -3850,6 +3852,7 @@ class CydiaLogCleaner :
             }
         }
 
+        _system->UnLock();
         return;
     }
     _trace();
