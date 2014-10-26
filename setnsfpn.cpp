@@ -105,7 +105,7 @@ static int setnsfpn(const char *path, size_t before, Recurse recurse) {
                 const char *name(dir->d_name);
                 size_t after(strlen(name));
 
-                if (false);
+                if (dir->d_ino == 0);
                 else if (after == 1 && name[0] == '.');
                 else if (after == 2 && name[0] == '.' && name[1] == '.');
                 else {
