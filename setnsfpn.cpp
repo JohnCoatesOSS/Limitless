@@ -100,56 +100,53 @@ static int setnsfpn(const char *path, size_t before, Recurse recurse) {
     }
 
     int mode(_syscall(fcntl(fd, F_GETPROTECTIONCLASS)));
-    if (mode != -1 && mode != 4) {
-        if (recurse == RecurseYes) {
-            long address(0);
+    if (mode == 4)
+        return 0;
 
-            for (;;) {
-                char buffer[4096];
-                int size(_syscall(getdirentries(fd, buffer, sizeof(buffer), &address)));
-                if (size == 0)
-                    break;
+    if (recurse == RecurseYes)
+        for (long address(0);;) {
+            char buffer[4096];
+            int size(_syscall(getdirentries(fd, buffer, sizeof(buffer), &address)));
+            if (size == 0)
+                break;
 
-                const char *next(buffer), *stop(next + size);
-                while (next != stop) {
-                    const dirent *dir(reinterpret_cast<const dirent *>(next));
-                    const char *name(dir->d_name);
-                    size_t after(strlen(name));
+            const char *next(buffer), *stop(next + size);
+            while (next != stop) {
+                const dirent *dir(reinterpret_cast<const dirent *>(next));
+                const char *name(dir->d_name);
+                size_t after(strlen(name));
 
-                    if (false);
-                    else if (after == 1 && name[0] == '.');
-                    else if (after == 2 && name[0] == '.' && name[1] == '.');
-                    else {
-                        size_t both(before + 1 + after);
-                        char sub[both + 1];
-                        memcpy(sub, path, before);
-                        sub[before] = '/';
-                        memcpy(sub + before + 1, name, after);
-                        sub[both] = '\0';
+                if (false);
+                else if (after == 1 && name[0] == '.');
+                else if (after == 2 && name[0] == '.' && name[1] == '.');
+                else {
+                    size_t both(before + 1 + after);
+                    char sub[both + 1];
+                    memcpy(sub, path, before);
+                    sub[before] = '/';
+                    memcpy(sub + before + 1, name, after);
+                    sub[both] = '\0';
 
-                        switch (dir->d_type) {
-                            case DT_LNK:
-                                break;
-                            default:
-                                return -1;
+                    switch (dir->d_type) {
+                        case DT_LNK:
+                            break;
+                        default:
+                            return -1;
 
-                            case DT_DIR:
-                                setnsfpn(sub, both, RecurseYes);
-                                break;
-                            case DT_REG:
-                                setnsfpn(sub, both, RecurseNo);
-                                break;
-                        }
+                        case DT_DIR:
+                            setnsfpn(sub, both, RecurseYes);
+                            break;
+                        case DT_REG:
+                            setnsfpn(sub, both, RecurseNo);
+                            break;
                     }
-
-                    next += dir->d_reclen;
                 }
+
+                next += dir->d_reclen;
             }
         }
 
-        _syscall(fcntl(fd, F_SETPROTECTIONCLASS, 4));
-    }
-
+    _syscall(fcntl(fd, F_SETPROTECTIONCLASS, 4));
     return 0;
 }
 
