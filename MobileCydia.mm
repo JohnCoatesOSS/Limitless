@@ -10468,7 +10468,7 @@ int main(int argc, char *argv[]) {
     mkdir([Cache("lists") UTF8String], 0755);
     mkdir([Cache("lists/partial") UTF8String], 0755);
     mkdir([Cache("periodic") UTF8String], 0755);
-    _config->Set("Dir::State", [Cache_ UTF8String]);
+    _config->Set("Dir::State::Lists", [Cache("lists") UTF8String]);
     /* }}} */
     /* Color Choices {{{ */
     space_ = CGColorSpaceCreateDeviceRGB();
