@@ -37,18 +37,7 @@
     } \
 } _value; })
 
-int $getdirentries(int, char *, int, long *) __asm("_getdirentries");
-
-struct $dirent {
-    __uint32_t d_ino;
-    __uint16_t d_reclen;
-    __uint8_t  d_type;
-    __uint8_t  d_namlen;
-    char d_name[__DARWIN_MAXNAMLEN + 1];
-};
-
-#define getdirentries $getdirentries
-#define dirent $dirent
+extern "C" int __getdirentries64(int, char *, int, long *);
 
 enum Recurse {
     RecurseYes,
@@ -106,7 +95,7 @@ static int setnsfpn(const char *path, size_t before, Recurse recurse) {
     if (recurse == RecurseYes)
         for (long address(0);;) {
             char buffer[4096];
-            int size(_syscall(getdirentries(fd, buffer, sizeof(buffer), &address)));
+            int size(_syscall(__getdirentries64(fd, buffer, sizeof(buffer), &address)));
             if (size == 0)
                 break;
 
