@@ -29,8 +29,6 @@ extern _H<NSMutableDictionary> Sources_;
 extern bool Changed_;
 
 void CydiaWriteSources() {
-    seteuid(0);
-
     FILE *file(fopen("/etc/apt/sources.list.d/cydia.list", "w"));
     _assert(file != NULL);
 
@@ -51,8 +49,6 @@ void CydiaWriteSources() {
     }
 
     fclose(file);
-
-    seteuid(501);
 }
 
 void CydiaAddSource(NSDictionary *source) {

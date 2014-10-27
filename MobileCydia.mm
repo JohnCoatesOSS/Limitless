@@ -9059,7 +9059,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         }
     }
 
-    CydiaWriteSources();
+    _root(true) CydiaWriteSources();
 }
 
 // Navigation controller for the queuing badge.
@@ -10402,7 +10402,7 @@ int main(int argc, char *argv[]) {
     } broken = nil;
     /* }}} */
 
-    CydiaWriteSources();
+    _root(true) CydiaWriteSources();
 
     _trace();
     _root(true) MetaFile_.Open("/var/lib/cydia/metadata.cb0");
