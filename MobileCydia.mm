@@ -3980,7 +3980,7 @@ class CydiaLogCleaner :
 - (void) configure {
     NSString *dpkg = [NSString stringWithFormat:@"dpkg --configure -a --status-fd %u", statusfd_];
     _trace();
-    system([dpkg UTF8String]);
+    _root(true) system([dpkg UTF8String]);
     _trace();
 }
 
@@ -4731,7 +4731,7 @@ static _H<NSMutableSet> Diversions_;
         _assert(close(fds[0]) != -1);
         _assert(close(fds[1]) != -1);
         /* XXX: this should probably not use du */
-        execl("/usr/libexec/cydia/du", "du", "-s", [path UTF8String], NULL);
+        _root(true) execl("/usr/libexec/cydia/du", "du", "-s", [path UTF8String], NULL);
         exit(1);
     } else {
         _assert(close(fds[1]) != -1);
@@ -5580,7 +5580,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
         pid_t pid(ExecFork());
         if (pid == 0) {
-            execl("/usr/bin/sbreload", "sbreload", NULL);
+            _root(true) execl("/usr/bin/sbreload", "sbreload", NULL);
             perror("sbreload");
 
             exit(0);
@@ -7923,7 +7923,8 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     pid_t pid(ExecFork());
     if (pid == 0) {
-        FILE *dpkg(popen("dpkg --set-selections", "w"));
+        FILE *dpkg(nullptr); // XXX: this is due to _root's if
+        _root(true) dpkg = popen("dpkg --set-selections", "w");
         fwrite(package, strlen(package), 1, dpkg);
 
         if (on)
@@ -10438,9 +10439,9 @@ int main(int argc, char *argv[]) {
 
     int version([[NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"] intValue]);
 
-    _root(true) if (access("/User", F_OK) != 0 || version != 6) {
+    if (access("/User", F_OK) != 0 || version != 6) {
         _trace();
-        system("/usr/libexec/cydia/firmware.sh");
+        _root(true) system("/usr/libexec/cydia/firmware.sh");
         _trace();
     }
 
