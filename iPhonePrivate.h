@@ -210,6 +210,9 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 @end
 
 @interface UIApplication (Apple)
+- (void) suspendReturningToLastApp:(BOOL)returning;
+- (void) suspend;
+- (void) applicationSuspend;
 - (void) applicationSuspend:(GSEventRef)event;
 - (void) _animateSuspension:(BOOL)suspend duration:(double)duration startTime:(double)start scale:(float)scale;
 - (void) applicationOpenURL:(NSURL *)url;

@@ -9511,6 +9511,21 @@ _end
     return true;
 }
 
+- (void) suspendReturningToLastApp:(BOOL)returning {
+    if ([self isSafeToSuspend])
+        [super suspendReturningToLastApp:returning];
+}
+
+- (void) suspend {
+    if ([self isSafeToSuspend])
+        [super suspend];
+}
+
+- (void) applicationSuspend {
+    if ([self isSafeToSuspend])
+        [super applicationSuspend];
+}
+
 - (void) applicationSuspend:(__GSEvent *)event {
     if ([self isSafeToSuspend])
         [super applicationSuspend:event];
