@@ -247,11 +247,13 @@ struct Root {
         root_ = true;
         _trace();
         _assert(setreuid(real ? 0 : 501, 0) != -1);
+        _assert(setregid(real ? 0 : 501, 0) != -1);
     }
 
     ~Root() {
         root_ = false;
         _trace();
+        _assert(setregid(501, 501) != -1);
         _assert(setreuid(501, 501) != -1);
     }
 
