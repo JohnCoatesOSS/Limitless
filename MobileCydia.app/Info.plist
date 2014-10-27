@@ -159,6 +159,26 @@
             <key>UILaunchImageSize</key>
             <string>{375, 667}</string>
         </dict>
+        <dict>
+            <key>UILaunchImageName</key>
+            <string>iOS7-Default-736h-Portrait</string>
+            <key>UILaunchImageMinimumOSVersion</key>
+            <string>8.0</string>
+            <key>UILaunchImageOrientation</key>
+            <string>Portrait</string>
+            <key>UILaunchImageSize</key>
+            <string>{414, 736}</string>
+        </dict>
+        <dict>
+            <key>UILaunchImageName</key>
+            <string>iOS7-Default-736h-Landscape</string>
+            <key>UILaunchImageMinimumOSVersion</key>
+            <string>8.0</string>
+            <key>UILaunchImageOrientation</key>
+            <string>Landscape</string>
+            <key>UILaunchImageSize</key>
+            <string>{414, 736}</string>
+        </dict>
     </array>
 
     <key>UILaunchImages~ipad</key>
