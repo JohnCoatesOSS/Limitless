@@ -108,12 +108,12 @@ extern bool IsWildcat_;
     return nil;
 }
 
-- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
-    return IsWildcat_ || orientation == UIInterfaceOrientationPortrait;
-}
-
 - (NSUInteger) supportedInterfaceOrientations {
     return IsWildcat_ ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
+}
+
+- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    return ([self supportedInterfaceOrientations] & 1 << orientation) != 0;
 }
 
 - (BOOL) shouldAutorotate {
