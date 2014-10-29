@@ -353,6 +353,8 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 @end
 
 @interface WebView (Apple)
+- (void) _preferencesChanged:(WebPreferences *)preferences;
+- (void) _preferencesChangedNotification:(NSNotification *)notification;
 - (void) _setLayoutInterval:(float)interval;
 - (void) _setAllowsMessaging:(BOOL)allows;
 @end

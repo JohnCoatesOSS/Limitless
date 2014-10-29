@@ -942,7 +942,7 @@ float CYScrollViewDecelerationRateNormal;
         [preferences _setLayoutInterval:0];
 
     [preferences setCacheModel:WebCacheModelDocumentBrowser];
-    [preferences setJavaScriptCanOpenWindowsAutomatically:YES];
+    [preferences setJavaScriptCanOpenWindowsAutomatically:NO];
 
     if ([preferences respondsToSelector:@selector(setOfflineWebApplicationCacheEnabled:)])
         [preferences setOfflineWebApplicationCacheEnabled:YES];
@@ -1040,16 +1040,34 @@ float CYScrollViewDecelerationRateNormal;
     } return self;
 }
 
++ (void) _lockJavaScript:(WebPreferences *)preferences {
+    WebThreadLocked lock;
+    [preferences setJavaScriptCanOpenWindowsAutomatically:NO];
+}
+
 - (void) callFunction:(WebScriptObject *)function {
     WebThreadLocked lock;
 
     WebView *webview([[[self webView] _documentView] webView]);
-    WebFrame *frame([webview mainFrame]);
+    WebPreferences *preferences([webview preferences]);
 
+    [preferences setJavaScriptCanOpenWindowsAutomatically:YES];
+    if ([webview respondsToSelector:@selector(_preferencesChanged:)])
+        [webview _preferencesChanged:preferences];
+    else
+        [webview _preferencesChangedNotification:[NSNotification notificationWithName:@"" object:preferences]];
+
+    WebFrame *frame([webview mainFrame]);
     JSGlobalContextRef context([frame globalContext]);
+
     JSObjectRef object([function JSObject]);
     if ($JSObjectCallAsFunction != NULL)
         ($JSObjectCallAsFunction)(context, object, NULL, 0, NULL, NULL);
+
+    // XXX: the JavaScript code submits a form, which seems to happen asynchronously
+    NSObject *target([CyteWebViewController class]);
+    [NSObject cancelPreviousPerformRequestsWithTarget:target selector:@selector(_lockJavaScript:) object:preferences];
+    [target performSelector:@selector(_lockJavaScript:) withObject:preferences afterDelay:1];
 }
 
 - (void) reloadButtonClicked {
