@@ -8930,6 +8930,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     _H<UIWindow> window_;
     _H<CydiaTabBarController> tabbar_;
     _H<CyteTabBarController> emulated_;
+    _H<AppCacheController> appcache_;
 
     _H<NSMutableArray> essential_;
     _H<NSMutableArray> broken_;
@@ -9738,6 +9739,7 @@ _end
         return;
 
     [tabbar_ beginUpdate];
+    [appcache_ reloadURLWithCache:YES];
 }
 
 - (void) setConfigurationData:(NSString *)data {
@@ -9884,7 +9886,8 @@ _trace();
     broken_ = [NSMutableArray arrayWithCapacity:4];
 
     // XXX: I really need this thing... like, seriously... I'm sorry
-    [[[AppCacheController alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/appcache/", UI_]]] reloadData];
+    appcache_ = [[[AppCacheController alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/appcache/", UI_]]] autorelease];
+    [appcache_ reloadData];
 
     window_ = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     [window_ orderFront:self];
