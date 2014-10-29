@@ -239,33 +239,34 @@ union SplitHash {
 };
 // }}}
 
-struct Root {
-    static bool root_;
+static void setreugid(uid_t uid, gid_t gid) {
+    _assert(setreuid(uid, uid) != -1);
+    _assert(setregid(gid, gid) != -1);
+}
 
-    Root(bool real) {
-        _assert(!root_);
-        root_ = true;
+static void setreguid(gid_t gid, uid_t uid) {
+    _assert(setregid(gid, gid) != -1);
+    _assert(setreuid(uid, uid) != -1);
+}
+
+struct Root {
+    Root() {
         _trace();
-        _assert(setreuid(real ? 0 : 501, 0) != -1);
-        _assert(setregid(real ? 0 : 501, 0) != -1);
+        setreugid(0, 0);
+        _assert(pthread_setugid_np(0, 0) != -1);
+        setreguid(501, 501);
     }
 
     ~Root() {
-        root_ = false;
         _trace();
-        _assert(setregid(501, 501) != -1);
-        _assert(setreuid(501, 501) != -1);
-    }
-
-    operator bool() const {
-        return true;
+        setreugid(0, 0);
+        _assert(pthread_setugid_np(KAUTH_UID_NONE, KAUTH_GID_NONE) != -1);
+        setreguid(501, 501);
     }
 };
 
-bool Root::root_;
-
-#define _root(real) \
-    if (__attribute__((__unused__)) const Root &root = Root(real))
+#define _root(code) \
+    ({ Root _root; code; })
 
 static NSString *Colon_;
 NSString *Elision_;
@@ -3817,7 +3818,7 @@ class CydiaLogCleaner :
     }
     _end
 
-    _root(true) _system->Lock();
+    _root(_system->Lock());
 
     _trace();
     OpProgress progress;
@@ -3982,7 +3983,7 @@ class CydiaLogCleaner :
 - (void) configure {
     NSString *dpkg = [NSString stringWithFormat:@"dpkg --configure -a --status-fd %u", statusfd_];
     _trace();
-    _root(true) system([dpkg UTF8String]);
+    _root(system([dpkg UTF8String]));
     _trace();
 }
 
@@ -4084,8 +4085,7 @@ class CydiaLogCleaner :
         RestartSubstrate_ = true;
 
     _system->UnLock();
-    pkgPackageManager::OrderResult result;
-    _root(true) result = manager_->DoInstall(statusfd_);
+    pkgPackageManager::OrderResult result(_root(manager_->DoInstall(statusfd_)));
     if ([self popErrorWithTitle:title])
         return;
 
@@ -4733,7 +4733,7 @@ static _H<NSMutableSet> Diversions_;
         _assert(close(fds[0]) != -1);
         _assert(close(fds[1]) != -1);
         /* XXX: this should probably not use du */
-        _root(true) execl("/usr/libexec/cydia/du", "du", "-s", [path UTF8String], NULL);
+        _root(execl("/usr/libexec/cydia/du", "du", "-s", [path UTF8String], NULL));
         exit(1);
     } else {
         _assert(close(fds[1]) != -1);
@@ -5582,7 +5582,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
         pid_t pid(ExecFork());
         if (pid == 0) {
-            _root(true) execl("/usr/bin/sbreload", "sbreload", NULL);
+            _root(execl("/usr/bin/sbreload", "sbreload", NULL));
             perror("sbreload");
 
             exit(0);
@@ -7925,8 +7925,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     pid_t pid(ExecFork());
     if (pid == 0) {
-        FILE *dpkg(nullptr); // XXX: this is due to _root's if
-        _root(true) dpkg = popen("dpkg --set-selections", "w");
+        FILE *dpkg(_root(popen("dpkg --set-selections", "w")));
         fwrite(package, strlen(package), 1, dpkg);
 
         if (on)
@@ -8916,6 +8915,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [super storeCachedResponse:cached forRequest:request];
 }
 
+- (void) createDiskCachePath {
+    [super createDiskCachePath];
+    _root(chown([[self diskCachePath] UTF8String], 501, 501));
+}
+
 @end
 
 @interface Cydia : UIApplication <
@@ -9051,7 +9055,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         if (NSData *data = [NSPropertyListSerialization dataFromPropertyList:Metadata_ format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error]) {
             _trace();
             NSError *error(nil);
-            _root(true) if (![data writeToFile:@"/var/lib/cydia/metadata.plist" options:NSAtomicWrite error:&error])
+            if (!_root([data writeToFile:@"/var/lib/cydia/metadata.plist" options:NSAtomicWrite error:&error]));
                 NSLog(@"failure to save metadata data: %@", error);
             _trace();
 
@@ -9061,7 +9065,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         }
     }
 
-    _root(true) CydiaWriteSources();
+    _root(CydiaWriteSources());
 }
 
 // Navigation controller for the queuing badge.
@@ -9424,14 +9428,16 @@ _end
     } else if ([context isEqualToString:@"fixhalf"]) {
         if (button == [alert cancelButtonIndex]) {
             @synchronized (self) {
-                _root(false) for (Package *broken in (id) broken_) {
+                for (Package *broken in (id) broken_) {
                     [broken remove];
-
                     NSString *id = [broken id];
-                    unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.prerm", id] UTF8String]);
-                    unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postrm", id] UTF8String]);
-                    unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.preinst", id] UTF8String]);
-                    unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postinst", id] UTF8String]);
+
+                    _root({
+                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.prerm", id] UTF8String]);
+                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postrm", id] UTF8String]);
+                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.preinst", id] UTF8String]);
+                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postinst", id] UTF8String]);
+                    });
                 }
 
                 [self resolve];
@@ -9466,7 +9472,7 @@ _end
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
     _trace();
-    system([command UTF8String]);
+    _root(system([command UTF8String]));
     _trace();
 
     [pool release];
@@ -9756,7 +9762,7 @@ _end
 - (void) stash {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     UpdateExternalStatus(1);
-    _root(true) [self yieldToSelector:@selector(system:) withObject:@"/usr/libexec/cydia/free.sh"];
+    [self yieldToSelector:@selector(system:) withObject:@"/usr/libexec/cydia/free.sh"];
     UpdateExternalStatus(0);
 
     [self removeStashController];
@@ -10105,7 +10111,7 @@ MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSStrin
 }
 
 int main(int argc, char *argv[]) {
-    seteuid(501);
+    setreugid(501, 501);
 
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
@@ -10419,10 +10425,10 @@ int main(int argc, char *argv[]) {
     } broken = nil;
     /* }}} */
 
-    _root(true) CydiaWriteSources();
+    _root(CydiaWriteSources());
 
     _trace();
-    _root(true) MetaFile_.Open("/var/lib/cydia/metadata.cb0");
+    _root(MetaFile_.Open("/var/lib/cydia/metadata.cb0"));
     _trace();
 
     if (Packages_ != nil) {
@@ -10458,7 +10464,7 @@ int main(int argc, char *argv[]) {
 
     if (access("/User", F_OK) != 0 || version != 6) {
         _trace();
-        _root(true) system("/usr/libexec/cydia/firmware.sh");
+        _root(system("/usr/libexec/cydia/firmware.sh"));
         _trace();
     }
 
@@ -10512,6 +10518,13 @@ int main(int argc, char *argv[]) {
     // XXX: I have a feeling this was important
     //UIKeyboardDisableAutomaticAppearance();
     /* }}} */
+
+    _root({
+        chown([Cache("ApplicationCache.db") UTF8String], 501, 501);
+        chown([Cache("Cache.db") UTF8String], 501, 501);
+        chown([Cache("Cache.db-shm") UTF8String], 501, 501);
+        chown([Cache("Cache.db-wal") UTF8String], 501, 501);
+    });
 
     $SBSSetInterceptsMenuButtonForever = reinterpret_cast<void (*)(bool)>(dlsym(RTLD_DEFAULT, "SBSSetInterceptsMenuButtonForever"));
 
