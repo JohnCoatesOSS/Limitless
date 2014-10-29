@@ -9725,6 +9725,19 @@ _end
 }
 
 - (void) applicationWillEnterForeground:(UIApplication *)application {
+    NSDate *closed = [Metadata_ objectForKey:@"LastClosed"];
+    if (closed == nil)
+        return;
+
+    NSTimeInterval interval([closed timeIntervalSinceNow]);
+    // XXX: Is 10 minutes the optimal time here?
+    if (interval > -(10*60))
+        return;
+
+    if (!IsReachable("cydia.saurik.com"))
+        return;
+
+    [tabbar_ beginUpdate];
 }
 
 - (void) setConfigurationData:(NSString *)data {
