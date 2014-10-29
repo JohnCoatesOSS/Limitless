@@ -9720,6 +9720,13 @@ _end
     [self saveState];
 }
 
+- (void) applicationDidEnterBackground:(UIApplication *)application {
+    [self saveState];
+}
+
+- (void) applicationWillEnterForeground:(UIApplication *)application {
+}
+
 - (void) setConfigurationData:(NSString *)data {
     static Pcre conffile_r("^'(.*)' '(.*)' ([01]) ([01])$");
 
