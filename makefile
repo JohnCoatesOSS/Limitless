@@ -123,7 +123,7 @@ MobileCydia: sysroot $(object) entitlements.xml
 	@mkdir -p bins
 	@cp -a $@ bins/$@-$(version)
 	@echo "[strp] $@"
-	@strip -no_uuid $@
+	@strip $@
 	@echo "[uikt] $@"
 	@./uikit.sh $@
 	@echo "[sign] $@"
