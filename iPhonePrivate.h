@@ -9,6 +9,7 @@
 #import <WebKit/DOMHTMLIFrameElement.h>
 #import <WebKit/WebFrame.h>
 #import <WebKit/WebPreferences.h>
+#import <WebKit/WebView.h>
 // }}}
 // typedef enum {*} *; {{{
 typedef enum {
@@ -39,7 +40,6 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 // @class Web*; {{{
 @class WebDataSource;
 @class WebScriptObject;
-@class WebView;
 // }}}
 // @protocol *; {{{
 @protocol WebPolicyDecisionListener;
@@ -350,6 +350,11 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 + (void) _setInitialDefaultTextEncodingToSystemEncoding;
 - (void) _setLayoutInterval:(NSInteger)interval;
 - (void) setOfflineWebApplicationCacheEnabled:(BOOL)enabled;
+@end
+
+@interface WebView (Apple)
+- (void) _setLayoutInterval:(float)interval;
+- (void) _setAllowsMessaging:(BOOL)allows;
 @end
 // }}}
 

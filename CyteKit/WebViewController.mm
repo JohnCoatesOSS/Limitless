@@ -45,11 +45,6 @@ static Class $MFMailComposeViewController;
 
 float CYScrollViewDecelerationRateNormal;
 
-@interface WebView (Apple)
-- (void) _setLayoutInterval:(float)interval;
-- (void) _setAllowsMessaging:(BOOL)allows;
-@end
-
 @interface WebFrame (Cydia)
 - (void) cydia$updateHeight;
 @end
