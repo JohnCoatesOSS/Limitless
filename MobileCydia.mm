@@ -9731,15 +9731,18 @@ _end
         return;
 
     NSTimeInterval interval([closed timeIntervalSinceNow]);
-    // XXX: Is 10 minutes the optimal time here?
-    if (interval > -(10*60))
-        return;
 
-    if (!IsReachable("cydia.saurik.com"))
-        return;
+    if (interval <= -(30)) {
+        [tabbar_ setSelectedIndex:0];
+        [[[tabbar_ viewControllers] objectAtIndex:0] popToRootViewControllerAnimated:NO];
+    }
 
-    [tabbar_ beginUpdate];
-    [appcache_ reloadURLWithCache:YES];
+    if (interval <= -(15)) {
+        if (IsReachable("cydia.saurik.com")) {
+            [tabbar_ beginUpdate];
+            [appcache_ reloadURLWithCache:YES];
+        }
+    }
 }
 
 - (void) setConfigurationData:(NSString *)data {
