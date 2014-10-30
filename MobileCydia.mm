@@ -9723,6 +9723,8 @@ _end
 }
 
 - (void) applicationDidEnterBackground:(UIApplication *)application {
+    if (kCFCoreFoundationVersionNumber < 1000 && [self isSafeToSuspend])
+        return [self terminateWithSuccess];
     [self saveState];
 }
 
