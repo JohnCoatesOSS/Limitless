@@ -10472,7 +10472,8 @@ int main(int argc, char *argv[]) {
     _root(CydiaWriteSources());
 
     _trace();
-    MetaFile_.Open([Cache("metadata.cb0") UTF8String]);
+    mkdir("/var/mobile/Library/Cydia", 0755);
+    MetaFile_.Open("/var/mobile/Library/Cydia/metadata.cb0");
     _trace();
 
     if (Packages_ != nil) {

@@ -180,11 +180,20 @@ int main(int argc, const char *argv[]) {
         system("chown -R 501.501 " NewCache_ "/lists");
     }
 
-    if (access(NewCache_ "/metadata.cb0", F_OK) != 0 && errno == ENOENT)
-        if (access("/var/lib/cydia/metadata.cb0", F_OK) == 0) {
-            system("mv /var/lib/cydia/metadata.cb0 " NewCache_);
-            chown(NewCache_ "/metadata.cb0", 501, 501);
-        }
+    #define OldLibrary_ "/var/lib/cydia"
+
+    #define NewLibrary_ "/var/mobile/Library/Cydia"
+    system("cd /; su -c 'mkdir -p " NewLibrary_ "' mobile");
+
+    #define Cytore_ "/metadata.cb0"
+
+    if (access(NewLibrary_ Cytore_, F_OK) != 0 && errno == ENOENT) {
+        if (access(NewCache_ Cytore_, F_OK) == 0)
+            system("mv -f " NewCache_ Cytore_ " " NewLibrary_);
+        else if (access(OldLibrary_ Cytore_, F_OK) == 0)
+            system("mv -f " OldLibrary_ Cytore_ " " NewLibrary_);
+        chown(NewLibrary_ Cytore_, 501, 501);
+    }
 
     FixPermissions();
 
