@@ -461,10 +461,29 @@ float CYScrollViewDecelerationRateNormal;
     NSLog(@"decidePolicyForNavigationAction:%@ request:%@ %@ frame:%@", action, request, [request allHTTPHeaderFields], frame);
 #endif
 
+    NSURL *url(request == nil ? nil : [request URL]);
+    if ([[url scheme] isEqualToString:@"itms-appss"] || [[url absoluteString] hasPrefix:@"https://itunes.apple.com/app/"]) {
+        appstore_ = url;
+
+        UIAlertView *alert = [[[UIAlertView alloc]
+            initWithTitle:UCLocalize("APP_STORE_REDIRECT")
+            message:nil
+            delegate:self
+            cancelButtonTitle:UCLocalize("CANCEL")
+            otherButtonTitles:
+                UCLocalize("ALLOW"),
+            nil
+        ] autorelease];
+
+        [alert setContext:@"itmsappss"];
+        [alert show];
+
+        [listener ignore];
+        return;
+    }
+
     if ([frame parentFrame] == nil) {
         if (!error_) {
-            NSURL *url(request == nil ? nil : [request URL]);
-
             if (request_ != nil && ![[request_ URL] isEqual:url] && ![self allowsNavigationAction]) {
                 if (url != nil)
                     [self pushRequest:request forAction:action asPop:NO];
@@ -733,6 +752,13 @@ float CYScrollViewDecelerationRateNormal;
         }
 
         challenge_ = nil;
+
+        [alert dismissWithClickedButtonIndex:-1 animated:YES];
+    } else if ([context isEqualToString:@"itmsappss"]) {
+        if (button == [alert cancelButtonIndex]) {
+        } else if (button == [alert firstOtherButtonIndex]) {
+            [delegate_ openURL:appstore_];
+        }
 
         [alert dismissWithClickedButtonIndex:-1 animated:YES];
     } else if ([context isEqualToString:@"submit"]) {

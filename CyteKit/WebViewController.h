@@ -56,6 +56,7 @@
     bool ready_;
 
     _transient NSNumber *sensitive_;
+    _H<NSURL> appstore_;
 
     _H<NSString> title_;
     _H<NSMutableSet> loading_;
