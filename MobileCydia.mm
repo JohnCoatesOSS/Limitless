@@ -9056,7 +9056,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         if (NSData *data = [NSPropertyListSerialization dataFromPropertyList:Metadata_ format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error]) {
             _trace();
             NSError *error(nil);
-            if (!_root([data writeToFile:@"/var/lib/cydia/metadata.plist" options:NSAtomicWrite error:&error]));
+            if (!_root([data writeToFile:@"/var/lib/cydia/metadata.plist" options:NSAtomicWrite error:&error]))
                 NSLog(@"failure to save metadata data: %@", error);
             _trace();
 
