@@ -26,8 +26,6 @@
 
 #include "iPhonePrivate.h"
 
-extern bool IsWildcat_;
-
 @implementation UIViewController (Cydia)
 
 - (BOOL) hasLoaded {
@@ -109,7 +107,9 @@ extern bool IsWildcat_;
 }
 
 - (NSUInteger) supportedInterfaceOrientations {
-    return IsWildcat_ ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
+    extern bool IsWildcat_;
+    extern CGFloat ScreenScale_;
+    return IsWildcat_ || ScreenScale_ == 3 ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {

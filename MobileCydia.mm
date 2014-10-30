@@ -820,7 +820,7 @@ bool Changed_;
 static time_t now_;
 
 bool IsWildcat_;
-static CGFloat ScreenScale_;
+CGFloat ScreenScale_;
 static NSString *Idiom_;
 static _H<NSString> Firmware_;
 static NSString *Major_;
