@@ -3133,6 +3133,10 @@ struct PackageNameOrdering :
 } }
 
 - (NSArray *) warnings {
+@synchronized (database_) {
+    if ([database_ era] != era_ || file_.end())
+        return nil;
+
     NSMutableArray *warnings([NSMutableArray arrayWithCapacity:4]);
     const char *name(iterator_.Name());
 
@@ -3184,7 +3188,7 @@ struct PackageNameOrdering :
     }
 
     return [warnings count] == 0 ? nil : warnings;
-}
+} }
 
 - (NSArray *) applications {
     NSString *me([[NSBundle mainBundle] bundleIdentifier]);
