@@ -106,24 +106,12 @@
     return nil;
 }
 
-- (NSUInteger) supportedInterfaceOrientations {
-    extern bool IsWildcat_;
-    extern CGFloat ScreenScale_;
-    return IsWildcat_ || ScreenScale_ == 3 ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
-}
-
-- (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
-    return ([self supportedInterfaceOrientations] & 1 << orientation) != 0;
-}
-
-- (BOOL) shouldAutorotate {
-    return YES;
-}
-
 - (void) setPageColor:(UIColor *)color {
     if (color == nil)
         color = [UIColor groupTableViewBackgroundColor];
     color_ = color;
 }
+
+#include "InterfaceOrientation.h"
 
 @end
