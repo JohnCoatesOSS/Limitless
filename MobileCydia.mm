@@ -9168,6 +9168,7 @@ _profile(reloadDataWithInvocation)
         [self setApplicationIconBadgeNumber:0];
     }
 
+    Queuing_ = false;
     [self _updateData];
 
     if (hud != nil)
