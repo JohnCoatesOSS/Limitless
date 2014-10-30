@@ -172,6 +172,13 @@ int main(int argc, const char *argv[]) {
     if (access(OldCache_, F_OK) == 0)
         system("rm -rf " OldCache_);
 
+    #define NewCache_ "/var/mobile/Library/Caches/com.saurik.Cydia"
+    if (access(NewCache_ "/lists", F_OK) != 0 && errno == ENOENT) {
+        system("su -c 'mkdir -p " NewCache_ "' mobile");
+        system("cp -at " NewCache_ " /var/lib/apt/lists");
+        system("chown -R 501.501 " NewCache_ "/lists");
+    }
+
     FixPermissions();
 
     if (FixApplications())
