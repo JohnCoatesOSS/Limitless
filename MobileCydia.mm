@@ -6299,10 +6299,13 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
     if ([context isEqualToString:@"modify"]) {
         if (button != [sheet cancelButtonIndex]) {
-            [self performSelector:@selector(_clickButtonWithName:) withObject:buttons_[button].first afterDelay:0];
+            if (IsWildcat_)
+                [self performSelector:@selector(_clickButtonWithName:) withObject:buttons_[button].first afterDelay:0];
+            else
+                [self _clickButtonWithName:buttons_[button].first];
         }
 
-        [sheet dismissWithClickedButtonIndex:-1 animated:YES];
+        [sheet dismissWithClickedButtonIndex:button animated:YES];
     }
 }
 
