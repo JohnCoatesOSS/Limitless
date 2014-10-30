@@ -180,6 +180,12 @@ int main(int argc, const char *argv[]) {
         system("chown -R 501.501 " NewCache_ "/lists");
     }
 
+    if (access(NewCache_ "/metadata.cb0", F_OK) != 0 && errno == ENOENT)
+        if (access("/var/lib/cydia/metadata.cb0", F_OK) == 0) {
+            system("mv /var/lib/cydia/metadata.cb0 " NewCache_);
+            chown(NewCache_ "/metadata.cb0", 501, 501);
+        }
+
     FixPermissions();
 
     if (FixApplications())

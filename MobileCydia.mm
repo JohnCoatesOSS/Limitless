@@ -10456,7 +10456,7 @@ int main(int argc, char *argv[]) {
     _root(CydiaWriteSources());
 
     _trace();
-    _root(MetaFile_.Open("/var/lib/cydia/metadata.cb0"));
+    MetaFile_.Open([Cache("metadata.cb0") UTF8String]);
     _trace();
 
     if (Packages_ != nil) {
