@@ -79,11 +79,6 @@ static bool FixProtections() {
         }
     }
 
-    if (!MoveStash()) {
-        fprintf(stderr, "failed to move stash\n");
-        return false;
-    }
-
     return true;
 }
 
@@ -188,9 +183,18 @@ int main(int argc, const char *argv[]) {
 
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
-    if (kCFCoreFoundationVersionNumber >= 1000)
+    bool restart(false);
+
+    if (kCFCoreFoundationVersionNumber >= 1000) {
         if (!FixProtections())
             return 1;
+        if (MoveStash())
+            restart = true;
+        else {
+            fprintf(stderr, "failed to move stash\n");
+            return 1;
+        }
+    }
 
     size_t size;
     sysctlbyname("kern.osversion", NULL, &size, NULL, 0);
@@ -249,7 +253,9 @@ int main(int argc, const char *argv[]) {
 
     FixPermissions();
 
-    if (FixApplications())
+    restart |= FixApplications();
+
+    if (restart)
         Finish("restart");
 
     [pool release];
