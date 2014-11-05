@@ -9760,12 +9760,12 @@ _end
 
     NSTimeInterval interval([closed timeIntervalSinceNow]);
 
-    if (interval <= -(30)) {
+    if (interval <= -(30*60)) {
         [tabbar_ setSelectedIndex:0];
         [[[tabbar_ viewControllers] objectAtIndex:0] popToRootViewControllerAnimated:NO];
     }
 
-    if (interval <= -(15)) {
+    if (interval <= -(15*60)) {
         if (IsReachable("cydia.saurik.com")) {
             [tabbar_ beginUpdate];
             [appcache_ reloadURLWithCache:YES];
