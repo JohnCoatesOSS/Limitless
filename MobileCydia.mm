@@ -9231,8 +9231,6 @@ _end
 
 - (void) presentModalViewController:(UIViewController *)controller force:(BOOL)force {
     UINavigationController *navigation([[[UINavigationController alloc] initWithRootViewController:controller] autorelease]);
-    if (IsWildcat_)
-        [navigation setModalPresentationStyle:UIModalPresentationFormSheet];
 
     UIViewController *parent;
     if (emulated_ == nil)
@@ -9244,6 +9242,8 @@ _end
         parent = tabbar_;
     }
 
+    if (IsWildcat_)
+        [navigation setModalPresentationStyle:UIModalPresentationFormSheet];
     [parent presentModalViewController:navigation animated:YES];
 }
 
