@@ -71,12 +71,11 @@ static bool MoveStash() {
 }
 
 static bool FixProtections() {
-    for (const char *path : (const char *[]) {"/var/lib", "/var/cache"}) {
-        mkdir(path, 0755);
-        if (!setnsfpn(path)) {
-            fprintf(stderr, "failed to setnsfpn %s\n", path);
-            return false;
-        }
+    const char *path("/var/lib");
+    mkdir(path, 0755);
+    if (!setnsfpn(path)) {
+        fprintf(stderr, "failed to setnsfpn %s\n", path);
+        return false;
     }
 
     return true;

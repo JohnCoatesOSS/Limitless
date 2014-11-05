@@ -10517,8 +10517,7 @@ int main(int argc, char *argv[]) {
         dlopen("/Library/MobileSubstrate/MobileSubstrate.dylib", RTLD_LAZY | RTLD_GLOBAL);*/
 
     if (kCFCoreFoundationVersionNumber > 1000)
-        for (const char *path : (const char *[]) {"/var/lib", "/var/cache"})
-            _root(system([[NSString stringWithFormat:@"/usr/libexec/cydia/setnsfpn %s", path] UTF8String]));
+        _root(system([[NSString stringWithFormat:@"/usr/libexec/cydia/setnsfpn /var/lib"] UTF8String]));
 
     int version([[NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"] intValue]);
 
