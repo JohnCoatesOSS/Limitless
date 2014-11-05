@@ -123,10 +123,12 @@ static int setnsfpn(const char *path, size_t before, Recurse recurse) {
                             return -1;
 
                         case DT_DIR:
-                            setnsfpn(sub, both, RecurseYes);
+                            if (setnsfpn(sub, both, RecurseYes) != 0)
+                                return -1;
                             break;
                         case DT_REG:
-                            setnsfpn(sub, both, RecurseNo);
+                            if (setnsfpn(sub, both, RecurseNo) != 0)
+                                return -1;
                             break;
                     }
                 }
