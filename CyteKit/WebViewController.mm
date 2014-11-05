@@ -462,7 +462,17 @@ float CYScrollViewDecelerationRateNormal;
 #endif
 
     NSURL *url(request == nil ? nil : [request URL]);
-    if ([[url scheme] isEqualToString:@"itms-appss"] || [[url absoluteString] hasPrefix:@"https://itunes.apple.com/app/"]) {
+    NSString *scheme([[url scheme] lowercaseString]);
+    NSString *absolute([[url absoluteString] lowercaseString]);
+
+    if (
+        [scheme isEqualToString:@"itms"] ||
+        [scheme isEqualToString:@"itmss"] ||
+        [scheme isEqualToString:@"itms-apps"] ||
+        [scheme isEqualToString:@"itms-appss"] ||
+        [absolute hasPrefix:@"http://itunes.apple.com/"] ||
+        [absolute hasPrefix:@"https://itunes.apple.com/"] ||
+    false) {
         appstore_ = url;
 
         UIAlertView *alert = [[[UIAlertView alloc]
