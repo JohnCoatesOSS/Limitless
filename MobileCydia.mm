@@ -3157,6 +3157,7 @@ struct PackageNameOrdering :
         bool user = false;
         bool _private = false;
         bool stash = false;
+        bool dbstash = false;
         bool dsstore = false;
 
         bool repository = [[self section] isEqualToString:@"Repositories"];
@@ -3171,6 +3172,8 @@ struct PackageNameOrdering :
                     _private = true;
                 else if (!stash && [file isEqualToString:@"/var/stash"])
                     stash = true;
+                else if (!dbstash && [file isEqualToString:@"/var/db/stash"])
+                    dbstash = true;
                 else if (!dsstore && [file hasSuffix:@"/.DS_Store"])
                     dsstore = true;
 
@@ -3183,6 +3186,8 @@ struct PackageNameOrdering :
             [warnings addObject:[NSString stringWithFormat:UCLocalize("FILES_INSTALLED_TO"), @"/private"]];
         if (stash)
             [warnings addObject:[NSString stringWithFormat:UCLocalize("FILES_INSTALLED_TO"), @"/var/stash"]];
+        if (dbstash)
+            [warnings addObject:[NSString stringWithFormat:UCLocalize("FILES_INSTALLED_TO"), @"/var/db/stash"]];
         if (dsstore)
             [warnings addObject:[NSString stringWithFormat:UCLocalize("FILES_INSTALLED_TO"), @".DS_Store"]];
     }

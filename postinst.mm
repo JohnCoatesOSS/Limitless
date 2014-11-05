@@ -28,14 +28,62 @@ static bool setnsfpn(const char *path) {
     return system([[NSString stringWithFormat:@"/usr/libexec/cydia/setnsfpn %s", path] UTF8String]) == 0;
 }
 
+static bool MoveStash() {
+    struct stat stat;
+
+    if (lstat("/var/stash", &stat) == -1)
+        return errno == ENOENT;
+    else if (S_ISLNK(stat.st_mode))
+        return true;
+    else if (!S_ISDIR(stat.st_mode))
+        return false;
+
+    if (lstat("/var/db/stash", &stat) == -1) {
+        if (errno == ENOENT)
+            goto move;
+        else return false;
+    } else if (S_ISLNK(stat.st_mode))
+        // XXX: this is fixable
+        return false;
+    else if (!S_ISDIR(stat.st_mode))
+        return false;
+    else {
+        if (!setnsfpn("/var/db/stash"))
+            return false;
+        if (system("mv -t /var/stash /var/db/stash/*") != 0)
+            return false;
+        if (rmdir("/var/db/stash") == -1)
+            return false;
+    } move:
+
+    if (!setnsfpn("/var/stash"))
+        return false;
+
+    if (rename("/var/stash", "/var/db/stash") == -1)
+        return false;
+    if (symlink("/var/db/stash", "/var/stash") != -1)
+        return true;
+    if (rename("/var/db/stash", "/var/stash") != -1)
+        return false;
+
+    fprintf(stderr, "/var/stash misplaced -- DO NOT REBOOT\n");
+    return false;
+}
+
 static bool FixProtections() {
-    for (const char *path : (const char *[]) {"/var/lib", "/var/cache", "/var/stash"}) {
+    for (const char *path : (const char *[]) {"/var/lib", "/var/cache"}) {
         mkdir(path, 0755);
         if (!setnsfpn(path)) {
             fprintf(stderr, "failed to setnsfpn %s\n", path);
             return false;
         }
     }
+
+    if (!MoveStash()) {
+        fprintf(stderr, "failed to move stash\n");
+        return false;
+    }
+
     return true;
 }
 
