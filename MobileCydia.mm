@@ -7124,9 +7124,11 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     // on the iPad, this view controller is ALSO visible. :(
     if (IsWildcat_)
-        if (UIViewController *top = [self topViewController])
-            if (top != visible)
-                [top reloadData];
+        if (UIViewController *modal = [self modalViewController])
+            if ([modal modalPresentationStyle] == UIModalPresentationFormSheet)
+                if (UIViewController *top = [self topViewController])
+                    if (top != visible)
+                        [top reloadData];
 }
 
 - (void) unloadData {
