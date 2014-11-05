@@ -24,10 +24,14 @@ void Finish(const char *finish) {
     fclose(fout);
 }
 
+static bool setnsfpn(const char *path) {
+    return system([[NSString stringWithFormat:@"/usr/libexec/cydia/setnsfpn %s", path] UTF8String]) == 0;
+}
+
 static bool FixProtections() {
     for (const char *path : (const char *[]) {"/var/lib", "/var/cache", "/var/stash"}) {
         mkdir(path, 0755);
-        if (system([[NSString stringWithFormat:@"/usr/libexec/cydia/setnsfpn %s", path] UTF8String]) != 0) {
+        if (!setnsfpn(path)) {
             fprintf(stderr, "failed to setnsfpn %s\n", path);
             return false;
         }
