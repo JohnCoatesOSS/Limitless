@@ -711,6 +711,14 @@ float CYScrollViewDecelerationRateNormal;
     return request;
 }
 
+- (NSURLRequest *) webThreadWebView:(WebView *)view resource:(id)identifier willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response fromDataSource:(WebDataSource *)source {
+#if LogBrowser
+    NSLog(@"resource:%@ willSendRequest:%@ redirectResponse:%@ fromDataSource:%@", identifier, request, response, source);
+#endif
+
+    return request;
+}
+
 - (bool) webView:(WebView *)view shouldRunJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WebFrame *)frame {
     return [self _allowJavaScriptPanel];
 }

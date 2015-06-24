@@ -4956,6 +4956,10 @@ static _H<NSMutableSet> Diversions_;
     return [CydiaWebViewController requestWithHeaders:[super webView:view resource:resource willSendRequest:request redirectResponse:response fromDataSource:source]];
 }
 
+- (NSURLRequest *) webThreadWebView:(WebView *)view resource:(id)resource willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response fromDataSource:(WebDataSource *)source {
+    return [CydiaWebViewController requestWithHeaders:[super webThreadWebView:view resource:resource willSendRequest:request redirectResponse:response fromDataSource:source]];
+}
+
 + (NSURLRequest *) requestWithHeaders:(NSURLRequest *)request {
     NSMutableURLRequest *copy([[request mutableCopy] autorelease]);
 

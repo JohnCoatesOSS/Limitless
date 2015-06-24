@@ -295,6 +295,16 @@ static NSURLRequest *$UIWebViewWebViewDelegate$webView$resource$willSendRequest$
     return request;
 }
 // }}}
+// webThreadWebView:resource:willSendRequest:redirectResponse:fromDataSource: {{{
+- (NSURLRequest *) webThreadWebView:(WebView *)view resource:(id)identifier willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response fromDataSource:(WebDataSource *)source {
+    id<CyteWebViewDelegate> delegate([self delegate]);
+    if ([UIWebView instancesRespondToSelector:@selector(webThreadWebView:resource:willSendRequest:redirectResponse:fromDataSource:)])
+        request = [super webThreadWebView:view resource:identifier willSendRequest:request redirectResponse:response fromDataSource:source];
+    if ([delegate respondsToSelector:@selector(webThreadWebView:resource:willSendRequest:redirectResponse:fromDataSource:)])
+        request = [delegate webThreadWebView:view resource:identifier willSendRequest:request redirectResponse:response fromDataSource:source];
+    return request;
+}
+// }}}
 // webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame: (2.1+) {{{
 - (void) webView:(WebView *)view runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WebFrame *)frame {
     [[self retain] autorelease];
