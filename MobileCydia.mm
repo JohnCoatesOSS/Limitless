@@ -239,29 +239,29 @@ union SplitHash {
 };
 // }}}
 
-#define seteugid(uid, gid) do { \
-    _assert(setreuid(0, uid) != -1); \
-    _assert(setregid(0, gid) != -1); \
-} while (false)
+static void setreugid(uid_t uid, gid_t gid) {
+    _assert(setreuid(uid, uid) != -1);
+    _assert(setregid(gid, gid) != -1);
+}
 
-#define seteguid(uid, gid) do { \
-    _assert(setregid(0, gid) != -1); \
-    _assert(setreuid(0, uid) != -1); \
-} while (false)
+static void setreguid(gid_t gid, uid_t uid) {
+    _assert(setregid(gid, gid) != -1);
+    _assert(setreuid(uid, uid) != -1);
+}
 
 struct Root {
     Root() {
         _trace();
-        seteugid(0, 0);
+        setreugid(0, 0);
         _assert(pthread_setugid_np(0, 0) != -1);
-        seteguid(501, 501);
+        setreguid(501, 501);
     }
 
     ~Root() {
         _trace();
-        seteugid(0, 0);
+        setreugid(0, 0);
         _assert(pthread_setugid_np(KAUTH_UID_NONE, KAUTH_GID_NONE) != -1);
-        seteguid(501, 501);
+        setreguid(501, 501);
     }
 };
 
@@ -9385,7 +9385,7 @@ _end
     _trace();
 
     if (UpgradeCydia_ && Finish_ > 0) {
-        seteugid(0, 0);
+        setreugid(0, 0);
         system("su -c /usr/bin/uicache mobile");
     } else {
         system("/usr/bin/uicache");
@@ -10170,8 +10170,7 @@ MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSStrin
 }
 
 int main(int argc, char *argv[]) {
-    seteugid(0, 0);
-    seteguid(501, 501);
+    setreugid(501, 501);
 
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
