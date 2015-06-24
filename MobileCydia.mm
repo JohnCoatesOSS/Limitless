@@ -8625,7 +8625,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             case 1: {
                 NSString *href = [[alert textField] text];
 
-                static Pcre href_r("^http(s?)://[^# ]*$");
+                static Pcre href_r("^(http(s?)://|file:///)[^# ]*$");
                 if (!href_r(href)) {
                     UIAlertView *alert = [[[UIAlertView alloc]
                         initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
