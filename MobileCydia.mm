@@ -9961,7 +9961,6 @@ _trace();
     Stash_("/Library/Wallpaper");
     //Stash_("/usr/bin");
     Stash_("/usr/include");
-    Stash_("/usr/lib/pam");
     Stash_("/usr/share");
     //Stash_("/var/lib");
 
