@@ -50,9 +50,6 @@ libs += -lpcre
 uikit := 
 uikit += -framework UIKit
 
-backrow := 
-backrow += -FAppleTV -framework BackRow -framework AppleTV
-
 version := $(shell ./version.sh)
 
 cycc = $(gxx) -arch armv6 -o $@ -miphoneos-version-min=2.0 -isysroot $(sdk) -idirafter /usr/include -F{sysroot,}/Library/Frameworks
@@ -129,9 +126,6 @@ MobileCydia: sysroot $(object) entitlements.xml
 	@echo "[sign] $@"
 	@ldid -T0 -Sentitlements.xml $@ || { rm -f $@ && false; }
 
-CydiaAppliance: CydiaAppliance.mm
-	$(cycc) $(filter %.mm,$^) $(flags) $(link) -bundle $(libs) $(backrow)
-
 cfversion: cfversion.mm
 	$(cycc) $(filter %.mm,$^) $(flags) $(link) -framework CoreFoundation
 	@ldid -T0 -S $@
@@ -171,13 +165,6 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 	mkdir -p _/Applications/Cydia.app/Sources
 	ln -s /usr/share/bigboss/icons/bigboss.png _/Applications/Cydia.app/Sources/apt.bigboss.us.com.png
 	ln -s /usr/share/bigboss/icons/planetiphones.png _/Applications/Cydia.app/Sections/"Planet-iPhones Mods.png"
-	
-	#mkdir -p _/Applications/AppleTV.app/Appliances
-	#cp -a Cydia.frappliance _/Applications/AppleTV.app/Appliances
-	#cp -a CydiaAppliance _/Applications/AppleTV.app/Appliances/Cydia.frappliance
-	
-	#mkdir -p _/Applications/Lowtide.app/Appliances
-	#ln -s {/Applications/AppleTV,_/Applications/Lowtide}.app/Appliances/Cydia.frappliance
 	
 	mkdir -p _/DEBIAN
 	./control.sh cydia.control _ >_/DEBIAN/control
