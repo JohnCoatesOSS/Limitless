@@ -109,7 +109,7 @@ extern "C" {
 #include <Cytore.hpp>
 #include "Sources.h"
 
-#include <CydiaSubstrate/CydiaSubstrate.h>
+#include "Substrate.hpp"
 #include "Menes/Menes.h"
 
 #include "CyteKit/IndirectDelegate.h"

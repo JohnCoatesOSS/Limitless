@@ -20,7 +20,7 @@
 /* }}} */
 
 #include <Foundation/Foundation.h>
-#include <CydiaSubstrate/CydiaSubstrate.h>
+#include <Menes/ObjectHandle.h>
 #include <CyteKit/UCPlatform.h>
 
 #include <cstdio>

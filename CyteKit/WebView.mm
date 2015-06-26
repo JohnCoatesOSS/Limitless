@@ -22,7 +22,7 @@
 #include "CyteKit/dispatchEvent.h"
 #include "CyteKit/WebView.h"
 
-#include <CydiaSubstrate/CydiaSubstrate.h>
+#include "Substrate.hpp"
 
 #include "iPhonePrivate.h"
 

@@ -24,8 +24,6 @@
 
 #include <Foundation/Foundation.h>
 
-#include <CydiaSubstrate/CydiaSubstrate.h>
-
 #include <apt-pkg/acquire.h>
 
 @interface CydiaProgressEvent : NSObject {

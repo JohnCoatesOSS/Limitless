@@ -28,9 +28,7 @@
 #include <WebKit/WebScriptObject.h>
 #include <WebKit/WebView.h>
 
-#include <objc/runtime.h>
-
-#include <CydiaSubstrate/CydiaSubstrate.h>
+#include "Substrate.hpp"
 
 @implementation UIWebDocumentView (CyteDispatchEvent)
 
