@@ -61,7 +61,7 @@ dirs := Menes CyteKit Cydia SDURLCache
 
 code := $(foreach dir,$(dirs),$(wildcard $(foreach ext,h hpp c cpp m mm,$(dir)/*.$(ext))))
 code := $(filter-out SDURLCache/SDURLCacheTests.m,$(code))
-code += MobileCydia.mm Version.mm iPhonePrivate.h Cytore.hpp lookup3.c Sources.h Sources.mm
+code += MobileCydia.mm Version.mm iPhonePrivate.h Cytore.hpp lookup3.c Sources.h Sources.mm DiskUsage.cpp
 
 source := $(filter %.m,$(code)) $(filter %.mm,$(code))
 source += $(filter %.c,$(code)) $(filter %.cpp,$(code))
@@ -94,6 +94,11 @@ Objects/%.o: %.m $(header)
 	@mkdir -p $(dir $@)
 	@echo "[cycc] $<"
 	@$(cycc) -c $< $(flags)
+
+Objects/%.o: %.cpp $(header)
+	@mkdir -p $(dir $@)
+	@echo "[cycc] $<"
+	@$(cycc) -std=c++11 -c $< $(flags) $(xflags)
 
 Objects/%.o: %.mm $(header)
 	@mkdir -p $(dir $@)
@@ -146,7 +151,6 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 	
 	mkdir -p _/usr/libexec
 	cp -a Library _/usr/libexec/cydia
-	cp -a sysroot/usr/bin/du _/usr/libexec/cydia
 	cp -a cfversion _/usr/libexec/cydia
 	cp -a setnsfpn _/usr/libexec/cydia
 	

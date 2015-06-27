@@ -4728,41 +4728,13 @@ static _H<NSMutableSet> Diversions_;
     nil];
 }
 
+ssize_t DiskUsage(const char *path);
+
 - (NSNumber *) du:(NSString *)path {
-    NSNumber *value(nil);
-
-    int fds[2];
-    _assert(pipe(fds) != -1);
-
-    pid_t pid(ExecFork());
-    if (pid == 0) {
-        _assert(dup2(fds[1], 1) != -1);
-        _assert(close(fds[0]) != -1);
-        _assert(close(fds[1]) != -1);
-        /* XXX: this should probably not use du */
-        _root(execl("/usr/libexec/cydia/du", "du", "-s", [path UTF8String], NULL));
-        exit(1);
-    } else {
-        _assert(close(fds[1]) != -1);
-
-        if (FILE *du = fdopen(fds[0], "r")) {
-            char line[1024];
-            while (fgets(line, sizeof(line), du) != NULL) {
-                size_t length(strlen(line));
-                while (length != 0 && line[length - 1] == '\n')
-                    line[--length] = '\0';
-                if (char *tab = strchr(line, '\t')) {
-                    *tab = '\0';
-                    value = [NSNumber numberWithUnsignedLong:strtoul(line, NULL, 0)];
-                }
-            }
-
-            fclose(du);
-        } else
-            _assert(close(fds[0]) != -1);
-    } ReapZombie(pid);
-
-    return value;
+    ssize_t usage(DiskUsage([path UTF8String]));
+    if (usage != -1)
+        usage /= 1024;
+    return [NSNumber numberWithUnsignedLong:usage];
 }
 
 - (void) close {
