@@ -62,8 +62,6 @@ function extract() {
 
 declare -A urls
 
-urls[apr]=http://apt.saurik.com/debs/apr_1.3.3-4_iphoneos-arm.deb
-urls[apr-lib]=http://apt.saurik.com/debs/apr-lib_1.3.3-2_iphoneos-arm.deb
 urls[apt7]=http://apt.saurik.com/debs/apt7_0.7.25.3-7_iphoneos-arm.deb
 urls[apt7-lib]=http://apt.saurik.com/debs/apt7-lib_0.7.25.3-12_iphoneos-arm.deb
 urls[coreutils]=http://apt.saurik.com/debs/coreutils_7.4-11_iphoneos-arm.deb
