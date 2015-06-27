@@ -113,7 +113,7 @@ extern "C" {
 #include "Menes/Menes.h"
 
 #include "CyteKit/IndirectDelegate.h"
-#include "CyteKit/PerlCompatibleRegEx.hpp"
+#include "CyteKit/RegEx.hpp"
 #include "CyteKit/TableViewCell.h"
 #include "CyteKit/TabBarController.h"
 #include "CyteKit/WebScriptObject-Cyte.h"
@@ -870,7 +870,7 @@ static _finline const char *StripVersion_(const char *version) {
 }
 
 NSString *LocalizeSection(NSString *section) {
-    static Pcre title_r("^(.*?) \\((.*)\\)$");
+    static RegEx title_r("(.*?) \\((.*)\\)");
     if (title_r(section)) {
         NSString *parent(title_r[1]);
         NSString *child(title_r[2]);
@@ -888,15 +888,15 @@ NSString *Simplify(NSString *title) {
     const char *data = [title UTF8String];
     size_t size = [title lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
 
-    static Pcre square_r("^\\[(.*)\\]$");
+    static RegEx square_r("\\[(.*)\\]");
     if (square_r(data, size))
         return Simplify(square_r[1]);
 
-    static Pcre paren_r("^\\((.*)\\)$");
+    static RegEx paren_r("\\((.*)\\)");
     if (paren_r(data, size))
         return Simplify(paren_r[1]);
 
-    static Pcre title_r("^(.*?) \\((.*)\\)$");
+    static RegEx title_r("(.*?) \\((.*)\\)");
     if (title_r(data, size))
         return Simplify(title_r[1]);
 
@@ -3200,7 +3200,7 @@ struct PackageNameOrdering :
 
     NSMutableArray *applications([NSMutableArray arrayWithCapacity:2]);
 
-    static Pcre application_r("^/Applications/(.*)\\.app/Info.plist$");
+    static RegEx application_r("/Applications/(.*)\\.app/Info.plist");
     if (NSArray *files = [self files])
         for (NSString *file in files)
             if (application_r(file)) {
@@ -3530,7 +3530,7 @@ class CydiaLogCleaner :
     std::istream is(&ib);
     std::string line;
 
-    static Pcre finish_r("^finish:([^:]*)$");
+    static RegEx finish_r("finish:([^:]*)");
 
     while (std::getline(is, line)) {
         NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
@@ -3557,8 +3557,8 @@ class CydiaLogCleaner :
     std::istream is(&ib);
     std::string line;
 
-    static Pcre conffile_r("^status: [^ ]* : conffile-prompt : (.*?) *$");
-    static Pcre pmstatus_r("^([^:]*):([^:]*):([^:]*):(.*)$");
+    static RegEx conffile_r("status: [^ ]* : conffile-prompt : (.*?) *");
+    static RegEx pmstatus_r("([^:]*):([^:]*):([^:]*):(.*)");
 
     while (std::getline(is, line)) {
         NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
@@ -3760,7 +3760,7 @@ class CydiaLogCleaner :
 
         lprintf("%c:[%s]\n", warning ? 'W' : 'E', error.c_str());
 
-        static Pcre no_pubkey("^GPG error:.* NO_PUBKEY .*$");
+        static RegEx no_pubkey("GPG error:.* NO_PUBKEY .*");
         if (warning && no_pubkey(error.c_str()))
             continue;
 
@@ -4223,7 +4223,7 @@ class CydiaLogCleaner :
 static _H<NSMutableSet> Diversions_;
 
 @interface Diversion : NSObject {
-    Pcre pattern_;
+    RegEx pattern_;
     _H<NSString> key_;
     _H<NSString> format_;
 }
@@ -5257,7 +5257,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
             pkgDepCache::StateCache &state(cache[iterator]);
 
-            static Pcre special_r("^(firmware$|gsc\\.|cy\\+)");
+            static RegEx special_r("(firmware|gsc\\..*|cy\\+.*)");
 
             if (state.NewInstall())
                 [installs addObject:name];
@@ -8625,7 +8625,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             case 1: {
                 NSString *href = [[alert textField] text];
 
-                static Pcre href_r("^(http(s?)://|file:///)[^# ]*$");
+                static RegEx href_r("(http(s?)://|file:///)[^# ]*");
                 if (!href_r(href)) {
                     UIAlertView *alert = [[[UIAlertView alloc]
                         initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
@@ -9780,7 +9780,7 @@ _end
 }
 
 - (void) setConfigurationData:(NSString *)data {
-    static Pcre conffile_r("^'(.*)' '(.*)' ([01]) ([01])$");
+    static RegEx conffile_r("'(.*)' '(.*)' ([01]) ([01])");
 
     if (!conffile_r(data)) {
         lprintf("E:invalid conffile\n");
@@ -10192,7 +10192,7 @@ int main(int argc, char *argv[]) {
 
     Idiom_ = IsWildcat_ ? @"ipad" : @"iphone";
 
-    Pcre pattern("^([0-9]+\\.[0-9]+)");
+    RegEx pattern("([0-9]+\\.[0-9]+).*");
 
     if (pattern([device systemVersion]))
         Firmware_ = pattern[1];
@@ -10257,7 +10257,7 @@ int main(int argc, char *argv[]) {
         lang = NULL;
 
     if (lang != NULL) {
-        Pcre pattern("^([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?$");
+        RegEx pattern("([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?");
         lang = !pattern(lang) ? NULL : [pattern->*@"%1$@%2$@" UTF8String];
     }
 
@@ -10407,12 +10407,12 @@ int main(int argc, char *argv[]) {
 
     NSString *agent([NSString stringWithFormat:@"Cydia/%@ CyF/%.2f", Cydia_, kCFCoreFoundationVersionNumber]);
 
-    if (Pcre match = Pcre("^[0-9]+(\\.[0-9]+)+", Safari_))
-        agent = [NSString stringWithFormat:@"Safari/%@ %@", match[0], agent];
-    if (Pcre match = Pcre("^[0-9]+[A-Z][0-9]+[a-z]?", System_))
-        agent = [NSString stringWithFormat:@"Mobile/%@ %@", match[0], agent];
-    if (Pcre match = Pcre("^[0-9]+(\\.[0-9]+)+", Product_))
-        agent = [NSString stringWithFormat:@"Version/%@ %@", match[0], agent];
+    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", Safari_))
+        agent = [NSString stringWithFormat:@"Safari/%@ %@", match[1], agent];
+    if (RegEx match = RegEx("([0-9]+[A-Z][0-9]+[a-z]?).*", System_))
+        agent = [NSString stringWithFormat:@"Mobile/%@ %@", match[1], agent];
+    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", Product_))
+        agent = [NSString stringWithFormat:@"Version/%@ %@", match[1], agent];
 
     UserAgent_ = agent;
     /* }}} */
