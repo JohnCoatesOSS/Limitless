@@ -167,7 +167,7 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 	mkdir -p _/Applications
 	cp -a MobileCydia.app _/Applications/Cydia.app
 	rm -rf _/Applications/Cydia.app/*.lproj
-	cp -a MobileCydia _/Applications/Cydia.app/MobileCydia
+	cp -a MobileCydia _/Applications/Cydia.app/Cydia
 	
 	cd MobileCydia.app && find . -name '*.png' -exec cp -af ../Images/MobileCydia.app/{} ../_/Applications/Cydia.app/{} ';'
 	
@@ -183,7 +183,6 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 	
 	sudo chown -R 0 _
 	sudo chgrp -R 0 _
-	sudo chmod 6755 _/Applications/Cydia.app/MobileCydia
 	
 	mkdir -p debs
 	ln -sf debs/cydia_$(version)_iphoneos-arm.deb Cydia.deb

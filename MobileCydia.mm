@@ -237,35 +237,6 @@ union SplitHash {
 };
 // }}}
 
-static void setreugid(uid_t uid, gid_t gid) {
-    _assert(setreuid(uid, uid) != -1);
-    _assert(setregid(gid, gid) != -1);
-}
-
-static void setreguid(gid_t gid, uid_t uid) {
-    _assert(setregid(gid, gid) != -1);
-    _assert(setreuid(uid, uid) != -1);
-}
-
-struct Root {
-    Root() {
-        _trace();
-        setreugid(0, 0);
-        _assert(pthread_setugid_np(0, 0) != -1);
-        setreguid(501, 501);
-    }
-
-    ~Root() {
-        _trace();
-        setreugid(0, 0);
-        _assert(pthread_setugid_np(KAUTH_UID_NONE, KAUTH_GID_NONE) != -1);
-        setreguid(501, 501);
-    }
-};
-
-#define _root(code) \
-    ({ Root _root; code; })
-
 static NSString *Colon_;
 NSString *Elision_;
 static NSString *Error_;
@@ -9307,12 +9278,10 @@ _end
 - (void) _uicache {
     _trace();
 
-    if (UpgradeCydia_ && Finish_ > 0) {
-        setreugid(0, 0);
-        system("su -c /usr/bin/uicache mobile");
-    } else {
+    if (UpgradeCydia_ && Finish_ > 0)
+        system("/usr/libexec/cydia/cydo /bin/su -c /usr/bin/uicache mobile");
+    else
         system("/usr/bin/uicache");
-    }
 
     _trace();
 }
@@ -10099,8 +10068,6 @@ MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSStrin
 }
 
 int main(int argc, char *argv[]) {
-    setreugid(501, 501);
-
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
     _trace();
@@ -10416,21 +10383,6 @@ int main(int argc, char *argv[]) {
     /* }}} */
 
     Finishes_ = [NSArray arrayWithObjects:@"return", @"reopen", @"restart", @"reload", @"reboot", nil];
-
-#define MobileSubstrate_(name) \
-    if (substrate && access("/Library/MobileSubstrate/DynamicLibraries/" #name ".dylib", F_OK) == 0) { \
-        void *handle(dlopen("/Library/MobileSubstrate/DynamicLibraries/" #name ".dylib", RTLD_LAZY | RTLD_GLOBAL)); \
-        if (handle == NULL) \
-            NSLog(@"%s", dlerror()); \
-    }
-
-    MobileSubstrate_(Activator)
-    MobileSubstrate_(libstatusbar)
-    MobileSubstrate_(SimulatedKeyEvents)
-    MobileSubstrate_(WinterBoard)
-
-    /*if (substrate && access("/Library/MobileSubstrate/MobileSubstrate.dylib", F_OK) == 0)
-        dlopen("/Library/MobileSubstrate/MobileSubstrate.dylib", RTLD_LAZY | RTLD_GLOBAL);*/
 
     if (kCFCoreFoundationVersionNumber > 1000)
         system("/usr/libexec/cydia/cydo /usr/libexec/cydia/setnsfpn /var/lib");
