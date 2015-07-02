@@ -9446,7 +9446,8 @@ _end
                         " /var/lib/dpkg/info/%@.postrm"
                         " /var/lib/dpkg/info/%@.preinst"
                         " /var/lib/dpkg/info/%@.postinst"
-                    , id, id, id, id] UTF8String]);
+                        " /var/lib/dpkg/info/%@.extrainst_"
+                    , id, id, id, id, id] UTF8String]);
                 }
 
                 [self resolve];
