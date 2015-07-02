@@ -4089,11 +4089,17 @@ class CydiaLogCleaner :
 
     delock_ = nil;
 
+    pkgPackageManager::OrderResult result(manager_->DoInstall(statusfd_));
+
     NSString *oextended(@"/var/lib/apt/extended_states");
     NSString *nextended(Cache("extended_states"));
-    pkgPackageManager::OrderResult result(manager_->DoInstall(statusfd_));
-    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/mv -f %@ %@", nextended, oextended] UTF8String]);
-    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/chown 0:0 %@", oextended] UTF8String]);
+
+    struct stat info;
+    if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG) {
+        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/mv -f %@ %@", nextended, oextended] UTF8String]);
+        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/chown 0:0 %@", oextended] UTF8String]);
+    }
+
     unlink([nextended UTF8String]);
     symlink([oextended UTF8String], [nextended UTF8String]);
 
