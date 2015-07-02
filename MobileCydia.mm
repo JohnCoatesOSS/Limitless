@@ -5531,31 +5531,12 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (void) reloadSpringBoard {
-    if (kCFCoreFoundationVersionNumber > 700) { // XXX: iOS 6.x
+    if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
         system("/bin/launchctl stop com.apple.backboardd");
-        sleep(15);
-        system("/usr/bin/killall backboardd SpringBoard sbreload");
-        return;
-    }
-
-    pid_t pid(ExecFork());
-    if (pid == 0) {
-        if (setsid() == -1)
-            perror("setsid");
-
-        pid_t pid(ExecFork());
-        if (pid == 0) {
-            execl("/usr/libexec/cydia/cydo", "cydo", "/usr/bin/sbreload", NULL);
-            perror("sbreload");
-
-            exit(0);
-        } ReapZombie(pid);
-
-        exit(0);
-    } ReapZombie(pid);
-
+    else
+        system("/bin/launchctl stop com.apple.SpringBoard");
     sleep(15);
-    system("/usr/bin/killall backboardd SpringBoard sbreload");
+    system("/usr/bin/killall backboardd SpringBoard");
 }
 
 - (void) close {
