@@ -809,13 +809,11 @@ static CGColorSpaceRef space_;
 #define SavedState_ "/var/mobile/Library/Caches/com.saurik.Cydia/SavedState.plist"
 
 static NSDictionary *SectionMap_;
-static NSMutableDictionary *Metadata_;
 static _H<NSDate> Backgrounded_;
 static _transient NSMutableDictionary *Values_;
 static _transient NSMutableDictionary *Sections_;
 _H<NSMutableDictionary> Sources_;
 static _transient NSNumber *Version_;
-bool Changed_;
 static time_t now_;
 
 bool IsWildcat_;
@@ -1509,6 +1507,26 @@ static void PackageImport(const void *key, const void *value, void *context) {
 }
 // }}}
 
+static void SaveConfig(NSObject *lock) {
+    @synchronized (lock) {
+        _trace();
+        MetaFile_.Sync();
+        _trace();
+    }
+
+    CFPreferencesSetMultiple((CFDictionaryRef) [NSDictionary dictionaryWithObjectsAndKeys:
+        Values_, @"CydiaValues",
+        Sections_, @"CydiaSections",
+        (id) Sources_, @"CydiaSources",
+        Version_, @"CydiaVersion",
+    nil], NULL, CFSTR("com.saurik.Cydia"), kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+
+    if (!CFPreferencesAppSynchronize(CFSTR("com.saurik.Cydia")))
+        NSLog(@"CFPreferencesAppSynchronize(com.saurik.Cydia) == false");
+
+    CydiaWriteSources();
+}
+
 /* Source Class {{{ */
 @interface Source : NSObject {
     unsigned era_;
@@ -1771,14 +1789,10 @@ static void PackageImport(const void *key, const void *value, void *context) {
     if (record_ == nil)
         return;
     else if (NSMutableArray *sections = [record_ objectForKey:@"Sections"]) {
-        if (![sections containsObject:section]) {
+        if (![sections containsObject:section])
             [sections addObject:section];
-            Changed_ = true;
-        }
-    } else {
+    } else
         [record_ setObject:[NSMutableArray arrayWithObject:section] forKey:@"Sections"];
-        Changed_ = true;
-    }
 }
 
 - (bool) addSection:(NSString *)section {
@@ -1794,10 +1808,8 @@ static void PackageImport(const void *key, const void *value, void *context) {
         return;
 
     if (NSMutableArray *sections = [record_ objectForKey:@"Sections"])
-        if ([sections containsObject:section]) {
+        if ([sections containsObject:section])
             [sections removeObject:section];
-            Changed_ = true;
-        }
 }
 
 - (bool) removeSection:(NSString *)section {
@@ -1810,7 +1822,6 @@ static void PackageImport(const void *key, const void *value, void *context) {
 
 - (void) _remove {
     [Sources_ removeObjectForKey:[self key]];
-    Changed_ = true;
 }
 
 - (bool) remove {
@@ -4601,8 +4612,6 @@ static _H<NSMutableSet> Diversions_;
         [Values_ removeObjectForKey:key];
     else
         [Values_ setObject:value forKey:key];
-
-    [delegate_ performSelectorOnMainThread:@selector(updateValues) withObject:nil waitUntilDone:YES];
 } }
 
 - (id) getSessionValue:(NSString *)key {
@@ -6013,7 +6022,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     }
 
     [metadata setObject:[NSNumber numberWithBool:([switch_ isOn] == NO)] forKey:@"Hidden"];
-    Changed_ = true;
 }
 
 - (void) setSection:(Section *)section editing:(BOOL)editing {
@@ -8389,7 +8397,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         if (source == nil) return;
 
         [Sources_ removeObjectForKey:[source key]];
-        Changed_ = true;
 
         [delegate_ _saveConfig];
         [delegate_ reloadDataWithInvocation:nil];
@@ -8994,29 +9001,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) _saveConfig {
-    @synchronized (database_) {
-        _trace();
-        MetaFile_.Sync();
-        _trace();
-    }
-
-    if (Changed_) {
-        NSString *error(nil);
-
-        if (NSData *data = [NSPropertyListSerialization dataFromPropertyList:Metadata_ format:NSPropertyListBinaryFormat_v1_0 errorDescription:&error]) {
-            _trace();
-            NSError *error(nil);
-            if (!_root([data writeToFile:@"/var/lib/cydia/metadata.plist" options:NSAtomicWrite error:&error]))
-                NSLog(@"failure to save metadata data: %@", error);
-            _trace();
-
-            Changed_ = false;
-        } else {
-            NSLog(@"failure to serialize metadata: %@", error);
-        }
-    }
-
-    CydiaWriteSources();
+    SaveConfig(database_);
 }
 
 // Navigation controller for the queuing badge.
@@ -9226,10 +9211,6 @@ _end
 
 - (void) addTrivialSource:(NSString *)href {
     CydiaAddSource(href, @"./");
-}
-
-- (void) updateValues {
-    Changed_ = true;
 }
 
 - (void) resolve {
@@ -10345,39 +10326,49 @@ int main(int argc, char *argv[]) {
     UserAgent_ = agent;
     /* }}} */
     /* Load Database {{{ */
-    _trace();
-    Metadata_ = [[[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/lib/cydia/metadata.plist"] autorelease];
-    _trace();
     SectionMap_ = [[[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Sections" ofType:@"plist"]] autorelease];
 
-    if (Metadata_ == NULL)
-        Metadata_ = [NSMutableDictionary dictionaryWithCapacity:2];
-    else {
-        Values_ = [Metadata_ objectForKey:@"Values"];
-        Sections_ = [Metadata_ objectForKey:@"Sections"];
-        Sources_ = [Metadata_ objectForKey:@"Sources"];
+    _trace();
+    mkdir("/var/mobile/Library/Cydia", 0755);
+    MetaFile_.Open("/var/mobile/Library/Cydia/metadata.cb0");
+    _trace();
 
-        Version_ = [Metadata_ objectForKey:@"Version"];
-    }
+    // XXX: port this to NSUserDefaults when you aren't in such a rush
+    Values_ = [[[(NSDictionary *) CFPreferencesCopyAppValue(CFSTR("CydiaValues"), CFSTR("com.saurik.Cydia")) autorelease] mutableCopy] autorelease];
+    Sections_ = [[[(NSDictionary *) CFPreferencesCopyAppValue(CFSTR("CydiaSections"), CFSTR("com.saurik.Cydia")) autorelease] mutableCopy] autorelease];
+    Sources_ = [[[(NSDictionary *) CFPreferencesCopyAppValue(CFSTR("CydiaSources"), CFSTR("com.saurik.Cydia")) autorelease] mutableCopy] autorelease];
+    Version_ = [(NSNumber *) CFPreferencesCopyAppValue(CFSTR("CydiaVersion"), CFSTR("com.saurik.Cydia")) autorelease];
 
-    if (Values_ == nil) {
+    _trace();
+    NSDictionary *metadata([[[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/lib/cydia/metadata.plist"] autorelease]);
+
+    if (Values_ == nil)
+        Values_ = [metadata objectForKey:@"Values"];
+    if (Values_ == nil)
         Values_ = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
-        [Metadata_ setObject:Values_ forKey:@"Values"];
-    }
 
-    if (Sections_ == nil) {
+    if (Sections_ == nil)
+        Sections_ = [metadata objectForKey:@"Sections"];
+    if (Sections_ == nil)
         Sections_ = [[[NSMutableDictionary alloc] initWithCapacity:32] autorelease];
-        [Metadata_ setObject:Sections_ forKey:@"Sections"];
-    }
 
-    if (Sources_ == nil) {
+    if (Sources_ == nil)
+        Sources_ = [metadata objectForKey:@"Sources"];
+    if (Sources_ == nil)
         Sources_ = [[[NSMutableDictionary alloc] initWithCapacity:0] autorelease];
-        [Metadata_ setObject:Sources_ forKey:@"Sources"];
-    }
 
-    if (Version_ == nil) {
+    // XXX: this wrong, but in a way that doesn't matter :/
+    if (Version_ == nil)
+        Version_ = [metadata objectForKey:@"Version"];
+    if (Version_ == nil)
         Version_ = [NSNumber numberWithUnsignedInt:0];
-        [Metadata_ setObject:Version_ forKey:@"Version"];
+
+    if (NSDictionary *packages = [metadata objectForKey:@"Packages"]) {
+        bool fail(false);
+        CFDictionaryApplyFunction((CFDictionaryRef) packages, &PackageImport, &fail);
+        _trace();
+        if (fail)
+            NSLog(@"unable to import package preferences... from 2010? oh well :/");
     }
 
     if ([Version_ unsignedIntValue] == 0) {
@@ -10387,44 +10378,25 @@ int main(int argc, char *argv[]) {
         CydiaAddSource(@"http://repo666.ultrasn0w.com/", @"./");
 
         Version_ = [NSNumber numberWithUnsignedInt:1];
-        [Metadata_ setObject:Version_ forKey:@"Version"];
 
         if (NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithContentsOfFile:@ CacheState_]) {
             [cache removeObjectForKey:@"LastUpdate"];
             [cache writeToFile:@ CacheState_ atomically:YES];
         }
-
-        Changed_ = true;
     }
 
     _H<NSMutableArray> broken([NSMutableArray array]);
     for (NSString *key in (id) Sources_)
         if ([key rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"# "]].location != NSNotFound)
             [broken addObject:key];
-    if ([broken count] != 0) {
+    if ([broken count] != 0)
         for (NSString *key in (id) broken)
             [Sources_ removeObjectForKey:key];
-        Changed_ = true;
-    } broken = nil;
+    broken = nil;
+
+    SaveConfig(nil);
+    system("/usr/libexec/cydia/cydo /bin/rm -f /var/lib/cydia/metadata.plist");
     /* }}} */
-
-    CydiaWriteSources();
-
-    _trace();
-    mkdir("/var/mobile/Library/Cydia", 0755);
-    MetaFile_.Open("/var/mobile/Library/Cydia/metadata.cb0");
-    _trace();
-
-    if (NSDictionary *packages = [Metadata_ objectForKey:@"Packages"]) {
-        bool fail(false);
-        CFDictionaryApplyFunction((CFDictionaryRef) packages, &PackageImport, &fail);
-        _trace();
-
-        if (!fail) {
-            [Metadata_ removeObjectForKey:@"Packages"];
-            Changed_ = true;
-        }
-    }
 
     Finishes_ = [NSArray arrayWithObjects:@"return", @"reopen", @"restart", @"reload", @"reboot", nil];
 

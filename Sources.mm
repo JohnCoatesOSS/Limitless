@@ -28,7 +28,6 @@
 #include "Sources.h"
 
 extern _H<NSMutableDictionary> Sources_;
-extern bool Changed_;
 
 void CydiaWriteSources() {
     unlink(SOURCES_LIST);
@@ -56,7 +55,6 @@ void CydiaWriteSources() {
 
 void CydiaAddSource(NSDictionary *source) {
     [Sources_ setObject:source forKey:[NSString stringWithFormat:@"%@:%@:%@", [source objectForKey:@"Type"], [source objectForKey:@"URI"], [source objectForKey:@"Distribution"]]];
-    Changed_ = true;
 }
 
 void CydiaAddSource(NSString *href, NSString *distribution, NSArray *sections) {
