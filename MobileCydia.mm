@@ -805,6 +805,7 @@ static CFLocaleRef Locale_;
 static NSArray *Languages_;
 static CGColorSpaceRef space_;
 
+#define CacheState_ "/var/mobile/Library/Caches/com.saurik.Cydia/CacheState.plist"
 #define SavedState_ "/var/mobile/Library/Caches/com.saurik.Cydia/SavedState.plist"
 
 static NSDictionary *SectionMap_;
@@ -900,20 +901,6 @@ NSString *Simplify(NSString *title) {
     return title;
 }
 /* }}} */
-
-NSString *GetLastUpdate() {
-    NSDate *update = [Metadata_ objectForKey:@"LastUpdate"];
-
-    if (update == nil)
-        return UCLocalize("NEVER_OR_UNKNOWN");
-
-    CFDateFormatterRef formatter = CFDateFormatterCreate(NULL, Locale_, kCFDateFormatterMediumStyle, kCFDateFormatterMediumStyle);
-    CFStringRef formatted = CFDateFormatterCreateStringWithDate(NULL, formatter, (CFDateRef) update);
-
-    CFRelease(formatter);
-
-    return [(NSString *) formatted autorelease];
-}
 
 bool isSectionVisible(NSString *section) {
     NSDictionary *metadata([Sections_ objectForKey:(section ?: @"")]);
@@ -4155,8 +4142,10 @@ class CydiaLogCleaner :
         _error->Discard();
     else {
         [self popErrorWithTitle:title forOperation:success];
-        [Metadata_ setObject:[NSDate date] forKey:@"LastUpdate"];
-        Changed_ = true;
+
+        [[NSDictionary dictionaryWithObjectsAndKeys:
+            [NSDate date], @"LastUpdate",
+        nil] writeToFile:@ CacheState_ atomically:YES];
     }
 
     [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
@@ -6956,10 +6945,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     } return self;
 }
 
-- (void) setUpdate:(NSDate *)date {
-    [self beginUpdate];
-}
-
 - (void) beginUpdate {
     if (updating_)
         return;
@@ -9058,8 +9043,10 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [[navigation tabBarItem] setBadgeValue:(Queuing_ ? UCLocalize("Q_D") : nil)];
 }
 
-- (void) _refreshIfPossible:(NSDate *)update {
+- (void) _refreshIfPossible {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+    NSDate *update([[NSDictionary dictionaryWithContentsOfFile:@ CacheState_] objectForKey:@"LastUpdate"]);
 
     bool recently = false;
     if (update != nil) {
@@ -9082,14 +9069,14 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         // We are going to load, so remember that.
         loaded_ = true;
 
-        [tabbar_ performSelectorOnMainThread:@selector(setUpdate:) withObject:update waitUntilDone:NO];
+        [tabbar_ performSelectorOnMainThread:@selector(beginUpdate) withObject:nil waitUntilDone:NO];
     }
 
     [pool release];
 }
 
 - (void) refreshIfPossible {
-    [NSThread detachNewThreadSelector:@selector(_refreshIfPossible:) toTarget:self withObject:[Metadata_ objectForKey:@"LastUpdate"]];
+    [NSThread detachNewThreadSelector:@selector(_refreshIfPossible) toTarget:self withObject:nil];
 }
 
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
@@ -10402,7 +10389,10 @@ int main(int argc, char *argv[]) {
         Version_ = [NSNumber numberWithUnsignedInt:1];
         [Metadata_ setObject:Version_ forKey:@"Version"];
 
-        [Metadata_ removeObjectForKey:@"LastUpdate"];
+        if (NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithContentsOfFile:@ CacheState_]) {
+            [cache removeObjectForKey:@"LastUpdate"];
+            [cache writeToFile:@ CacheState_ atomically:YES];
+        }
 
         Changed_ = true;
     }
