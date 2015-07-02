@@ -806,8 +806,11 @@ static CFLocaleRef Locale_;
 static NSArray *Languages_;
 static CGColorSpaceRef space_;
 
+#define SavedState_ "/var/mobile/Library/Caches/com.saurik.Cydia/SavedState.plist"
+
 static NSDictionary *SectionMap_;
 static NSMutableDictionary *Metadata_;
+static _H<NSDate> Backgrounded_;
 static _transient NSMutableDictionary *Settings_;
 static _transient NSMutableDictionary *Packages_;
 static _transient NSMutableDictionary *Values_;
@@ -9718,10 +9721,11 @@ _end
 }
 
 - (void) saveState {
-    [Metadata_ setObject:[tabbar_ navigationURLCollection] forKey:@"InterfaceState"];
-    [Metadata_ setObject:[NSDate date] forKey:@"LastClosed"];
-    [Metadata_ setObject:[NSNumber numberWithInt:[tabbar_ selectedIndex]] forKey:@"InterfaceIndex"];
-    Changed_ = true;
+    [[NSDictionary dictionaryWithObjectsAndKeys:
+        @"InterfaceState", [tabbar_ navigationURLCollection],
+        @"LastClosed", [NSDate date],
+        @"InterfaceIndex", [NSNumber numberWithInt:[tabbar_ selectedIndex]],
+    nil] writeToFile:@ SavedState_ atomically:YES];
 
     [self _saveConfig];
 }
@@ -9733,15 +9737,15 @@ _end
 - (void) applicationDidEnterBackground:(UIApplication *)application {
     if (kCFCoreFoundationVersionNumber < 1000 && [self isSafeToSuspend])
         return [self terminateWithSuccess];
+    Backgrounded_ = [NSDate date];
     [self saveState];
 }
 
 - (void) applicationWillEnterForeground:(UIApplication *)application {
-    NSDate *closed = [Metadata_ objectForKey:@"LastClosed"];
-    if (closed == nil)
+    if (Backgrounded_ == nil)
         return;
 
-    NSTimeInterval interval([closed timeIntervalSinceNow]);
+    NSTimeInterval interval([Backgrounded_ timeIntervalSinceNow]);
 
     if (interval <= -(30*60)) {
         [tabbar_ setSelectedIndex:0];
@@ -9987,8 +9991,10 @@ _trace();
     [self refreshIfPossible];
     [self disemulate];
 
-    int savedIndex = [[Metadata_ objectForKey:@"InterfaceIndex"] intValue];
-    NSArray *saved = [[[Metadata_ objectForKey:@"InterfaceState"] mutableCopy] autorelease];
+    NSDictionary *state([NSDictionary dictionaryWithContentsOfFile:@ SavedState_]);
+
+    int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
+    NSArray *saved = [[[state objectForKey:@"InterfaceState"] mutableCopy] autorelease];
     int standardIndex = 0;
     NSArray *standard = [self defaultStartPages];
 
@@ -9997,7 +10003,7 @@ _trace();
     if (saved == nil)
         valid = NO;
 
-    NSDate *closed = [Metadata_ objectForKey:@"LastClosed"];
+    NSDate *closed = [state objectForKey:@"LastClosed"];
     if (valid && closed != nil) {
         NSTimeInterval interval([closed timeIntervalSinceNow]);
         if (interval <= -(30*60))
