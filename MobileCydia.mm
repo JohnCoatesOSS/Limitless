@@ -3770,6 +3770,12 @@ class CydiaLogCleaner :
     return [self popErrorWithTitle:title] || !success;
 }
 
+- (bool) popErrorWithTitle:(NSString *)title forReadList:(pkgSourceList &)list {
+    if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
+        return true;
+    return false;
+}
+
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
 @synchronized (self) {
     ++era_;
@@ -3814,7 +3820,7 @@ class CydiaLogCleaner :
 
     list_ = new pkgSourceList();
     _profile(reloadDataWithInvocation$ReadMainList)
-    if ([self popErrorWithTitle:title forOperation:list_->ReadMainList()])
+    if ([self popErrorWithTitle:title forReadList:*list_])
         return;
     _end
 
@@ -4032,7 +4038,7 @@ class CydiaLogCleaner :
         return false;
 
     pkgSourceList list;
-    if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
+    if ([self popErrorWithTitle:title forReadList:list])
         return false;
 
     manager_ = (_system->CreatePM(cache_));
@@ -4050,7 +4056,7 @@ class CydiaLogCleaner :
 
     NSMutableArray *before = [NSMutableArray arrayWithCapacity:16]; {
         pkgSourceList list;
-        if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
+        if ([self popErrorWithTitle:title forReadList:list])
             return;
         for (pkgSourceList::const_iterator source = list.begin(); source != list.end(); ++source)
             [before addObject:[NSString stringWithUTF8String:(*source)->GetURI().c_str()]];
@@ -4108,7 +4114,7 @@ class CydiaLogCleaner :
 
     NSMutableArray *after = [NSMutableArray arrayWithCapacity:16]; {
         pkgSourceList list;
-        if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
+        if ([self popErrorWithTitle:title forReadList:list])
             return;
         for (pkgSourceList::const_iterator source = list.begin(); source != list.end(); ++source)
             [after addObject:[NSString stringWithUTF8String:(*source)->GetURI().c_str()]];
@@ -4133,7 +4139,7 @@ class CydiaLogCleaner :
     NSString *title(UCLocalize("REFRESHING_DATA"));
 
     pkgSourceList list;
-    if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
+    if ([self popErrorWithTitle:title forReadList:list])
         return;
 
     FileFd lock;
