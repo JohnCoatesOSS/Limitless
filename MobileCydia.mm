@@ -3743,11 +3743,23 @@ class CydiaLogCleaner :
     return [self popErrorWithTitle:title] || !success;
 }
 
+- (bool) _isEtceteraAptSourcesListDirectoryCydiaListSymbolicallyLinkedToMobileCachesCydiaSourceList {
+    char target[1024];
+    ssize_t length(readlink("/etc/apt/sources.list.d/cydia.list", target, sizeof(target) - 1));
+    if (length == -1)
+        return false;
+    if (length >= sizeof(target))
+        return false;
+    target[length] = '\0';
+    return strcmp(target, "/var/mobile/Library/Caches/com.saurik.Cydia/sources.list") == 0;
+}
+
 - (bool) popErrorWithTitle:(NSString *)title forReadList:(pkgSourceList &)list {
     if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
         return true;
-    if ([self popErrorWithTitle:title forOperation:list.Read(SOURCES_LIST)])
-        return true;
+    if (![self _isEtceteraAptSourcesListDirectoryCydiaListSymbolicallyLinkedToMobileCachesCydiaSourceList])
+        if ([self popErrorWithTitle:title forOperation:list.Read(SOURCES_LIST)])
+            return true;
     return false;
 }
 
