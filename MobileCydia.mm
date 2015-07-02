@@ -812,7 +812,6 @@ static NSDictionary *SectionMap_;
 static NSMutableDictionary *Metadata_;
 static _H<NSDate> Backgrounded_;
 static _transient NSMutableDictionary *Settings_;
-static _transient NSMutableDictionary *Packages_;
 static _transient NSMutableDictionary *Values_;
 static _transient NSMutableDictionary *Sections_;
 _H<NSMutableDictionary> Sources_;
@@ -10407,8 +10406,6 @@ int main(int argc, char *argv[]) {
     else {
         Settings_ = [Metadata_ objectForKey:@"Settings"];
 
-        Packages_ = [Metadata_ objectForKey:@"Packages"];
-
         Values_ = [Metadata_ objectForKey:@"Values"];
         Sections_ = [Metadata_ objectForKey:@"Sections"];
         Sources_ = [Metadata_ objectForKey:@"Sources"];
@@ -10470,14 +10467,13 @@ int main(int argc, char *argv[]) {
     MetaFile_.Open("/var/mobile/Library/Cydia/metadata.cb0");
     _trace();
 
-    if (Packages_ != nil) {
+    if (NSDictionary *packages = [Metadata_ objectForKey:@"Packages"]) {
         bool fail(false);
-        CFDictionaryApplyFunction((CFDictionaryRef) Packages_, &PackageImport, &fail);
+        CFDictionaryApplyFunction((CFDictionaryRef) packages, &PackageImport, &fail);
         _trace();
 
         if (!fail) {
             [Metadata_ removeObjectForKey:@"Packages"];
-            Packages_ = nil;
             Changed_ = true;
         }
     }
