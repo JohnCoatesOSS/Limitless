@@ -9344,15 +9344,7 @@ _end
             @synchronized (self) {
                 for (Package *broken in (id) broken_) {
                     [broken remove];
-                    NSString *id = [broken id];
-
-                    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/rm -f"
-                        " /var/lib/dpkg/info/%@.prerm"
-                        " /var/lib/dpkg/info/%@.postrm"
-                        " /var/lib/dpkg/info/%@.preinst"
-                        " /var/lib/dpkg/info/%@.postinst"
-                        " /var/lib/dpkg/info/%@.extrainst_"
-                    , id, id, id, id, id] UTF8String]);
+                    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/fixhalf.sh %@", [broken id]] UTF8String]);
                 }
 
                 [self resolve];
