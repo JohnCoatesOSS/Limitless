@@ -678,7 +678,6 @@ static const NSString *UI_;
 
 static int Finish_;
 static bool RestartSubstrate_;
-static bool UpgradeCydia_;
 static NSArray *Finishes_;
 
 #define SpringBoard_ "/System/Library/LaunchDaemons/com.apple.SpringBoard.plist"
@@ -5125,8 +5124,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
         issues_ = [NSMutableArray arrayWithCapacity:4];
 
-        UpgradeCydia_ = false;
-
         for (Package *package in packages) {
             pkgCache::PkgIterator iterator([package iterator]);
             NSString *name([package id]);
@@ -5237,9 +5234,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                     remove = true;
                 [removes addObject:name];
             }
-
-            if ([name isEqualToString:@"cydia"])
-                UpgradeCydia_ = true;
 
             substrate_ |= DepSubstrate(policy->GetCandidateVer(iterator));
             substrate_ |= DepSubstrate(iterator.CurrentVer());
@@ -9277,12 +9271,7 @@ _end
 
 - (void) _uicache {
     _trace();
-
-    if (UpgradeCydia_ && Finish_ > 0)
-        system("/usr/libexec/cydia/cydo /bin/su -c /usr/bin/uicache mobile");
-    else
-        system("/usr/bin/uicache");
-
+    system("/usr/bin/uicache");
     _trace();
 }
 
