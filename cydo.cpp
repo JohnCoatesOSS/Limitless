@@ -48,8 +48,17 @@ int main(int argc, char *argv[]) {
             return;
 
         auto string(launch_data_dict_lookup(value, LAUNCH_JOBKEY_PROGRAM));
-        if (string == NULL || launch_data_get_type(string) != LAUNCH_DATA_STRING)
-            return;
+        if (string == NULL || launch_data_get_type(string) != LAUNCH_DATA_STRING) {
+            auto array(launch_data_dict_lookup(value, LAUNCH_JOBKEY_PROGRAMARGUMENTS));
+            if (array == NULL || launch_data_get_type(array) != LAUNCH_DATA_ARRAY)
+                return;
+            if (launch_data_array_get_count(array) == 0)
+                return;
+
+            string = launch_data_array_get_index(array, 0);
+            if (string == NULL || launch_data_get_type(string) != LAUNCH_DATA_STRING)
+                return;
+        }
 
         auto program(launch_data_get_string(string));
         if (program == NULL)
