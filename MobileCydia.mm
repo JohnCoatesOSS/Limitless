@@ -746,7 +746,6 @@ static _H<NSString> System_;
 static NSString *SerialNumber_ = nil;
 static NSString *ChipID_ = nil;
 static NSString *BBSNum_ = nil;
-static _H<NSString> Token_;
 static _H<NSString> UniqueID_;
 static _H<NSString> UserAgent_;
 static _H<NSString> Product_;
@@ -828,7 +827,6 @@ static NSString *Major_;
 static _H<NSMutableDictionary> SessionData_;
 static _H<NSObject> HostConfig_;
 static _H<NSMutableSet> BridgedHosts_;
-static _H<NSMutableSet> TokenHosts_;
 static _H<NSMutableSet> InsecureHosts_;
 static _H<NSMutableSet> PipelinedHosts_;
 static _H<NSMutableSet> CachedURLs_;
@@ -4332,7 +4330,6 @@ static _H<NSMutableSet> Diversions_;
         @"operator",
         @"role",
         @"serial",
-        @"token",
         @"version",
     nil];
 }
@@ -4411,10 +4408,6 @@ static _H<NSMutableSet> Diversions_;
     return [NSString stringWithUTF8String:Machine_];
 }
 
-- (NSString *) token {
-    return (id) Token_ ?: [NSNull null];
-}
-
 + (NSString *) webScriptNameForSelector:(SEL)selector {
     if (false);
     else if (selector == @selector(addBridgedHost:))
@@ -4427,8 +4420,6 @@ static _H<NSMutableSet> Diversions_;
         return @"addPipelinedHost";
     else if (selector == @selector(addSource:::))
         return @"addSource";
-    else if (selector == @selector(addTokenHost:))
-        return @"addTokenHost";
     else if (selector == @selector(addTrivialSource:))
         return @"addTrivialSource";
     else if (selector == @selector(close))
@@ -4649,11 +4640,6 @@ static _H<NSMutableSet> Diversions_;
     [InsecureHosts_ addObject:host];
 } }
 
-- (void) addTokenHost:(NSString *)host {
-@synchronized (HostConfig_) {
-    [TokenHosts_ addObject:host];
-} }
-
 - (void) addPipelinedHost:(NSString *)host scheme:(NSString *)scheme {
 @synchronized (HostConfig_) {
     if (scheme != (id) [WebUndefined undefined])
@@ -4816,19 +4802,8 @@ ssize_t DiskUsage(const char *path);
     [[objc_getClass("UIPasteboard") generalPasteboard] setURL:[NSURL URLWithString:value]];
 }
 
-- (void) _setToken:(NSString *)token {
-    Token_ = token;
-
-    if (token == nil)
-        [Metadata_ removeObjectForKey:@"Token"];
-    else
-        [Metadata_ setObject:Token_ forKey:@"Token"];
-
-    Changed_ = true;
-}
-
 - (void) setToken:(NSString *)token {
-    [self performSelectorOnMainThread:@selector(_setToken:) withObject:token waitUntilDone:NO];
+    // XXX: the website expects this :/
 }
 
 - (void) scrollToBottom:(NSNumber *)animated {
@@ -4964,23 +4939,12 @@ ssize_t DiskUsage(const char *path);
     if (Machine_ != NULL && [copy valueForHTTPHeaderField:@"X-Machine"] == nil)
         [copy setValue:[NSString stringWithUTF8String:Machine_] forHTTPHeaderField:@"X-Machine"];
 
-    bool bridged;
-    bool token;
-
-    @synchronized (HostConfig_) {
+    bool bridged; @synchronized (HostConfig_) {
         bridged = [BridgedHosts_ containsObject:host];
-        token = [TokenHosts_ containsObject:host];
     }
 
-    if ([url isCydiaSecure]) {
-        if (bridged) {
-            if (UniqueID_ != nil && [copy valueForHTTPHeaderField:@"X-Cydia-Id"] == nil)
-                [copy setValue:UniqueID_ forHTTPHeaderField:@"X-Cydia-Id"];
-        } else if (token) {
-            if (Token_ != nil && [copy valueForHTTPHeaderField:@"X-Cydia-Token"] == nil)
-                [copy setValue:Token_ forHTTPHeaderField:@"X-Cydia-Token"];
-        }
-    }
+    if ([url isCydiaSecure] && bridged && UniqueID_ != nil && [copy valueForHTTPHeaderField:@"X-Cydia-Id"] == nil)
+        [copy setValue:UniqueID_ forHTTPHeaderField:@"X-Cydia-Id"];
 
     return copy;
 }
@@ -10186,7 +10150,6 @@ int main(int argc, char *argv[]) {
     HostConfig_ = [[[NSObject alloc] init] autorelease];
     @synchronized (HostConfig_) {
         BridgedHosts_ = [NSMutableSet setWithCapacity:4];
-        TokenHosts_ = [NSMutableSet setWithCapacity:4];
         InsecureHosts_ = [NSMutableSet setWithCapacity:4];
         PipelinedHosts_ = [NSMutableSet setWithCapacity:4];
         CachedURLs_ = [NSMutableSet setWithCapacity:32];
@@ -10409,8 +10372,6 @@ int main(int argc, char *argv[]) {
         Values_ = [Metadata_ objectForKey:@"Values"];
         Sections_ = [Metadata_ objectForKey:@"Sections"];
         Sources_ = [Metadata_ objectForKey:@"Sources"];
-
-        Token_ = [Metadata_ objectForKey:@"Token"];
 
         Version_ = [Metadata_ objectForKey:@"Version"];
     }
