@@ -10068,6 +10068,10 @@ MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSStrin
 }
 
 int main(int argc, char *argv[]) {
+    int fd(open("/tmp/cydia.log", O_WRONLY | O_APPEND | O_CREAT, 0644));
+    dup2(fd, 2);
+    close(fd);
+
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
     _trace();
