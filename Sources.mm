@@ -31,6 +31,7 @@ extern _H<NSMutableDictionary> Sources_;
 extern bool Changed_;
 
 void CydiaWriteSources() {
+    unlink(SOURCES_LIST);
     FILE *file(fopen(SOURCES_LIST, "w"));
     _assert(file != NULL);
 

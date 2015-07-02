@@ -190,8 +190,6 @@ int main(int argc, const char *argv[]) {
         }
     }
 
-    unlink("/etc/apt/sources.list.d/cydia.list");
-
     #define OldCache_ "/var/root/Library/Caches/com.saurik.Cydia"
     if (access(OldCache_, F_OK) == 0)
         system("rm -rf " OldCache_);
