@@ -229,11 +229,9 @@ int main(int argc, const char *argv[]) {
 
     #define NewCache_ "/var/mobile/Library/Caches/com.saurik.Cydia"
     system("cd /; su -c 'mkdir -p " NewCache_ "' mobile");
-
-    if (access(NewCache_ "/lists", F_OK) != 0 && errno == ENOENT) {
+    if (access(NewCache_ "/lists", F_OK) != 0 && errno == ENOENT)
         system("cp -at " NewCache_ " /var/lib/apt/lists");
-        system("chown -R 501.501 " NewCache_ "/lists");
-    }
+    system("chown -R 501.501 " NewCache_);
 
     #define OldLibrary_ "/var/lib/cydia"
 

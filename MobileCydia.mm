@@ -5570,7 +5570,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
         pid_t pid(ExecFork());
         if (pid == 0) {
-            _root(execl("/usr/bin/sbreload", "sbreload", NULL));
+            execl("/usr/libexec/cydia/cydo", "cydo", "/usr/bin/sbreload", NULL);
             perror("sbreload");
 
             exit(0);
@@ -8910,7 +8910,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (void) createDiskCachePath {
     [super createDiskCachePath];
-    _root(chown([[self diskCachePath] UTF8String], 501, 501));
 }
 
 @end
@@ -9474,7 +9473,7 @@ _end
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
 
     _trace();
-    _root(system([command UTF8String]));
+    system([command UTF8String]);
     _trace();
 
     [pool release];
@@ -9790,7 +9789,7 @@ _end
 - (void) stash {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     UpdateExternalStatus(1);
-    [self yieldToSelector:@selector(system:) withObject:@"/usr/libexec/cydia/free.sh"];
+    [self yieldToSelector:@selector(system:) withObject:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/free.sh"];
     UpdateExternalStatus(0);
 
     [self removeStashController];
@@ -10486,13 +10485,13 @@ int main(int argc, char *argv[]) {
         dlopen("/Library/MobileSubstrate/MobileSubstrate.dylib", RTLD_LAZY | RTLD_GLOBAL);*/
 
     if (kCFCoreFoundationVersionNumber > 1000)
-        _root(system([[NSString stringWithFormat:@"/usr/libexec/cydia/setnsfpn /var/lib"] UTF8String]));
+        system("/usr/libexec/cydia/cydo /usr/libexec/cydia/setnsfpn /var/lib");
 
     int version([[NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"] intValue]);
 
     if (access("/User", F_OK) != 0 || version != 6) {
         _trace();
-        _root(system("/usr/libexec/cydia/firmware.sh"));
+        system("/usr/libexec/cydia/cydo /usr/libexec/cydia/firmware.sh");
         _trace();
     }
 
@@ -10552,13 +10551,6 @@ int main(int argc, char *argv[]) {
     // XXX: I have a feeling this was important
     //UIKeyboardDisableAutomaticAppearance();
     /* }}} */
-
-    _root({
-        chown([Cache("ApplicationCache.db") UTF8String], 501, 501);
-        chown([Cache("Cache.db") UTF8String], 501, 501);
-        chown([Cache("Cache.db-shm") UTF8String], 501, 501);
-        chown([Cache("Cache.db-wal") UTF8String], 501, 501);
-    });
 
     $SBSSetInterceptsMenuButtonForever = reinterpret_cast<void (*)(bool)>(dlsym(RTLD_DEFAULT, "SBSSetInterceptsMenuButtonForever"));
 
