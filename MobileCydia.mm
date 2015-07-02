@@ -9441,12 +9441,12 @@ _end
                     [broken remove];
                     NSString *id = [broken id];
 
-                    _root({
-                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.prerm", id] UTF8String]);
-                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postrm", id] UTF8String]);
-                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.preinst", id] UTF8String]);
-                        unlink([[NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postinst", id] UTF8String]);
-                    });
+                    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/rm -f"
+                        " /var/lib/dpkg/info/%@.prerm"
+                        " /var/lib/dpkg/info/%@.postrm"
+                        " /var/lib/dpkg/info/%@.preinst"
+                        " /var/lib/dpkg/info/%@.postinst"
+                    , id, id, id, id] UTF8String]);
                 }
 
                 [self resolve];
