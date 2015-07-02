@@ -25,11 +25,13 @@
 
 #include <cstdio>
 
+#include "Sources.h"
+
 extern _H<NSMutableDictionary> Sources_;
 extern bool Changed_;
 
 void CydiaWriteSources() {
-    FILE *file(fopen("/etc/apt/sources.list.d/cydia.list", "w"));
+    FILE *file(fopen(SOURCES_LIST, "w"));
     _assert(file != NULL);
 
     fprintf(file, "deb http://apt.saurik.com/ ios/%.2f main\n", kCFCoreFoundationVersionNumber);

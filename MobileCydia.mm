@@ -3773,6 +3773,8 @@ class CydiaLogCleaner :
 - (bool) popErrorWithTitle:(NSString *)title forReadList:(pkgSourceList &)list {
     if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
         return true;
+    if ([self popErrorWithTitle:title forOperation:list.Read(SOURCES_LIST)])
+        return true;
     return false;
 }
 
@@ -9064,7 +9066,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         }
     }
 
-    _root(CydiaWriteSources());
+    CydiaWriteSources();
 }
 
 // Navigation controller for the queuing badge.
@@ -10454,7 +10456,7 @@ int main(int argc, char *argv[]) {
     } broken = nil;
     /* }}} */
 
-    _root(CydiaWriteSources());
+    CydiaWriteSources();
 
     _trace();
     mkdir("/var/mobile/Library/Cydia", 0755);

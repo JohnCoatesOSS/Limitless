@@ -141,7 +141,7 @@ cydo: cydo.cpp
 	$(cycc) -std=c++11 $(filter %.cpp,$^) $(flags) $(link) -Wno-deprecated-writable-strings
 	@ldid -T0 -S $@
 
-postinst: postinst.mm Sources.mm Sources.h CyteKit/stringWithUTF8Bytes.mm CyteKit/stringWithUTF8Bytes.h CyteKit/UCPlatform.h
+postinst: postinst.mm CyteKit/stringWithUTF8Bytes.mm CyteKit/stringWithUTF8Bytes.h CyteKit/UCPlatform.h
 	$(cycc) -std=c++11 $(filter %.mm,$^) $(flags) $(link) -framework CoreFoundation -framework Foundation -framework UIKit
 	@ldid -T0 -S $@
 
