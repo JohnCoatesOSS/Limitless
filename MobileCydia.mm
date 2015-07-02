@@ -4090,7 +4090,14 @@ class CydiaLogCleaner :
 
     delock_ = nil;
 
+    NSString *oextended(@"/var/lib/apt/extended_states");
+    NSString *nextended(Cache("extended_states"));
     pkgPackageManager::OrderResult result(manager_->DoInstall(statusfd_));
+    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/mv -f %@ %@", nextended, oextended] UTF8String]);
+    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/chown 0:0 %@", oextended] UTF8String]);
+    unlink([nextended UTF8String]);
+    symlink([oextended UTF8String], [nextended UTF8String]);
+
     if ([self popErrorWithTitle:title])
         return;
 
@@ -10434,6 +10441,9 @@ int main(int argc, char *argv[]) {
     mkdir([Cache("archives") UTF8String], 0755);
     mkdir([Cache("archives/partial") UTF8String], 0755);
     _config->Set("Dir::Cache", [Cache_ UTF8String]);
+
+    symlink("/var/lib/apt/extended_states", [Cache("extended_states") UTF8String]);
+    _config->Set("Dir::State", [Cache_ UTF8String]);
 
     mkdir([Cache("lists") UTF8String], 0755);
     mkdir([Cache("lists/partial") UTF8String], 0755);
