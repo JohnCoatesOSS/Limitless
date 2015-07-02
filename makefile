@@ -137,11 +137,15 @@ setnsfpn: setnsfpn.cpp
 	$(cycc) $(filter %.cpp,$^) $(flags) $(link)
 	@ldid -T0 -S $@
 
+cydo: cydo.cpp
+	$(cycc) -std=c++11 $(filter %.cpp,$^) $(flags) $(link) -Wno-deprecated-writable-strings
+	@ldid -T0 -S $@
+
 postinst: postinst.mm Sources.mm Sources.h CyteKit/stringWithUTF8Bytes.mm CyteKit/stringWithUTF8Bytes.h CyteKit/UCPlatform.h
 	$(cycc) -std=c++11 $(filter %.mm,$^) $(flags) $(link) -framework CoreFoundation -framework Foundation -framework UIKit
 	@ldid -T0 -S $@
 
-debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion setnsfpn $(images) $(shell find MobileCydia.app) cydia.control Library/firmware.sh Library/move.sh Library/startup
+debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion setnsfpn cydo $(images) $(shell find MobileCydia.app) cydia.control Library/firmware.sh Library/move.sh Library/startup
 	sudo rm -rf _
 	mkdir -p _/var/lib/cydia
 	
@@ -153,6 +157,9 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 	cp -a Library _/usr/libexec/cydia
 	cp -a cfversion _/usr/libexec/cydia
 	cp -a setnsfpn _/usr/libexec/cydia
+	
+	cp -a cydo _/usr/libexec/cydia
+	sudo chmod 6755 _/usr/libexec/cydia/cydo
 	
 	mkdir -p _/Library
 	cp -a LaunchDaemons _/Library/LaunchDaemons

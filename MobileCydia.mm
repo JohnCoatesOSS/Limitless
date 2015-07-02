@@ -3988,9 +3988,9 @@ class CydiaLogCleaner :
 } }
 
 - (void) configure {
-    NSString *dpkg = [NSString stringWithFormat:@"dpkg --configure -a --status-fd %u", statusfd_];
+    NSString *dpkg = [NSString stringWithFormat:@"/usr/libexec/cydo --configure -a --status-fd %u", statusfd_];
     _trace();
-    _root(system([dpkg UTF8String]));
+    system([dpkg UTF8String]);
     _trace();
 }
 
@@ -4092,7 +4092,7 @@ class CydiaLogCleaner :
         RestartSubstrate_ = true;
 
     _system->UnLock();
-    pkgPackageManager::OrderResult result(_root(manager_->DoInstall(statusfd_)));
+    pkgPackageManager::OrderResult result(manager_->DoInstall(statusfd_));
     if ([self popErrorWithTitle:title])
         return;
 
@@ -7918,7 +7918,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     pid_t pid(ExecFork());
     if (pid == 0) {
-        FILE *dpkg(_root(popen("dpkg --set-selections", "w")));
+        FILE *dpkg(popen("/usr/libexec/cydo --set-selections", "w"));
         fwrite(package, strlen(package), 1, dpkg);
 
         if (on)
@@ -10524,6 +10524,12 @@ int main(int argc, char *argv[]) {
     mkdir([Cache("lists/partial") UTF8String], 0755);
     mkdir([Cache("periodic") UTF8String], 0755);
     _config->Set("Dir::State::Lists", [Cache("lists") UTF8String]);
+
+    std::string logs("/var/mobile/Library/Logs/Cydia");
+    mkdir(logs.c_str(), 0755);
+    _config->Set("Dir::Log::Terminal", logs + "/apt.log");
+
+    _config->Set("Dir::Bin::dpkg", "/usr/libexec/cydia/cydo");
     /* }}} */
     /* Color Choices {{{ */
     space_ = CGColorSpaceCreateDeviceRGB();
