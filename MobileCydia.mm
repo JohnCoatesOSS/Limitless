@@ -810,7 +810,6 @@ static CGColorSpaceRef space_;
 static NSDictionary *SectionMap_;
 static NSMutableDictionary *Metadata_;
 static _H<NSDate> Backgrounded_;
-static _transient NSMutableDictionary *Settings_;
 static _transient NSMutableDictionary *Values_;
 static _transient NSMutableDictionary *Sections_;
 _H<NSMutableDictionary> Sources_;
@@ -10367,8 +10366,6 @@ int main(int argc, char *argv[]) {
     if (Metadata_ == NULL)
         Metadata_ = [NSMutableDictionary dictionaryWithCapacity:2];
     else {
-        Settings_ = [Metadata_ objectForKey:@"Settings"];
-
         Values_ = [Metadata_ objectForKey:@"Values"];
         Sections_ = [Metadata_ objectForKey:@"Sections"];
         Sources_ = [Metadata_ objectForKey:@"Sources"];
