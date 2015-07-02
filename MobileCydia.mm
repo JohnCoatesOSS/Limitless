@@ -1103,6 +1103,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
     CYPool pool_;
 
     unsigned era_;
+    _H<NSDate> delock_;
 
     pkgCacheFile cache_;
     pkgDepCache::Policy *policy_;
@@ -1506,6 +1507,10 @@ static void PackageImport(const void *key, const void *value, void *context) {
     }
 }
 // }}}
+
+static NSDate *GetStatusDate() {
+    return [[[NSFileManager defaultManager] attributesOfItemAtPath:@"/var/lib/dpkg/status" error:NULL] fileModificationDate];
+}
 
 static void SaveConfig(NSObject *lock) {
     @synchronized (lock) {
@@ -3830,7 +3835,7 @@ class CydiaLogCleaner :
     }
     _end
 
-    _root(_system->Lock());
+    delock_ = GetStatusDate();
 
     _trace();
     OpProgress progress;
@@ -3867,7 +3872,6 @@ class CydiaLogCleaner :
             }
         }
 
-        _system->UnLock();
         return;
     }
     _trace();
@@ -4096,7 +4100,13 @@ class CydiaLogCleaner :
     if (substrate)
         RestartSubstrate_ = true;
 
-    _system->UnLock();
+    if (![delock_ isEqual:GetStatusDate()]) {
+        [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:UCLocalize("DPKG_LOCKED") ofType:kCydiaProgressEventTypeError] forTask:title];
+        return;
+    }
+
+    delock_ = nil;
+
     pkgPackageManager::OrderResult result(manager_->DoInstall(statusfd_));
     if ([self popErrorWithTitle:title])
         return;
@@ -4121,6 +4131,10 @@ class CydiaLogCleaner :
 
     if (![before isEqualToArray:after])
         [self update];
+}
+
+- (bool) delocked {
+    return ![delock_ isEqual:GetStatusDate()];
 }
 
 - (bool) upgrade {
@@ -9688,6 +9702,9 @@ _end
             [appcache_ reloadURLWithCache:YES];
         }
     }
+
+    if ([database_ delocked])
+        [self reloadData];
 }
 
 - (void) setConfigurationData:(NSString *)data {
