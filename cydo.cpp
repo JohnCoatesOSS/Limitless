@@ -98,7 +98,6 @@ int main(int argc, char *argv[]) {
         if (program == NULL)
             return;
 
-        fprintf(log, "%lld %s\n", pid, program);
         if (strcmp(program, "/Applications/Cydia.app/Cydia") == 0)
             cydia = true;
     });
