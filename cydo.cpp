@@ -68,6 +68,19 @@ int main(int argc, char *argv[]) {
         if (pid != parent)
             return;
 
+        auto variables(launch_data_dict_lookup(value, LAUNCH_JOBKEY_ENVIRONMENTVARIABLES));
+        if (variables != NULL && launch_data_get_type(variables) == LAUNCH_DATA_DICTIONARY) {
+            bool dyld(false);
+
+            launch_data_dict_iterate(variables, [&dyld](const char *name, launch_data_t value) {
+                if (strncmp(name, "DYLD_", 5) == 0)
+                    dyld = true;
+            });
+
+            if (dyld)
+                return;
+        }
+
         auto string(launch_data_dict_lookup(value, LAUNCH_JOBKEY_PROGRAM));
         if (string == NULL || launch_data_get_type(string) != LAUNCH_DATA_STRING) {
             auto array(launch_data_dict_lookup(value, LAUNCH_JOBKEY_PROGRAMARGUMENTS));
