@@ -290,15 +290,6 @@ static _finline NSString *CydiaURL(NSString *path) {
     return [[NSString stringWithUTF8String:page] stringByAppendingString:path];
 }
 
-static void ReapZombie(pid_t pid) {
-    int status;
-  wait:
-    if (waitpid(pid, &status, 0) == -1)
-        if (errno == EINTR)
-            goto wait;
-        else _assert(false);
-}
-
 static _finline void UpdateExternalStatus(uint64_t newStatus) {
     int notify_token;
     if (notify_register_check("com.saurik.Cydia.status", &notify_token) == NOTIFY_STATUS_OK) {
@@ -5529,15 +5520,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     [super viewWillAppear:animated];
 }
 
-- (void) reloadSpringBoard {
-    if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
-        system("/bin/launchctl stop com.apple.backboardd");
-    else
-        system("/bin/launchctl stop com.apple.SpringBoard");
-    sleep(15);
-    system("/usr/bin/killall backboardd SpringBoard");
-}
-
 - (void) close {
     UpdateExternalStatus(0);
 
@@ -5568,7 +5550,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         reload: {
             UIProgressHUD *hud([delegate_ addProgressHUD]);
             [hud setText:UCLocalize("LOADING")];
-            [self performSelector:@selector(reloadSpringBoard) withObject:nil afterDelay:0.5];
+            [delegate_ performSelector:@selector(reloadSpringBoard) withObject:nil afterDelay:0.5];
             return;
         }
 
@@ -8979,6 +8961,15 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [self _loaded];
 }
 
+- (void) reloadSpringBoard {
+    if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
+        system("/bin/launchctl stop com.apple.backboardd");
+    else
+        system("/bin/launchctl stop com.apple.SpringBoard");
+    sleep(15);
+    system("/usr/bin/killall backboardd SpringBoard");
+}
+
 - (void) _saveConfig {
     SaveConfig(database_);
 }
@@ -9703,14 +9694,7 @@ _end
     UpdateExternalStatus(0);
 
     [self removeStashController];
-
-    pid_t pid(ExecFork());
-    if (pid == 0) {
-        execlp("launchctl", "launchctl", "stop", "com.apple.SpringBoard", NULL);
-        perror("launchctl stop");
-
-        exit(0);
-    } ReapZombie(pid);
+    [self reloadSpringBoard];
 }
 
 - (void) setupViewControllers {
