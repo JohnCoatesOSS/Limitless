@@ -3817,12 +3817,11 @@ class CydiaLogCleaner :
     }
     _end
 
-    delock_ = GetStatusDate();
-
     _trace();
     OpProgress progress;
     bool opened;
   open:
+    delock_ = GetStatusDate();
     _profile(reloadDataWithInvocation$pkgCacheFile)
         opened = cache_.Open(progress, false);
     _end
