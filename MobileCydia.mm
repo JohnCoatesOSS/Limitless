@@ -10371,6 +10371,8 @@ int main(int argc, char *argv[]) {
             _assert(errno == ENOENT);
     }
 
+    system("/usr/libexec/cydia/cydo /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
+
     /* APT Initialization {{{ */
     _assert(pkgInitConfig(*_config));
     _assert(pkgInitSystem(*_config, _system));
