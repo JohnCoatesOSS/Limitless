@@ -7866,20 +7866,15 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     const char *package([name_ UTF8String]);
     bool on([ignoredSwitch_ isOn]);
 
-    pid_t pid(ExecFork());
-    if (pid == 0) {
-        FILE *dpkg(popen("/usr/libexec/cydo --set-selections", "w"));
-        fwrite(package, strlen(package), 1, dpkg);
+    FILE *dpkg(popen("/usr/libexec/cydia/cydo --set-selections", "w"));
+    fwrite(package, strlen(package), 1, dpkg);
 
-        if (on)
-            fwrite(" hold\n", 6, 1, dpkg);
-        else
-            fwrite(" install\n", 9, 1, dpkg);
+    if (on)
+        fwrite(" hold\n", 6, 1, dpkg);
+    else
+        fwrite(" install\n", 9, 1, dpkg);
 
-        pclose(dpkg);
-
-        exit(0);
-    } ReapZombie(pid);
+    pclose(dpkg);
 }
 
 - (void) onIgnored:(id)control {
