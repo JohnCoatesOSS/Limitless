@@ -39,7 +39,7 @@ void launch_data_dict_iterate(launch_data_t data, LaunchDataIterator code) {
 }
 
 int main(int argc, char *argv[]) {
-    FILE *log(fopen("/tmp/cydia.log", "a+"));
+    auto log(fopen("/tmp/cydia.log", "a+"));
     fprintf(log, "cydo:");
     for (int arg(1); arg < argc; ++arg)
         fprintf(log, " %s", argv[arg]);
@@ -52,9 +52,9 @@ int main(int argc, char *argv[]) {
     _assert(response != NULL);
     _assert(launch_data_get_type(response) == LAUNCH_DATA_DICTIONARY);
 
-    int parent(getppid());
+    auto parent(getppid());
 
-    bool cydia(false);
+    auto cydia(false);
 
     launch_data_dict_iterate(response, [=, &cydia](const char *name, launch_data_t value) {
         if (launch_data_get_type(response) != LAUNCH_DATA_DICTIONARY)
