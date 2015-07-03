@@ -3166,8 +3166,10 @@ struct PackageNameOrdering :
         for (NSString *file in files)
             if (application_r(file)) {
                 NSDictionary *info([NSDictionary dictionaryWithContentsOfFile:file]);
+                if (info == nil)
+                    continue;
                 NSString *id([info objectForKey:@"CFBundleIdentifier"]);
-                if ([id isEqualToString:me])
+                if (id == nil || [id isEqualToString:me])
                     continue;
 
                 NSString *display([info objectForKey:@"CFBundleDisplayName"]);
@@ -9538,7 +9540,7 @@ _end
             controller = [[[SectionController alloc] initWithDatabase:database_ source:nil section:argument] autorelease];
         }
 
-        if (!external && [base isEqualToString:@"sources"]) {
+        if ([base isEqualToString:@"sources"]) {
             if ([argument isEqualToString:@"add"]) {
                 controller = [[[SourcesController alloc] initWithDatabase:database_] autorelease];
                 [(SourcesController *)controller showAddSourcePrompt];
