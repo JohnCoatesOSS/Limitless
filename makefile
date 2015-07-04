@@ -155,6 +155,7 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 	
 	mkdir -p _/usr/libexec
 	cp -a Library _/usr/libexec/cydia
+	cp -a sysroot/usr/bin/du _/usr/libexec/cydia
 	cp -a cfversion _/usr/libexec/cydia
 	cp -a setnsfpn _/usr/libexec/cydia
 	
