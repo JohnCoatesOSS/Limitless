@@ -10034,6 +10034,16 @@ MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSStrin
     return _NSUserDefaults$objectForKey$(self, _cmd, key);
 }
 
+static NSMutableDictionary *AutoreleaseDeepMutableCopyOfDictionary(CFTypeRef type) {
+    if (type == NULL)
+        return nil;
+    if (CFGetTypeID(type) != CFDictionaryGetTypeID())
+        return nil;
+    CFTypeRef copy(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, type, kCFPropertyListMutableContainers));
+    CFRelease(type);
+    return [(NSMutableDictionary *) copy autorelease];
+}
+
 int main(int argc, char *argv[]) {
     int fd(open("/tmp/cydia.log", O_WRONLY | O_APPEND | O_CREAT, 0644));
     dup2(fd, 2);
@@ -10288,10 +10298,9 @@ int main(int argc, char *argv[]) {
     MetaFile_.Open("/var/mobile/Library/Cydia/metadata.cb0");
     _trace();
 
-    // XXX: port this to NSUserDefaults when you aren't in such a rush
-    Values_ = [[[(NSDictionary *) CFPreferencesCopyAppValue(CFSTR("CydiaValues"), CFSTR("com.saurik.Cydia")) autorelease] mutableCopy] autorelease];
-    Sections_ = [[[(NSDictionary *) CFPreferencesCopyAppValue(CFSTR("CydiaSections"), CFSTR("com.saurik.Cydia")) autorelease] mutableCopy] autorelease];
-    Sources_ = [[[(NSDictionary *) CFPreferencesCopyAppValue(CFSTR("CydiaSources"), CFSTR("com.saurik.Cydia")) autorelease] mutableCopy] autorelease];
+    Values_ = AutoreleaseDeepMutableCopyOfDictionary(CFPreferencesCopyAppValue(CFSTR("CydiaValues"), CFSTR("com.saurik.Cydia")));
+    Sections_ = AutoreleaseDeepMutableCopyOfDictionary(CFPreferencesCopyAppValue(CFSTR("CydiaSections"), CFSTR("com.saurik.Cydia")));
+    Sources_ = AutoreleaseDeepMutableCopyOfDictionary(CFPreferencesCopyAppValue(CFSTR("CydiaSources"), CFSTR("com.saurik.Cydia")));
     Version_ = [(NSNumber *) CFPreferencesCopyAppValue(CFSTR("CydiaVersion"), CFSTR("com.saurik.Cydia")) autorelease];
 
     _trace();
