@@ -290,6 +290,10 @@ static _finline NSString *CydiaURL(NSString *path) {
     return [[NSString stringWithUTF8String:page] stringByAppendingString:path];
 }
 
+static NSString *ShellEscape(NSString *value) {
+    return [NSString stringWithFormat:@"'%@'", [value stringByReplacingOccurrencesOfString:@"'" withString:@"'\\''"]];
+}
+
 static _finline void UpdateExternalStatus(uint64_t newStatus) {
     int notify_token;
     if (notify_register_check("com.saurik.Cydia.status", &notify_token) == NOTIFY_STATUS_OK) {
@@ -4088,8 +4092,8 @@ class CydiaLogCleaner :
 
     struct stat info;
     if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG) {
-        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/mv -f %@ %@", nextended, oextended] UTF8String]);
-        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/chown 0:0 %@", oextended] UTF8String]);
+        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/mv -f %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
+        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/chown 0:0 %@", ShellEscape(oextended)] UTF8String]);
     }
 
     unlink([nextended UTF8String]);
@@ -4725,7 +4729,7 @@ static _H<NSMutableSet> Diversions_;
 - (NSNumber *) du:(NSString *)path {
     NSNumber *value(nil);
 
-    FILE *du(popen([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/du -ks %@", path] UTF8String], "r"));
+    FILE *du(popen([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/du -ks %@", ShellEscape(path)] UTF8String], "r"));
     if (du != NULL) {
         char line[1024];
         while (fgets(line, sizeof(line), du) != NULL) {
@@ -9349,7 +9353,7 @@ _end
             @synchronized (self) {
                 for (Package *broken in (id) broken_) {
                     [broken remove];
-                    NSString *id([broken id]);
+                    NSString *id(ShellEscape([broken id]));
                     system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/rm -f"
                         " /var/lib/dpkg/info/%@.prerm"
                         " /var/lib/dpkg/info/%@.postrm"
