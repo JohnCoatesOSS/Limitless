@@ -4722,13 +4722,25 @@ static _H<NSMutableSet> Diversions_;
     nil];
 }
 
-ssize_t DiskUsage(const char *path);
-
 - (NSNumber *) du:(NSString *)path {
-    ssize_t usage(DiskUsage([path UTF8String]));
-    if (usage != -1)
-        usage /= 1024;
-    return [NSNumber numberWithUnsignedLong:usage];
+    NSNumber *value(nil);
+
+    FILE *du(popen([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/du -ks %@", path] UTF8String], "r"));
+    if (du != NULL) {
+        char line[1024];
+        while (fgets(line, sizeof(line), du) != NULL) {
+            size_t length(strlen(line));
+            while (length != 0 && line[length - 1] == '\n')
+                line[--length] = '\0';
+            if (char *tab = strchr(line, '\t')) {
+                *tab = '\0';
+                value = [NSNumber numberWithUnsignedLong:strtoul(line, NULL, 0)];
+            }
+        }
+        pclose(du);
+    }
+
+    return value;
 }
 
 - (void) close {
