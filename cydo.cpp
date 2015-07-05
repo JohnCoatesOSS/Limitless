@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 
         auto variables(launch_data_dict_lookup(value, LAUNCH_JOBKEY_ENVIRONMENTVARIABLES));
         if (variables != NULL && launch_data_get_type(variables) == LAUNCH_DATA_DICTIONARY) {
-            bool dyld(false);
+            auto dyld(false);
 
             launch_data_dict_iterate(variables, [&dyld](const char *name, launch_data_t value) {
                 if (strncmp(name, "DYLD_", 5) == 0)
