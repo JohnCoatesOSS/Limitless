@@ -207,6 +207,15 @@ int main(int argc, const char *argv[]) {
 
     #define Cytore_ "/metadata.cb0"
 
+    #define CYDIA_LIST "/etc/apt/sources.list.d/cydia.list"
+    unlink(CYDIA_LIST);
+    [[NSString stringWithFormat:@
+        "deb http://apt.saurik.com/ ios/%.2f main\n"
+        "deb http://apt.thebigboss.org/repofiles/cydia/ stable main\n"
+        "deb http://cydia.zodttd.com/repo/cydia/ stable main\n"
+        "deb http://apt.modmyi.com/ stable main\n"
+    , kCFCoreFoundationVersionNumber] writeToFile:@ CYDIA_LIST atomically:YES];
+
     if (access(NewLibrary_ Cytore_, F_OK) != 0 && errno == ENOENT) {
         if (access(NewCache_ Cytore_, F_OK) == 0)
             system("mv -f " NewCache_ Cytore_ " " NewLibrary_);

@@ -90,6 +90,7 @@
 #include <sys/mount.h>
 #include <sys/reboot.h>
 
+#include <dirent.h>
 #include <fcntl.h>
 #include <notify.h>
 #include <dlfcn.h>
@@ -3758,24 +3759,25 @@ class CydiaLogCleaner :
     return [self popErrorWithTitle:title] || !success;
 }
 
-- (bool) _isEtceteraAptSourcesListDirectoryCydiaListSymbolicallyLinkedToMobileCachesCydiaSourceList {
-    char target[1024];
-    ssize_t length(readlink("/etc/apt/sources.list.d/cydia.list", target, sizeof(target) - 1));
-    if (length == -1)
-        return false;
-    if (length >= sizeof(target))
-        return false;
-    target[length] = '\0';
-    return strcmp(target, "/var/mobile/Library/Caches/com.saurik.Cydia/sources.list") == 0;
-}
-
 - (bool) popErrorWithTitle:(NSString *)title forReadList:(pkgSourceList &)list {
-    if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
-        return true;
-    if (![self _isEtceteraAptSourcesListDirectoryCydiaListSymbolicallyLinkedToMobileCachesCydiaSourceList])
-        if ([self popErrorWithTitle:title forOperation:list.Read(SOURCES_LIST)])
-            return true;
-    return false;
+    list.Reset();
+
+    bool error(false);
+
+    if (access("/etc/apt/sources.list", F_OK) == 0)
+        error |= [self popErrorWithTitle:title forOperation:list.ReadAppend("/etc/apt/sources.list")];
+
+    std::string base("/etc/apt/sources.list.d");
+    if (DIR *sources = opendir(base.c_str())) {
+        while (dirent *source = readdir(sources))
+            if (source->d_name[0] != '.' && source->d_namlen > 5 && strcmp(source->d_name + source->d_namlen - 5, ".list") == 0 && strcmp(source->d_name, "cydia.list") != 0)
+                error |= [self popErrorWithTitle:title forOperation:list.ReadAppend((base + "/" + source->d_name).c_str())];
+        closedir(sources);
+    }
+
+    error |= [self popErrorWithTitle:title forOperation:list.ReadAppend(SOURCES_LIST)];
+
+    return error;
 }
 
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
@@ -10412,8 +10414,6 @@ int main(int argc, char *argv[]) {
         if (unlink([Cache("srcpkgcache.bin") UTF8String]) == -1)
             _assert(errno == ENOENT);
     }
-
-    system("/usr/libexec/cydia/cydo /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
 
     /* APT Initialization {{{ */
     _assert(pkgInitConfig(*_config));
