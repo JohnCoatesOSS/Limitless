@@ -899,6 +899,25 @@ static NSString *CYHex(NSData *data, bool reverse = false) {
     return [NSString stringWithUTF8String:string];
 }
 
+static NSString *VerifySource(NSString *href) {
+    static RegEx href_r("(http(s?)://|file:///)[^# ]*");
+    if (!href_r(href)) {
+        [[[[UIAlertView alloc]
+            initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
+            message:UCLocalize("INVALID_URL_EX")
+            delegate:nil
+            cancelButtonTitle:UCLocalize("OK")
+            otherButtonTitles:nil
+        ] autorelease] show];
+
+        return nil;
+    }
+
+    if (![href hasSuffix:@"/"])
+        href = [href stringByAppendingString:@"/"];
+    return href;
+}
+
 @class Cydia;
 
 /* Delegate Prototypes {{{ */
@@ -942,7 +961,7 @@ static NSString *CYHex(NSData *data, bool reverse = false) {
 - (void) _saveConfig;
 - (void) syncData;
 - (void) addSource:(NSDictionary *)source;
-- (void) addTrivialSource:(NSString *)href;
+- (BOOL) addTrivialSource:(NSString *)href;
 - (UIProgressHUD *) addProgressHUD;
 - (void) removeProgressHUD:(UIProgressHUD *)hud;
 - (void) showActionSheet:(UIActionSheet *)sheet fromItem:(UIBarButtonItem *)item;
@@ -4670,8 +4689,12 @@ static _H<NSMutableSet> Diversions_;
     nil] waitUntilDone:NO];
 }
 
-- (void) addTrivialSource:(NSString *)href {
+- (BOOL) addTrivialSource:(NSString *)href {
+    href = VerifySource(href);
+    if (href == nil)
+        return NO;
     [delegate_ performSelectorOnMainThread:@selector(addTrivialSource:) withObject:href waitUntilDone:NO];
+    return YES;
 }
 
 - (void) refreshSources {
@@ -8537,27 +8560,10 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         switch (button) {
             case 1: {
                 NSString *href = [[alert textField] text];
-
-                static RegEx href_r("(http(s?)://|file:///)[^# ]*");
-                if (!href_r(href)) {
-                    UIAlertView *alert = [[[UIAlertView alloc]
-                        initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
-                        message:UCLocalize("INVALID_URL_EX")
-                        delegate:self
-                        cancelButtonTitle:UCLocalize("OK")
-                        otherButtonTitles:nil
-                    ] autorelease];
-
-                    [alert setContext:@"badurl"];
-                    [alert show];
-
+                href = VerifySource(href);
+                if (href == nil)
                     break;
-                }
-
-                if (![href hasSuffix:@"/"])
-                    href_ = [href stringByAppendingString:@"/"];
-                else
-                    href_ = href;
+                href_ = href;
 
                 trivial_bz2_ = [[self _requestHRef:[href_ stringByAppendingString:@"Packages.bz2"] method:@"HEAD"] retain];
                 trivial_gz_ = [[self _requestHRef:[href_ stringByAppendingString:@"Packages.gz"] method:@"HEAD"] retain];
@@ -9197,8 +9203,10 @@ _end
     CydiaAddSource(href, distribution, sections);
 }
 
-- (void) addTrivialSource:(NSString *)href {
+// XXX: this method should not return anything
+- (BOOL) addTrivialSource:(NSString *)href {
     CydiaAddSource(href, @"./");
+    return YES;
 }
 
 - (void) resolve {
