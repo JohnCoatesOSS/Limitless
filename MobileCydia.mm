@@ -3760,6 +3760,10 @@ class CydiaLogCleaner :
 }
 
 - (bool) popErrorWithTitle:(NSString *)title forReadList:(pkgSourceList &)list {
+    if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
+        return true;
+    return false;
+
     list.Reset();
 
     bool error(false);
@@ -10414,6 +10418,8 @@ int main(int argc, char *argv[]) {
         if (unlink([Cache("srcpkgcache.bin") UTF8String]) == -1)
             _assert(errno == ENOENT);
     }
+
+    system("/usr/libexec/cydia/cydo /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
 
     /* APT Initialization {{{ */
     _assert(pkgInitConfig(*_config));
