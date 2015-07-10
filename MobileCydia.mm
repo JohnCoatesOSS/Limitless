@@ -10382,7 +10382,7 @@ int main(int argc, char *argv[]) {
 
     _H<NSMutableArray> broken([NSMutableArray array]);
     for (NSString *key in (id) Sources_)
-        if ([key rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"# "]].location != NSNotFound)
+        if ([key rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"# "]].location != NSNotFound || ![([[Sources_ objectForKey:key] objectForKey:@"URI"] ?: @"/") hasSuffix:@"/"])
             [broken addObject:key];
     if ([broken count] != 0)
         for (NSString *key in (id) broken)
