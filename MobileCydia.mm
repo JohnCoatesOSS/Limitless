@@ -7177,7 +7177,19 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
     Database *database([Database sharedInstance]);
 
-    if ([command isEqualToString:@"package-icon"]) {
+    if (false);
+    else if ([command isEqualToString:@"application-icon"]) {
+        if (path == nil)
+            goto fail;
+        path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSData *data([SBSCopyIconImagePNGDataForDisplayIdentifier(path) autorelease]);
+        UIImage *icon;
+        if (data == nil)
+            icon = [UIImage imageNamed:@"unknown.png"];
+        else
+            icon = [UIImage imageWithData:data];
+        [self _returnPNGWithImage:icon forRequest:request];
+    } else if ([command isEqualToString:@"package-icon"]) {
         if (path == nil)
             goto fail;
         path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
