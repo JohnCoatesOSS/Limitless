@@ -9869,6 +9869,9 @@ _trace();
     [window_ makeKey:self];
     [window_ setHidden:NO];
 
+    if (access("/.cydia_no_stash", F_OK) == 0);
+    else {
+
     if (false) stash: {
         [self addStashController];
         // XXX: this would be much cleaner as a yieldToSelector:
@@ -9901,6 +9904,8 @@ _trace();
     Stash_("/usr/include");
     Stash_("/usr/share");
     //Stash_("/var/lib");
+
+    }
 
     database_ = [Database sharedInstance];
     [database_ setDelegate:self];
