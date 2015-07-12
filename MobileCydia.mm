@@ -248,6 +248,7 @@ static NSString *Cache_;
     [NSString stringWithFormat:@"%@/%s", Cache_, file]
 
 static void (*$SBSSetInterceptsMenuButtonForever)(bool);
+static NSData *(*$SBSCopyIconImagePNGDataForDisplayIdentifier)(NSString *);
 
 static CFStringRef (*$MGCopyAnswer)(CFStringRef);
 
@@ -7182,12 +7183,21 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         if (path == nil)
             goto fail;
         path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSData *data([SBSCopyIconImagePNGDataForDisplayIdentifier(path) autorelease]);
-        UIImage *icon;
-        if (data == nil)
-            icon = [UIImage imageNamed:@"unknown.png"];
-        else
+
+        UIImage *icon(nil);
+
+        if (icon == nil && $SBSCopyIconImagePNGDataForDisplayIdentifier != NULL) {
+            NSData *data([$SBSCopyIconImagePNGDataForDisplayIdentifier(path) autorelease]);
             icon = [UIImage imageWithData:data];
+        }
+
+        if (icon == nil)
+            if (NSString *file = SBSCopyIconImagePathForDisplayIdentifier(path))
+                icon = [UIImage imageAtPath:file];
+
+        if (icon == nil)
+            icon = [UIImage imageNamed:@"unknown.png"];
+
         [self _returnPNGWithImage:icon forRequest:request];
     } else if ([command isEqualToString:@"package-icon"]) {
         if (path == nil)
@@ -10502,6 +10512,7 @@ int main(int argc, char *argv[]) {
     /* }}} */
 
     $SBSSetInterceptsMenuButtonForever = reinterpret_cast<void (*)(bool)>(dlsym(RTLD_DEFAULT, "SBSSetInterceptsMenuButtonForever"));
+    $SBSCopyIconImagePNGDataForDisplayIdentifier = reinterpret_cast<NSData *(*)(NSString *)>(dlsym(RTLD_DEFAULT, "SBSCopyIconImagePNGDataForDisplayIdentifier"));
 
     const char *symbol(kCFCoreFoundationVersionNumber >= 800 ? "MGGetBoolAnswer" : "GSSystemHasCapability");
     BOOL (*GSSystemHasCapability)(CFStringRef) = reinterpret_cast<BOOL (*)(CFStringRef)>(dlsym(RTLD_DEFAULT, symbol));

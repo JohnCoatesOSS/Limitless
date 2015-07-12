@@ -440,7 +440,7 @@ extern "C" mach_port_t SBSSpringBoardServerPort();
 extern "C" int SBBundlePathForDisplayIdentifier(mach_port_t port, const char *identifier, char *path);
 extern "C" NSSet *SBSCopyDisplayIdentifiers();
 extern "C" NSString *SBSCopyLocalizedApplicationNameForDisplayIdentifier(NSString *);
-extern "C" NSData *SBSCopyIconImagePNGDataForDisplayIdentifier(NSString *);
+extern "C" NSString *SBSCopyIconImagePathForDisplayIdentifier(NSString *);
 extern "C" UIImage *_UIImageWithName(NSString *name);
 extern "C" void UISetColor(CGColorRef color);
 // }}}
