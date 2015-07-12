@@ -2157,7 +2157,6 @@ struct ParsedPackage {
 - (NSString *) installed;
 - (BOOL) uninstalled;
 
-- (BOOL) valid;
 - (BOOL) upgradableAndEssential:(BOOL)essential;
 - (BOOL) essential;
 - (BOOL) broken;
@@ -2545,12 +2544,7 @@ struct PackageNameOrdering :
         iterator_ = iterator;
 
         _profile(Package$initWithVersion$Version)
-            if (!version_.end())
-                file_ = version_.FileList();
-            else {
-                pkgCache &cache([database_ cache]);
-                file_ = pkgCache::VerFileIterator(cache, cache.VerFileP);
-            }
+            file_ = version_.FileList();
         _end
 
         _profile(Package$initWithVersion$Cache)
@@ -2898,17 +2892,13 @@ struct PackageNameOrdering :
     return installed_.empty();
 }
 
-- (BOOL) valid {
-    return !version_.end();
-}
-
 - (BOOL) upgradableAndEssential:(BOOL)essential {
     _profile(Package$upgradableAndEssential)
         pkgCache::VerIterator current(iterator_.CurrentVer());
         if (current.end())
             return essential && essential_;
         else
-            return !version_.end() && version_ != current;
+            return version_ != current;
     _end
 }
 
@@ -6836,7 +6826,7 @@ typedef Function<void, NSMutableArray *> PackageSorter;
 
     _profile(PackageTable$reloadData$Filter)
         for (Package *package in packages)
-            if ([package valid] && filter(package))
+            if (filter(package))
                 [filtered addObject:package];
     _end
 
@@ -7480,7 +7470,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         [section addToCount];
 
         _profile(SectionsView$reloadData$Filter)
-            if (![package valid] || ![package visible])
+            if (![package visible])
                 continue;
         _end
 
