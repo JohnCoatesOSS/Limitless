@@ -10308,6 +10308,7 @@ int main(int argc, char *argv[]) {
     Advanced_ = YES;
 
     Cache_ = [[NSString stringWithFormat:@"%@/Library/Caches/com.saurik.Cydia", @"/var/mobile"] retain];
+    mkdir([Cache_ UTF8String], 0755);
 
     /*Method alloc = class_getClassMethod([NSObject class], @selector(alloc));
     alloc_ = alloc->method_imp;
@@ -10480,7 +10481,6 @@ int main(int argc, char *argv[]) {
 
     _config->Set("Acquire::http::MaxParallel", usermem >= 384 * 1024 * 1024 ? 16 : 3);
 
-    mkdir([Cache_ UTF8String], 0755);
     mkdir([Cache("archives") UTF8String], 0755);
     mkdir([Cache("archives/partial") UTF8String], 0755);
     _config->Set("Dir::Cache", [Cache_ UTF8String]);
