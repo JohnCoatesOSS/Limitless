@@ -2735,6 +2735,21 @@ struct PackageNameOrdering :
     return iterator_;
 }
 
+- (NSArray *) downgrades {
+    NSMutableArray *versions([NSMutableArray arrayWithCapacity:4]);
+
+    for (auto version(iterator_.VersionList()); !version.end(); ++version) {
+        if (version == version_)
+            continue;
+        Package *package([[[Package allocWithZone:NULL] initWithVersion:version withZone:NULL inPool:NULL database:database_] autorelease]);
+        if ([package source] == nil)
+            continue;
+        [versions addObject:package];
+    }
+
+    return versions;
+}
+
 - (NSString *) section {
     if (section$_ == nil) {
         if (section_ == NULL)
@@ -3349,6 +3364,7 @@ struct PackageNameOrdering :
     resolver->Protect(iterator_);
 
     pkgCacheFile &cache([database_ cache]);
+    cache->SetCandidateVersion(version_);
     cache->SetReInstall(iterator_, false);
     cache->MarkInstall(iterator_, false);
 
@@ -6255,6 +6271,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     std::vector<std::pair<_H<NSString>, _H<NSString>>> buttons_;
     _H<UIActionSheet> sheet_;
     _H<UIBarButtonItem> button_;
+    _H<NSArray> versions_;
 }
 
 - (id) initWithDatabase:(Database *)database forPackage:(NSString *)name withReferrer:(NSString *)referrer;
@@ -6267,18 +6284,38 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     return [NSURL URLWithString:[NSString stringWithFormat:@"cydia://package/%@", (id) name_]];
 }
 
+- (void) _clickButtonWithPackage:(Package *)package {
+    [delegate_ installPackage:package];
+}
+
 - (void) _clickButtonWithName:(NSString *)name {
     if ([name isEqualToString:@"CLEAR"])
-        [delegate_ clearPackage:package_];
-    else if ([name isEqualToString:@"INSTALL"])
-        [delegate_ installPackage:package_];
-    else if ([name isEqualToString:@"REINSTALL"])
-        [delegate_ installPackage:package_];
+        return [delegate_ clearPackage:package_];
     else if ([name isEqualToString:@"REMOVE"])
-        [delegate_ removePackage:package_];
-    else if ([name isEqualToString:@"UPGRADE"])
-        [delegate_ installPackage:package_];
+        return [delegate_ removePackage:package_];
+    else if ([name isEqualToString:@"DOWNGRADE"]) {
+        sheet_ = [[[UIActionSheet alloc]
+            initWithTitle:nil
+            delegate:self
+            cancelButtonTitle:nil
+            destructiveButtonTitle:nil
+            otherButtonTitles:nil
+        ] autorelease];
+
+        for (Package *version in (id) versions_)
+            [sheet_ addButtonWithTitle:[version latest]];
+        [sheet_ setContext:@"version"];
+
+        [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
+        return;
+    }
+
+    else if ([name isEqualToString:@"INSTALL"]);
+    else if ([name isEqualToString:@"REINSTALL"]);
+    else if ([name isEqualToString:@"UPGRADE"]);
     else _assert(false);
+
+    [delegate_ installPackage:package_];
 }
 
 - (void) actionSheet:(UIActionSheet *)sheet clickedButtonAtIndex:(NSInteger)button {
@@ -6292,6 +6329,16 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                 [self performSelector:@selector(_clickButtonWithName:) withObject:buttons_[button].first afterDelay:0];
             else
                 [self _clickButtonWithName:buttons_[button].first];
+        }
+
+        [sheet dismissWithClickedButtonIndex:button animated:YES];
+    } else if ([context isEqualToString:@"version"]) {
+        if (button != [sheet cancelButtonIndex]) {
+            Package *version([versions_ objectAtIndex:button]);
+            if (IsWildcat_)
+                [self performSelector:@selector(_clickButtonWithPackage:) withObject:version afterDelay:0];
+            else
+                [self _clickButtonWithPackage:version];
         }
 
         [sheet dismissWithClickedButtonIndex:button animated:YES];
@@ -6323,11 +6370,8 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             otherButtonTitles:nil
         ] autorelease];
 
-        for (NSString *button in buttons) [sheet_ addButtonWithTitle:button];
-        if (!IsWildcat_) {
-           [sheet_ addButtonWithTitle:UCLocalize("CANCEL")];
-           [sheet_ setCancelButtonIndex:[sheet_ numberOfButtons] - 1];
-        }
+        for (NSString *button in buttons)
+            [sheet_ addButtonWithTitle:button];
         [sheet_ setContext:@"modify"];
 
         [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
@@ -6368,6 +6412,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     sheet_ = nil;
 
     package_ = [database_ packageWithName:name_];
+    versions_ = [package_ downgrades];
 
     buttons_.clear();
 
@@ -6387,6 +6432,8 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             buttons_.push_back(std::make_pair(@"REINSTALL", UCLocalize("REINSTALL")));
         if (![package_ uninstalled])
             buttons_.push_back(std::make_pair(@"REMOVE", UCLocalize("REMOVE")));
+        if ([versions_ count] != 0)
+            buttons_.push_back(std::make_pair(@"DOWNGRADE", UCLocalize("DOWNGRADE")));
     }
 
     NSString *title;
@@ -10025,6 +10072,11 @@ _trace();
 }
 
 - (void) showActionSheet:(UIActionSheet *)sheet fromItem:(UIBarButtonItem *)item {
+    if (!IsWildcat_) {
+       [sheet addButtonWithTitle:UCLocalize("CANCEL")];
+       [sheet setCancelButtonIndex:[sheet numberOfButtons] - 1];
+    }
+
     if (item != nil && IsWildcat_) {
         [sheet showFromBarButtonItem:item animated:YES];
     } else {
