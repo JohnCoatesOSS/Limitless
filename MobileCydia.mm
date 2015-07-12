@@ -4461,6 +4461,10 @@ static _H<NSMutableSet> Diversions_;
         return @"getAllSources";
     else if (selector == @selector(getApplicationInfo:value:))
         return @"getApplicationInfoValue";
+    else if (selector == @selector(getDisplayIdentifiers))
+        return @"getDisplayIdentifiers";
+    else if (selector == @selector(getLocalizedNameForDisplayIdentifier:))
+        return @"getLocalizedNameForDisplayIdentifier";
     else if (selector == @selector(getKernelNumber:))
         return @"getKernelNumber";
     else if (selector == @selector(getKernelString:))
@@ -4575,6 +4579,17 @@ static _H<NSMutableSet> Diversions_;
     if (info == nil)
         return (id) [NSNull null];
     return [info objectForKey:key];
+}
+
+- (NSArray *) getDisplayIdentifiers {
+    NSSet *set([SBSCopyDisplayIdentifiers() autorelease]);
+    if (set == nil || ![set isKindOfClass:[NSSet class]])
+        return [NSArray array];
+    return [set allObjects];
+}
+
+- (NSString *) getLocalizedNameForDisplayIdentifier:(NSString *)identifier {
+    return [SBSCopyLocalizedApplicationNameForDisplayIdentifier(identifier) autorelease] ?: (id) [NSNull null];
 }
 
 - (NSNumber *) getKernelNumber:(NSString *)name {
