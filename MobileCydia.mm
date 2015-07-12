@@ -3328,6 +3328,9 @@ struct PackageNameOrdering :
 
 - (void) clear {
 @synchronized (database_) {
+    if ([database_ era] != era_ || file_.end())
+        return;
+
     pkgProblemResolver *resolver = [database_ resolver];
     resolver->Clear(iterator_);
 
@@ -3338,6 +3341,9 @@ struct PackageNameOrdering :
 
 - (void) install {
 @synchronized (database_) {
+    if ([database_ era] != era_ || file_.end())
+        return;
+
     pkgProblemResolver *resolver = [database_ resolver];
     resolver->Clear(iterator_);
     resolver->Protect(iterator_);
@@ -3353,6 +3359,9 @@ struct PackageNameOrdering :
 
 - (void) remove {
 @synchronized (database_) {
+    if ([database_ era] != era_ || file_.end())
+        return;
+
     pkgProblemResolver *resolver = [database_ resolver];
     resolver->Clear(iterator_);
     resolver->Remove(iterator_);
@@ -6244,6 +6253,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     _H<NSString> name_;
     bool commercial_;
     std::vector<std::pair<_H<NSString>, _H<NSString>>> buttons_;
+    _H<UIActionSheet> sheet_;
     _H<UIBarButtonItem> button_;
 }
 
@@ -6273,6 +6283,8 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 - (void) actionSheet:(UIActionSheet *)sheet clickedButtonAtIndex:(NSInteger)button {
     NSString *context([sheet context]);
+    if (sheet_ == sheet)
+        sheet_ = nil;
 
     if ([context isEqualToString:@"modify"]) {
         if (button != [sheet cancelButtonIndex]) {
@@ -6303,7 +6315,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         for (const auto &button : buttons_)
             [buttons addObject:button.second];
 
-        UIActionSheet *sheet = [[[UIActionSheet alloc]
+        sheet_ = [[[UIActionSheet alloc]
             initWithTitle:nil
             delegate:self
             cancelButtonTitle:nil
@@ -6311,14 +6323,14 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             otherButtonTitles:nil
         ] autorelease];
 
-        for (NSString *button in buttons) [sheet addButtonWithTitle:button];
+        for (NSString *button in buttons) [sheet_ addButtonWithTitle:button];
         if (!IsWildcat_) {
-           [sheet addButtonWithTitle:UCLocalize("CANCEL")];
-           [sheet setCancelButtonIndex:[sheet numberOfButtons] - 1];
+           [sheet_ addButtonWithTitle:UCLocalize("CANCEL")];
+           [sheet_ setCancelButtonIndex:[sheet_ numberOfButtons] - 1];
         }
-        [sheet setContext:@"modify"];
+        [sheet_ setContext:@"modify"];
 
-        [delegate_ showActionSheet:sheet fromItem:[[self navigationItem] rightBarButtonItem]];
+        [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
     }
 }
 
@@ -6351,6 +6363,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 - (void) reloadData {
     [super reloadData];
+
+    [sheet_ dismissWithClickedButtonIndex:[sheet_ cancelButtonIndex] animated:YES];
+    sheet_ = nil;
 
     package_ = [database_ packageWithName:name_];
 
