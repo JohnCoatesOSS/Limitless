@@ -4132,10 +4132,8 @@ class CydiaLogCleaner :
     NSString *nextended(Cache("extended_states"));
 
     struct stat info;
-    if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG) {
-        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/mv -f %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
-        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/chown 0:0 %@", ShellEscape(oextended)] UTF8String]);
-    }
+    if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG)
+        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/cp --remove-destination %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
 
     unlink([nextended UTF8String]);
     symlink([oextended UTF8String], [nextended UTF8String]);
