@@ -262,7 +262,7 @@
 			path = Cydia;
 			sourceTree = "<group>";
 		};
-		FA28E7011D1B21A5003D3724 = {
+		FA0311C41D1B5BBA008690CA /* Frameworks & Libraries */ = {
 			isa = PBXGroup;
 			children = (
 				FA0311C21D1B300E008690CA /* UIKit.framework */,
@@ -280,6 +280,14 @@
 				FA0311671D1B2B3D008690CA /* CoreFoundation.framework */,
 				FA0311631D1B2A81008690CA /* libapt-inst.dylib */,
 				FA0311641D1B2A82008690CA /* libapt-pkg.dylib */,
+			);
+			name = "Frameworks & Libraries";
+			sourceTree = "<group>";
+		};
+		FA28E7011D1B21A5003D3724 = {
+			isa = PBXGroup;
+			children = (
+				FA0311C41D1B5BBA008690CA /* Frameworks & Libraries */,
 				FA28E7241D1B21C7003D3724 /* Project Root */,
 				FA28E70C1D1B21A5003D3724 /* Cydia */,
 				FA28E70B1D1B21A5003D3724 /* Products */,
