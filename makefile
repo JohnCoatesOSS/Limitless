@@ -1,13 +1,14 @@
 gxx := $(shell xcrun --sdk iphoneos -f g++)
 sdk := $(shell xcodebuild -sdk iphoneos -version Path)
 
-flags := 
-link := 
-libs := 
+flags :=
+link :=
+libs :=
 
 dpkg := dpkg-deb -Zlzma
 
 flags += -F$(sdk)/System/Library/PrivateFrameworks
+flags += -Fsysroot/System/Library/PrivateFrameworks
 flags += -I. -isystem sysroot/usr/include
 flags += -fmessage-length=0
 flags += -g0 -O2
@@ -45,16 +46,16 @@ libs += -framework WebKit
 libs += -lapt-pkg
 libs += -licucore
 
-uikit := 
+uikit :=
 uikit += -framework UIKit
 
 version := $(shell ./version.sh)
 
-cycc = $(gxx) -arch armv6 -o $@ -miphoneos-version-min=2.0 -isysroot $(sdk) -idirafter /usr/include -F{sysroot,}/Library/Frameworks
+cycc = $(gxx) -arch armv7 -o $@ -miphoneos-version-min=2.0 -isysroot $(sdk) -idirafter /usr/include -F{sysroot,}/Library/Frameworks
 
 cycc += -marm # @synchronized
 cycc += -mcpu=arm1176jzf-s
-cycc += -mllvm -arm-reserve-r9
+#cycc += -mllvm -arm-reserve-r9
 link += -lgcc_s.1
 
 dirs := Menes CyteKit Cydia SDURLCache
@@ -148,43 +149,43 @@ postinst: postinst.mm CyteKit/stringWithUTF8Bytes.mm CyteKit/stringWithUTF8Bytes
 debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion setnsfpn cydo $(images) $(shell find MobileCydia.app) cydia.control Library/firmware.sh Library/move.sh Library/startup
 	sudo rm -rf _
 	mkdir -p _/var/lib/cydia
-	
+
 	mkdir -p _/etc/apt
 	cp -a Trusted.gpg _/etc/apt/trusted.gpg.d
 	cp -a Sources.list _/etc/apt/sources.list.d
-	
+
 	mkdir -p _/usr/libexec
 	cp -a Library _/usr/libexec/cydia
 	cp -a sysroot/usr/bin/du _/usr/libexec/cydia
 	cp -a cfversion _/usr/libexec/cydia
 	cp -a setnsfpn _/usr/libexec/cydia
-	
+
 	cp -a cydo _/usr/libexec/cydia
 	sudo chmod 6755 _/usr/libexec/cydia/cydo
-	
+
 	mkdir -p _/Library
 	cp -a LaunchDaemons _/Library/LaunchDaemons
-	
+
 	mkdir -p _/Applications
 	cp -a MobileCydia.app _/Applications/Cydia.app
 	rm -rf _/Applications/Cydia.app/*.lproj
 	cp -a MobileCydia _/Applications/Cydia.app/Cydia
-	
+
 	cd MobileCydia.app && find . -name '*.png' -exec cp -af ../Images/MobileCydia.app/{} ../_/Applications/Cydia.app/{} ';'
-	
+
 	mkdir -p _/Applications/Cydia.app/Sources
 	ln -s /usr/share/bigboss/icons/bigboss.png _/Applications/Cydia.app/Sources/apt.bigboss.us.com.png
 	ln -s /usr/share/bigboss/icons/planetiphones.png _/Applications/Cydia.app/Sections/"Planet-iPhones Mods.png"
-	
+
 	mkdir -p _/DEBIAN
 	./control.sh cydia.control _ >_/DEBIAN/control
 	cp -a preinst postinst _/DEBIAN/
-	
+
 	find _ -exec touch -t "$$(date -j -f "%s" +"%Y%m%d%H%M.%S" "$$(git show --format='format:%ct' | head -n 1)")" {} ';'
-	
+
 	sudo chown -R 0 _
 	sudo chgrp -R 0 _
-	
+
 	mkdir -p debs
 	ln -sf debs/cydia_$(version)_iphoneos-arm.deb Cydia.deb
 	$(dpkg) -b _ Cydia.deb
@@ -193,20 +194,20 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 $(lproj_deb): $(shell find MobileCydia.app -name '*.strings') cydia-lproj.control
 	sudo rm -rf __
 	mkdir -p __/Applications/Cydia.app
-	
+
 	cp -a MobileCydia.app/*.lproj __/Applications/Cydia.app
-	
+
 	mkdir -p __/DEBIAN
 	./control.sh cydia-lproj.control __ >__/DEBIAN/control
-	
+
 	sudo chown -R 0 __
 	sudo chgrp -R 0 __
-	
+
 	mkdir -p debs
 	ln -sf debs/cydia-lproj_$(version)_iphoneos-arm.deb Cydia_.deb
 	$(dpkg) -b __ Cydia_.deb
 	@echo "$$(stat -L -f "%z" Cydia_.deb) $$(stat -f "%Y" Cydia_.deb)"
-	
+
 package: debs/cydia_$(version)_iphoneos-arm.deb $(lproj_deb)
 
 .PHONY: all clean package
