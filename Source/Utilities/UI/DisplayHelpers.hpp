@@ -92,3 +92,6 @@ static struct UReplaceableCallbacks CollationUCalls_ = {
         str.replace(dest, 0, str, start, limit - start);
     },
 };
+
+
+bool isSectionVisible(NSString *section);

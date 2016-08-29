@@ -51,6 +51,9 @@
 // Collections
 #import "CFArray+Sort.h"
 
+// System
+#import "SystemHelpers.h"
+
 #pragma mark - Headers
 
 #include <unicode/ustring.h>
@@ -249,10 +252,6 @@ static _H<NSString> Safari_;
 #define CacheState_ "/var/mobile/Library/Caches/com.saurik.Cydia/CacheState.plist"
 #define SavedState_ "/var/mobile/Library/Caches/com.saurik.Cydia/SavedState.plist"
 
-static NSDictionary *SectionMap_;
-static _H<NSDate> Backgrounded_;
-static _transient NSMutableDictionary *Values_;
-static _transient NSMutableDictionary *Sections_;
 _H<NSMutableDictionary> Sources_;
 static _transient NSNumber *Version_;
 static time_t now_;
@@ -272,40 +271,6 @@ static NSString *kCydiaProgressEventTypeInformation = @"Information";
 static NSString *kCydiaProgressEventTypeStatus = @"Status";
 static NSString *kCydiaProgressEventTypeWarning = @"Warning";
 /* }}} */
-
-bool isSectionVisible(NSString *section) {
-    NSDictionary *metadata([Sections_ objectForKey:(section ?: @"")]);
-    NSNumber *hidden(metadata == nil ? nil : [metadata objectForKey:@"Hidden"]);
-    return hidden == nil || ![hidden boolValue];
-}
-
-static NSObject *CYIOGetValue(const char *path, NSString *property) {
-    io_registry_entry_t entry(IORegistryEntryFromPath(kIOMasterPortDefault, path));
-    if (entry == MACH_PORT_NULL)
-        return nil;
-
-    CFTypeRef value(IORegistryEntryCreateCFProperty(entry, (CFStringRef) property, kCFAllocatorDefault, 0));
-    IOObjectRelease(entry);
-
-    if (value == NULL)
-        return nil;
-    return [(id) value autorelease];
-}
-
-static NSString *CYHex(NSData *data, bool reverse = false) {
-    if (data == nil)
-        return nil;
-
-    size_t length([data length]);
-    uint8_t bytes[length];
-    [data getBytes:bytes];
-
-    char string[length * 2 + 1];
-    for (size_t i(0); i != length; ++i)
-        sprintf(string + i * 2, "%.2x", bytes[reverse ? length - i - 1 : i]);
-
-    return [NSString stringWithUTF8String:string];
-}
 
 static NSString *VerifySource(NSString *href) {
     static RegEx href_r("(http(s?)://|file:///)[^# ]*");

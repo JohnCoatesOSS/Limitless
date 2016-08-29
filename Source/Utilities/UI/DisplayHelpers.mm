@@ -49,3 +49,9 @@ NSString *Simplify(NSString *title) {
     
     return title;
 }
+
+bool isSectionVisible(NSString *section) {
+    NSDictionary *metadata([Sections_ objectForKey:(section ?: @"")]);
+    NSNumber *hidden(metadata == nil ? nil : [metadata objectForKey:@"Hidden"]);
+    return hidden == nil || ![hidden boolValue];
+}

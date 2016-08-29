@@ -10,7 +10,6 @@
 #import "Menes/Menes.h"
 
 // Colors
-
 static CYColor Blue_;
 static CYColor Blueish_;
 static CYColor Black_;
@@ -28,7 +27,6 @@ static UIColor *RemovingColor_;
 static CGColorSpaceRef space_;
 
 // Fonts
-
 static _H<UIFont> Font12_;
 static _H<UIFont> Font12Bold_;
 static _H<UIFont> Font14_;
@@ -37,7 +35,6 @@ static _H<UIFont> Font18Bold_;
 static _H<UIFont> Font22Bold_;
 
 // Collation
-
 static _H<NSLocale> CollationLocale_;
 static _H<NSArray> CollationThumbs_;
 static std::vector<NSInteger> CollationOffset_;
@@ -49,6 +46,11 @@ typedef std::basic_string<UChar> ustring;
 static ustring CollationString_;
 
 // Locale
-
 static CFLocaleRef Locale_;
 static NSArray *Languages_;
+
+// Sections
+static NSDictionary *SectionMap_;
+static _H<NSDate> Backgrounded_;
+static _transient NSMutableDictionary *Values_;
+static _transient NSMutableDictionary *Sections_;
