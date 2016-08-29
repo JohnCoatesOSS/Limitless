@@ -47,3 +47,8 @@ std::binary_function<NSString *, NSString *, bool>
         //[lhs isEqualToString:rhs];
     }
 };
+
+// NSForcedOrderingSearch doesn't work on the iPhone
+static const NSStringCompareOptions MatchCompareOptions_ = NSLiteralSearch | NSCaseInsensitiveSearch;
+static const NSStringCompareOptions LaxCompareOptions_ = NSNumericSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch | NSCaseInsensitiveSearch;
+static const CFStringCompareFlags LaxCompareFlags_ = kCFCompareNumerically | kCFCompareWidthInsensitive | kCFCompareForcedOrdering;

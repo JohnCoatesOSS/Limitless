@@ -31,6 +31,9 @@
 #import "CyteKit.h"
 #import "NSString+Cydia.hpp"
 #import "CYString.hpp"
+#import "CYColor.hpp"
+#import "DisplayHelpers.hpp"
+#import "UIGlobals.h"
 
 #pragma mark - Headers
 
@@ -171,8 +174,6 @@ static NSString *UniqueIdentifier(UIDevice *device = nil) {
         return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
 }
 
-static const NSUInteger UIViewAutoresizingFlexibleBoth(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-
 static _finline NSString *CydiaURL(NSString *path) {
     char page[26];
     page[0] = 'h'; page[1] = 't'; page[2] = 't'; page[3] = 'p'; page[4] = 's';
@@ -196,16 +197,6 @@ static _finline void UpdateExternalStatus(uint64_t newStatus) {
     }
     notify_post("com.saurik.Cydia.status");
 }
-
-static CGFloat CYStatusBarHeight() {
-    CGSize size([[UIApplication sharedApplication] statusBarFrame].size);
-    return UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) ? size.height : size.width;
-}
-
-/* NSForcedOrderingSearch doesn't work on the iPhone */
-static const NSStringCompareOptions MatchCompareOptions_ = NSLiteralSearch | NSCaseInsensitiveSearch;
-static const NSStringCompareOptions LaxCompareOptions_ = NSNumericSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch | NSCaseInsensitiveSearch;
-static const CFStringCompareFlags LaxCompareFlags_ = kCFCompareNumerically | kCFCompareWidthInsensitive | kCFCompareForcedOrdering;
 
 /* Insertion Sort {{{ */
 
@@ -297,48 +288,6 @@ NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *s
     return length;
 }
 
-/* CoreGraphics Primitives {{{ */
-class CYColor {
-  private:
-    CGColorRef color_;
-
-    static CGColorRef Create_(CGColorSpaceRef space, float red, float green, float blue, float alpha) {
-        CGFloat color[] = {red, green, blue, alpha};
-        return CGColorCreate(space, color);
-    }
-
-  public:
-    CYColor() :
-        color_(NULL)
-    {
-    }
-
-    CYColor(CGColorSpaceRef space, float red, float green, float blue, float alpha) :
-        color_(Create_(space, red, green, blue, alpha))
-    {
-        Set(space, red, green, blue, alpha);
-    }
-
-    void Clear() {
-        if (color_ != NULL)
-            CGColorRelease(color_);
-    }
-
-    ~CYColor() {
-        Clear();
-    }
-
-    void Set(CGColorSpaceRef space, float red, float green, float blue, float alpha) {
-        Clear();
-        color_ = Create_(space, red, green, blue, alpha);
-    }
-
-    operator CGColorRef() {
-        return color_;
-    }
-};
-/* }}} */
-
 /* Random Global Variables {{{ */
 static int PulseInterval_ = 500000;
 
@@ -353,31 +302,10 @@ static NSArray *Finishes_;
 
 static bool Queuing_;
 
-static CYColor Blue_;
-static CYColor Blueish_;
-static CYColor Black_;
-static CYColor Folder_;
-static CYColor Off_;
-static CYColor White_;
-static CYColor Gray_;
-static CYColor Green_;
-static CYColor Purple_;
-static CYColor Purplish_;
-
-static UIColor *InstallingColor_;
-static UIColor *RemovingColor_;
-
 static NSString *App_;
 
 static BOOL Advanced_;
 static BOOL Ignored_;
-
-static _H<UIFont> Font12_;
-static _H<UIFont> Font12Bold_;
-static _H<UIFont> Font14_;
-static _H<UIFont> Font18_;
-static _H<UIFont> Font18Bold_;
-static _H<UIFont> Font22Bold_;
 
 static const char *Machine_ = NULL;
 static _H<NSString> System_;
@@ -388,60 +316,6 @@ static _H<NSString> UniqueID_;
 static _H<NSString> UserAgent_;
 static _H<NSString> Product_;
 static _H<NSString> Safari_;
-
-static _H<NSLocale> CollationLocale_;
-static _H<NSArray> CollationThumbs_;
-static std::vector<NSInteger> CollationOffset_;
-static _H<NSArray> CollationTitles_;
-static _H<NSArray> CollationStarts_;
-static UTransliterator *CollationTransl_;
-//static Function<NSString *, NSString *> CollationModify_;
-
-typedef std::basic_string<UChar> ustring;
-static ustring CollationString_;
-
-#define CUC const ustring &str(*reinterpret_cast<const ustring *>(rep))
-#define UC ustring &str(*reinterpret_cast<ustring *>(rep))
-static struct UReplaceableCallbacks CollationUCalls_ = {
-    .length = [](const UReplaceable *rep) -> int32_t { CUC;
-        return str.size();
-    },
-
-    .charAt = [](const UReplaceable *rep, int32_t offset) -> UChar { CUC;
-        //fprintf(stderr, "charAt(%d) : %d\n", offset, str.size());
-        if (offset >= str.size())
-            return 0xffff;
-        return str[offset];
-    },
-
-    .char32At = [](const UReplaceable *rep, int32_t offset) -> UChar32 { CUC;
-        //fprintf(stderr, "char32At(%d) : %d\n", offset, str.size());
-        if (offset >= str.size())
-            return 0xffff;
-        UChar32 c;
-        U16_GET(str.data(), 0, offset, str.size(), c);
-        return c;
-    },
-
-    .replace = [](UReplaceable *rep, int32_t start, int32_t limit, const UChar *text, int32_t length) -> void { UC;
-        //fprintf(stderr, "replace(%d, %d, %d) : %d\n", start, limit, length, str.size());
-        str.replace(start, limit - start, text, length);
-    },
-
-    .extract = [](UReplaceable *rep, int32_t start, int32_t limit, UChar *dst) -> void { UC;
-        //fprintf(stderr, "extract(%d, %d) : %d\n", start, limit, str.size());
-        str.copy(dst, limit - start, start);
-    },
-
-    .copy = [](UReplaceable *rep, int32_t start, int32_t limit, int32_t dest) -> void { UC;
-        //fprintf(stderr, "copy(%d, %d, %d) : %d\n", start, limit, dest, str.size());
-        str.replace(dest, 0, str, start, limit - start);
-    },
-};
-
-static CFLocaleRef Locale_;
-static NSArray *Languages_;
-static CGColorSpaceRef space_;
 
 #define CacheState_ "/var/mobile/Library/Caches/com.saurik.Cydia/CacheState.plist"
 #define SavedState_ "/var/mobile/Library/Caches/com.saurik.Cydia/SavedState.plist"
@@ -454,9 +328,6 @@ _H<NSMutableDictionary> Sources_;
 static _transient NSNumber *Version_;
 static time_t now_;
 
-bool IsWildcat_;
-CGFloat ScreenScale_;
-static NSString *Idiom_;
 static _H<NSString> Firmware_;
 static NSString *Major_;
 
@@ -471,71 +342,6 @@ static NSString *kCydiaProgressEventTypeError = @"Error";
 static NSString *kCydiaProgressEventTypeInformation = @"Information";
 static NSString *kCydiaProgressEventTypeStatus = @"Status";
 static NSString *kCydiaProgressEventTypeWarning = @"Warning";
-/* }}} */
-
-/* Display Helpers {{{ */
-inline float Interpolate(float begin, float end, float fraction) {
-    return (end - begin) * fraction + begin;
-}
-
-static inline double Retina(double value) {
-    value *= ScreenScale_;
-    value = round(value);
-    value /= ScreenScale_;
-    return value;
-}
-
-static inline CGRect Retina(CGRect value) {
-    value.origin.x *= ScreenScale_;
-    value.origin.y *= ScreenScale_;
-    value.size.width *= ScreenScale_;
-    value.size.height *= ScreenScale_;
-    value = CGRectIntegral(value);
-    value.origin.x /= ScreenScale_;
-    value.origin.y /= ScreenScale_;
-    value.size.width /= ScreenScale_;
-    value.size.height /= ScreenScale_;
-    return value;
-}
-
-static _finline const char *StripVersion_(const char *version) {
-    const char *colon(strchr(version, ':'));
-    return colon == NULL ? version : colon + 1;
-}
-
-NSString *LocalizeSection(NSString *section) {
-    static RegEx title_r("(.*?) \\((.*)\\)");
-    if (title_r(section)) {
-        NSString *parent(title_r[1]);
-        NSString *child(title_r[2]);
-
-        return [NSString stringWithFormat:UCLocalize("PARENTHETICAL"),
-            LocalizeSection(parent),
-            LocalizeSection(child)
-        ];
-    }
-
-    return [[NSBundle mainBundle] localizedStringForKey:section value:nil table:@"Sections"];
-}
-
-NSString *Simplify(NSString *title) {
-    const char *data = [title UTF8String];
-    size_t size = [title lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-
-    static RegEx square_r("\\[(.*)\\]");
-    if (square_r(data, size))
-        return Simplify(square_r[1]);
-
-    static RegEx paren_r("\\((.*)\\)");
-    if (paren_r(data, size))
-        return Simplify(paren_r[1]);
-
-    static RegEx title_r("(.*?) \\((.*)\\)");
-    if (title_r(data, size))
-        return Simplify(title_r[1]);
-
-    return title;
-}
 /* }}} */
 
 bool isSectionVisible(NSString *section) {

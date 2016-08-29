@@ -45,6 +45,7 @@
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
+		FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -138,6 +139,12 @@
 		FA6C86311D74A97100FB99CF /* NSString+Cydia.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "NSString+Cydia.hpp"; sourceTree = "<group>"; };
 		FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+Cydia.mm"; sourceTree = "<group>"; };
 		FA6C86361D74AA1900FB99CF /* CYString.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CYString.hpp; sourceTree = "<group>"; };
+		FA6C863B1D74ABC700FB99CF /* CYColor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CYColor.hpp; sourceTree = "<group>"; };
+		FA6C863D1D74AC3000FB99CF /* DisplayHelpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DisplayHelpers.hpp; sourceTree = "<group>"; };
+		FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DisplayHelpers.mm; sourceTree = "<group>"; };
+		FA6C86411D74ADC100FB99CF /* UIGlobals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIGlobals.h; sourceTree = "<group>"; };
+		FA6C86421D74AF5600FB99CF /* Unicode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Unicode.h; sourceTree = "<group>"; };
+		FA6C86431D74AF6400FB99CF /* Standard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Standard.h; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -370,6 +377,31 @@
 			path = String;
 			sourceTree = "<group>";
 		};
+		FA6C863A1D74ABA500FB99CF /* CoreGraphics */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C863B1D74ABC700FB99CF /* CYColor.hpp */,
+			);
+			path = CoreGraphics;
+			sourceTree = "<group>";
+		};
+		FA6C863C1D74AC1A00FB99CF /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C863D1D74AC3000FB99CF /* DisplayHelpers.hpp */,
+				FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		FA6C86401D74ADAD00FB99CF /* Globals */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86411D74ADC100FB99CF /* UIGlobals.h */,
+			);
+			path = Globals;
+			sourceTree = "<group>";
+		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -387,6 +419,7 @@
 		FA6D8CA51D746BA000283EDB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C863A1D74ABA500FB99CF /* CoreGraphics */,
 				FA6C86351D74A9E600FB99CF /* String */,
 			);
 			path = Models;
@@ -395,6 +428,7 @@
 		FA6D8CA61D746BB300283EDB /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C863C1D74AC1A00FB99CF /* UI */,
 				FA6D8CAB1D74810200283EDB /* Debugging */,
 				FA6D8CA71D746BC500283EDB /* Network */,
 			);
@@ -422,6 +456,7 @@
 		FAA811AB1D745FD100C674C9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86401D74ADAD00FB99CF /* Globals */,
 				FA6C86291D749C5300FB99CF /* Categories */,
 				FAA811B31D74667B00C674C9 /* Headers */,
 				FAA811AC1D745FDB00C674C9 /* Application */,
@@ -449,6 +484,8 @@
 				FAA811B41D74669600C674C9 /* Prefix.pch */,
 				FA6C862E1D749D1D00FB99CF /* CyteKit.h */,
 				FA6C862F1D749D4700FB99CF /* Apt.h */,
+				FA6C86421D74AF5600FB99CF /* Unicode.h */,
+				FA6C86431D74AF6400FB99CF /* Standard.h */,
 			);
 			path = Headers;
 			sourceTree = "<group>";
@@ -540,6 +577,7 @@
 				FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
+				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,
 				FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,
