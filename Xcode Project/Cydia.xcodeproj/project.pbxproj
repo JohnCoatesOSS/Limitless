@@ -46,6 +46,7 @@
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
 		FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */; };
+		FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86461D74B04F00FB99CF /* CFArray+Sort.mm */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -145,6 +146,9 @@
 		FA6C86411D74ADC100FB99CF /* UIGlobals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIGlobals.h; sourceTree = "<group>"; };
 		FA6C86421D74AF5600FB99CF /* Unicode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Unicode.h; sourceTree = "<group>"; };
 		FA6C86431D74AF6400FB99CF /* Standard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Standard.h; sourceTree = "<group>"; };
+		FA6C86451D74B04F00FB99CF /* CFArray+Sort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CFArray+Sort.h"; sourceTree = "<group>"; };
+		FA6C86461D74B04F00FB99CF /* CFArray+Sort.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "CFArray+Sort.mm"; sourceTree = "<group>"; };
+		FA6C86481D74B0B900FB99CF /* Flags.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Flags.h; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -398,8 +402,18 @@
 			isa = PBXGroup;
 			children = (
 				FA6C86411D74ADC100FB99CF /* UIGlobals.h */,
+				FA6C86481D74B0B900FB99CF /* Flags.h */,
 			);
 			path = Globals;
+			sourceTree = "<group>";
+		};
+		FA6C86441D74B02500FB99CF /* Collections */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86451D74B04F00FB99CF /* CFArray+Sort.h */,
+				FA6C86461D74B04F00FB99CF /* CFArray+Sort.mm */,
+			);
+			name = Collections;
 			sourceTree = "<group>";
 		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
@@ -428,6 +442,7 @@
 		FA6D8CA61D746BB300283EDB /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86441D74B02500FB99CF /* Collections */,
 				FA6C863C1D74AC1A00FB99CF /* UI */,
 				FA6D8CAB1D74810200283EDB /* Debugging */,
 				FA6D8CA71D746BC500283EDB /* Network */,
@@ -578,6 +593,7 @@
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
+				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,
 				FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,

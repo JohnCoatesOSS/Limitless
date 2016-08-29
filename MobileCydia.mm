@@ -26,14 +26,30 @@
 
 #pragma mark - Limitless Headers
 
-#import "Reachability.h"
-#import "Profiling.hpp"
-#import "CyteKit.h"
-#import "NSString+Cydia.hpp"
-#import "CYString.hpp"
+
+// Globals
+#import "UIGlobals.h"
+#import "Flags.h"
+
+// Display
 #import "CYColor.hpp"
 #import "DisplayHelpers.hpp"
-#import "UIGlobals.h"
+
+// Debug
+#import "Profiling.hpp"
+
+// Network
+#import "Reachability.h"
+
+// Utility
+#import "CyteKit.h"
+
+// String
+#import "NSString+Cydia.hpp"
+#import "CYString.hpp"
+
+// Collections
+#import "CFArray+Sort.h"
 
 #pragma mark - Headers
 
@@ -120,17 +136,6 @@ extern NSString *Cydia_;
 
 #define lprintf(args...) fprintf(stderr, args)
 
-#define ForRelease 1
-#define TraceLogging (1 && !ForRelease)
-#define HistogramInsertionSort (0 && !ForRelease)
-#define ProfileTimes (0 && !ForRelease)
-#define ForSaurik (0 && !ForRelease)
-#define LogBrowser (0 && !ForRelease)
-#define TrackResize (0 && !ForRelease)
-#define ManualRefresh (1 && !ForRelease)
-#define ShowInternals (0 && !ForRelease)
-#define AlwaysReload (0 && !ForRelease)
-
 #if !TraceLogging
 #undef _trace
 #define _trace(args...)
@@ -197,82 +202,6 @@ static _finline void UpdateExternalStatus(uint64_t newStatus) {
     }
     notify_post("com.saurik.Cydia.status");
 }
-
-/* Insertion Sort {{{ */
-
-CFIndex SKBSearch_(const void *element, CFIndex elementSize, const void *list, CFIndex count, CFComparatorFunction comparator, void *context) {
-    const char *ptr = (const char *)list;
-    while (0 < count) {
-        CFIndex half = count / 2;
-        const char *probe = ptr + elementSize * half;
-        CFComparisonResult cr = comparator(element, probe, context);
-    if (0 == cr) return (probe - (const char *)list) / elementSize;
-        ptr = (cr < 0) ? ptr : probe + elementSize;
-        count = (cr < 0) ? half : (half + (count & 1) - 1);
-    }
-    return (ptr - (const char *)list) / elementSize;
-}
-
-CFIndex CFBSearch_(const void *element, CFIndex elementSize, const void *list, CFIndex count, CFComparatorFunction comparator, void *context) {
-    const char *ptr = (const char *)list;
-    while (0 < count) {
-        CFIndex half = count / 2;
-        const char *probe = ptr + elementSize * half;
-        CFComparisonResult cr = comparator(element, probe, context);
-    if (0 == cr) return (probe - (const char *)list) / elementSize;
-        ptr = (cr < 0) ? ptr : probe + elementSize;
-        count = (cr < 0) ? half : (half + (count & 1) - 1);
-    }
-    return (ptr - (const char *)list) / elementSize;
-}
-
-void CFArrayInsertionSortValues(CFMutableArrayRef array, CFRange range, CFComparatorFunction comparator, void *context) {
-    if (range.length == 0)
-        return;
-    const void **values(new const void *[range.length]);
-    CFArrayGetValues(array, range, values);
-
-#if HistogramInsertionSort > 0
-    uint32_t total(0), *offsets(new uint32_t[range.length]);
-#endif
-
-    for (CFIndex index(1); index != range.length; ++index) {
-        const void *value(values[index]);
-        //CFIndex correct(SKBSearch_(&value, sizeof(const void *), values, index, comparator, context));
-        CFIndex correct(index);
-        while (comparator(value, values[correct - 1], context) == kCFCompareLessThan) {
-#if HistogramInsertionSort > 1
-            NSLog(@"%@ < %@", value, values[correct - 1]);
-#endif
-            if (--correct == 0)
-                break;
-        }
-        if (correct != index) {
-            size_t offset(index - correct);
-#if HistogramInsertionSort
-            total += offset;
-            ++offsets[offset];
-            if (offset > 10)
-                NSLog(@"Heavy Insertion Displacement: %u = %@", offset, value);
-#endif
-            memmove(values + correct + 1, values + correct, sizeof(const void *) * offset);
-            values[correct] = value;
-        }
-    }
-
-    CFArrayReplaceValues(array, range, values, range.length);
-    delete [] values;
-
-#if HistogramInsertionSort > 0
-    for (CFIndex index(0); index != range.length; ++index)
-        if (offsets[index] != 0)
-            NSLog(@"Insertion Displacement [%u]: %u", index, offsets[index]);
-    NSLog(@"Average Insertion Displacement: %f", double(total) / range.length);
-    delete [] offsets;
-#endif
-}
-
-/* }}} */
 
 
 NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *self, SEL sel, NSFastEnumerationState *state, id *objects, NSUInteger count) {
