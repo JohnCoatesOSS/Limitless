@@ -5,6 +5,8 @@
 //  Created on 8/29/16.
 //
 
+#undef ABS
+
 #include <apt-pkg/acquire.h>
 #include <apt-pkg/acquire-item.h>
 #include <apt-pkg/algorithms.h>
