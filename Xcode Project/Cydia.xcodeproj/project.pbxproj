@@ -52,6 +52,7 @@
 		FA6C86531D74BEC200FB99CF /* Networking.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86521D74BEC200FB99CF /* Networking.mm */; };
 		FA6C86561D74BFD700FB99CF /* GeneralGlobals.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86551D74BFD700FB99CF /* GeneralGlobals.mm */; };
 		FA6C865A1D74C0C400FB99CF /* GeneralHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86591D74C0C400FB99CF /* GeneralHelpers.mm */; };
+		FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C865D1D74C2AE00FB99CF /* Delegates.mm */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -164,6 +165,8 @@
 		FA6C86551D74BFD700FB99CF /* GeneralGlobals.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GeneralGlobals.mm; sourceTree = "<group>"; };
 		FA6C86581D74C0C400FB99CF /* GeneralHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneralHelpers.h; sourceTree = "<group>"; };
 		FA6C86591D74C0C400FB99CF /* GeneralHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GeneralHelpers.mm; sourceTree = "<group>"; };
+		FA6C865C1D74C2AE00FB99CF /* Delegates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Delegates.h; sourceTree = "<group>"; };
+		FA6C865D1D74C2AE00FB99CF /* Delegates.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Delegates.mm; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -453,6 +456,22 @@
 			path = General;
 			sourceTree = "<group>";
 		};
+		FA6C865B1D74C27700FB99CF /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C865C1D74C2AE00FB99CF /* Delegates.h */,
+				FA6C865D1D74C2AE00FB99CF /* Delegates.mm */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
+		FA6C865F1D74C3D900FB99CF /* Status */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Status;
+			sourceTree = "<group>";
+		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -470,6 +489,7 @@
 		FA6D8CA51D746BA000283EDB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C865F1D74C3D900FB99CF /* Status */,
 				FA6C863A1D74ABA500FB99CF /* CoreGraphics */,
 				FA6C86351D74A9E600FB99CF /* String */,
 			);
@@ -512,6 +532,7 @@
 		FAA811AB1D745FD100C674C9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C865B1D74C27700FB99CF /* Delegates */,
 				FA6C86401D74ADAD00FB99CF /* Globals */,
 				FA6C86291D749C5300FB99CF /* Categories */,
 				FAA811B31D74667B00C674C9 /* Headers */,
@@ -634,6 +655,7 @@
 				FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
 				FA6C864C1D74B26C00FB99CF /* SystemHelpers.mm in Sources */,
+				FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
