@@ -666,7 +666,7 @@ extern NSString *WebViewProgressFinishedNotification;
 @end
 
 
-@interface WebView (WebIBActions) <NSUserInterfaceValidations>
+@interface WebView (WebIBActions)
 - (IBAction)takeStringURLFrom:(id)sender;
 - (IBAction)stopLoading:(id)sender;
 - (IBAction)reload:(id)sender;

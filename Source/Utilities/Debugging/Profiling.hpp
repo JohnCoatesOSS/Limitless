@@ -46,7 +46,12 @@ public:
     
     void AddTime(uint64_t time);
     
-    void Print();
+    void Print() {
+        if (total_ != 0)
+            std::cerr << std::setw(7) << count_ << ", " << std::setw(8) << total_ << " : " << name_ << std::endl;
+        total_ = 0;
+        count_ = 0;
+    }
 };
 
 class ProfileTimer {
