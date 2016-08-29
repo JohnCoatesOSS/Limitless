@@ -43,6 +43,7 @@
 		FA28E7181D1B21A5003D3724 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7161D1B21A5003D3724 /* Main.storyboard */; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
+		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -130,6 +131,7 @@
 		FA28E7191D1B21A5003D3724 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA28E71C1D1B21A5003D3724 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA28E71E1D1B21A5003D3724 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIWebDocumentView+BugFixes.mm"; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -328,6 +330,22 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		FA6C86291D749C5300FB99CF /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C862A1D749C6600FB99CF /* Bug Fixes */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		FA6C862A1D749C6600FB99CF /* Bug Fixes */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */,
+			);
+			path = "Bug Fixes";
+			sourceTree = "<group>";
+		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -379,6 +397,7 @@
 		FAA811AB1D745FD100C674C9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86291D749C5300FB99CF /* Categories */,
 				FAA811B31D74667B00C674C9 /* Headers */,
 				FAA811AC1D745FDB00C674C9 /* Application */,
 				FA6D8CA41D746B7F00283EDB /* Controllers */,
@@ -501,6 +520,7 @@
 				FA0311A71D1B2CBD008690CA /* MFMailComposeViewController-MailToURL.mm in Sources */,
 				FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */,
 				FA0311B61D1B2CDE008690CA /* SDURLCache.m in Sources */,
+				FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */,
 				FA0311B11D1B2CBD008690CA /* radixSortWithSelector.mm in Sources */,
 				FA0311C01D1B2CFD008690CA /* LoadingViewController.mm in Sources */,
 			);

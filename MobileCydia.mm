@@ -308,33 +308,6 @@ void CFArrayInsertionSortValues(CFMutableArrayRef array, CFRange range, CFCompar
 
 /* }}} */
 
-/* Apple Bug Fixes {{{ */
-@implementation UIWebDocumentView (Cydia)
-
-- (void) _setScrollerOffset:(CGPoint)offset {
-    UIScroller *scroller([self _scroller]);
-
-    CGSize size([scroller contentSize]);
-    CGSize bounds([scroller bounds].size);
-
-    CGPoint max;
-    max.x = size.width - bounds.width;
-    max.y = size.height - bounds.height;
-
-    // wtf Apple?!
-    if (max.x < 0)
-        max.x = 0;
-    if (max.y < 0)
-        max.y = 0;
-
-    offset.x = offset.x < 0 ? 0 : offset.x > max.x ? max.x : offset.x;
-    offset.y = offset.y < 0 ? 0 : offset.y > max.y ? max.y : offset.y;
-
-    [scroller setOffset:offset];
-}
-
-@end
-/* }}} */
 
 NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *self, SEL sel, NSFastEnumerationState *state, id *objects, NSUInteger count) {
     size_t length([self length] - state->state);
