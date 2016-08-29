@@ -9,6 +9,8 @@
 #import "CYColor.hpp"
 #import "Menes/Menes.h"
 
+static const NSString *UI_;
+
 // Colors
 static CYColor Blue_;
 static CYColor Blueish_;
@@ -54,3 +56,10 @@ static NSDictionary *SectionMap_;
 static _H<NSDate> Backgrounded_;
 static _transient NSMutableDictionary *Values_;
 static _transient NSMutableDictionary *Sections_;
+
+// Strings
+
+static NSString *Colon_;
+extern NSString *Elision_;
+static NSString *Error_;
+static NSString *Warning_;

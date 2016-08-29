@@ -6,6 +6,7 @@
 //
 
 #import "Standard.h"
+#import "Flags.h"
 
 extern struct timeval _ltv;
 extern bool _itv;
@@ -60,10 +61,28 @@ public:
     }
 };
 
-void PrintTimes();
+inline void PrintTimes() {
+    for (TimeList::const_iterator i(times_.begin()); i != times_.end(); ++i)
+        (*i)->Print();
+    std::cerr << "========" << std::endl;
+}
+
 
 #define _profile(name) { \
 static ProfileTime name(#name); \
 ProfileTimer _ ## name(name);
 
 #define _end }
+
+#if !TraceLogging
+#undef _trace
+#define _trace(args...)
+#endif
+
+#if !ProfileTimes
+#undef _profile
+#define _profile(name) {
+#undef _end
+#define _end }
+#define PrintTimes() do {} while (false)
+#endif

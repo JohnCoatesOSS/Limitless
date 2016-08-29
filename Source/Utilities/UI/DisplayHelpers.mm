@@ -55,3 +55,17 @@ bool isSectionVisible(NSString *section) {
     NSNumber *hidden(metadata == nil ? nil : [metadata objectForKey:@"Hidden"]);
     return hidden == nil || ![hidden boolValue];
 }
+
+// Web
+NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *self, SEL sel, NSFastEnumerationState *state, id *objects, NSUInteger count) {
+    size_t length([self length] - state->state);
+    if (length <= 0)
+        return 0;
+    else if (length > count)
+        length = count;
+        for (size_t i(0); i != length; ++i)
+            objects[i] = [self item:state->state++];
+            state->itemsPtr = objects;
+            state->mutationsPtr = (unsigned long *) self;
+            return length;
+}

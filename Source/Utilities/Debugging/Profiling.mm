@@ -13,11 +13,3 @@ struct timeval _ltv;
 bool _itv;
 
 TimeList times_;
-
-#pragma mark - C Methods
-
-void PrintTimes() {
-    for (TimeList::const_iterator i(times_.begin()); i != times_.end(); ++i)
-        (*i)->Print();
-    std::cerr << "========" << std::endl;
-}

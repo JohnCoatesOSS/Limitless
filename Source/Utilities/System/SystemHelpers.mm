@@ -7,6 +7,7 @@
 
 #import <IOKit/IOKitLib.h>
 #import "SystemHelpers.h"
+#import "iPhonePrivate.h"
 
 NSObject *CYIOGetValue(const char *path, NSString *property) {
     io_registry_entry_t entry(IORegistryEntryFromPath(kIOMasterPortDefault, path));
@@ -34,4 +35,11 @@ NSString *CYHex(NSData *data, bool reverse) {
         sprintf(string + i * 2, "%.2x", bytes[reverse ? length - i - 1 : i]);
     
     return [NSString stringWithUTF8String:string];
+}
+
+NSString *UniqueIdentifier(UIDevice *device) {
+    if (kCFCoreFoundationVersionNumber < 800) // iOS 7.x
+        return [device ?: [UIDevice currentDevice] uniqueIdentifier];
+    else
+        return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
 }

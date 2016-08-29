@@ -95,3 +95,11 @@ static struct UReplaceableCallbacks CollationUCalls_ = {
 
 
 bool isSectionVisible(NSString *section);
+
+// Web
+
+NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *self,
+                                                                  SEL sel,
+                                                                  NSFastEnumerationState *state,
+                                                                  id *objects,
+                                                                  NSUInteger count);

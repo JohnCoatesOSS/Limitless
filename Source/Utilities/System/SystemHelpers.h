@@ -8,3 +8,8 @@
 NSObject *CYIOGetValue(const char *path, NSString *property);
 
 NSString *CYHex(NSData *data, bool reverse = false);
+
+
+static CFStringRef (*$MGCopyAnswer)(CFStringRef);
+
+NSString *UniqueIdentifier(UIDevice *device = nil);

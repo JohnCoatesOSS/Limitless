@@ -26,8 +26,8 @@
 
 #pragma mark - Limitless Headers
 
-
 // Globals
+#import "GeneralGlobals.h"
 #import "UIGlobals.h"
 #import "Flags.h"
 
@@ -40,9 +40,11 @@
 
 // Network
 #import "Reachability.h"
+#import "Networking.h"
 
 // Utility
 #import "CyteKit.h"
+#import "GeneralHelpers.h"
 
 // String
 #import "NSString+Cydia.hpp"
@@ -52,6 +54,7 @@
 #import "CFArray+Sort.h"
 
 // System
+#import "SystemGlobals.h"
 #import "SystemHelpers.h"
 
 #pragma mark - Headers
@@ -135,161 +138,12 @@ extern "C" {
 #define synchronized(lock) \
     synchronized(static_cast<NSObject *>(lock))
 
-extern NSString *Cydia_;
+
 
 #define lprintf(args...) fprintf(stderr, args)
 
-#if !TraceLogging
-#undef _trace
-#define _trace(args...)
-#endif
-
-#if !ProfileTimes
-#undef _profile
-#define _profile(name) {
-#undef _end
-#define _end }
-#define PrintTimes() do {} while (false)
-#endif
-
-// Hash Functions/Structures {{{
-extern "C" uint32_t hashlittle(const void *key, size_t length, uint32_t initval = 0);
-
-union SplitHash {
-    uint32_t u32;
-    uint16_t u16[2];
-};
-// }}}
-
-static NSString *Colon_;
-NSString *Elision_;
-static NSString *Error_;
-static NSString *Warning_;
-
-static NSString *Cache_;
 #define Cache(file) \
     [NSString stringWithFormat:@"%@/%s", Cache_, file]
-
-static void (*$SBSSetInterceptsMenuButtonForever)(bool);
-static NSData *(*$SBSCopyIconImagePNGDataForDisplayIdentifier)(NSString *);
-
-static CFStringRef (*$MGCopyAnswer)(CFStringRef);
-
-static NSString *UniqueIdentifier(UIDevice *device = nil) {
-    if (kCFCoreFoundationVersionNumber < 800) // iOS 7.x
-        return [device ?: [UIDevice currentDevice] uniqueIdentifier];
-    else
-        return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
-}
-
-static _finline NSString *CydiaURL(NSString *path) {
-    char page[26];
-    page[0] = 'h'; page[1] = 't'; page[2] = 't'; page[3] = 'p'; page[4] = 's';
-    page[5] = ':'; page[6] = '/'; page[7] = '/'; page[8] = 'c'; page[9] = 'y';
-    page[10] = 'd'; page[11] = 'i'; page[12] = 'a'; page[13] = '.'; page[14] = 's';
-    page[15] = 'a'; page[16] = 'u'; page[17] = 'r'; page[18] = 'i'; page[19] = 'k';
-    page[20] = '.'; page[21] = 'c'; page[22] = 'o'; page[23] = 'm'; page[24] = '/';
-    page[25] = '\0';
-    return [[NSString stringWithUTF8String:page] stringByAppendingString:path];
-}
-
-static NSString *ShellEscape(NSString *value) {
-    return [NSString stringWithFormat:@"'%@'", [value stringByReplacingOccurrencesOfString:@"'" withString:@"'\\''"]];
-}
-
-static _finline void UpdateExternalStatus(uint64_t newStatus) {
-    int notify_token;
-    if (notify_register_check("com.saurik.Cydia.status", &notify_token) == NOTIFY_STATUS_OK) {
-        notify_set_state(notify_token, newStatus);
-        notify_cancel(notify_token);
-    }
-    notify_post("com.saurik.Cydia.status");
-}
-
-
-NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *self, SEL sel, NSFastEnumerationState *state, id *objects, NSUInteger count) {
-    size_t length([self length] - state->state);
-    if (length <= 0)
-        return 0;
-    else if (length > count)
-        length = count;
-    for (size_t i(0); i != length; ++i)
-        objects[i] = [self item:state->state++];
-    state->itemsPtr = objects;
-    state->mutationsPtr = (unsigned long *) self;
-    return length;
-}
-
-/* Random Global Variables {{{ */
-static int PulseInterval_ = 500000;
-
-static const NSString *UI_;
-
-static int Finish_;
-static bool RestartSubstrate_;
-static NSArray *Finishes_;
-
-#define SpringBoard_ "/System/Library/LaunchDaemons/com.apple.SpringBoard.plist"
-#define NotifyConfig_ "/etc/notify.conf"
-
-static bool Queuing_;
-
-static NSString *App_;
-
-static BOOL Advanced_;
-static BOOL Ignored_;
-
-static const char *Machine_ = NULL;
-static _H<NSString> System_;
-static NSString *SerialNumber_ = nil;
-static NSString *ChipID_ = nil;
-static NSString *BBSNum_ = nil;
-static _H<NSString> UniqueID_;
-static _H<NSString> UserAgent_;
-static _H<NSString> Product_;
-static _H<NSString> Safari_;
-
-#define CacheState_ "/var/mobile/Library/Caches/com.saurik.Cydia/CacheState.plist"
-#define SavedState_ "/var/mobile/Library/Caches/com.saurik.Cydia/SavedState.plist"
-
-_H<NSMutableDictionary> Sources_;
-static _transient NSNumber *Version_;
-static time_t now_;
-
-static _H<NSString> Firmware_;
-static NSString *Major_;
-
-static _H<NSMutableDictionary> SessionData_;
-static _H<NSObject> HostConfig_;
-static _H<NSMutableSet> BridgedHosts_;
-static _H<NSMutableSet> InsecureHosts_;
-static _H<NSMutableSet> PipelinedHosts_;
-static _H<NSMutableSet> CachedURLs_;
-
-static NSString *kCydiaProgressEventTypeError = @"Error";
-static NSString *kCydiaProgressEventTypeInformation = @"Information";
-static NSString *kCydiaProgressEventTypeStatus = @"Status";
-static NSString *kCydiaProgressEventTypeWarning = @"Warning";
-/* }}} */
-
-static NSString *VerifySource(NSString *href) {
-    static RegEx href_r("(http(s?)://|file:///)[^# ]*");
-    if (!href_r(href)) {
-        [[[[UIAlertView alloc]
-            initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
-            message:UCLocalize("INVALID_URL_EX")
-            delegate:nil
-            cancelButtonTitle:UCLocalize("OK")
-            otherButtonTitles:nil
-        ] autorelease] show];
-
-        return nil;
-    }
-
-    if (![href hasSuffix:@"/"])
-        href = [href stringByAppendingString:@"/"];
-    return href;
-}
 
 @class Cydia;
 
