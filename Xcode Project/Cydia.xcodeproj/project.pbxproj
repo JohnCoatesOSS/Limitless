@@ -44,6 +44,7 @@
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
+		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
@@ -131,6 +132,8 @@
 		FA28E71E1D1B21A5003D3724 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
+		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
+		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
 		FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-pkg.tbd"; path = "../External/usr/lib/libapt-pkg.tbd"; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = ../External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
@@ -349,6 +352,7 @@
 		FA6D8CA61D746BB300283EDB /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				FA6D8CAB1D74810200283EDB /* Debugging */,
 				FA6D8CA71D746BC500283EDB /* Network */,
 			);
 			path = Utilities;
@@ -361,6 +365,15 @@
 				FA6D8CA91D746C0800283EDB /* Reachability.mm */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		FA6D8CAB1D74810200283EDB /* Debugging */ = {
+			isa = PBXGroup;
+			children = (
+				FA6D8CAC1D74812500283EDB /* Profiling.hpp */,
+				FA6D8CAD1D74812500283EDB /* Profiling.mm */,
+			);
+			path = Debugging;
 			sourceTree = "<group>";
 		};
 		FAA811AB1D745FD100C674C9 /* Source */ = {
@@ -474,6 +487,7 @@
 				FA0311AC1D1B2CBD008690CA /* WebScriptObject-Cyte.mm in Sources */,
 				FA01D2221D1B22B100B49E70 /* Version.mm in Sources */,
 				FA0311AB1D1B2CBD008690CA /* ViewController.mm in Sources */,
+				FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */,
 				FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */,
 				FAA811AF1D745FF700C674C9 /* main.mm in Sources */,
 				FA0311AE1D1B2CBD008690CA /* WebViewController.mm in Sources */,

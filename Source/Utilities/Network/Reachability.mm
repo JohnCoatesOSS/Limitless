@@ -8,7 +8,6 @@
 #import "Reachability.h"
 #import <SystemConfiguration/SystemConfiguration.h>
 
-
 bool IsReachable(const char *name) {
     SCNetworkReachabilityFlags flags;
     SCNetworkReachabilityRef reachability;
