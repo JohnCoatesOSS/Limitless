@@ -43,9 +43,12 @@
 		FA28E7181D1B21A5003D3724 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7161D1B21A5003D3724 /* Main.storyboard */; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
+		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
+		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
+		FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811B11D74664600C674C9 /* AppDelegate.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -126,9 +129,15 @@
 		FA28E7191D1B21A5003D3724 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA28E71C1D1B21A5003D3724 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA28E71E1D1B21A5003D3724 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
 		FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-pkg.tbd"; path = "../External/usr/lib/libapt-pkg.tbd"; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = ../External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
+		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		FAA811B01D74664600C674C9 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		FAA811B11D74664600C674C9 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,7 +165,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		FA01D20B1D1B229200B49E70 /* Source */ = {
+		FA01D20B1D1B229200B49E70 /* Old Source */ = {
 			isa = PBXGroup;
 			children = (
 				FA0311B71D1B2CFD008690CA /* Cydia */,
@@ -178,7 +187,7 @@
 				FA01D2181D1B22B100B49E70 /* Version.h */,
 				FA01D2191D1B22B100B49E70 /* Version.mm */,
 			);
-			name = Source;
+			name = "Old Source";
 			sourceTree = "<group>";
 		};
 		FA03117F1D1B2CBD008690CA /* CyteKit */ = {
@@ -309,10 +318,80 @@
 		FA28E7241D1B21C7003D3724 /* Project Root */ = {
 			isa = PBXGroup;
 			children = (
-				FA01D20B1D1B229200B49E70 /* Source */,
+				FAA811AB1D745FD100C674C9 /* Source */,
+				FA01D20B1D1B229200B49E70 /* Old Source */,
 			);
 			name = "Project Root";
 			path = ..;
+			sourceTree = "<group>";
+		};
+		FA6D8CA31D746B6B00283EDB /* UI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		FA6D8CA41D746B7F00283EDB /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FA6D8CA51D746BA000283EDB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FA6D8CA61D746BB300283EDB /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				FA6D8CA71D746BC500283EDB /* Network */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		FA6D8CA71D746BC500283EDB /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				FA6D8CA81D746C0800283EDB /* Reachability.h */,
+				FA6D8CA91D746C0800283EDB /* Reachability.mm */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		FAA811AB1D745FD100C674C9 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FAA811B31D74667B00C674C9 /* Headers */,
+				FAA811AC1D745FDB00C674C9 /* Application */,
+				FA6D8CA41D746B7F00283EDB /* Controllers */,
+				FA6D8CA51D746BA000283EDB /* Models */,
+				FA6D8CA31D746B6B00283EDB /* UI */,
+				FA6D8CA61D746BB300283EDB /* Utilities */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		FAA811AC1D745FDB00C674C9 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				FAA811AE1D745FF700C674C9 /* main.mm */,
+				FAA811B01D74664600C674C9 /* AppDelegate.h */,
+				FAA811B11D74664600C674C9 /* AppDelegate.mm */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		FAA811B31D74667B00C674C9 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				FAA811B41D74669600C674C9 /* Prefix.pch */,
+			);
+			path = Headers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -395,7 +474,10 @@
 				FA0311AC1D1B2CBD008690CA /* WebScriptObject-Cyte.mm in Sources */,
 				FA01D2221D1B22B100B49E70 /* Version.mm in Sources */,
 				FA0311AB1D1B2CBD008690CA /* ViewController.mm in Sources */,
+				FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */,
+				FAA811AF1D745FF700C674C9 /* main.mm in Sources */,
 				FA0311AE1D1B2CBD008690CA /* WebViewController.mm in Sources */,
+				FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,
@@ -523,19 +605,22 @@
 		FA28E7221D1B21A5003D3724 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../sysroot/System/Library/PrivateFrameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../External/System/Library/PrivateFrameworks\"";
+				GCC_PREFIX_HEADER = ../Source/Headers/Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../sysroot/usr/include\"",
+					"\"$(SRCROOT)/../External/usr/include\"",
 					"\"$(SRCROOT)/..\"",
 				);
 				INFOPLIST_FILE = Cydia/Info.plist;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../sysroot/usr/lib\"";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
 					"-idirafter",
 					"\"$(SRCROOT)/../icu/icuSources/common\"",
@@ -546,25 +631,29 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
 		FA28E7231D1B21A5003D3724 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../sysroot/System/Library/PrivateFrameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../External/System/Library/PrivateFrameworks\"";
+				GCC_PREFIX_HEADER = ../Source/Headers/Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SRCROOT)/../sysroot/usr/include\"",
+					"\"$(SRCROOT)/../External/usr/include\"",
 					"\"$(SRCROOT)/..\"",
 				);
 				INFOPLIST_FILE = Cydia/Info.plist;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../sysroot/usr/lib\"";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
 					"-idirafter",
 					"\"$(SRCROOT)/../icu/icuSources/common\"",
@@ -575,6 +664,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;
 		};

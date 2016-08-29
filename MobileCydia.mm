@@ -125,6 +125,11 @@ extern "C" {
 #include "Cydia/ProgressEvent.h"
 
 #include "SDURLCache/SDURLCache.h"
+
+#pragma mark - Limitless Headers
+
+#import "Reachability.h"
+
 /* }}} */
 
 /* Profiler {{{ */
@@ -257,26 +262,6 @@ static NSString *UniqueIdentifier(UIDevice *device = nil) {
         return [device ?: [UIDevice currentDevice] uniqueIdentifier];
     else
         return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
-}
-
-static bool IsReachable(const char *name) {
-    SCNetworkReachabilityFlags flags; {
-        SCNetworkReachabilityRef reachability(SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, name));
-        SCNetworkReachabilityGetFlags(reachability, &flags);
-        CFRelease(reachability);
-    }
-
-    // XXX: this elaborate mess is what Apple is using to determine this? :(
-    // XXX: do we care if the user has to intervene? maybe that's ok?
-    return
-        (flags & kSCNetworkReachabilityFlagsReachable) != 0 && (
-            (flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0 || (
-                (flags & kSCNetworkReachabilityFlagsConnectionOnDemand) != 0 ||
-                (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0
-            ) && (flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0 ||
-            (flags & kSCNetworkReachabilityFlagsIsWWAN) != 0
-        )
-    ;
 }
 
 static const NSUInteger UIViewAutoresizingFlexibleBoth(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
@@ -10184,7 +10169,7 @@ static NSMutableDictionary *AutoreleaseDeepMutableCopyOfDictionary(CFTypeRef typ
     return [(NSMutableDictionary *) copy autorelease];
 }
 
-int main(int argc, char *argv[]) {
+int mainOld(int argc, char *argv[]) {
     int fd(open("/tmp/cydia.log", O_WRONLY | O_APPEND | O_CREAT, 0644));
     dup2(fd, 2);
     close(fd);

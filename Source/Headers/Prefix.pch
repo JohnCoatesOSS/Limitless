@@ -1,0 +1,10 @@
+//
+//  Prefix.pch
+//  Cydia
+//
+//  Created on 8/29/16.
+//
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#endif
