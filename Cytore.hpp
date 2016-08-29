@@ -188,7 +188,7 @@ class File {
 
         size_t core(sizeof(Header) + sizeof(Base_));
 
-        size_t size(stat.st_size);
+        off_t size = stat.st_size;
         if (size == 0) {
             _assert(Truncate_(core));
             Header_().magic_ = Magic;
@@ -196,7 +196,7 @@ class File {
         } else {
             _assert(size >= core);
             // XXX: this involves an unneccessary call to ftruncate()
-            _assert(Truncate_(size));
+            _assert(Truncate_((size_t)size));
             _assert(Header_().magic_ == Magic);
             _assert(Header_().version_ == 0);
         }

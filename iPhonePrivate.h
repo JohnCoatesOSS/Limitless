@@ -148,17 +148,19 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 @end
 // }}}
 // @interface UIWeb* : * {{{
-@interface UIWebBrowserView : UIWebDocumentView
-@end
-
 @interface UIWebTouchEventsGestureRecognizer : UIGestureRecognizer
 - (int) type;
 - (NSString *) _typeDescription;
+@end
+
+@interface UIWebBrowserView : UIWebDocumentView
+- (void)_webTouchEventsRecognized:(UIWebTouchEventsGestureRecognizer *)gestureRecognizer;
 @end
 // }}}
 // @interface WAK* : * {{{
 @interface WAKWindow : NSObject
 + (BOOL) hasLandscapeOrientation;
+- (CGSize)screenSize;
 @end
 // }}}
 
@@ -180,6 +182,15 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 - (NSURL *) mapsURL;
 - (NSURL *) phobosURL;
 - (NSURL *) youTubeURL;
+@end
+
+@interface NSURLConnection (Apple)
+- (id)_initWithRequest:(id)request
+              delegate:(id)delegate
+             usesCache:(BOOL)usesCache
+      maxContentLength:(long long)maxContentLength
+      startImmediately:(BOOL)startImmediately
+  connectionProperties:(id)connectionProperties;
 @end
 
 @interface NSURLRequest (Apple)

@@ -2194,11 +2194,14 @@ uint32_t PackagePrefixRadix(Package *self, void *context) {
                 data[i] |= 0x20;
     }
 
-    if (offset == 0)
-        if (data[0] == '@')
+    if (offset == 0) {
+        if (data[0] == '@') {
             data[0] = 0x7f;
-        else
+        }
+        else {
             data[0] = (data[0] & 0x1f) | "\x80\x00\xc0\x40"[data[0] >> 6];
+        }
+    }
 
     /* XXX: ntohl may be more honest */
     return OSSwapInt32(*reinterpret_cast<uint32_t *>(data));
@@ -3057,7 +3060,7 @@ struct PackageNameOrdering :
             (name[i] < 'A' || name[i] > 'Z') &&
             (name[i] < 'a' || name[i] > 'z') &&
             (name[i] < '0' || name[i] > '9') &&
-            (i == 0 || name[i] != '+' && name[i] != '-' && name[i] != '.')
+            (i == 0 || (name[i] != '+' && name[i] != '-' && name[i] != '.'))
         ) goto invalid;
 
     if (strcmp(name, "cydia") != 0) {
@@ -3070,20 +3073,28 @@ struct PackageNameOrdering :
 
         bool repository = [[self section] isEqualToString:@"Repositories"];
 
-        if (NSArray *files = [self files])
-            for (NSString *file in files)
-                if (!cydia && [file isEqualToString:@"/Applications/Cydia.app"])
+        if (NSArray *files = [self files]) {
+            for (NSString *file in files) {
+                if (!cydia && [file isEqualToString:@"/Applications/Cydia.app"]) {
                     cydia = true;
-                else if (!user && [file isEqualToString:@"/User"])
+                }
+                else if (!user && [file isEqualToString:@"/User"]) {
                     user = true;
-                else if (!_private && [file isEqualToString:@"/private"])
+                }
+                else if (!_private && [file isEqualToString:@"/private"]) {
                     _private = true;
-                else if (!stash && [file isEqualToString:@"/var/stash"])
+                }
+                else if (!stash && [file isEqualToString:@"/var/stash"]) {
                     stash = true;
-                else if (!dbstash && [file isEqualToString:@"/var/db/stash"])
+                }
+                else if (!dbstash && [file isEqualToString:@"/var/db/stash"]) {
                     dbstash = true;
-                else if (!dsstore && [file hasSuffix:@"/.DS_Store"])
+                }
+                else if (!dsstore && [file hasSuffix:@"/.DS_Store"]) {
                     dsstore = true;
+                }
+            }
+        }
 
         /* XXX: this is not sensitive enough. only some folders are valid. */
         if (cydia && !repository)
@@ -3696,25 +3707,6 @@ class CydiaLogCleaner :
     if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
         return true;
     return false;
-
-    list.Reset();
-
-    bool error(false);
-
-    if (access("/etc/apt/sources.list", F_OK) == 0)
-        error |= [self popErrorWithTitle:title forOperation:list.ReadAppend("/etc/apt/sources.list")];
-
-    std::string base("/etc/apt/sources.list.d");
-    if (DIR *sources = opendir(base.c_str())) {
-        while (dirent *source = readdir(sources))
-            if (source->d_name[0] != '.' && source->d_namlen > 5 && strcmp(source->d_name + source->d_namlen - 5, ".list") == 0 && strcmp(source->d_name, "cydia.list") != 0)
-                error |= [self popErrorWithTitle:title forOperation:list.ReadAppend((base + "/" + source->d_name).c_str())];
-        closedir(sources);
-    }
-
-    error |= [self popErrorWithTitle:title forOperation:list.ReadAppend(SOURCES_LIST)];
-
-    return error;
 }
 
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
@@ -4234,7 +4226,7 @@ static _H<NSMutableSet> Diversions_;
 }
 
 - (BOOL) isEqual:(Diversion *)object {
-    return self == object || [self class] == [object class] && [key_ isEqual:[object key]];
+    return self == object || ([self class] == [object class] && [key_ isEqual:[object key]]);
 }
 
 @end
@@ -4554,7 +4546,7 @@ static _H<NSMutableSet> Diversions_;
     // XXX: just in case you request something ludicrous
     value[size] = '\0';
 
-    return [NSString stringWithCString:value];
+    return [NSString stringWithUTF8String:value];
 }
 
 - (NSObject *) getIORegistryEntry:(NSString *)path :(NSString *)entry {
@@ -4695,9 +4687,9 @@ static _H<NSMutableSet> Diversions_;
         return nil;
 
     return [NSArray arrayWithObjects:
-        [NSNumber numberWithUnsignedLong:stat.f_bsize],
-        [NSNumber numberWithUnsignedLong:stat.f_blocks],
-        [NSNumber numberWithUnsignedLong:stat.f_bfree],
+        @(stat.f_bsize),
+        @(stat.f_blocks),
+        @(stat.f_bfree),
     nil];
 }
 
@@ -5448,6 +5440,11 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 @end
 /* }}} */
 /* Progress Controller {{{ */
+@interface Cydia_STUB : NSObject
+- (void) reloadSpringBoard;
+- (void) updateDataAndLoad;
+
+@end
 @interface ProgressController : CydiaWebViewController <
     ProgressDelegate
 > {
@@ -7259,7 +7256,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
         return (
             name == nil ||
-            section == nil && [name length] == 0 ||
+            (section == nil && [name length] == 0) ||
             [name isEqualToString:section]
         ) && (
             source == nil ||
@@ -8905,8 +8902,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     bool loaded_;
 }
 
-- (void) loadData;
-
 @end
 
 @implementation Cydia
@@ -10227,8 +10222,8 @@ int mainOld(int argc, char *argv[]) {
         CollationTitles_ = [collation sectionTitles];
         CollationStarts_ = MSHookIvar<NSArray *>(collation, "_sectionStartStrings");
 
-        NSString *&transform(MSHookIvar<NSString *>(collation, "_transform"));
-        if (&transform != NULL && transform != nil) {
+        NSString *transform = MSHookIvar<NSString *>(collation, "_transform");
+        if (transform != nil) {
             /*if ([collation respondsToSelector:@selector(transformedCollationStringForString:)])
                 CollationModify_ = [=](NSString *value) { return [collation transformedCollationStringForString:value]; };*/
             const UChar *uid(reinterpret_cast<const UChar *>([transform cStringUsingEncoding:NSUnicodeStringEncoding]));
@@ -10424,8 +10419,8 @@ int mainOld(int argc, char *argv[]) {
 
     if (kCFCoreFoundationVersionNumber > 1000)
         system("/usr/libexec/cydia/cydo /usr/libexec/cydia/setnsfpn /var/lib");
-
-    int version([[NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"] intValue]);
+    
+    int version = [NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver" encoding:NSUTF8StringEncoding error:nil].intValue;
 
     if (access("/User", F_OK) != 0 || version != 6) {
         _trace();

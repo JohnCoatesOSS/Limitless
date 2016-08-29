@@ -143,6 +143,17 @@
 
 - (void) registerFrame:(WebFrame *)frame;
 
+#pragma mark - Private
+
+- (void) setScrollAlwaysBounceVerticalNumber:(NSNumber *)value;
+- (void) setScrollIndicatorStyleWithName:(NSString *)style;
+- (void) popViewControllerWithNumber:(NSNumber *)value;
+- (void) setAllowsNavigationActionByNumber:(NSNumber *)value;
+- (void) setHidesBackButtonByNumber:(NSNumber *)value;
+- (void) setHidesNavigationBarByNumber:(NSNumber *)value;
+- (void) setNavigationBarTintColor:(UIColor *)color;
+- (void) scrollToBottomAnimated:(NSNumber *)animated;
+
 @end
 
 #endif//CyteKit_WebViewController_H
