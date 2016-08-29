@@ -45,8 +45,8 @@
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
-		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
-		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
+		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811B11D74664600C674C9 /* AppDelegate.mm */; };
@@ -567,7 +567,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 2.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 2.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=i386]" = 2.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=x86_64]" = 2.0;
 				LD_NO_PIE = YES;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -632,7 +633,9 @@
 					"\"$(SRCROOT)/..\"",
 				);
 				INFOPLIST_FILE = Cydia/Info.plist;
-				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 7.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 2.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=i386]" = 6.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=x86_64]" = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
@@ -645,7 +648,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -665,7 +667,9 @@
 					"\"$(SRCROOT)/..\"",
 				);
 				INFOPLIST_FILE = Cydia/Info.plist;
-				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 7.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 2.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=i386]" = 6.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[arch=x86_64]" = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
@@ -678,7 +682,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;
 		};
