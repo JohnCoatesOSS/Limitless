@@ -44,6 +44,7 @@
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
+		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -134,6 +135,9 @@
 		FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIWebDocumentView+BugFixes.mm"; sourceTree = "<group>"; };
 		FA6C862E1D749D1D00FB99CF /* CyteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CyteKit.h; sourceTree = "<group>"; };
 		FA6C862F1D749D4700FB99CF /* Apt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Apt.h; sourceTree = "<group>"; };
+		FA6C86311D74A97100FB99CF /* NSString+Cydia.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "NSString+Cydia.hpp"; sourceTree = "<group>"; };
+		FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSString+Cydia.mm"; sourceTree = "<group>"; };
+		FA6C86361D74AA1900FB99CF /* CYString.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CYString.hpp; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -335,6 +339,7 @@
 		FA6C86291D749C5300FB99CF /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86301D74A95500FB99CF /* String */,
 				FA6C862A1D749C6600FB99CF /* Bug Fixes */,
 			);
 			path = Categories;
@@ -346,6 +351,23 @@
 				FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */,
 			);
 			path = "Bug Fixes";
+			sourceTree = "<group>";
+		};
+		FA6C86301D74A95500FB99CF /* String */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86311D74A97100FB99CF /* NSString+Cydia.hpp */,
+				FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */,
+			);
+			path = String;
+			sourceTree = "<group>";
+		};
+		FA6C86351D74A9E600FB99CF /* String */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86361D74AA1900FB99CF /* CYString.hpp */,
+			);
+			path = String;
 			sourceTree = "<group>";
 		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
@@ -365,6 +387,7 @@
 		FA6D8CA51D746BA000283EDB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86351D74A9E600FB99CF /* String */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -518,6 +541,7 @@
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,
+				FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
 				FA0311A61D1B2CBD008690CA /* dispatchEvent.mm in Sources */,

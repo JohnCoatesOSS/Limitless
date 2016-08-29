@@ -29,8 +29,10 @@
 #import "Reachability.h"
 #import "Profiling.hpp"
 #import "CyteKit.h"
+#import "NSString+Cydia.hpp"
+#import "CYString.hpp"
 
-#pragma mark - Headers 
+#pragma mark - Headers
 
 #include <unicode/ustring.h>
 #include <unicode/utrans.h>
@@ -99,7 +101,7 @@ extern "C" {
 #include "Sources.h"
 
 #include "Substrate.hpp"
-#include "Menes/Menes.h"
+#import "Menes/Menes.h"
 
 #include "Cydia/MIMEAddress.h"
 #include "Cydia/LoadingViewController.h"
@@ -294,200 +296,6 @@ NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *s
     state->mutationsPtr = (unsigned long *) self;
     return length;
 }
-
-/* Cydia NSString Additions {{{ */
-@interface NSString (Cydia)
-- (NSComparisonResult) compareByPath:(NSString *)other;
-- (NSString *) stringByAddingPercentEscapesIncludingReserved;
-@end
-
-@implementation NSString (Cydia)
-
-- (NSComparisonResult) compareByPath:(NSString *)other {
-    NSString *prefix = [self commonPrefixWithString:other options:0];
-    size_t length = [prefix length];
-
-    NSRange lrange = NSMakeRange(length, [self length] - length);
-    NSRange rrange = NSMakeRange(length, [other length] - length);
-
-    lrange = [self rangeOfString:@"/" options:0 range:lrange];
-    rrange = [other rangeOfString:@"/" options:0 range:rrange];
-
-    NSComparisonResult value;
-
-    if (lrange.location == NSNotFound && rrange.location == NSNotFound)
-        value = NSOrderedSame;
-    else if (lrange.location == NSNotFound)
-        value = NSOrderedAscending;
-    else if (rrange.location == NSNotFound)
-        value = NSOrderedDescending;
-    else
-        value = NSOrderedSame;
-
-    NSString *lpath = lrange.location == NSNotFound ? [self substringFromIndex:length] :
-        [self substringWithRange:NSMakeRange(length, lrange.location - length)];
-    NSString *rpath = rrange.location == NSNotFound ? [other substringFromIndex:length] :
-        [other substringWithRange:NSMakeRange(length, rrange.location - length)];
-
-    NSComparisonResult result = [lpath compare:rpath];
-    return result == NSOrderedSame ? value : result;
-}
-
-- (NSString *) stringByAddingPercentEscapesIncludingReserved {
-    return [(id)CFURLCreateStringByAddingPercentEscapes(
-        kCFAllocatorDefault,
-        (CFStringRef) self,
-        NULL,
-        CFSTR(";/?:@&=+$,"),
-        kCFStringEncodingUTF8
-    ) autorelease];
-}
-
-@end
-/* }}} */
-
-/* C++ NSString Wrapper Cache {{{ */
-static _finline CFStringRef CYStringCreate(const char *data, size_t size) {
-    return size == 0 ? NULL :
-        CFStringCreateWithBytesNoCopy(kCFAllocatorDefault, reinterpret_cast<const uint8_t *>(data), size, kCFStringEncodingUTF8, NO, kCFAllocatorNull) ?:
-        CFStringCreateWithBytesNoCopy(kCFAllocatorDefault, reinterpret_cast<const uint8_t *>(data), size, kCFStringEncodingISOLatin1, NO, kCFAllocatorNull);
-}
-
-static _finline CFStringRef CYStringCreate(const char *data) {
-    return CYStringCreate(data, strlen(data));
-}
-
-class CYString {
-  private:
-    char *data_;
-    size_t size_;
-    CFStringRef cache_;
-
-    _finline void clear_() {
-        if (cache_ != NULL) {
-            CFRelease(cache_);
-            cache_ = NULL;
-        }
-    }
-
-  public:
-    _finline bool empty() const {
-        return size_ == 0;
-    }
-
-    _finline size_t size() const {
-        return size_;
-    }
-
-    _finline char *data() const {
-        return data_;
-    }
-
-    _finline void clear() {
-        size_ = 0;
-        clear_();
-    }
-
-    _finline CYString() :
-        data_(0),
-        size_(0),
-        cache_(NULL)
-    {
-    }
-
-    _finline ~CYString() {
-        clear_();
-    }
-
-    void operator =(const CYString &rhs) {
-        data_ = rhs.data_;
-        size_ = rhs.size_;
-
-        if (rhs.cache_ == nil)
-            cache_ = NULL;
-        else
-            cache_ = reinterpret_cast<CFStringRef>(CFRetain(rhs.cache_));
-    }
-
-    void copy(CYPool *pool) {
-        char *temp(pool->malloc<char>(size_ + 1));
-        memcpy(temp, data_, size_);
-        temp[size_] = '\0';
-        data_ = temp;
-    }
-
-    void set(CYPool *pool, const char *data, size_t size) {
-        if (size == 0)
-            clear();
-        else {
-            clear_();
-
-            data_ = const_cast<char *>(data);
-            size_ = size;
-
-            if (pool != NULL)
-                copy(pool);
-        }
-    }
-
-    _finline void set(CYPool *pool, const char *data) {
-        set(pool, data, data == NULL ? 0 : strlen(data));
-    }
-
-    _finline void set(CYPool *pool, const std::string &rhs) {
-        set(pool, rhs.data(), rhs.size());
-    }
-
-    bool operator ==(const CYString &rhs) const {
-        return size_ == rhs.size_ && memcmp(data_, rhs.data_, size_) == 0;
-    }
-
-    _finline operator CFStringRef() {
-        if (cache_ == NULL)
-            cache_ = CYStringCreate(data_, size_);
-        return cache_;
-    }
-
-    _finline operator id() {
-        return (NSString *) static_cast<CFStringRef>(*this);
-    }
-
-    _finline operator const char *() {
-        return reinterpret_cast<const char *>(data_);
-    }
-};
-/* }}} */
-/* C++ NSString Algorithm Adapters {{{ */
-extern "C" {
-    CF_EXPORT CFHashCode CFStringHashNSString(CFStringRef str);
-}
-
-struct NSStringMapHash :
-    std::unary_function<NSString *, size_t>
-{
-    _finline size_t operator ()(NSString *value) const {
-        return CFStringHashNSString((CFStringRef) value);
-    }
-};
-
-struct NSStringMapLess :
-    std::binary_function<NSString *, NSString *, bool>
-{
-    _finline bool operator ()(NSString *lhs, NSString *rhs) const {
-        return [lhs compare:rhs] == NSOrderedAscending;
-    }
-};
-
-struct NSStringMapEqual :
-    std::binary_function<NSString *, NSString *, bool>
-{
-    _finline bool operator ()(NSString *lhs, NSString *rhs) const {
-        return CFStringCompare((CFStringRef) lhs, (CFStringRef) rhs, 0) == kCFCompareEqualTo;
-        //CFEqual((CFTypeRef) lhs, (CFTypeRef) rhs);
-        //[lhs isEqualToString:rhs];
-    }
-};
-/* }}} */
 
 /* CoreGraphics Primitives {{{ */
 class CYColor {
