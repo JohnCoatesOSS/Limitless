@@ -117,10 +117,16 @@ class RegEx {
     }
 
     NSString *operator ->*(NSString *format) const {
+    #if (TARGET_OS_SIMULATOR)
+        // TODO: fix casting error
+        // Reinterpret_cast from 'id *' to 'va_list' (aka '__builtin_va_list') is not allowed
+        return @"";
+    #else
         id values[capture_];
         for (int i(0); i != capture_; ++i)
             values[i] = this->operator [](i + 1);
         return [[[NSString alloc] initWithFormat:format arguments:reinterpret_cast<va_list>(values)] autorelease];
+    #endif
     }
 };
 

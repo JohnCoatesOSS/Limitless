@@ -4888,11 +4888,17 @@ static _H<NSMutableSet> Diversions_;
 
 - (NSString *) stringWithFormat:(NSString *)format arguments:(WebScriptObject *)arguments {
     //NSLog(@"SWF:\"%@\" A:%@", format, [arguments description]);
+    #if (TARGET_OS_SIMULATOR)
+    // TODO: fix casting error
+    // Reinterpret_cast from 'id *' to 'va_list' (aka '__builtin_va_list') is not allowed
+    return @"";
+    #else
     unsigned count([arguments count]);
     id values[count];
     for (unsigned i(0); i != count; ++i)
         values[i] = [arguments objectAtIndex:i];
     return [[[NSString alloc] initWithFormat:format arguments:reinterpret_cast<va_list>(values)] autorelease];
+    #endif
 }
 
 - (NSString *) localizedStringForKey:(NSString *)key value:(NSString *)value table:(NSString *)table {
