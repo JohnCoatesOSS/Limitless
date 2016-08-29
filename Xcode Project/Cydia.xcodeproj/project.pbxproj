@@ -132,6 +132,8 @@
 		FA28E71C1D1B21A5003D3724 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA28E71E1D1B21A5003D3724 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIWebDocumentView+BugFixes.mm"; sourceTree = "<group>"; };
+		FA6C862E1D749D1D00FB99CF /* CyteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CyteKit.h; sourceTree = "<group>"; };
+		FA6C862F1D749D4700FB99CF /* Apt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Apt.h; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -422,6 +424,8 @@
 			isa = PBXGroup;
 			children = (
 				FAA811B41D74669600C674C9 /* Prefix.pch */,
+				FA6C862E1D749D1D00FB99CF /* CyteKit.h */,
+				FA6C862F1D749D4700FB99CF /* Apt.h */,
 			);
 			path = Headers;
 			sourceTree = "<group>";

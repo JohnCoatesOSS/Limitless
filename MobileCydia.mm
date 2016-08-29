@@ -23,8 +23,14 @@
 #define USE_SYSTEM_MALLOC 1
 
 /* #include Directives {{{ */
-#include "CyteKit/UCPlatform.h"
-#include "CyteKit/Localize.h"
+
+#pragma mark - Limitless Headers
+
+#import "Reachability.h"
+#import "Profiling.hpp"
+#import "CyteKit.h"
+
+#pragma mark - Headers 
 
 #include <unicode/ustring.h>
 #include <unicode/utrans.h>
@@ -65,23 +71,7 @@
 
 #undef ABS
 
-#include <apt-pkg/acquire.h>
-#include <apt-pkg/acquire-item.h>
-#include <apt-pkg/algorithms.h>
-#include <apt-pkg/cachefile.h>
-#include <apt-pkg/clean.h>
-#include <apt-pkg/configuration.h>
-#include <apt-pkg/debindexfile.h>
-#include <apt-pkg/debmetaindex.h>
-#include <apt-pkg/error.h>
-#include <apt-pkg/init.h>
-#include <apt-pkg/mmap.h>
-#include <apt-pkg/pkgrecords.h>
-#include <apt-pkg/sha1.h>
-#include <apt-pkg/sourcelist.h>
-#include <apt-pkg/sptr.h>
-#include <apt-pkg/strutl.h>
-#include <apt-pkg/tagfile.h>
+#import "Apt.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -111,28 +101,11 @@ extern "C" {
 #include "Substrate.hpp"
 #include "Menes/Menes.h"
 
-#include "CyteKit/IndirectDelegate.h"
-#include "CyteKit/RegEx.hpp"
-#include "CyteKit/TableViewCell.h"
-#include "CyteKit/TabBarController.h"
-#include "CyteKit/WebScriptObject-Cyte.h"
-#include "CyteKit/WebViewController.h"
-#include "CyteKit/WebViewTableViewCell.h"
-#include "CyteKit/stringWithUTF8Bytes.h"
-
 #include "Cydia/MIMEAddress.h"
 #include "Cydia/LoadingViewController.h"
 #include "Cydia/ProgressEvent.h"
 
 #include "SDURLCache/SDURLCache.h"
-
-#pragma mark - Limitless Headers
-
-#import "Reachability.h"
-
-/* }}} */
-
-#import "Profiling.hpp"
 
 // XXX: I hate clang. Apple: please get over your petty hatred of GPL and fix your gcc fork
 #define synchronized(lock) \
