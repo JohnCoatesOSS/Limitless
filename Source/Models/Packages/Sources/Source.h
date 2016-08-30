@@ -38,7 +38,9 @@
     _transient NSObject<SourceDelegate> *delegate_;
 }
 
-- (Source *) initWithMetaIndex:(metaIndex *)index forDatabase:(Database *)database inPool:(CYPool *)pool;
+- (Source *) initWithMetaIndex:(metaIndex *)index
+                   forDatabase:(Database *)database
+                        inPool:(CYPool *)pool;
 
 - (NSComparisonResult) compareByName:(Source *)source;
 

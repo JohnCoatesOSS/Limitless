@@ -62,6 +62,7 @@
 		FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C867E1D7578D900FB99CF /* CydiaRelation.mm */; };
 		FA6C86831D75797700FB99CF /* Package.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86821D75797700FB99CF /* Package.mm */; };
 		FA6C86861D758D4000FB99CF /* Section.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86851D758D4000FB99CF /* Section.mm */; };
+		FA6C86891D758DC700FB99CF /* Logging.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86881D758DC700FB99CF /* Logging.mm */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -196,6 +197,9 @@
 		FA6C86821D75797700FB99CF /* Package.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Package.mm; sourceTree = "<group>"; };
 		FA6C86841D758D4000FB99CF /* Section.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Section.h; sourceTree = "<group>"; };
 		FA6C86851D758D4000FB99CF /* Section.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Section.mm; sourceTree = "<group>"; };
+		FA6C86871D758DC700FB99CF /* Logging.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Logging.hpp; sourceTree = "<group>"; };
+		FA6C86881D758DC700FB99CF /* Logging.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Logging.mm; sourceTree = "<group>"; };
+		FA6C868A1D758E6B00FB99CF /* Defines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Defines.h; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -622,6 +626,8 @@
 			children = (
 				FA6D8CAC1D74812500283EDB /* Profiling.hpp */,
 				FA6D8CAD1D74812500283EDB /* Profiling.mm */,
+				FA6C86871D758DC700FB99CF /* Logging.hpp */,
+				FA6C86881D758DC700FB99CF /* Logging.mm */,
 			);
 			path = Debugging;
 			sourceTree = "<group>";
@@ -660,6 +666,7 @@
 				FA6C862F1D749D4700FB99CF /* Apt.h */,
 				FA6C86421D74AF5600FB99CF /* Unicode.h */,
 				FA6C86431D74AF6400FB99CF /* Standard.h */,
+				FA6C868A1D758E6B00FB99CF /* Defines.h */,
 			);
 			path = Headers;
 			sourceTree = "<group>";
@@ -737,6 +744,7 @@
 				FA6C86651D74C49B00FB99CF /* Database.mm in Sources */,
 				FA0311AA1D1B2CBD008690CA /* TableViewCell.mm in Sources */,
 				FA01D21E1D1B22B100B49E70 /* MobileCydia.mm in Sources */,
+				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
 				FA0311BF1D1B2CFD008690CA /* LoadingView.mm in Sources */,
 				FA6C86561D74BFD700FB99CF /* GeneralGlobals.mm in Sources */,
 				FA01D2211D1B22B100B49E70 /* Sources.mm in Sources */,

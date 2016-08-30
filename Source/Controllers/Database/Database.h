@@ -75,9 +75,12 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 - (Source *) sourceWithKey:(NSString *)key;
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation;
 
+- (void) clear;
 - (void) configure;
+- (bool) clean;
 - (bool) prepare;
 - (void) perform;
+- (bool) delocked;
 - (bool) upgrade;
 - (void) update;
 
