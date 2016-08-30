@@ -58,6 +58,7 @@
 		FA6C866E1D75722D00FB99CF /* CytoreHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C866D1D75722D00FB99CF /* CytoreHelpers.mm */; };
 		FA6C86741D7573D900FB99CF /* Source.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86731D7573D900FB99CF /* Source.mm */; };
 		FA6C86781D75756800FB99CF /* CydiaOperation.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86771D75756800FB99CF /* CydiaOperation.mm */; };
+		FA6C867C1D7577AA00FB99CF /* CydiaClause.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C867B1D7577AA00FB99CF /* CydiaClause.mm */; };
 		FA6D8CAA1D746C0800283EDB /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CA91D746C0800283EDB /* Reachability.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -184,6 +185,8 @@
 		FA6C86731D7573D900FB99CF /* Source.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Source.mm; sourceTree = "<group>"; };
 		FA6C86761D75756800FB99CF /* CydiaOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CydiaOperation.h; sourceTree = "<group>"; };
 		FA6C86771D75756800FB99CF /* CydiaOperation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CydiaOperation.mm; sourceTree = "<group>"; };
+		FA6C867A1D7577AA00FB99CF /* CydiaClause.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CydiaClause.h; sourceTree = "<group>"; };
+		FA6C867B1D7577AA00FB99CF /* CydiaClause.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CydiaClause.mm; sourceTree = "<group>"; };
 		FA6D8CA81D746C0800283EDB /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FA6D8CA91D746C0800283EDB /* Reachability.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
@@ -507,6 +510,7 @@
 		FA6C866F1D7573A200FB99CF /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86791D75778800FB99CF /* Graph */,
 				FA6C86711D7573C600FB99CF /* Sources */,
 			);
 			path = Packages;
@@ -528,6 +532,15 @@
 				FA6C86771D75756800FB99CF /* CydiaOperation.mm */,
 			);
 			path = Operations;
+			sourceTree = "<group>";
+		};
+		FA6C86791D75778800FB99CF /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C867A1D7577AA00FB99CF /* CydiaClause.h */,
+				FA6C867B1D7577AA00FB99CF /* CydiaClause.mm */,
+			);
+			path = Graph;
 			sourceTree = "<group>";
 		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
@@ -735,6 +748,7 @@
 				FA0311A71D1B2CBD008690CA /* MFMailComposeViewController-MailToURL.mm in Sources */,
 				FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */,
 				FA0311B61D1B2CDE008690CA /* SDURLCache.m in Sources */,
+				FA6C867C1D7577AA00FB99CF /* CydiaClause.mm in Sources */,
 				FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */,
 				FA6C866B1D74C63200FB99CF /* ProgressEvent.mm in Sources */,
 				FA0311B11D1B2CBD008690CA /* radixSortWithSelector.mm in Sources */,

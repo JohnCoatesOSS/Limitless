@@ -28,7 +28,7 @@ xcodeBuild/*.control
 
 # Swift Package Manager
 .build/
-Packages/
+/Packages/
 
 
 ## Build generated
