@@ -79,6 +79,8 @@
 		FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86C21D760A1600FB99CF /* PackageListController.mm */; };
 		FA6C86C61D760AC300FB99CF /* FilteredPackageListController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86C51D760AC300FB99CF /* FilteredPackageListController.mm */; };
 		FA6C86CB1D760B6600FB99CF /* HomeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86CA1D760B6600FB99CF /* HomeController.mm */; };
+		FA6C86D11D760C9200FB99CF /* UINavigationController+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86D01D760C9200FB99CF /* UINavigationController+Cydia.mm */; };
+		FA6C86D41D760CC600FB99CF /* CydiaTabBarController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86D31D760CC600FB99CF /* CydiaTabBarController.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -248,6 +250,10 @@
 		FA6C86C51D760AC300FB99CF /* FilteredPackageListController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilteredPackageListController.mm; sourceTree = "<group>"; };
 		FA6C86C91D760B6600FB99CF /* HomeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeController.h; sourceTree = "<group>"; };
 		FA6C86CA1D760B6600FB99CF /* HomeController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HomeController.mm; sourceTree = "<group>"; };
+		FA6C86CF1D760C9200FB99CF /* UINavigationController+Cydia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+Cydia.h"; sourceTree = "<group>"; };
+		FA6C86D01D760C9200FB99CF /* UINavigationController+Cydia.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UINavigationController+Cydia.mm"; sourceTree = "<group>"; };
+		FA6C86D21D760CC600FB99CF /* CydiaTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CydiaTabBarController.h; sourceTree = "<group>"; };
+		FA6C86D31D760CC600FB99CF /* CydiaTabBarController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CydiaTabBarController.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
@@ -447,6 +453,7 @@
 		FA6C86291D749C5300FB99CF /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86CE1D760C4A00FB99CF /* View Controllers */,
 				FA6C86A01D75965F00FB99CF /* Scripting */,
 				FA6C86991D7593E200FB99CF /* Networking */,
 				FA6C86301D74A95500FB99CF /* String */,
@@ -763,9 +770,36 @@
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
+		FA6C86CC1D760C1800FB99CF /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86CD1D760C2A00FB99CF /* View Controllers */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		FA6C86CD1D760C2A00FB99CF /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86D21D760CC600FB99CF /* CydiaTabBarController.h */,
+				FA6C86D31D760CC600FB99CF /* CydiaTabBarController.mm */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		FA6C86CE1D760C4A00FB99CF /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86CF1D760C9200FB99CF /* UINavigationController+Cydia.h */,
+				FA6C86D01D760C9200FB99CF /* UINavigationController+Cydia.mm */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86CC1D760C1800FB99CF /* Navigation */,
 				FA6C86C71D760B3600FB99CF /* Home */,
 				FA6C86A51D75EEE300FB99CF /* Packages */,
 				FA6C86931D7590E400FB99CF /* Web */,
@@ -944,10 +978,12 @@
 				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
 				FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */,
+				FA6C86D11D760C9200FB99CF /* UINavigationController+Cydia.mm in Sources */,
 				FA0311BF1D1B2CFD008690CA /* LoadingView.mm in Sources */,
 				FA6C86CB1D760B6600FB99CF /* HomeController.mm in Sources */,
 				FA6C86561D74BFD700FB99CF /* GeneralGlobals.mm in Sources */,
 				FA01D2211D1B22B100B49E70 /* Sources.mm in Sources */,
+				FA6C86D41D760CC600FB99CF /* CydiaTabBarController.mm in Sources */,
 				FA6C86781D75756800FB99CF /* CydiaOperation.mm in Sources */,
 				FA6C86A31D75967800FB99CF /* CydiaScript.mm in Sources */,
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
