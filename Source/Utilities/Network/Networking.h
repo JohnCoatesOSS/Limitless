@@ -8,6 +8,7 @@
 #import "Menes/Menes.h"
 #import "CyteKit.h"
 #import "UIGlobals.h"
+#import "NSURL+Cydia.h"
 
 // Globals
 

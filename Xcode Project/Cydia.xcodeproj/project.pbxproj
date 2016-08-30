@@ -66,6 +66,8 @@
 		FA6C868E1D758FC400FB99CF /* Diversion.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C868D1D758FC400FB99CF /* Diversion.mm */; };
 		FA6C86921D75907600FB99CF /* CydiaObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86911D75907600FB99CF /* CydiaObject.mm */; };
 		FA6C86971D75910E00FB99CF /* CydiaWebViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86961D75910E00FB99CF /* CydiaWebViewController.mm */; };
+		FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C869B1D75940600FB99CF /* NSURL+Cydia.mm */; };
+		FA6C869F1D75960500FB99CF /* AppCacheController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C869E1D75960500FB99CF /* AppCacheController.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -209,6 +211,10 @@
 		FA6C86951D75910E00FB99CF /* CydiaWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CydiaWebViewController.h; sourceTree = "<group>"; };
 		FA6C86961D75910E00FB99CF /* CydiaWebViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CydiaWebViewController.mm; sourceTree = "<group>"; };
 		FA6C86981D75929A00FB99CF /* System.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = System.h; sourceTree = "<group>"; };
+		FA6C869A1D75940600FB99CF /* NSURL+Cydia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Cydia.h"; sourceTree = "<group>"; };
+		FA6C869B1D75940600FB99CF /* NSURL+Cydia.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURL+Cydia.mm"; sourceTree = "<group>"; };
+		FA6C869D1D75960500FB99CF /* AppCacheController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppCacheController.h; sourceTree = "<group>"; };
+		FA6C869E1D75960500FB99CF /* AppCacheController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppCacheController.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
@@ -408,6 +414,7 @@
 		FA6C86291D749C5300FB99CF /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86991D7593E200FB99CF /* Networking */,
 				FA6C86301D74A95500FB99CF /* String */,
 				FA6C862A1D749C6600FB99CF /* Bug Fixes */,
 			);
@@ -608,8 +615,19 @@
 			children = (
 				FA6C86951D75910E00FB99CF /* CydiaWebViewController.h */,
 				FA6C86961D75910E00FB99CF /* CydiaWebViewController.mm */,
+				FA6C869D1D75960500FB99CF /* AppCacheController.h */,
+				FA6C869E1D75960500FB99CF /* AppCacheController.mm */,
 			);
 			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		FA6C86991D7593E200FB99CF /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C869A1D75940600FB99CF /* NSURL+Cydia.h */,
+				FA6C869B1D75940600FB99CF /* NSURL+Cydia.mm */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
@@ -789,6 +807,7 @@
 				FA0311AA1D1B2CBD008690CA /* TableViewCell.mm in Sources */,
 				FA01D21E1D1B22B100B49E70 /* MobileCydia.mm in Sources */,
 				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
+				FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */,
 				FA0311BF1D1B2CFD008690CA /* LoadingView.mm in Sources */,
 				FA6C86561D74BFD700FB99CF /* GeneralGlobals.mm in Sources */,
 				FA01D2211D1B22B100B49E70 /* Sources.mm in Sources */,
@@ -800,6 +819,7 @@
 				FA6C868E1D758FC400FB99CF /* Diversion.mm in Sources */,
 				FA0311AC1D1B2CBD008690CA /* WebScriptObject-Cyte.mm in Sources */,
 				FA6C86921D75907600FB99CF /* CydiaObject.mm in Sources */,
+				FA6C869F1D75960500FB99CF /* AppCacheController.mm in Sources */,
 				FA01D2221D1B22B100B49E70 /* Version.mm in Sources */,
 				FA0311AB1D1B2CBD008690CA /* ViewController.mm in Sources */,
 				FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */,
