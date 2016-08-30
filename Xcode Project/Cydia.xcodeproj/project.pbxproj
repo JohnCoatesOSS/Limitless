@@ -72,6 +72,8 @@
 		FA6C86AA1D75EF1E00FB99CF /* ConfirmationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86A91D75EF1E00FB99CF /* ConfirmationController.mm */; };
 		FA6C86AE1D75EFF900FB99CF /* CydiaProgressData.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86AD1D75EFF900FB99CF /* CydiaProgressData.mm */; };
 		FA6C86B11D75F11100FB99CF /* ProgressController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86B01D75F11100FB99CF /* ProgressController.mm */; };
+		FA6C86B61D75F26C00FB99CF /* PackageCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86B51D75F26C00FB99CF /* PackageCell.mm */; };
+		FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86B81D75F6BA00FB99CF /* SectionCell.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -227,6 +229,10 @@
 		FA6C86AD1D75EFF900FB99CF /* CydiaProgressData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CydiaProgressData.mm; sourceTree = "<group>"; };
 		FA6C86AF1D75F11100FB99CF /* ProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressController.h; sourceTree = "<group>"; };
 		FA6C86B01D75F11100FB99CF /* ProgressController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProgressController.mm; sourceTree = "<group>"; };
+		FA6C86B41D75F26C00FB99CF /* PackageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageCell.h; sourceTree = "<group>"; };
+		FA6C86B51D75F26C00FB99CF /* PackageCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PackageCell.mm; sourceTree = "<group>"; };
+		FA6C86B71D75F6BA00FB99CF /* SectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionCell.h; sourceTree = "<group>"; };
+		FA6C86B81D75F6BA00FB99CF /* SectionCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SectionCell.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
@@ -655,6 +661,7 @@
 		FA6C86A51D75EEE300FB99CF /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86B21D75F24F00FB99CF /* Views */,
 				FA6C86A61D75EEF200FB99CF /* Installing */,
 			);
 			path = Packages;
@@ -687,6 +694,25 @@
 				FA6C86AD1D75EFF900FB99CF /* CydiaProgressData.mm */,
 			);
 			path = Progress;
+			sourceTree = "<group>";
+		};
+		FA6C86B21D75F24F00FB99CF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86B31D75F25900FB99CF /* Table Views */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA6C86B31D75F25900FB99CF /* Table Views */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86B41D75F26C00FB99CF /* PackageCell.h */,
+				FA6C86B51D75F26C00FB99CF /* PackageCell.mm */,
+				FA6C86B71D75F6BA00FB99CF /* SectionCell.h */,
+				FA6C86B81D75F6BA00FB99CF /* SectionCell.mm */,
+			);
+			path = "Table Views";
 			sourceTree = "<group>";
 		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
@@ -874,6 +900,7 @@
 				FA6C86781D75756800FB99CF /* CydiaOperation.mm in Sources */,
 				FA6C86A31D75967800FB99CF /* CydiaScript.mm in Sources */,
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
+				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
 				FA0311A81D1B2CBD008690CA /* stringWithUTF8Bytes.mm in Sources */,
 				FA0311C11D1B2CFD008690CA /* MIMEAddress.mm in Sources */,
@@ -899,6 +926,7 @@
 				FA6C86971D75910E00FB99CF /* CydiaWebViewController.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
+				FA6C86B61D75F26C00FB99CF /* PackageCell.mm in Sources */,
 				FA6C865A1D74C0C400FB99CF /* GeneralHelpers.mm in Sources */,
 				FA6C864F1D74BCB300FB99CF /* UIGlobals.mm in Sources */,
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,
