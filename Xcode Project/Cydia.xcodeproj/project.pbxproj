@@ -84,6 +84,7 @@
 		FA6C86D81D761E3900FB99CF /* CydiaURLProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86D71D761E3900FB99CF /* CydiaURLProtocol.mm */; };
 		FA6C86DB1D761EE400FB99CF /* SectionController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86DA1D761EE400FB99CF /* SectionController.mm */; };
 		FA6C86DE1D761F3600FB99CF /* SectionsController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86DD1D761F3600FB99CF /* SectionsController.mm */; };
+		FA6C86E11D76200200FB99CF /* ChangesController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86E01D76200200FB99CF /* ChangesController.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -263,6 +264,8 @@
 		FA6C86DA1D761EE400FB99CF /* SectionController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SectionController.mm; sourceTree = "<group>"; };
 		FA6C86DC1D761F3600FB99CF /* SectionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionsController.h; sourceTree = "<group>"; };
 		FA6C86DD1D761F3600FB99CF /* SectionsController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SectionsController.mm; sourceTree = "<group>"; };
+		FA6C86DF1D76200200FB99CF /* ChangesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangesController.h; sourceTree = "<group>"; };
+		FA6C86E01D76200200FB99CF /* ChangesController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChangesController.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
@@ -762,6 +765,8 @@
 				FA6C86DA1D761EE400FB99CF /* SectionController.mm */,
 				FA6C86DC1D761F3600FB99CF /* SectionsController.h */,
 				FA6C86DD1D761F3600FB99CF /* SectionsController.mm */,
+				FA6C86DF1D76200200FB99CF /* ChangesController.h */,
+				FA6C86E01D76200200FB99CF /* ChangesController.mm */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -1040,6 +1045,7 @@
 				FA6C86971D75910E00FB99CF /* CydiaWebViewController.mm in Sources */,
 				FA6C86DE1D761F3600FB99CF /* SectionsController.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
+				FA6C86E11D76200200FB99CF /* ChangesController.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
 				FA6C86B61D75F26C00FB99CF /* PackageCell.mm in Sources */,
 				FA6C865A1D74C0C400FB99CF /* GeneralHelpers.mm in Sources */,
