@@ -40,7 +40,6 @@
 		FA0311C01D1B2CFD008690CA /* LoadingViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BB1D1B2CFD008690CA /* LoadingViewController.mm */; };
 		FA0311C11D1B2CFD008690CA /* MIMEAddress.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BD1D1B2CFD008690CA /* MIMEAddress.mm */; };
 		FA0311C31D1B300E008690CA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311C21D1B300E008690CA /* UIKit.framework */; };
-		FA28E7181D1B21A5003D3724 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7161D1B21A5003D3724 /* Main.storyboard */; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
@@ -90,6 +89,8 @@
 		FA6C86EA1D7621CC00FB99CF /* InstalledController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86E91D7621CC00FB99CF /* InstalledController.mm */; };
 		FA6C86EF1D76228B00FB99CF /* SourceCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86EE1D76228B00FB99CF /* SourceCell.mm */; };
 		FA6C86F31D76236200FB99CF /* SourcesController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86F21D76236200FB99CF /* SourcesController.mm */; };
+		FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86F71D7625E700FB99CF /* StashController.mm */; };
+		FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -172,7 +173,6 @@
 		FA0311BE1D1B2CFD008690CA /* ProgressEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressEvent.h; sourceTree = "<group>"; };
 		FA0311C21D1B300E008690CA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FA28E70A1D1B21A5003D3724 /* Cydia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cydia.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA28E7171D1B21A5003D3724 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FA28E7191D1B21A5003D3724 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA28E71C1D1B21A5003D3724 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA28E71E1D1B21A5003D3724 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -281,6 +281,10 @@
 		FA6C86EE1D76228B00FB99CF /* SourceCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SourceCell.mm; sourceTree = "<group>"; };
 		FA6C86F11D76236200FB99CF /* SourcesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourcesController.h; sourceTree = "<group>"; };
 		FA6C86F21D76236200FB99CF /* SourcesController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SourcesController.mm; sourceTree = "<group>"; };
+		FA6C86F61D7625E700FB99CF /* StashController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StashController.h; sourceTree = "<group>"; };
+		FA6C86F71D7625E700FB99CF /* StashController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StashController.mm; sourceTree = "<group>"; };
+		FA6C86FA1D7626B500FB99CF /* CYURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CYURLCache.h; sourceTree = "<group>"; };
+		FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CYURLCache.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
@@ -459,7 +463,6 @@
 		FA28E70C1D1B21A5003D3724 /* Cydia */ = {
 			isa = PBXGroup;
 			children = (
-				FA28E7161D1B21A5003D3724 /* Main.storyboard */,
 				FA28E7191D1B21A5003D3724 /* Assets.xcassets */,
 				FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */,
 				FA28E71E1D1B21A5003D3724 /* Info.plist */,
@@ -871,9 +874,36 @@
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
+		FA6C86F41D7625A500FB99CF /* Stashing */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86F51D7625B500FB99CF /* View Controllers */,
+			);
+			path = Stashing;
+			sourceTree = "<group>";
+		};
+		FA6C86F51D7625B500FB99CF /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86F61D7625E700FB99CF /* StashController.h */,
+				FA6C86F71D7625E700FB99CF /* StashController.mm */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		FA6C86F91D7626A300FB99CF /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86FA1D7626B500FB99CF /* CYURLCache.h */,
+				FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */,
+			);
+			path = Cache;
+			sourceTree = "<group>";
+		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86F41D7625A500FB99CF /* Stashing */,
 				FA6C86EB1D76227000FB99CF /* Sources */,
 				FA6C86CC1D760C1800FB99CF /* Navigation */,
 				FA6C86C71D760B3600FB99CF /* Home */,
@@ -886,6 +916,7 @@
 		FA6D8CA41D746B7F00283EDB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86F91D7626A300FB99CF /* Cache */,
 				FA6C86D51D761E1300FB99CF /* URL Handler */,
 				FA6C86621D74C48400FB99CF /* Database */,
 			);
@@ -1038,7 +1069,6 @@
 			files = (
 				FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */,
 				FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */,
-				FA28E7181D1B21A5003D3724 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1051,6 +1081,7 @@
 			files = (
 				FA6C86651D74C49B00FB99CF /* Database.mm in Sources */,
 				FA0311AA1D1B2CBD008690CA /* TableViewCell.mm in Sources */,
+				FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */,
 				FA01D21E1D1B22B100B49E70 /* MobileCydia.mm in Sources */,
 				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
@@ -1079,6 +1110,7 @@
 				FA6C869F1D75960500FB99CF /* AppCacheController.mm in Sources */,
 				FA01D2221D1B22B100B49E70 /* Version.mm in Sources */,
 				FA0311AB1D1B2CBD008690CA /* ViewController.mm in Sources */,
+				FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */,
 				FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */,
 				FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */,
 				FAA811AF1D745FF700C674C9 /* main.mm in Sources */,
@@ -1127,14 +1159,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		FA28E7161D1B21A5003D3724 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FA28E7171D1B21A5003D3724 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
