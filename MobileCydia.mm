@@ -156,69 +156,9 @@ extern "C" {
 #import "Source.h"
 #import "CydiaOperation.h"
 #import "CydiaClause.h"
+#import "CydiaRelation.h"
 
-/* CydiaRelation Class {{{ */
-@interface CydiaRelation : NSObject {
-    _H<NSString> relationship_;
-    _H<NSMutableArray> clauses_;
-}
 
-- (NSString *) relationship;
-- (NSArray *) clauses;
-
-@end
-
-@implementation CydiaRelation
-
-- (id) initWithIterator:(pkgCache::DepIterator &)dep {
-    if ((self = [super init]) != nil) {
-        relationship_ = [NSString stringWithUTF8String:dep.DepType()];
-        clauses_ = [NSMutableArray arrayWithCapacity:8];
-
-        pkgCache::DepIterator start;
-        pkgCache::DepIterator end;
-        dep.GlobOr(start, end); // ++dep
-
-        _forever {
-            [clauses_ addObject:[[[CydiaClause alloc] initWithIterator:start] autorelease]];
-
-            // yes, seriously. (wtf?)
-            if (start == end)
-                break;
-            ++start;
-        }
-    } return self;
-}
-
-+ (NSArray *) _attributeKeys {
-    return [NSArray arrayWithObjects:
-        @"clauses",
-        @"relationship",
-    nil];
-}
-
-- (NSArray *) attributeKeys {
-    return [[self class] _attributeKeys];
-}
-
-+ (BOOL) isKeyExcludedFromWebScript:(const char *)name {
-    return ![[self _attributeKeys] containsObject:[NSString stringWithUTF8String:name]] && [super isKeyExcludedFromWebScript:name];
-}
-
-- (NSString *) relationship {
-    return relationship_;
-}
-
-- (NSArray *) clauses {
-    return clauses_;
-}
-
-- (void) addClause:(CydiaClause *)clause {
-    [clauses_ addObject:clause];
-}
-
-@end
-/* }}} */
 /* Package Class {{{ */
 struct ParsedPackage {
     CYString md5sum_;
