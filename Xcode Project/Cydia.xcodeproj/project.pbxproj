@@ -76,6 +76,8 @@
 		FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86B81D75F6BA00FB99CF /* SectionCell.mm */; };
 		FA6C86BD1D76090800FB99CF /* FileTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86BC1D76090800FB99CF /* FileTable.mm */; };
 		FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86BF1D76097400FB99CF /* CYPackageController.mm */; };
+		FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86C21D760A1600FB99CF /* PackageListController.mm */; };
+		FA6C86C61D760AC300FB99CF /* FilteredPackageListController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86C51D760AC300FB99CF /* FilteredPackageListController.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -239,6 +241,10 @@
 		FA6C86BC1D76090800FB99CF /* FileTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileTable.mm; sourceTree = "<group>"; };
 		FA6C86BE1D76097400FB99CF /* CYPackageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CYPackageController.h; sourceTree = "<group>"; };
 		FA6C86BF1D76097400FB99CF /* CYPackageController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CYPackageController.mm; sourceTree = "<group>"; };
+		FA6C86C11D760A1600FB99CF /* PackageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackageListController.h; sourceTree = "<group>"; };
+		FA6C86C21D760A1600FB99CF /* PackageListController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PackageListController.mm; sourceTree = "<group>"; };
+		FA6C86C41D760AC300FB99CF /* FilteredPackageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilteredPackageListController.h; sourceTree = "<group>"; };
+		FA6C86C51D760AC300FB99CF /* FilteredPackageListController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilteredPackageListController.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
@@ -729,6 +735,10 @@
 				FA6C86BC1D76090800FB99CF /* FileTable.mm */,
 				FA6C86BE1D76097400FB99CF /* CYPackageController.h */,
 				FA6C86BF1D76097400FB99CF /* CYPackageController.mm */,
+				FA6C86C11D760A1600FB99CF /* PackageListController.h */,
+				FA6C86C21D760A1600FB99CF /* PackageListController.mm */,
+				FA6C86C41D760AC300FB99CF /* FilteredPackageListController.h */,
+				FA6C86C51D760AC300FB99CF /* FilteredPackageListController.mm */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -921,6 +931,7 @@
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
+				FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */,
 				FA0311A81D1B2CBD008690CA /* stringWithUTF8Bytes.mm in Sources */,
 				FA0311C11D1B2CFD008690CA /* MIMEAddress.mm in Sources */,
 				FA6C86AA1D75EF1E00FB99CF /* ConfirmationController.mm in Sources */,
@@ -952,6 +963,7 @@
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,
 				FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */,
 				FA6C86531D74BEC200FB99CF /* Networking.mm in Sources */,
+				FA6C86C61D760AC300FB99CF /* FilteredPackageListController.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
 				FA6C86831D75797700FB99CF /* Package.mm in Sources */,
