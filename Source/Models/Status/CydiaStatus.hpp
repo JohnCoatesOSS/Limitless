@@ -5,6 +5,11 @@
 //  Created on 8/29/16.
 //
 
+#import "CyteKit.h"
+#import "GeneralGlobals.h"
+#import "UIGlobals.h"
+#import "Apt.h"
+
 class CydiaStatus :
 public CancelStatus
 {

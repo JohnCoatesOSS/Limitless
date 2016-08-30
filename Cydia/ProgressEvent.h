@@ -26,6 +26,8 @@
 
 #include <apt-pkg/acquire.h>
 
+#import "Menes/Menes.h"
+
 @interface CydiaProgressEvent : NSObject {
     _H<NSString> message_;
     _H<NSString> type_;
