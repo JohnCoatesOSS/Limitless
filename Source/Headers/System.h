@@ -4,6 +4,7 @@
 //
 //  Created on 8/30/16.
 //
+// Include this first or you might get the error "functions that differ only in their return type cannot be overloaded"
 
 #include <sys/types.h>
 #include <sys/stat.h>

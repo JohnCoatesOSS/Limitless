@@ -17,3 +17,9 @@
 - (void) setDelegate:(id)delegate;
 
 @end
+
+@interface Cydia_STUB : NSObject
+- (void) reloadSpringBoard;
+- (void) updateDataAndLoad;
+
+@end
