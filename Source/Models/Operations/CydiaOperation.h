@@ -11,6 +11,8 @@
     _H<NSString> value_;
 }
 
+- (id) initWithOperator:(const char *)_operator value:(const char *)value;
+
 - (NSString *) operator;
 - (NSString *) value;
 

@@ -7,6 +7,8 @@
 
 #import "CydiaOperation.h"
 
+#import <WebKit/DOMElement.h>
+
 @implementation CydiaOperation
 
 - (id) initWithOperator:(const char *)_operator value:(const char *)value {
