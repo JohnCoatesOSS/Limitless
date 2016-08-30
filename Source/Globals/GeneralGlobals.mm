@@ -6,3 +6,5 @@
 //
 
 #import "GeneralGlobals.h"
+
+_H<NSMutableDictionary> Sources_;

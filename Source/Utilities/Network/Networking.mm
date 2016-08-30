@@ -6,6 +6,3 @@
 //
 
 #import "Networking.h"
-
-
-_H<NSMutableDictionary> Sources_;

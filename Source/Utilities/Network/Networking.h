@@ -11,8 +11,6 @@
 
 // Globals
 
-extern _H<NSMutableDictionary> Sources_;
-
 static _H<NSMutableDictionary> SessionData_;
 static _H<NSObject> HostConfig_;
 static _H<NSMutableSet> BridgedHosts_;

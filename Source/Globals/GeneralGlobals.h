@@ -36,3 +36,5 @@ static NSString *kCydiaProgressEventTypeError = @"Error";
 static NSString *kCydiaProgressEventTypeInformation = @"Information";
 static NSString *kCydiaProgressEventTypeStatus = @"Status";
 static NSString *kCydiaProgressEventTypeWarning = @"Warning";
+
+extern _H<NSMutableDictionary> Sources_;
