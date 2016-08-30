@@ -155,28 +155,9 @@ extern "C" {
 #import "Logging.hpp"
 #import "Database.h"
 #import "Diversion.h"
+#import "CydiaObject.h"
+#import "CydiaWebViewController.h"
 
-@interface CydiaObject : NSObject {
-    _H<CyteWebViewController> indirect_;
-    _transient id delegate_;
-}
-
-- (id) initWithDelegate:(IndirectDelegate *)indirect;
-
-@end
-
-@class CydiaObject;
-
-@interface CydiaWebViewController : CyteWebViewController {
-    _H<CydiaObject> cydia_;
-}
-
-+ (void) addDiversion:(Diversion *)diversion;
-+ (NSURLRequest *) requestWithHeaders:(NSURLRequest *)request;
-+ (void) didClearWindowObject:(WebScriptObject *)window forFrame:(WebFrame *)frame withCydia:(CydiaObject *)cydia;
-- (void) setDelegate:(id)delegate;
-
-@end
 
 /* Web Scripting {{{ */
 @implementation CydiaObject
