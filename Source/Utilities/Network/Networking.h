@@ -18,6 +18,8 @@ static _H<NSMutableSet> InsecureHosts_;
 static _H<NSMutableSet> PipelinedHosts_;
 static _H<NSMutableSet> CachedURLs_;
 
+/// Whether we have network connectivity to reach a domain
+bool IsReachable(const char *name);
 
 static _finline NSString *CydiaURL(NSString *path) {
     char page[26];

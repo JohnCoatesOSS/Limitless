@@ -14,5 +14,6 @@
 }
 
 - (id) initWithDelegate:(IndirectDelegate *)indirect;
+- (void) setDelegate:(id)delegate;
 
 @end
