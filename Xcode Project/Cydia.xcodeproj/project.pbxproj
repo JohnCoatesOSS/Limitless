@@ -74,6 +74,7 @@
 		FA6C86B11D75F11100FB99CF /* ProgressController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86B01D75F11100FB99CF /* ProgressController.mm */; };
 		FA6C86B61D75F26C00FB99CF /* PackageCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86B51D75F26C00FB99CF /* PackageCell.mm */; };
 		FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86B81D75F6BA00FB99CF /* SectionCell.mm */; };
+		FA6C86BD1D76090800FB99CF /* FileTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86BC1D76090800FB99CF /* FileTable.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -233,6 +234,8 @@
 		FA6C86B51D75F26C00FB99CF /* PackageCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PackageCell.mm; sourceTree = "<group>"; };
 		FA6C86B71D75F6BA00FB99CF /* SectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionCell.h; sourceTree = "<group>"; };
 		FA6C86B81D75F6BA00FB99CF /* SectionCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SectionCell.mm; sourceTree = "<group>"; };
+		FA6C86BB1D76090800FB99CF /* FileTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTable.h; sourceTree = "<group>"; };
+		FA6C86BC1D76090800FB99CF /* FileTable.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileTable.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
 		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
@@ -661,6 +664,7 @@
 		FA6C86A51D75EEE300FB99CF /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				FA6C86BA1D7608D400FB99CF /* View Controllers */,
 				FA6C86B21D75F24F00FB99CF /* Views */,
 				FA6C86A61D75EEF200FB99CF /* Installing */,
 			);
@@ -713,6 +717,15 @@
 				FA6C86B81D75F6BA00FB99CF /* SectionCell.mm */,
 			);
 			path = "Table Views";
+			sourceTree = "<group>";
+		};
+		FA6C86BA1D7608D400FB99CF /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C86BB1D76090800FB99CF /* FileTable.h */,
+				FA6C86BC1D76090800FB99CF /* FileTable.mm */,
+			);
+			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 		FA6D8CA31D746B6B00283EDB /* UI */ = {
@@ -920,6 +933,7 @@
 				FA6C86AE1D75EFF900FB99CF /* CydiaProgressData.mm in Sources */,
 				FA6C86741D7573D900FB99CF /* Source.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
+				FA6C86BD1D76090800FB99CF /* FileTable.mm in Sources */,
 				FA6C864C1D74B26C00FB99CF /* SystemHelpers.mm in Sources */,
 				FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
