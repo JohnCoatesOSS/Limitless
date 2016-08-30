@@ -31,3 +31,9 @@ static _finline void UpdateExternalStatus(uint64_t newStatus) {
     }
     notify_post("com.saurik.Cydia.status");
 }
+
+static inline NSDate *GetStatusDate() {
+    return [[[NSFileManager defaultManager] attributesOfItemAtPath:@"/var/lib/dpkg/status" error:NULL] fileModificationDate];
+}
+
+
