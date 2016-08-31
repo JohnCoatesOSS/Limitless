@@ -25,6 +25,7 @@
 #include <UIKit/UIKit.h>
 
 #include "iPhonePrivate.h"
+#import "Display.h"
 
 @implementation UIViewController (Cydia)
 

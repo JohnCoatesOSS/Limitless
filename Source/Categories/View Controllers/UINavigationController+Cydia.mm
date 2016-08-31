@@ -31,7 +31,7 @@
         [visible reloadData];
     
     // on the iPad, this view controller is ALSO visible. :(
-    if (IsWildcat_)
+    if ([Device isPad])
         if (UIViewController *modal = [self modalViewController])
             if ([modal modalPresentationStyle] == UIModalPresentationFormSheet)
                 if (UIViewController *top = [self topViewController])

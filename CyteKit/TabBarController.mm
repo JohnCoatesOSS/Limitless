@@ -22,6 +22,7 @@
 #include "CyteKit/TabBarController.h"
 
 #include "iPhonePrivate.h"
+#import "Display.h"
 
 @implementation UITabBarController (Cydia)
 

@@ -57,7 +57,7 @@
     
     if ([context isEqualToString:@"modify"]) {
         if (button != [sheet cancelButtonIndex]) {
-            if (IsWildcat_)
+            if ([Device isPad])
                 [self performSelector:@selector(_clickButtonWithName:) withObject:buttons_[button].first afterDelay:0];
             else
                 [self _clickButtonWithName:buttons_[button].first];
@@ -67,7 +67,7 @@
     } else if ([context isEqualToString:@"version"]) {
         if (button != [sheet cancelButtonIndex]) {
             Package *version([versions_ objectAtIndex:button]);
-            if (IsWildcat_)
+            if ([Device isPad])
                 [self performSelector:@selector(_clickButtonWithPackage:) withObject:version afterDelay:0];
             else
                 [self _clickButtonWithPackage:version];

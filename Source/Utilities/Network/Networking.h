@@ -12,12 +12,12 @@
 
 // Globals
 
-static _H<NSMutableDictionary> SessionData_;
-static _H<NSObject> HostConfig_;
-static _H<NSMutableSet> BridgedHosts_;
-static _H<NSMutableSet> InsecureHosts_;
-static _H<NSMutableSet> PipelinedHosts_;
-static _H<NSMutableSet> CachedURLs_;
+extern _H<NSMutableDictionary> SessionData_;
+extern _H<NSObject> HostConfig_;
+extern _H<NSMutableSet> BridgedHosts_;
+extern _H<NSMutableSet> InsecureHosts_;
+extern _H<NSMutableSet> PipelinedHosts_;
+extern _H<NSMutableSet> CachedURLs_;
 
 /// Whether we have network connectivity to reach a domain
 bool IsReachable(const char *name);
@@ -33,21 +33,4 @@ static _finline NSString *CydiaURL(NSString *path) {
     return [[NSString stringWithUTF8String:page] stringByAppendingString:path];
 }
 
-inline NSString *VerifySource(NSString *href) {
-    static RegEx href_r("(http(s?)://|file:///)[^# ]*");
-    if (!href_r(href)) {
-        [[[[UIAlertView alloc]
-           initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
-           message:UCLocalize("INVALID_URL_EX")
-           delegate:nil
-           cancelButtonTitle:UCLocalize("OK")
-           otherButtonTitles:nil
-           ] autorelease] show];
-        
-        return nil;
-    }
-    
-    if (![href hasSuffix:@"/"])
-        href = [href stringByAppendingString:@"/"];
-    return href;
-}
+NSString *VerifySource(NSString *href);

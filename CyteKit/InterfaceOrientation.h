@@ -20,9 +20,11 @@
 /* }}} */
 
 - (NSUInteger) supportedInterfaceOrientations {
-    extern bool IsWildcat_;
-    extern CGFloat ScreenScale_;
-    return IsWildcat_ || ScreenScale_ == 3 ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
+    bool isPad = [Device isPad];
+    bool screenScale3x = [Display screenScale] == 3; // 6+
+    bool landscapeAllowed = isPad || screenScale3x;
+    
+    return landscapeAllowed ? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
 }
 
 - (BOOL) shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {

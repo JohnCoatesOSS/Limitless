@@ -18,7 +18,6 @@
 		FA0311711D1B2B4E008690CA /* SpringBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA03116E1D1B2B4D008690CA /* SpringBoardServices.framework */; };
 		FA0311721D1B2B4E008690CA /* WebCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA03116F1D1B2B4E008690CA /* WebCore.framework */; };
 		FA0311741D1B2B67008690CA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311731D1B2B67008690CA /* SystemConfiguration.framework */; };
-		FA0311761D1B2B6C008690CA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311751D1B2B6C008690CA /* WebKit.framework */; };
 		FA03117A1D1B2C14008690CA /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311791D1B2C14008690CA /* libicucore.tbd */; };
 		FA03117C1D1B2C78008690CA /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA03117B1D1B2C78008690CA /* IOKit.framework */; };
 		FA03117E1D1B2C80008690CA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA03117D1D1B2C80008690CA /* QuartzCore.framework */; };
@@ -40,6 +39,16 @@
 		FA0311C01D1B2CFD008690CA /* LoadingViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BB1D1B2CFD008690CA /* LoadingViewController.mm */; };
 		FA0311C11D1B2CFD008690CA /* MIMEAddress.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BD1D1B2CFD008690CA /* MIMEAddress.mm */; };
 		FA0311C31D1B300E008690CA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311C21D1B300E008690CA /* UIKit.framework */; };
+		FA23E2C11D774FEA001FBE4A /* Application.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2C01D774FEA001FBE4A /* Application.mm */; };
+		FA23E2C51D775070001FBE4A /* Startup.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2C41D775070001FBE4A /* Startup.mm */; };
+		FA23E2C81D7754A0001FBE4A /* Display.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2C71D7754A0001FBE4A /* Display.mm */; };
+		FA23E2CB1D776245001FBE4A /* Device.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2CA1D776245001FBE4A /* Device.mm */; };
+		FA23E2CD1D776501001FBE4A /* SystemGlobals.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2CC1D776501001FBE4A /* SystemGlobals.mm */; };
+		FA23E2D11D776AC4001FBE4A /* NSUserDefaults+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2D01D776AC4001FBE4A /* NSUserDefaults+Hooks.mm */; };
+		FA23E2D41D776BA6001FBE4A /* NSURLConnection+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2D31D776BA6001FBE4A /* NSURLConnection+Hooks.mm */; };
+		FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2D61D776C93001FBE4A /* WAKWindow+Hooks.mm */; };
+		FA23E2DE1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */; };
+		FA23E2DF1D7773D9001FBE4A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311751D1B2B6C008690CA /* WebKit.framework */; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
@@ -172,6 +181,23 @@
 		FA0311BD1D1B2CFD008690CA /* MIMEAddress.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MIMEAddress.mm; sourceTree = "<group>"; };
 		FA0311BE1D1B2CFD008690CA /* ProgressEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressEvent.h; sourceTree = "<group>"; };
 		FA0311C21D1B300E008690CA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FA23E2BF1D774FEA001FBE4A /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
+		FA23E2C01D774FEA001FBE4A /* Application.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Application.mm; sourceTree = "<group>"; };
+		FA23E2C31D775070001FBE4A /* Startup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Startup.h; sourceTree = "<group>"; };
+		FA23E2C41D775070001FBE4A /* Startup.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Startup.mm; sourceTree = "<group>"; };
+		FA23E2C61D77549F001FBE4A /* Display.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Display.h; sourceTree = "<group>"; };
+		FA23E2C71D7754A0001FBE4A /* Display.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Display.mm; sourceTree = "<group>"; };
+		FA23E2C91D776245001FBE4A /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Device.h; sourceTree = "<group>"; };
+		FA23E2CA1D776245001FBE4A /* Device.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Device.mm; sourceTree = "<group>"; };
+		FA23E2CC1D776501001FBE4A /* SystemGlobals.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SystemGlobals.mm; sourceTree = "<group>"; };
+		FA23E2CF1D776AC4001FBE4A /* NSUserDefaults+Hooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Hooks.h"; sourceTree = "<group>"; };
+		FA23E2D01D776AC4001FBE4A /* NSUserDefaults+Hooks.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSUserDefaults+Hooks.mm"; sourceTree = "<group>"; };
+		FA23E2D21D776BA6001FBE4A /* NSURLConnection+Hooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLConnection+Hooks.h"; sourceTree = "<group>"; };
+		FA23E2D31D776BA6001FBE4A /* NSURLConnection+Hooks.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLConnection+Hooks.mm"; sourceTree = "<group>"; };
+		FA23E2D51D776C93001FBE4A /* WAKWindow+Hooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WAKWindow+Hooks.h"; sourceTree = "<group>"; };
+		FA23E2D61D776C93001FBE4A /* WAKWindow+Hooks.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WAKWindow+Hooks.mm"; sourceTree = "<group>"; };
+		FA23E2DC1D77734C001FBE4A /* NSDOMNodeList+Hooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDOMNodeList+Hooks.h"; sourceTree = "<group>"; };
+		FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDOMNodeList+Hooks.mm"; sourceTree = "<group>"; };
 		FA28E70A1D1B21A5003D3724 /* Cydia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cydia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA28E7191D1B21A5003D3724 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA28E71C1D1B21A5003D3724 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -301,10 +327,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA23E2DF1D7773D9001FBE4A /* WebKit.framework in Frameworks */,
 				FA0311C31D1B300E008690CA /* UIKit.framework in Frameworks */,
 				FA03117E1D1B2C80008690CA /* QuartzCore.framework in Frameworks */,
 				FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */,
-				FA0311761D1B2B6C008690CA /* WebKit.framework in Frameworks */,
 				FA0311741D1B2B67008690CA /* SystemConfiguration.framework in Frameworks */,
 				FA03116C1D1B2B46008690CA /* Foundation.framework in Frameworks */,
 				FA03116A1D1B2B41008690CA /* CoreGraphics.framework in Frameworks */,
@@ -442,6 +468,30 @@
 			name = "Frameworks & Libraries";
 			sourceTree = "<group>";
 		};
+		FA23E2C21D77504C001FBE4A /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				FA23E2C31D775070001FBE4A /* Startup.h */,
+				FA23E2C41D775070001FBE4A /* Startup.mm */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		FA23E2CE1D776A58001FBE4A /* Hooks */ = {
+			isa = PBXGroup;
+			children = (
+				FA23E2CF1D776AC4001FBE4A /* NSUserDefaults+Hooks.h */,
+				FA23E2D01D776AC4001FBE4A /* NSUserDefaults+Hooks.mm */,
+				FA23E2D21D776BA6001FBE4A /* NSURLConnection+Hooks.h */,
+				FA23E2D31D776BA6001FBE4A /* NSURLConnection+Hooks.mm */,
+				FA23E2D51D776C93001FBE4A /* WAKWindow+Hooks.h */,
+				FA23E2D61D776C93001FBE4A /* WAKWindow+Hooks.mm */,
+				FA23E2DC1D77734C001FBE4A /* NSDOMNodeList+Hooks.h */,
+				FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */,
+			);
+			path = Hooks;
+			sourceTree = "<group>";
+		};
 		FA28E7011D1B21A5003D3724 = {
 			isa = PBXGroup;
 			children = (
@@ -530,6 +580,8 @@
 			children = (
 				FA6C863D1D74AC3000FB99CF /* DisplayHelpers.hpp */,
 				FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */,
+				FA23E2C61D77549F001FBE4A /* Display.h */,
+				FA23E2C71D7754A0001FBE4A /* Display.mm */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -543,6 +595,7 @@
 				FA6C86501D74BDDE00FB99CF /* SystemGlobals.h */,
 				FA6C86541D74BFD700FB99CF /* GeneralGlobals.h */,
 				FA6C86551D74BFD700FB99CF /* GeneralGlobals.mm */,
+				FA23E2CC1D776501001FBE4A /* SystemGlobals.mm */,
 			);
 			path = Globals;
 			sourceTree = "<group>";
@@ -561,6 +614,8 @@
 			children = (
 				FA6C864A1D74B26C00FB99CF /* SystemHelpers.h */,
 				FA6C864B1D74B26C00FB99CF /* SystemHelpers.mm */,
+				FA23E2C91D776245001FBE4A /* Device.h */,
+				FA23E2CA1D776245001FBE4A /* Device.mm */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -973,11 +1028,12 @@
 		FAA811AB1D745FD100C674C9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				FA23E2CE1D776A58001FBE4A /* Hooks */,
+				FAA811AC1D745FDB00C674C9 /* Application */,
 				FA6C865B1D74C27700FB99CF /* Delegates */,
 				FA6C86401D74ADAD00FB99CF /* Globals */,
 				FA6C86291D749C5300FB99CF /* Categories */,
 				FAA811B31D74667B00C674C9 /* Headers */,
-				FAA811AC1D745FDB00C674C9 /* Application */,
 				FA6D8CA41D746B7F00283EDB /* Controllers */,
 				FA6D8CA51D746BA000283EDB /* Models */,
 				FA6D8CA31D746B6B00283EDB /* UI */,
@@ -989,7 +1045,10 @@
 		FAA811AC1D745FDB00C674C9 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				FA23E2C21D77504C001FBE4A /* Main */,
 				FAA811AE1D745FF700C674C9 /* main.mm */,
+				FA23E2BF1D774FEA001FBE4A /* Application.h */,
+				FA23E2C01D774FEA001FBE4A /* Application.mm */,
 				FAA811B01D74664600C674C9 /* AppDelegate.h */,
 				FAA811B11D74664600C674C9 /* AppDelegate.mm */,
 			);
@@ -1087,7 +1146,9 @@
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
 				FA6C86E41D7620A900FB99CF /* SearchController.mm in Sources */,
 				FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */,
+				FA23E2C11D774FEA001FBE4A /* Application.mm in Sources */,
 				FA6C86D11D760C9200FB99CF /* UINavigationController+Cydia.mm in Sources */,
+				FA23E2DE1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm in Sources */,
 				FA0311BF1D1B2CFD008690CA /* LoadingView.mm in Sources */,
 				FA6C86CB1D760B6600FB99CF /* HomeController.mm in Sources */,
 				FA6C86DB1D761EE400FB99CF /* SectionController.mm in Sources */,
@@ -1100,8 +1161,11 @@
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
+				FA23E2D11D776AC4001FBE4A /* NSUserDefaults+Hooks.mm in Sources */,
 				FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */,
+				FA23E2D41D776BA6001FBE4A /* NSURLConnection+Hooks.mm in Sources */,
 				FA0311A81D1B2CBD008690CA /* stringWithUTF8Bytes.mm in Sources */,
+				FA23E2CD1D776501001FBE4A /* SystemGlobals.mm in Sources */,
 				FA0311C11D1B2CFD008690CA /* MIMEAddress.mm in Sources */,
 				FA6C86AA1D75EF1E00FB99CF /* ConfirmationController.mm in Sources */,
 				FA6C868E1D758FC400FB99CF /* Diversion.mm in Sources */,
@@ -1139,11 +1203,15 @@
 				FA6C86531D74BEC200FB99CF /* Networking.mm in Sources */,
 				FA6C86C61D760AC300FB99CF /* FilteredPackageListController.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,
+				FA23E2C51D775070001FBE4A /* Startup.mm in Sources */,
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
 				FA6C86831D75797700FB99CF /* Package.mm in Sources */,
+				FA23E2C81D7754A0001FBE4A /* Display.mm in Sources */,
+				FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */,
 				FA0311A61D1B2CBD008690CA /* dispatchEvent.mm in Sources */,
 				FA0311A71D1B2CBD008690CA /* MFMailComposeViewController-MailToURL.mm in Sources */,
 				FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */,
+				FA23E2CB1D776245001FBE4A /* Device.mm in Sources */,
 				FA0311B61D1B2CDE008690CA /* SDURLCache.m in Sources */,
 				FA6C86B11D75F11100FB99CF /* ProgressController.mm in Sources */,
 				FA6C867C1D7577AA00FB99CF /* CydiaClause.mm in Sources */,

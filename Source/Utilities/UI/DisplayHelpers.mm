@@ -8,8 +8,6 @@
 
 #import "DisplayHelpers.hpp"
 
-bool IsWildcat_;
-CGFloat ScreenScale_;
 
 CGFloat CYStatusBarHeight() {
     CGSize size([[UIApplication sharedApplication] statusBarFrame].size);

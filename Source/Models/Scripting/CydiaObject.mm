@@ -82,7 +82,11 @@
 }
 
 - (NSString *) idiom {
-    return (id) Idiom_ ?: [NSNull null];
+    if ([Device isPad]) {
+        return @"ipad";
+    } else {
+        return @"iphone";
+    }
 }
 
 - (NSString *) mcc {

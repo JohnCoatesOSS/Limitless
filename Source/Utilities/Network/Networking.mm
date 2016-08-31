@@ -6,8 +6,14 @@
 //
 
 #import "Networking.h"
-
 #import <SystemConfiguration/SystemConfiguration.h>
+
+_H<NSMutableDictionary> SessionData_;
+_H<NSObject> HostConfig_;
+_H<NSMutableSet> BridgedHosts_;
+_H<NSMutableSet> InsecureHosts_;
+_H<NSMutableSet> PipelinedHosts_;
+_H<NSMutableSet> CachedURLs_;
 
 bool IsReachable(const char *name) {
     SCNetworkReachabilityFlags flags;
@@ -28,4 +34,24 @@ bool IsReachable(const char *name) {
     bool connectionAvailable = !connectionRequired || connectionOnDemand || connectionOnTraffic;
     
     return isReachable && connectionAvailable && (!interventionRequired || isWWAN);
+}
+
+
+NSString *VerifySource(NSString *href) {
+    static RegEx href_r("(http(s?)://|file:///)[^# ]*");
+    if (!href_r(href)) {
+        [[[[UIAlertView alloc]
+           initWithTitle:[NSString stringWithFormat:Colon_, Error_, UCLocalize("INVALID_URL")]
+           message:UCLocalize("INVALID_URL_EX")
+           delegate:nil
+           cancelButtonTitle:UCLocalize("OK")
+           otherButtonTitles:nil
+           ] autorelease] show];
+        
+        return nil;
+    }
+    
+    if (![href hasSuffix:@"/"])
+        href = [href stringByAppendingString:@"/"];
+    return href;
 }

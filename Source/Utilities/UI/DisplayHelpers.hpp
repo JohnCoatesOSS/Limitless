@@ -7,11 +7,7 @@
 
 #import "CyteKit.h"
 #import "UIGlobals.h"
-
-// Globals
-extern bool IsWildcat_;
-extern CGFloat ScreenScale_;
-static NSString *Idiom_;
+#import "Display.h"
 
 static const NSUInteger UIViewAutoresizingFlexibleBoth(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 
@@ -22,23 +18,11 @@ inline float Interpolate(float begin, float end, float fraction) {
 }
 
 static inline double Retina(double value) {
-    value *= ScreenScale_;
-    value = round(value);
-    value /= ScreenScale_;
-    return value;
+    return [Display pointRoundedAtScreenScale:value];
 }
 
 static inline CGRect Retina(CGRect value) {
-    value.origin.x *= ScreenScale_;
-    value.origin.y *= ScreenScale_;
-    value.size.width *= ScreenScale_;
-    value.size.height *= ScreenScale_;
-    value = CGRectIntegral(value);
-    value.origin.x /= ScreenScale_;
-    value.origin.y /= ScreenScale_;
-    value.size.width /= ScreenScale_;
-    value.size.height /= ScreenScale_;
-    return value;
+    return [Display rectRoundedAtScreenScale:value];
 }
 
 static _finline const char *StripVersion_(const char *version) {
