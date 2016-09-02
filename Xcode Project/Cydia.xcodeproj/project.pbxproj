@@ -39,6 +39,7 @@
 		FA0311C01D1B2CFD008690CA /* LoadingViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BB1D1B2CFD008690CA /* LoadingViewController.mm */; };
 		FA0311C11D1B2CFD008690CA /* MIMEAddress.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BD1D1B2CFD008690CA /* MIMEAddress.mm */; };
 		FA0311C31D1B300E008690CA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311C21D1B300E008690CA /* UIKit.framework */; };
+		FA1247E71D778DB800C21DAC /* Paths.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1247E61D778DB800C21DAC /* Paths.mm */; };
 		FA23E2C11D774FEA001FBE4A /* Application.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2C01D774FEA001FBE4A /* Application.mm */; };
 		FA23E2C51D775070001FBE4A /* Startup.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2C41D775070001FBE4A /* Startup.mm */; };
 		FA23E2C81D7754A0001FBE4A /* Display.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2C71D7754A0001FBE4A /* Display.mm */; };
@@ -49,6 +50,8 @@
 		FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2D61D776C93001FBE4A /* WAKWindow+Hooks.mm */; };
 		FA23E2DE1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */; };
 		FA23E2DF1D7773D9001FBE4A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311751D1B2B6C008690CA /* WebKit.framework */; };
+		FA27AACE1D78EFE600563529 /* libapt-inst.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA27AACC1D78EFE600563529 /* libapt-inst.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA28E71D1D1B21A5003D3724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA28E71B1D1B21A5003D3724 /* LaunchScreen.storyboard */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
@@ -101,12 +104,26 @@
 		FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86F71D7625E700FB99CF /* StashController.mm */; };
 		FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
-		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
-		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FA9073F91D74554300BA0D1D /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073F81D74554300BA0D1D /* libapt-inst.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
+		FA9073FB1D7455D800BA0D1D /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */; settings = {ATTRIBUTES = (Required, ); }; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811B11D74664600C674C9 /* AppDelegate.mm */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA27AAC31D78EB4700563529 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 11;
+			files = (
+				FA27AACE1D78EFE600563529 /* libapt-inst.dylib in CopyFiles */,
+				FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		FA01D20C1D1B22B100B49E70 /* cfversion.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cfversion.mm; sourceTree = "<group>"; };
@@ -181,6 +198,8 @@
 		FA0311BD1D1B2CFD008690CA /* MIMEAddress.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MIMEAddress.mm; sourceTree = "<group>"; };
 		FA0311BE1D1B2CFD008690CA /* ProgressEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressEvent.h; sourceTree = "<group>"; };
 		FA0311C21D1B300E008690CA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FA1247E51D778DB800C21DAC /* Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Paths.h; sourceTree = "<group>"; };
+		FA1247E61D778DB800C21DAC /* Paths.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Paths.mm; sourceTree = "<group>"; };
 		FA23E2BF1D774FEA001FBE4A /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
 		FA23E2C01D774FEA001FBE4A /* Application.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Application.mm; sourceTree = "<group>"; };
 		FA23E2C31D775070001FBE4A /* Startup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Startup.h; sourceTree = "<group>"; };
@@ -198,6 +217,8 @@
 		FA23E2D61D776C93001FBE4A /* WAKWindow+Hooks.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WAKWindow+Hooks.mm"; sourceTree = "<group>"; };
 		FA23E2DC1D77734C001FBE4A /* NSDOMNodeList+Hooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDOMNodeList+Hooks.h"; sourceTree = "<group>"; };
 		FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDOMNodeList+Hooks.mm"; sourceTree = "<group>"; };
+		FA27AACC1D78EFE600563529 /* libapt-inst.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-inst.dylib"; path = "../External/usr/lib/dylibs/libapt-inst.dylib"; sourceTree = "<group>"; };
+		FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-pkg.dylib"; path = "../External/usr/lib/dylibs/libapt-pkg.dylib"; sourceTree = "<group>"; };
 		FA28E70A1D1B21A5003D3724 /* Cydia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cydia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA28E7191D1B21A5003D3724 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA28E71C1D1B21A5003D3724 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -460,12 +481,31 @@
 				FA03116B1D1B2B46008690CA /* Foundation.framework */,
 				FA0311691D1B2B41008690CA /* CoreGraphics.framework */,
 				FA0311671D1B2B3D008690CA /* CoreFoundation.framework */,
+				FA27AACC1D78EFE600563529 /* libapt-inst.dylib */,
+				FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */,
 				FA9073F81D74554300BA0D1D /* libapt-inst.tbd */,
 				FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */,
 				FA0311791D1B2C14008690CA /* libicucore.tbd */,
 				FA0311771D1B2C0F008690CA /* libicucore.A.tbd */,
 			);
 			name = "Frameworks & Libraries";
+			sourceTree = "<group>";
+		};
+		FA1247E31D778CC900C21DAC /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				FA1247E41D778CEE00C21DAC /* Paths */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		FA1247E41D778CEE00C21DAC /* Paths */ = {
+			isa = PBXGroup;
+			children = (
+				FA1247E51D778DB800C21DAC /* Paths.h */,
+				FA1247E61D778DB800C21DAC /* Paths.mm */,
+			);
+			path = Paths;
 			sourceTree = "<group>";
 		};
 		FA23E2C21D77504C001FBE4A /* Main */ = {
@@ -981,6 +1021,7 @@
 		FA6D8CA51D746BA000283EDB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA1247E31D778CC900C21DAC /* Application */,
 				FA6C868F1D75905300FB99CF /* Scripting */,
 				FA6C868B1D758FA800FB99CF /* Networking */,
 				FA6C86751D75755200FB99CF /* Operations */,
@@ -1079,6 +1120,7 @@
 				FA28E7061D1B21A5003D3724 /* Sources */,
 				FA28E7071D1B21A5003D3724 /* Frameworks */,
 				FA28E7081D1B21A5003D3724 /* Resources */,
+				FA27AAC31D78EB4700563529 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1158,6 +1200,7 @@
 				FA6C86D41D760CC600FB99CF /* CydiaTabBarController.mm in Sources */,
 				FA6C86781D75756800FB99CF /* CydiaOperation.mm in Sources */,
 				FA6C86A31D75967800FB99CF /* CydiaScript.mm in Sources */,
+				FA1247E71D778DB800C21DAC /* Paths.mm in Sources */,
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
@@ -1346,7 +1389,7 @@
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 2.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=i386]" = 6.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=x86_64]" = 6.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks /usr/lib";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
 					"-idirafter",
@@ -1380,7 +1423,7 @@
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=*]" = 2.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=i386]" = 6.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=x86_64]" = 6.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks /usr/lib";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
 					"-idirafter",

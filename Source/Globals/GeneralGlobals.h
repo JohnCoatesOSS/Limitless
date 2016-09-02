@@ -26,9 +26,6 @@ static NSString *App_;
 static BOOL Advanced_;
 static BOOL Ignored_;
 
-#define CacheState_ "/var/mobile/Library/Caches/com.saurik.Cydia/CacheState.plist"
-#define SavedState_ "/var/mobile/Library/Caches/com.saurik.Cydia/SavedState.plist"
-
 static _transient NSNumber *Version_;
 static time_t now_;
 

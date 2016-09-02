@@ -182,6 +182,7 @@ extern "C" {
 #import "SourcesController.h"
 #import "StashController.h"
 #import "CYURLCache.h"
+#import "Paths.h"
 
 
 @interface Cydia : UIApplication <
@@ -343,7 +344,7 @@ extern "C" {
 - (void) _refreshIfPossible {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-    NSDate *update([[NSDictionary dictionaryWithContentsOfFile:@ CacheState_] objectForKey:@"LastUpdate"]);
+    NSDate *update([[NSDictionary dictionaryWithContentsOfFile:[Paths cacheState]] objectForKey:@"LastUpdate"]);
 
     bool recently = false;
     if (update != nil) {
@@ -961,7 +962,7 @@ _end
         @"InterfaceState", [tabbar_ navigationURLCollection],
         @"LastClosed", [NSDate date],
         @"InterfaceIndex", [NSNumber numberWithInt:[tabbar_ selectedIndex]],
-    nil] writeToFile:@ SavedState_ atomically:YES];
+    nil] writeToFile:[Paths savedState] atomically:YES];
 
     [self _saveConfig];
 }
@@ -1228,7 +1229,7 @@ _trace();
     [self refreshIfPossible];
     [self disemulate];
 
-    NSDictionary *state([NSDictionary dictionaryWithContentsOfFile:@ SavedState_]);
+    NSDictionary *state([NSDictionary dictionaryWithContentsOfFile:[Paths savedState]]);
 
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
     NSArray *saved = [[[state objectForKey:@"InterfaceState"] mutableCopy] autorelease];

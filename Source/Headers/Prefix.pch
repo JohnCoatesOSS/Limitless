@@ -9,3 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "Device.h"
 #endif
+
+#ifndef _assert
+#define _assert(test) do \
+if (!(test)) { \
+fprintf(stderr, "_assert(%d:%s)@%s:%u[%s]\n", errno, #test, __FILE__, __LINE__, __FUNCTION__); \
+assert(test); \
+exit(-1); \
+} \
+while (false)
+#endif
+
+#if (TARGET_OS_SIMULATOR)
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif

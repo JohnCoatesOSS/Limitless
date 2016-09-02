@@ -9,6 +9,8 @@
 #import "SystemHelpers.h"
 #import "iPhonePrivate.h"
 
+CFStringRef (*$MGCopyAnswer)(CFStringRef);
+
 NSObject *CYIOGetValue(const char *path, NSString *property) {
     io_registry_entry_t entry(IORegistryEntryFromPath(kIOMasterPortDefault, path));
     if (entry == MACH_PORT_NULL)
@@ -38,8 +40,12 @@ NSString *CYHex(NSData *data, bool reverse) {
 }
 
 NSString *UniqueIdentifier(UIDevice *device) {
-    if (kCFCoreFoundationVersionNumber < 800) // iOS 7.x
+    if ([Device isSimulator]) {
+        return [NSUUID UUID].UUIDString;
+    }
+    if (kCFCoreFoundationVersionNumber < 800) { // iOS 7.x
         return [device ?: [UIDevice currentDevice] uniqueIdentifier];
-    else
-        return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
+    }
+    
+    return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
 }

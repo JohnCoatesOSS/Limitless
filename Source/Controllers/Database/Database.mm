@@ -15,6 +15,7 @@
 #import "Package.h"
 #import "CFArray+Sort.h"
 #import "Logging.hpp"
+#import "Paths.h"
 
 @implementation Database
 
@@ -696,7 +697,7 @@
         
         [[NSDictionary dictionaryWithObjectsAndKeys:
           [NSDate date], @"LastUpdate",
-          nil] writeToFile:@ CacheState_ atomically:YES];
+          nil] writeToFile:[Paths cacheState] atomically:YES];
     }
     
     [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator) withObject:nil waitUntilDone:YES];

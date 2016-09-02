@@ -10,10 +10,6 @@
 // Startup
 + (void)runStartupTasks;
 
-// Logging
-+ (int)persistentLogFileDescriptor;
-+ (void)openPersistentLogFile;
-
 // Status
 + (void)updateExternalKeepAliveStatus:(BOOL)keepAlive;
 

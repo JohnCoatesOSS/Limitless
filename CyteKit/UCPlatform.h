@@ -51,12 +51,14 @@ extern bool _itv;
     _ltv = _ctv; \
 } while (false)
 
+#ifndef _assert
 #define _assert(test) do \
     if (!(test)) { \
         fprintf(stderr, "_assert(%d:%s)@%s:%u[%s]\n", errno, #test, __FILE__, __LINE__, __FUNCTION__); \
         exit(-1); \
     } \
 while (false)
+#endif
 
 #define _not(type) ((type) ~ (type) 0)
 

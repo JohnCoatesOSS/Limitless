@@ -34,12 +34,15 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#ifndef _assert
 #define _assert(test) do \
     if (!(test)) { \
         fprintf(stderr, "_assert(%d:%s)@%s:%u[%s]\n", errno, #test, __FILE__, __LINE__, __FUNCTION__); \
-        exit(-1); \
+         exit(-1); \
     } \
 while (false)
+#endif
+
 
 namespace Cytore {
 
@@ -180,7 +183,8 @@ class File {
 
     void Open(const char *path) {
         _assert(file_ == -1);
-        file_ = open(path, O_RDWR | O_CREAT | O_EXLOCK, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        file_ = open(path,
+                     O_RDWR | O_CREAT | O_EXLOCK, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
         _assert(file_ != -1);
 
         struct stat stat;

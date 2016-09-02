@@ -1,7 +1,7 @@
 ---
 archs:                 [ armv7, armv7s, arm64, i386, x86_64 ]
 platform:              ios
-install-name:          /usr/lib/libapt-inst.dylib
+install-name:          @rpath/libapt-inst.dylib
 current-version:       0.0.0
 compatibility-version: 0.0.0
 exports:

@@ -25,6 +25,7 @@
 #import "SystemHelpers.h"
 #import "Profiling.hpp"
 #import "GeneralHelpers.h"
+#import "Paths.h"
 
 @interface Startup ()
 
@@ -35,24 +36,23 @@
 #pragma mark - Entry Point
 
 + (void)runStartupTasks {
-    [self openPersistentLogFile];
+    if (![Device isSimulator]) {
+        [self rerouteNSLogToPersistentFile];
+    }
     [self updateExternalKeepAliveStatus:NO];
+    [self setUpLegacyGlobals];
 }
 
 #pragma mark - Logging
 
-+ (int)persistentLogFileDescriptor {
-    return 2;
-}
-
-+ (void)openPersistentLogFile {
++ (void)rerouteNSLogToPersistentFile {
     int temporaryFileDescriptor;
     temporaryFileDescriptor = open("/tmp/cydia.log",
                                    O_WRONLY | O_APPEND | O_CREAT,
                                    0644);
     
     [self duplicateFileDescriptor:temporaryFileDescriptor
-                newFileDescriptor:[self persistentLogFileDescriptor]];
+                newFileDescriptor:STDERR_FILENO];
     
     close(temporaryFileDescriptor);
 }
@@ -106,7 +106,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     UI_ = CydiaURL(ui);
     
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
-    
     [self setUpLibraryHacks];
     [self setUpLocale];
     [self setUpIndexCollation];
@@ -124,32 +123,43 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     $MGCopyAnswer = reinterpret_cast<CFStringRef (*)(CFStringRef)>(dlsym(gestalt, "MGCopyAnswer"));
     
     [self setUpSystemInformation];
+    [self setUpAPT];
     [self setUpDatabase];
     
-    Finishes_ = [NSArray arrayWithObjects:@"return", @"reopen", @"restart", @"reload", @"reboot", nil];
+    Finishes_ = @[@"return", @"reopen", @"restart", @"reload", @"reboot"];
     
-    if (kCFCoreFoundationVersionNumber > 1000)
+    bool deviceIsiOS8OrHigher = kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_8_0;
+    if (![Device isSimulator] && deviceIsiOS8OrHigher) {
         system("/usr/libexec/cydia/cydo /usr/libexec/cydia/setnsfpn /var/lib");
-    
-    int version = [NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver" encoding:NSUTF8StringEncoding error:nil].intValue;
-    
-    if (access("/User", F_OK) != 0 || version != 6) {
-        _trace();
-        system("/usr/libexec/cydia/cydo /usr/libexec/cydia/firmware.sh");
-        _trace();
     }
     
-    if (access("/tmp/cydia.chk", F_OK) == 0) {
-        if (unlink([Cache("pkgcache.bin") UTF8String]) == -1)
-            _assert(errno == ENOENT);
-        if (unlink([Cache("srcpkgcache.bin") UTF8String]) == -1)
-            _assert(errno == ENOENT);
+    int version = [NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"
+                                            encoding:NSUTF8StringEncoding error:nil].intValue;
+    
+    if (![Device isSimulator]) {
+        if (access("/User", F_OK) != 0 || version != 6) {
+            _trace();
+            system("/usr/libexec/cydia/cydo /usr/libexec/cydia/firmware.sh");
+            _trace();
+        }
     }
     
-    system("/usr/libexec/cydia/cydo /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
+    if (![Device isSimulator]) {
+        if (access("/tmp/cydia.chk", F_OK) == 0) {
+            if (unlink([Cache("pkgcache.bin") UTF8String]) == -1)
+                _assert(errno == ENOENT);
+            if (unlink([Cache("srcpkgcache.bin") UTF8String]) == -1)
+                _assert(errno == ENOENT);
+        }
+    }
+    
+    if (![Device isSimulator]) {
+        system("/usr/libexec/cydia/cydo /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
+    }
     
     [self setUpAPT];
     [self setUpTheme];
+    NSLog(@"Finished running startup tasks");
 }
 
 + (void)setUpLibraryHacks {
@@ -299,8 +309,11 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     SectionMap_ = [[[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Sections" ofType:@"plist"]] autorelease];
     
     _trace();
-    mkdir("/var/mobile/Library/Cydia", 0755);
-    MetaFile_.Open("/var/mobile/Library/Cydia/metadata.cb0");
+    NSString *applicationLibraryDirectory = [Paths applicationLibraryDirectory];
+    mkdir(applicationLibraryDirectory.UTF8String, 0755);
+    NSString *metadataPath = [applicationLibraryDirectory
+                              stringByAppendingPathComponent:@"metadata.cb0"];
+    MetaFile_.Open(metadataPath.UTF8String);
     _trace();
     
     Values_ = [self autoreleasedDeepMutableDictionaryCopy:CFPreferencesCopyAppValue(CFSTR("CydiaValues"), CFSTR("com.saurik.Cydia")) ];
@@ -309,7 +322,12 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     Version_ = [(NSNumber *) CFPreferencesCopyAppValue(CFSTR("CydiaVersion"), CFSTR("com.saurik.Cydia")) autorelease];
     
     _trace();
-    NSDictionary *metadata([[[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/lib/cydia/metadata.plist"] autorelease]);
+    NSString *varLibCydiaDirectory = [Paths varLibCydiaDirectory];
+    NSString *metaDataPlistPath = [varLibCydiaDirectory
+                                   stringByAppendingPathComponent:@"metadata.plist"];
+    NSDictionary *metadata = [[[NSMutableDictionary alloc]
+                               initWithContentsOfFile:metaDataPlistPath]
+                              autorelease];
     
     if (Values_ == nil)
         Values_ = [metadata objectForKey:@"Values"];
@@ -348,9 +366,9 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
         
         Version_ = [NSNumber numberWithUnsignedInt:1];
         
-        if (NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithContentsOfFile:@ CacheState_]) {
+        if (NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithContentsOfFile:[Paths cacheState]]) {
             [cache removeObjectForKey:@"LastUpdate"];
-            [cache writeToFile:@ CacheState_ atomically:YES];
+            [cache writeToFile:[Paths cacheState] atomically:YES];
         }
     }
     
@@ -364,7 +382,9 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     broken = nil;
     
     SaveConfig(nil);
-    system("/usr/libexec/cydia/cydo /bin/rm -f /var/lib/cydia/metadata.plist");
+    if (![Device isSimulator]) {
+        system("/usr/libexec/cydia/cydo /bin/rm -f /var/lib/cydia/metadata.plist");
+    }
     
     $SBSSetInterceptsMenuButtonForever = reinterpret_cast<void (*)(bool)>(dlsym(RTLD_DEFAULT, "SBSSetInterceptsMenuButtonForever"));
     $SBSCopyIconImagePNGDataForDisplayIdentifier = reinterpret_cast<NSData *(*)(NSString *)>(dlsym(RTLD_DEFAULT, "SBSCopyIconImagePNGDataForDisplayIdentifier"));
@@ -385,7 +405,17 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
 
 + (void)setUpAPT {
     _assert(pkgInitConfig(*_config));
-    _assert(pkgInitSystem(*_config, _system));
+    _config->Set("Apt::System", "Debian dpkg interface");
+    bool ret = pkgInitSystem(*_config, _system);
+    
+    if (!ret) {
+        GlobalError *error = _GetErrorObj();
+        std::string errorMessage;
+        error->PopMessage(errorMessage);
+        std::cout << "Error: " << errorMessage << std::endl;
+    }
+    _assert(ret);
+    
     
     const char *lang = getenv("LANG");
     if (lang != NULL) {

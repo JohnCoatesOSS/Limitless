@@ -26,12 +26,14 @@
 #include <cstdio>
 
 #include "Sources.h"
+#import "Paths.h"
 
 extern _H<NSMutableDictionary> Sources_;
 
 void CydiaWriteSources() {
-    unlink(SOURCES_LIST);
-    FILE *file(fopen(SOURCES_LIST, "w"));
+    const char *sourcesListPath = [Paths sourcesList].UTF8String;
+    unlink(sourcesListPath);
+    FILE *file(fopen(sourcesListPath, "w"));
     _assert(file != NULL);
 
     fprintf(file, "deb http://apt.saurik.com/ ios/%.2f main\n", kCFCoreFoundationVersionNumber);
