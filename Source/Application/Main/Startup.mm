@@ -128,8 +128,8 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     Finishes_ = @[@"return", @"reopen", @"restart", @"reload", @"reboot"];
     
-    bool deviceIsiOS8OrHigher = kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_8_0;
-    if (![Device isSimulator] && deviceIsiOS8OrHigher) {
+    bool iOSVersionIsGreaterThanOrEqualTo8 = kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_8_0;
+    if (![Device isSimulator] && iOSVersionIsGreaterThanOrEqualTo8) {
         system("/usr/libexec/cydia/cydo /usr/libexec/cydia/setnsfpn /var/lib");
     }
     

@@ -52,15 +52,20 @@
 }
 
 - (void) getKeyboardCurve:(UIViewAnimationCurve *)curve duration:(NSTimeInterval *)duration forNotification:(NSNotification *)notification {
-    if (&UIKeyboardAnimationCurveUserInfoKey == NULL)
-        *curve = UIViewAnimationCurveEaseInOut;
-    else
-        [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:curve];
+    BOOL iOSVersionIsGreaterThanOrEqualTo3 = kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_3_0;
+    BOOL keyboardAnimationCurveIsAvailable = iOSVersionIsGreaterThanOrEqualTo3;
     
-    if (&UIKeyboardAnimationDurationUserInfoKey == NULL)
+    if (keyboardAnimationCurveIsAvailable) {
+        id curveValue = [notification.userInfo
+                    objectForKey:UIKeyboardAnimationCurveUserInfoKey];
+        [curveValue getValue:curve];
+        id durationValue = [notification.userInfo
+                            objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+        [durationValue getValue:duration];
+    } else {
+        *curve = UIViewAnimationCurveEaseInOut;
         *duration = 0.3;
-    else
-        [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:duration];
+    }
 }
 
 - (void) keyboardWillShow:(NSNotification *)notification {
