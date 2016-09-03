@@ -272,13 +272,27 @@
 }
 
 - (NSArray *) getDisplayIdentifiers {
-    NSSet *set([SBSCopyApplicationDisplayIdentifiers() autorelease]);
-    if (set == nil || ![set isKindOfClass:[NSSet class]])
+    if ([Device isSimulator]) {
+        return @[@"com.facebook.Messenger"];
+    }
+    id set = [(id)SBSCopyApplicationDisplayIdentifiers(0, 0) autorelease];
+    if (set == nil)
         return [NSArray array];
-    return [set allObjects];
+    
+    if ([set isKindOfClass:[NSArray class]]) {
+        return set;
+    }
+    if ([set isKindOfClass:[NSSet class]]) {
+        return [set allObjects];
+    }
+    
+    return [NSArray array];
 }
 
 - (NSString *) getLocalizedNameForDisplayIdentifier:(NSString *)identifier {
+    if ([Device isSimulator]) {
+        return @"Facebook Messenger";
+    }
     return [SBSCopyLocalizedApplicationNameForDisplayIdentifier(identifier) autorelease] ?: (id) [NSNull null];
 }
 
