@@ -41,6 +41,14 @@
     }
     [self updateExternalKeepAliveStatus:NO];
     [self setUpLegacyGlobals];
+    
+    if ([Device isSimulator]) {
+        setenv("PATH", "/Users/macbook/.swiftenv/shims:/Users/macbook/.rbenv/shims:/Applications/MAMP/bin/php/php5.4.34/bin/:/Users/macbook/Dev/local/bin:/opt/local/bin:/opt/local/sbin:/SDK/idasdk/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/macbook/.rvm/bin", true);
+        unsetenv("DYLD_ROOT_PATH");
+        unsetenv("DYLD_INSERT_LIBRARIES");
+        unsetenv("DYLD_LIBRARY_PATH");
+        
+    }
 }
 
 #pragma mark - Logging
@@ -405,10 +413,26 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
 
 + (void)setUpAPT {
     _assert(pkgInitConfig(*_config));
-    _config->Set("Apt::System", "Debian dpkg interface");
+    
+    if ([Device isSimulator]) {
+        _config->Set("APT::Architecture", "iphoneos-arm");
+        _config->Set("Apt::System", "Debian dpkg interface");
+        _config->Set("Dir::Etc::trusted", "trusted.gpg");
+        _config->Set("Dir::Etc::TrustedParts","trusted.gpg.d");
+        _config->Set("Debug::Acquire::gpgv", "true");
+        _config->Set("Debug::pkgPackageManager", "true");
+        _config->Set("Debug::GetListOfFilesInDir", "true");
+        _config->Set("Debug::pkgAcquire", "true");
+        _config->Set("Debug::pkgInitConfig", "true");
+        _config->Set("Dir::Bin::gpg", "/usr/local/bin/gpgv");
+        _config->Set("Dir::Bin::lzma", "/usr/local/bin/lzma");
+        _config->Set("Dir::Bin::bzip2", "/usr/bin/bzip2");
+    }
+    
     bool ret = pkgInitSystem(*_config, _system);
     
     if (!ret) {
+        _config->Dump();
         GlobalError *error = _GetErrorObj();
         std::string errorMessage;
         error->PopMessage(errorMessage);
