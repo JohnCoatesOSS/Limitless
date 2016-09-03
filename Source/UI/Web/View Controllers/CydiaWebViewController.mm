@@ -41,7 +41,7 @@
     @synchronized (HostConfig_) {
         if ([scheme isEqualToString:@"file"])
             bridged = true;
-        else if ([scheme isEqualToString:@"https"])
+        else// if ([scheme isEqualToString:@"https"])
             if ([BridgedHosts_ containsObject:[url host]])
                 bridged = true;
     }

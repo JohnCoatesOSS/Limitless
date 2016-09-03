@@ -137,20 +137,50 @@
     } return self;
 }
 
+- (void) ensureRequestSchemeMatchesDepictionScheme:(NSString *)scheme {
+    NSURLRequest *request = request_;
+    if (!request || !scheme || !request.URL.scheme) {
+        return;
+    }
+    NSURL *requestURL = request.URL;
+    NSString *requestScheme = requestURL.scheme;
+    
+    if ([scheme isEqualToString:requestScheme]) {
+        return;
+    }
+    
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+
+    NSURLComponents *components = [NSURLComponents componentsWithURL:request.URL
+                                             resolvingAgainstBaseURL:YES];
+    components.scheme = scheme;
+    mutableRequest.URL = components.URL;
+    request_ = mutableRequest;
+}
 - (void) reloadData {
+    package_ = [database_ packageWithName:name_];
+    if (package_ != nil) {
+        [(Package *) package_ parse];
+        
+        NSString *depiction = [package_ depiction];
+        NSURL *depictionURL = [NSURL URLWithString:depiction];
+        
+        if (depictionURL) {
+            [self ensureRequestSchemeMatchesDepictionScheme:depictionURL.scheme];
+        }
+    }
+    NSLog(@"reloadData, package: %p", (id)package_);
     [super reloadData];
     
     [sheet_ dismissWithClickedButtonIndex:[sheet_ cancelButtonIndex] animated:YES];
     sheet_ = nil;
     
-    package_ = [database_ packageWithName:name_];
+    
     versions_ = [package_ downgrades];
     
     buttons_.clear();
     
     if (package_ != nil) {
-        [(Package *) package_ parse];
-        
         commercial_ = [package_ isCommercial];
         
         if ([package_ mode] != nil)
@@ -167,6 +197,8 @@
         if ([versions_ count] != 0)
             buttons_.push_back(std::make_pair(@"DOWNGRADE", UCLocalize("DOWNGRADE")));
     }
+    
+    
     
     NSString *title;
     switch (buttons_.size()) {
