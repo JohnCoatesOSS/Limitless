@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Application.h"
 #import "AppDelegate.h"
 #import "Startup.h"
 
@@ -13,6 +14,7 @@ int main(int argc, char *argv[]) {
     @autoreleasepool {
         [Startup runStartupTasks];
         return UIApplicationMain(argc, argv,
-                                 nil, NSStringFromClass([AppDelegate class]));
+                                 NSStringFromClass([Application class]),
+                                 NSStringFromClass([Application class]));
     }
 }
