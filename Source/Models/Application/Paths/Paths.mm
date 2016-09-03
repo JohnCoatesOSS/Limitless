@@ -14,25 +14,25 @@
 @implementation Paths
 
 + (NSString *)applicationLibraryDirectory {
-    if ([Device isSimulator]) {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSArray *urls = [fileManager URLsForDirectory:NSLibraryDirectory
-                                            inDomains:NSUserDomainMask];
-        NSURL *url = urls[0];
-        NSString *path = url.path;
-        return path;
-    }
+//    if ([Device isSimulator]) {
+//        NSFileManager *fileManager = [NSFileManager defaultManager];
+//        NSArray *urls = [fileManager URLsForDirectory:NSLibraryDirectory
+//                                            inDomains:NSUserDomainMask];
+//        NSURL *url = urls[0];
+//        NSString *path = url.path;
+//        return path;
+//    }
     
     return @"/var/mobile/Library/Cydia";
 }
 
 + (NSString *)varLibCydiaDirectory {
-    if ([Device isSimulator]) {
-        NSString *applicationLibraryDirectory = [self applicationLibraryDirectory];
-        NSString *varLibCydiaDirectory = [applicationLibraryDirectory stringByAppendingPathComponent:@"varLibCydia"];
-        [self createDirectoryIfDoesntExist:varLibCydiaDirectory];
-        return varLibCydiaDirectory;
-    }
+//    if ([Device isSimulator]) {
+//        NSString *applicationLibraryDirectory = [self applicationLibraryDirectory];
+//        NSString *varLibCydiaDirectory = [applicationLibraryDirectory stringByAppendingPathComponent:@"varLibCydia"];
+//        [self createDirectoryIfDoesntExist:varLibCydiaDirectory];
+//        return varLibCydiaDirectory;
+//    }
     
     
     return @"/var/lib/cydia";
@@ -56,16 +56,19 @@
 }
 
 + (NSString *)cacheDirectory {
-    if ([Device isSimulator]) {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSArray *urls = [fileManager URLsForDirectory:NSCachesDirectory
-                                            inDomains:NSUserDomainMask];
-        NSURL *url = urls[0];
-        NSString *path = url.path;
-        return path;
-    }
+//    if ([Device isSimulator]) {
+//        NSFileManager *fileManager = [NSFileManager defaultManager];
+//        NSArray *urls = [fileManager URLsForDirectory:NSCachesDirectory
+//                                            inDomains:NSUserDomainMask];
+//        NSURL *url = urls[0];
+//        NSString *path = url.path;
+//        return path;
+//    }
     
     return @"/var/mobile/Library/Caches/com.saurik.Cydia";
+}
++ (NSString *)cacheFile:(NSString *)filename {
+    return [[self cacheDirectory] stringByAppendingPathComponent:filename];
 }
 
 + (NSString *)cacheState {

@@ -12,4 +12,5 @@
 + (NSString *)cacheState;
 + (NSString *)savedState;
 + (NSString *)sourcesList;
++ (NSString *)cacheFile:(NSString *)filename;
 @end
