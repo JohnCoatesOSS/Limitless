@@ -27,8 +27,7 @@
 
 #include "Sources.h"
 #import "Paths.h"
-
-extern _H<NSMutableDictionary> Sources_;
+#import "GeneralGlobals.h"
 
 void CydiaWriteSources() {
     const char *sourcesListPath = [Paths sourcesList].UTF8String;
@@ -56,7 +55,9 @@ void CydiaWriteSources() {
 }
 
 void CydiaAddSource(NSDictionary *source) {
-    [Sources_ setObject:source forKey:[NSString stringWithFormat:@"%@:%@:%@", [source objectForKey:@"Type"], [source objectForKey:@"URI"], [source objectForKey:@"Distribution"]]];
+    [Sources_
+     setObject:source
+     forKey:[NSString stringWithFormat:@"%@:%@:%@", [source objectForKey:@"Type"], [source objectForKey:@"URI"], [source objectForKey:@"Distribution"]]];
 }
 
 void CydiaAddSource(NSString *href, NSString *distribution, NSArray *sections) {

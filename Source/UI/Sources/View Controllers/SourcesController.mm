@@ -353,7 +353,8 @@
 }
 
 - (void) loadView {
-    list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain] autorelease];
+    list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]
+                                          style:UITableViewStylePlain] autorelease];
     [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
     [list_ setRowHeight:53];
     [(UITableView *) list_ setDataSource:self];

@@ -345,6 +345,8 @@
             return;
         _end
         
+        
+        
         _profile(reloadDataWithInvocation$Source$initWithMetaIndex)
         for (pkgSourceList::const_iterator source = list_->begin(); source != list_->end(); ++source) {
             Source *object([[[Source alloc] initWithMetaIndex:*source forDatabase:self inPool:&pool_] autorelease]);
@@ -629,8 +631,11 @@
     NSString *nextended(Cache("extended_states"));
     
     struct stat info;
-    if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG)
-        system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/cp --remove-destination %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
+    if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG) {
+        if (![Device isSimulator]) {
+            system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/cp --remove-destination %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
+        }
+    }
     
     unlink([nextended UTF8String]);
     symlink([oextended UTF8String], [nextended UTF8String]);
@@ -687,7 +692,9 @@
     if ([self popErrorWithTitle:title])
         return;
     
-    [delegate_ performSelectorOnMainThread:@selector(retainNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
+    [delegate_
+     performSelectorOnMainThread:@selector(retainNetworkActivityIndicator)
+     withObject:nil waitUntilDone:YES];    
     
     bool success(ListUpdate(status, list, PulseInterval_));
     if (status.WasCancelled())
@@ -700,7 +707,8 @@
           nil] writeToFile:[Paths cacheState] atomically:YES];
     }
     
-    [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
+    [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator)
+                                withObject:nil waitUntilDone:YES];
 }
 
 - (void) setDelegate:(NSObject<DatabaseDelegate> *)delegate {
