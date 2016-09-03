@@ -9,29 +9,29 @@
 
 extern NSString *Cydia_;
 
-static NSString *Cache_;
-static int PulseInterval_ = 500000;
+extern NSString *Cache_;
+extern int PulseInterval_;
 
-static int Finish_;
-static bool RestartSubstrate_;
-static NSArray *Finishes_;
+extern int Finish_;
+extern bool RestartSubstrate_;
+extern NSArray *Finishes_;
 
 #define SpringBoard_ "/System/Library/LaunchDaemons/com.apple.SpringBoard.plist"
 #define NotifyConfig_ "/etc/notify.conf"
 
-static bool Queuing_;
+extern bool Queuing_;
 
-static NSString *App_;
+extern NSString *App_;
 
-static BOOL Advanced_;
-static BOOL Ignored_;
+extern BOOL Advanced_;
+extern BOOL Ignored_;
 
-static _transient NSNumber *Version_;
-static time_t now_;
+extern NSNumber *Version_;
+extern time_t now_;
 
-static NSString *kCydiaProgressEventTypeError = @"Error";
-static NSString *kCydiaProgressEventTypeInformation = @"Information";
-static NSString *kCydiaProgressEventTypeStatus = @"Status";
-static NSString *kCydiaProgressEventTypeWarning = @"Warning";
+extern NSString *kCydiaProgressEventTypeError;
+extern NSString *kCydiaProgressEventTypeInformation;
+extern NSString *kCydiaProgressEventTypeStatus;
+extern NSString *kCydiaProgressEventTypeWarning;
 
 extern _H<NSMutableDictionary> Sources_;

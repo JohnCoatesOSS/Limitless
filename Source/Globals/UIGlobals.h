@@ -9,57 +9,56 @@
 #import "CYColor.hpp"
 #import "Menes/Menes.h"
 
-static const NSString *UI_;
-
 // Colors
-static CYColor Blue_;
-static CYColor Blueish_;
-static CYColor Black_;
-static CYColor Folder_;
-static CYColor Off_;
-static CYColor White_;
-static CYColor Gray_;
-static CYColor Green_;
-static CYColor Purple_;
-static CYColor Purplish_;
+extern CYColor Blue_;
+extern CYColor Blueish_;
+extern CYColor Black_;
+extern CYColor Folder_;
+extern CYColor Off_;
+extern CYColor White_;
+extern CYColor Gray_;
+extern CYColor Green_;
+extern CYColor Purple_;
+extern CYColor Purplish_;
 
-static UIColor *InstallingColor_;
-static UIColor *RemovingColor_;
+extern UIColor *InstallingColor_;
+extern UIColor *RemovingColor_;
 
-static CGColorSpaceRef space_;
+extern CGColorSpaceRef space_;
 
 // Fonts
-static _H<UIFont> Font12_;
-static _H<UIFont> Font12Bold_;
-static _H<UIFont> Font14_;
-static _H<UIFont> Font18_;
-static _H<UIFont> Font18Bold_;
-static _H<UIFont> Font22Bold_;
+extern _H<UIFont> Font12_;
+extern _H<UIFont> Font12Bold_;
+extern _H<UIFont> Font14_;
+extern _H<UIFont> Font18_;
+extern _H<UIFont> Font18Bold_;
+extern _H<UIFont> Font22Bold_;
 
 // Collation
-static _H<NSLocale> CollationLocale_;
-static _H<NSArray> CollationThumbs_;
-static std::vector<NSInteger> CollationOffset_;
-static _H<NSArray> CollationTitles_;
-static _H<NSArray> CollationStarts_;
-static UTransliterator *CollationTransl_;
+extern _H<NSLocale> CollationLocale_;
+extern _H<NSArray> CollationThumbs_;
+extern std::vector<NSInteger> CollationOffset_;
+extern _H<NSArray> CollationTitles_;
+extern _H<NSArray> CollationStarts_;
+extern UTransliterator *CollationTransl_;
 
 typedef std::basic_string<UChar> ustring;
-static ustring CollationString_;
+extern ustring CollationString_;
 
 // Locale
-static CFLocaleRef Locale_;
-static NSArray *Languages_;
+extern CFLocaleRef Locale_;
+extern NSArray *Languages_;
 
 // Sections
-static NSDictionary *SectionMap_;
-static _H<NSDate> Backgrounded_;
-static _transient NSMutableDictionary *Values_;
-static _transient NSMutableDictionary *Sections_;
+extern NSDictionary *SectionMap_;
+extern _H<NSDate> Backgrounded_;
+extern _transient NSMutableDictionary *Values_;
+extern _transient NSMutableDictionary *Sections_;
 
 // Strings
 
-static NSString *Colon_;
+extern NSString *Colon_;
 extern NSString *Elision_;
-static NSString *Error_;
-static NSString *Warning_;
+extern NSString *Error_;
+extern NSString *Warning_;
+extern const NSString *UI_;
