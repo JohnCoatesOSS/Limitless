@@ -830,7 +830,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		FA01D20B1D1B229200B49E70 /* Old */ = {
+		FA01D20B1D1B229200B49E70 /* Original */ = {
 			isa = PBXGroup;
 			children = (
 				FA0311B71D1B2CFD008690CA /* Cydia */,
@@ -851,7 +851,7 @@
 				FA01D2181D1B22B100B49E70 /* Version.h */,
 				FA01D2191D1B22B100B49E70 /* Version.mm */,
 			);
-			name = Old;
+			name = Original;
 			path = ..;
 			sourceTree = "<group>";
 		};
@@ -1925,7 +1925,7 @@
 		FAA811AB1D745FD100C674C9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				FA01D20B1D1B229200B49E70 /* Old */,
+				FA01D20B1D1B229200B49E70 /* Original */,
 				FA23E2CE1D776A58001FBE4A /* Hooks */,
 				FAA811AC1D745FDB00C674C9 /* Application */,
 				FA6C865B1D74C27700FB99CF /* Delegates */,
