@@ -505,7 +505,10 @@ float CYScrollViewDecelerationRateNormal;
 
 - (void) webView:(WebView *)view didDecidePolicy:(CYWebPolicyDecision)decision forNavigationAction:(NSDictionary *)action request:(NSURLRequest *)request frame:(WebFrame *)frame {
 #if LogBrowser
-    NSLog(@"didDecidePolicy:%u forNavigationAction:%@ request:%@ frame:%@", decision, action, request, [request allHTTPHeaderFields], frame);
+    NSLog(@"didDecidePolicy:%u forNavigationAction:%@ request:%@, fields: %@, frame:%@",
+          decision, action,
+          request, [request allHTTPHeaderFields],
+          frame);
 #endif
 
     if ([frame parentFrame] == nil) {
