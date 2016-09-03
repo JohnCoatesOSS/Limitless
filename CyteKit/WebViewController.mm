@@ -29,11 +29,9 @@ extern NSString * const kCAFilterNearest;
 #include <dlfcn.h>
 #include <objc/runtime.h>
 
-#define ForSaurik 0
+#import "Flags.h"
 #define DefaultTimeout_ 120.0
 
-#define ShowInternals 0
-#define LogBrowser 0
 #define LogMessages 0
 
 #define lprintf(args...) fprintf(stderr, args)
