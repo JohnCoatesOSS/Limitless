@@ -41,7 +41,7 @@ Cytore::Block
     Cytore::Offset<PackageValue> packages_[1 << 16];
 };
 
-static Cytore::File<MetaValue> MetaFile_;
+extern Cytore::File<MetaValue> MetaFile_;
 
 // Cytore Helper Functions
 

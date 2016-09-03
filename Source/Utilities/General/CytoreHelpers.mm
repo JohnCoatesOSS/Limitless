@@ -6,3 +6,6 @@
 //
 
 #import "CytoreHelpers.h"
+
+
+Cytore::File<MetaValue> MetaFile_;
