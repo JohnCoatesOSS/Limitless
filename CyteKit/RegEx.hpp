@@ -120,7 +120,28 @@ class RegEx {
     #if (TARGET_OS_SIMULATOR)
         // TODO: fix casting error
         // Reinterpret_cast from 'id *' to 'va_list' (aka '__builtin_va_list') is not allowed
-        return @"";
+        
+        id values[capture_];
+        for (int i(0); i != capture_; ++i) {
+            values[i] = this->operator [](i + 1);
+        }
+        // split format into single components
+        NSArray *splitFormat = [format componentsSeparatedByString:@"%"];
+        NSString *formatted = nil;
+        for (int i=0; i != splitFormat.count; i++) {
+            NSString *component = splitFormat[i];
+            if (formatted == nil) {
+                formatted = component;
+                continue;
+            }
+            
+            component = [@"%" stringByAppendingString:component];
+            NSString *formattedComponent;
+            formattedComponent = [NSString stringWithFormat:component, values[i-1]];
+            formatted = [formatted stringByAppendingString:formattedComponent];
+        }
+        
+        return formatted;
     #else
         id values[capture_];
         for (int i(0); i != capture_; ++i)
