@@ -7,7 +7,6 @@
 
 #import "Database.h"
 #import "Standard.h"
-#import <ext/stdio_filebuf.h>
 #import "Defines.h"
 #import "CytoreHelpers.h"
 #import "Profiling.hpp"
@@ -44,20 +43,18 @@
 }
 
 - (void) _readCydia:(NSNumber *)fd {
-    __gnu_cxx::stdio_filebuf<char> ib([fd intValue], std::ios::in);
-    std::istream is(&ib);
-    std::string line;
+    FILE *file = fdopen([fd intValue], "r");
+    char line[1024];
     
     static RegEx finish_r("finish:([^:]*)");
     
-    while (std::getline(is, line)) {
+    while (fgets(line, sizeof(line), file)) {
         NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
         
-        const char *data(line.c_str());
-        size_t size = line.size();
-        lprintf("C:%s\n", data);
+        size_t size = strlen(line);
+        lprintf("C:%s\n", line);
         
-        if (finish_r(data, size)) {
+        if (finish_r(line, size)) {
             NSString *finish = finish_r[1];
             int index = [Finishes_ indexOfObject:finish];
             if (index != INT_MAX && index > Finish_)
@@ -71,32 +68,30 @@
 }
 
 - (void) _readStatus:(NSNumber *)fd {
-    __gnu_cxx::stdio_filebuf<char> ib([fd intValue], std::ios::in);
-    std::istream is(&ib);
-    std::string line;
+    FILE *file = fdopen([fd intValue], "r");
+    char line[1024];
     
     static RegEx conffile_r("status: [^ ]* : conffile-prompt : (.*?) *");
     static RegEx pmstatus_r("([^:]*):([^:]*):([^:]*):(.*)");
     
-    while (std::getline(is, line)) {
+    while (fgets(line, sizeof(line), file)) {
         NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
         
-        const char *data(line.c_str());
-        size_t size(line.size());
-        lprintf("S:%s\n", data);
+        size_t size = strlen(line);
+        lprintf("S:%s\n", line);
         
-        if (conffile_r(data, size)) {
-            // status: /fail : conffile-prompt : '/fail' '/fail.dpkg-new' 1 1
+        if (conffile_r(line, size)) {
+            // status: /line : conffile-prompt : '/fail' '/fail.dpkg-new' 1 1
             [delegate_ performSelectorOnMainThread:@selector(setConfigurationData:) withObject:conffile_r[1] waitUntilDone:YES];
-        } else if (strncmp(data, "status: ", 8) == 0) {
+        } else if (strncmp(line, "status: ", 8) == 0) {
             // status: <package>: {unpacked,half-configured,installed}
-            CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:(data + 8)] ofType:kCydiaProgressEventTypeStatus]);
+            CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:(line + 8)] ofType:kCydiaProgressEventTypeStatus]);
             [progress_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
-        } else if (strncmp(data, "processing: ", 12) == 0) {
+        } else if (strncmp(line, "processing: ", 12) == 0) {
             // processing: configure: config-test
-            CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:(data + 12)] ofType:kCydiaProgressEventTypeStatus]);
+            CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:(line + 12)] ofType:kCydiaProgressEventTypeStatus]);
             [progress_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
-        } else if (pmstatus_r(data, size)) {
+        } else if (pmstatus_r(line, size)) {
             std::string type([pmstatus_r[1] UTF8String]);
             
             NSString *package = pmstatus_r[2];
@@ -128,16 +123,15 @@
 }
 
 - (void) _readOutput:(NSNumber *)fd {
-    __gnu_cxx::stdio_filebuf<char> ib([fd intValue], std::ios::in);
-    std::istream is(&ib);
-    std::string line;
+    FILE *file = fdopen([fd intValue], "r");
+    char line[1024];
     
-    while (std::getline(is, line)) {
+    while (fgets(line, sizeof(line), file)) {
         NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
         
-        lprintf("O:%s\n", line.c_str());
+        lprintf("O:%s\n", line);
         
-        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:line.c_str()] ofType:kCydiaProgressEventTypeInformation]);
+        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:line] ofType:kCydiaProgressEventTypeInformation]);
         [progress_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
         
         [pool release];

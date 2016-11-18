@@ -202,7 +202,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     if (lang != NULL) {
         setenv("LANG", lang, true);
-        std::setlocale(LC_ALL, lang);
+        setlocale(LC_ALL, lang);
     }
 }
 
