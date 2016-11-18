@@ -553,8 +553,8 @@
 		FA06A39C1DDEDFE200AA9B02 /* rred */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = rred; path = "../External/apt-binaries/simulator-i386/methods/rred"; sourceTree = "<group>"; };
 		FA06A39D1DDEDFE200AA9B02 /* rsh */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = rsh; path = "../External/apt-binaries/simulator-i386/methods/rsh"; sourceTree = "<group>"; };
 		FA06A39E1DDEDFE200AA9B02 /* ssh */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = ssh; path = "../External/apt-binaries/simulator-i386/methods/ssh"; sourceTree = "<group>"; };
-		FA06A3AE1DDEE61100AA9B02 /* libapt-inst.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-inst.dylib"; path = "../../apt/binaries/simulator-i386/methods/libapt-inst.dylib"; sourceTree = "<group>"; };
-		FA06A3AF1DDEE61100AA9B02 /* libapt-pkg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-pkg.dylib"; path = "../../apt/binaries/simulator-i386/methods/libapt-pkg.dylib"; sourceTree = "<group>"; };
+		FA06A3AE1DDEE61100AA9B02 /* libapt-inst.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-inst.dylib"; path = "../External/apt-binaries/simulator-i386/methods/libapt-inst.dylib"; sourceTree = "<group>"; };
+		FA06A3AF1DDEE61100AA9B02 /* libapt-pkg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-pkg.dylib"; path = "../External/apt-binaries/simulator-i386/methods/libapt-pkg.dylib"; sourceTree = "<group>"; };
 		FA06A3B51DDEE6B400AA9B02 /* bigboss.gpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = bigboss.gpg; path = ../Trusted.gpg/bigboss.gpg; sourceTree = "<group>"; };
 		FA06A3B61DDEE6B400AA9B02 /* modmyi.gpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = modmyi.gpg; path = ../Trusted.gpg/modmyi.gpg; sourceTree = "<group>"; };
 		FA06A3B71DDEE6B400AA9B02 /* saurik.gpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = saurik.gpg; path = ../Trusted.gpg/saurik.gpg; sourceTree = "<group>"; };
