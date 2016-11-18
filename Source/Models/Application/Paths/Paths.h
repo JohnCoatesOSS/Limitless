@@ -9,8 +9,15 @@
 
 + (NSString *)applicationLibraryDirectory;
 + (NSString *)varLibCydiaDirectory;
++ (NSString *)etcAptDirectory;
 + (NSString *)cacheState;
 + (NSString *)savedState;
 + (NSString *)sourcesList;
 + (NSString *)cacheFile:(NSString *)filename;
++ (NSString *)documentsFile:(NSString *)filename;
++ (NSString *)dpkgStatus;
+
++ (NSString *)cacheDirectory;
+
++ (void)createDirectoryIfDoesntExist:(NSString *)directory;
 @end

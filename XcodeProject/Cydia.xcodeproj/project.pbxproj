@@ -40,6 +40,26 @@
 		FA0311C31D1B300E008690CA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311C21D1B300E008690CA /* UIKit.framework */; };
 		FA06A38E1DDEADFD00AA9B02 /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38D1DDEADFD00AA9B02 /* libapt-pkg.tbd */; };
 		FA06A3901DDEAE3600AA9B02 /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38F1DDEAE3600AA9B02 /* libapt-inst.tbd */; };
+		FA06A39F1DDEDFE200AA9B02 /* bzip2 in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3921DDEDFE200AA9B02 /* bzip2 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A01DDEDFE200AA9B02 /* cdrom in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3931DDEDFE200AA9B02 /* cdrom */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A11DDEDFE200AA9B02 /* copy in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3941DDEDFE200AA9B02 /* copy */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A21DDEDFE200AA9B02 /* file in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3951DDEDFE200AA9B02 /* file */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A31DDEDFE200AA9B02 /* ftp in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3961DDEDFE200AA9B02 /* ftp */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A41DDEDFE200AA9B02 /* gpgv in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3971DDEDFE200AA9B02 /* gpgv */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A51DDEDFE200AA9B02 /* gzip in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3981DDEDFE200AA9B02 /* gzip */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A61DDEDFE200AA9B02 /* http in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3991DDEDFE200AA9B02 /* http */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A71DDEDFE200AA9B02 /* https in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39A1DDEDFE200AA9B02 /* https */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A81DDEDFE200AA9B02 /* lzma in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39B1DDEDFE200AA9B02 /* lzma */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3A91DDEDFE200AA9B02 /* rred in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39C1DDEDFE200AA9B02 /* rred */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3AA1DDEDFE200AA9B02 /* rsh in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39D1DDEDFE200AA9B02 /* rsh */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3AB1DDEDFE200AA9B02 /* ssh in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39E1DDEDFE200AA9B02 /* ssh */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3B21DDEE61D00AA9B02 /* libapt-inst.dylib in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3AE1DDEE61100AA9B02 /* libapt-inst.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3B31DDEE61D00AA9B02 /* libapt-pkg.dylib in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3AF1DDEE61100AA9B02 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA06A3B91DDEE6B400AA9B02 /* bigboss.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B51DDEE6B400AA9B02 /* bigboss.gpg */; };
+		FA06A3BA1DDEE6B400AA9B02 /* modmyi.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B61DDEE6B400AA9B02 /* modmyi.gpg */; };
+		FA06A3BB1DDEE6B400AA9B02 /* saurik.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B71DDEE6B400AA9B02 /* saurik.gpg */; };
+		FA06A3BC1DDEE6B400AA9B02 /* zodttd.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B81DDEE6B400AA9B02 /* zodttd.gpg */; };
+		FA06A3BF1DDEE98000AA9B02 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = FA06A3BE1DDEE98000AA9B02 /* Platform.m */; };
 		FA1247E71D778DB800C21DAC /* Paths.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1247E61D778DB800C21DAC /* Paths.mm */; };
 		FA1FE8C31D79D56D00CF5AAD /* error.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C21D79D56D00CF5AAD /* error.html */; };
 		FA1FE9201D79D58000CF5AAD /* localize.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C41D79D57F00CF5AAD /* localize.js */; };
@@ -233,8 +253,8 @@
 		FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2D61D776C93001FBE4A /* WAKWindow+Hooks.mm */; };
 		FA23E2DE1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */; };
 		FA23E2DF1D7773D9001FBE4A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311751D1B2B6C008690CA /* WebKit.framework */; };
-		FA27AACE1D78EFE600563529 /* libapt-inst.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA27AACC1D78EFE600563529 /* libapt-inst.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA27AACE1D78EFE600563529 /* libapt-inst.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACC1D78EFE600563529 /* libapt-inst.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
@@ -292,6 +312,45 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		FA06A3911DDECC3500AA9B02 /* Copy APT Methods for simulator */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = methods;
+			dstSubfolderSpec = 7;
+			files = (
+				FA06A39F1DDEDFE200AA9B02 /* bzip2 in Copy APT Methods for simulator */,
+				FA06A3A01DDEDFE200AA9B02 /* cdrom in Copy APT Methods for simulator */,
+				FA06A3A11DDEDFE200AA9B02 /* copy in Copy APT Methods for simulator */,
+				FA06A3A21DDEDFE200AA9B02 /* file in Copy APT Methods for simulator */,
+				FA06A3A31DDEDFE200AA9B02 /* ftp in Copy APT Methods for simulator */,
+				FA06A3B21DDEE61D00AA9B02 /* libapt-inst.dylib in Copy APT Methods for simulator */,
+				FA06A3B31DDEE61D00AA9B02 /* libapt-pkg.dylib in Copy APT Methods for simulator */,
+				FA06A3A41DDEDFE200AA9B02 /* gpgv in Copy APT Methods for simulator */,
+				FA06A3A51DDEDFE200AA9B02 /* gzip in Copy APT Methods for simulator */,
+				FA06A3A61DDEDFE200AA9B02 /* http in Copy APT Methods for simulator */,
+				FA06A3A71DDEDFE200AA9B02 /* https in Copy APT Methods for simulator */,
+				FA06A3A81DDEDFE200AA9B02 /* lzma in Copy APT Methods for simulator */,
+				FA06A3A91DDEDFE200AA9B02 /* rred in Copy APT Methods for simulator */,
+				FA06A3AA1DDEDFE200AA9B02 /* rsh in Copy APT Methods for simulator */,
+				FA06A3AB1DDEDFE200AA9B02 /* ssh in Copy APT Methods for simulator */,
+			);
+			name = "Copy APT Methods for simulator";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA06A3B41DDEE67800AA9B02 /* Copy APT trusted */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Trusted.gpg;
+			dstSubfolderSpec = 7;
+			files = (
+				FA06A3B91DDEE6B400AA9B02 /* bigboss.gpg in Copy APT trusted */,
+				FA06A3BA1DDEE6B400AA9B02 /* modmyi.gpg in Copy APT trusted */,
+				FA06A3BB1DDEE6B400AA9B02 /* saurik.gpg in Copy APT trusted */,
+				FA06A3BC1DDEE6B400AA9B02 /* zodttd.gpg in Copy APT trusted */,
+			);
+			name = "Copy APT trusted";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA1FE8C11D79D55200CF5AAD /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -394,15 +453,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		FA27AAC31D78EB4700563529 /* CopyFiles */ = {
+		FA27AAC31D78EB4700563529 /* Copy APT Dylibs */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 11;
 			files = (
-				FA27AACE1D78EFE600563529 /* libapt-inst.dylib in CopyFiles */,
-				FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in CopyFiles */,
+				FA27AACE1D78EFE600563529 /* libapt-inst.dylib in Copy APT Dylibs */,
+				FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in Copy APT Dylibs */,
 			);
+			name = "Copy APT Dylibs";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -480,6 +540,27 @@
 		FA0311C21D1B300E008690CA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FA06A38D1DDEADFD00AA9B02 /* libapt-pkg.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-pkg.tbd"; path = "../External/usr/lib/libapt-pkg.tbd"; sourceTree = "<group>"; };
 		FA06A38F1DDEAE3600AA9B02 /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
+		FA06A3921DDEDFE200AA9B02 /* bzip2 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = bzip2; path = "../External/apt-binaries/simulator-i386/methods/bzip2"; sourceTree = "<group>"; };
+		FA06A3931DDEDFE200AA9B02 /* cdrom */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = cdrom; path = "../External/apt-binaries/simulator-i386/methods/cdrom"; sourceTree = "<group>"; };
+		FA06A3941DDEDFE200AA9B02 /* copy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = copy; path = "../External/apt-binaries/simulator-i386/methods/copy"; sourceTree = "<group>"; };
+		FA06A3951DDEDFE200AA9B02 /* file */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = file; path = "../External/apt-binaries/simulator-i386/methods/file"; sourceTree = "<group>"; };
+		FA06A3961DDEDFE200AA9B02 /* ftp */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = ftp; path = "../External/apt-binaries/simulator-i386/methods/ftp"; sourceTree = "<group>"; };
+		FA06A3971DDEDFE200AA9B02 /* gpgv */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = gpgv; path = "../External/apt-binaries/simulator-i386/methods/gpgv"; sourceTree = "<group>"; };
+		FA06A3981DDEDFE200AA9B02 /* gzip */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = gzip; path = "../External/apt-binaries/simulator-i386/methods/gzip"; sourceTree = "<group>"; };
+		FA06A3991DDEDFE200AA9B02 /* http */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = http; path = "../External/apt-binaries/simulator-i386/methods/http"; sourceTree = "<group>"; };
+		FA06A39A1DDEDFE200AA9B02 /* https */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = https; path = "../External/apt-binaries/simulator-i386/methods/https"; sourceTree = "<group>"; };
+		FA06A39B1DDEDFE200AA9B02 /* lzma */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = lzma; path = "../External/apt-binaries/simulator-i386/methods/lzma"; sourceTree = "<group>"; };
+		FA06A39C1DDEDFE200AA9B02 /* rred */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = rred; path = "../External/apt-binaries/simulator-i386/methods/rred"; sourceTree = "<group>"; };
+		FA06A39D1DDEDFE200AA9B02 /* rsh */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = rsh; path = "../External/apt-binaries/simulator-i386/methods/rsh"; sourceTree = "<group>"; };
+		FA06A39E1DDEDFE200AA9B02 /* ssh */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = ssh; path = "../External/apt-binaries/simulator-i386/methods/ssh"; sourceTree = "<group>"; };
+		FA06A3AE1DDEE61100AA9B02 /* libapt-inst.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-inst.dylib"; path = "../../apt/binaries/simulator-i386/methods/libapt-inst.dylib"; sourceTree = "<group>"; };
+		FA06A3AF1DDEE61100AA9B02 /* libapt-pkg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-pkg.dylib"; path = "../../apt/binaries/simulator-i386/methods/libapt-pkg.dylib"; sourceTree = "<group>"; };
+		FA06A3B51DDEE6B400AA9B02 /* bigboss.gpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = bigboss.gpg; path = ../Trusted.gpg/bigboss.gpg; sourceTree = "<group>"; };
+		FA06A3B61DDEE6B400AA9B02 /* modmyi.gpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = modmyi.gpg; path = ../Trusted.gpg/modmyi.gpg; sourceTree = "<group>"; };
+		FA06A3B71DDEE6B400AA9B02 /* saurik.gpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = saurik.gpg; path = ../Trusted.gpg/saurik.gpg; sourceTree = "<group>"; };
+		FA06A3B81DDEE6B400AA9B02 /* zodttd.gpg */ = {isa = PBXFileReference; lastKnownFileType = file; name = zodttd.gpg; path = ../Trusted.gpg/zodttd.gpg; sourceTree = "<group>"; };
+		FA06A3BD1DDEE98000AA9B02 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
+		FA06A3BE1DDEE98000AA9B02 /* Platform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Platform.m; sourceTree = "<group>"; };
 		FA1247E51D778DB800C21DAC /* Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Paths.h; sourceTree = "<group>"; };
 		FA1247E61D778DB800C21DAC /* Paths.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Paths.mm; sourceTree = "<group>"; };
 		FA1FE8C21D79D56D00CF5AAD /* error.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = error.html; path = MobileCydia.app/error.html; sourceTree = "<group>"; };
@@ -931,6 +1012,8 @@
 		FA0311C41D1B5BBA008690CA /* Frameworks & Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				FA06A3AD1DDEE60700AA9B02 /* i386 */,
+				FA06A3AC1DDEE01300AA9B02 /* apt */,
 				FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */,
 				FA0311C21D1B300E008690CA /* UIKit.framework */,
 				FA03117D1D1B2C80008690CA /* QuartzCore.framework */,
@@ -949,6 +1032,39 @@
 				FA0311791D1B2C14008690CA /* libicucore.tbd */,
 			);
 			name = "Frameworks & Libraries";
+			sourceTree = "<group>";
+		};
+		FA06A3AC1DDEE01300AA9B02 /* apt */ = {
+			isa = PBXGroup;
+			children = (
+				FA06A3B51DDEE6B400AA9B02 /* bigboss.gpg */,
+				FA06A3B61DDEE6B400AA9B02 /* modmyi.gpg */,
+				FA06A3B71DDEE6B400AA9B02 /* saurik.gpg */,
+				FA06A3B81DDEE6B400AA9B02 /* zodttd.gpg */,
+				FA06A3921DDEDFE200AA9B02 /* bzip2 */,
+				FA06A3931DDEDFE200AA9B02 /* cdrom */,
+				FA06A3941DDEDFE200AA9B02 /* copy */,
+				FA06A3951DDEDFE200AA9B02 /* file */,
+				FA06A3961DDEDFE200AA9B02 /* ftp */,
+				FA06A3971DDEDFE200AA9B02 /* gpgv */,
+				FA06A3981DDEDFE200AA9B02 /* gzip */,
+				FA06A3991DDEDFE200AA9B02 /* http */,
+				FA06A39A1DDEDFE200AA9B02 /* https */,
+				FA06A39B1DDEDFE200AA9B02 /* lzma */,
+				FA06A39C1DDEDFE200AA9B02 /* rred */,
+				FA06A39D1DDEDFE200AA9B02 /* rsh */,
+				FA06A39E1DDEDFE200AA9B02 /* ssh */,
+			);
+			name = apt;
+			sourceTree = "<group>";
+		};
+		FA06A3AD1DDEE60700AA9B02 /* i386 */ = {
+			isa = PBXGroup;
+			children = (
+				FA06A3AE1DDEE61100AA9B02 /* libapt-inst.dylib */,
+				FA06A3AF1DDEE61100AA9B02 /* libapt-pkg.dylib */,
+			);
+			name = i386;
 			sourceTree = "<group>";
 		};
 		FA1247E31D778CC900C21DAC /* Application */ = {
@@ -1510,6 +1626,8 @@
 				FA6C864B1D74B26C00FB99CF /* SystemHelpers.mm */,
 				FA23E2C91D776245001FBE4A /* Device.h */,
 				FA23E2CA1D776245001FBE4A /* Device.mm */,
+				FA06A3BD1DDEE98000AA9B02 /* Platform.h */,
+				FA06A3BE1DDEE98000AA9B02 /* Platform.m */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -1975,8 +2093,10 @@
 				FA28E7061D1B21A5003D3724 /* Sources */,
 				FA28E7071D1B21A5003D3724 /* Frameworks */,
 				FA28E7081D1B21A5003D3724 /* Resources */,
-				FA27AAC31D78EB4700563529 /* CopyFiles */,
+				FA27AAC31D78EB4700563529 /* Copy APT Dylibs */,
 				FA1FE8C11D79D55200CF5AAD /* CopyFiles */,
+				FA06A3911DDECC3500AA9B02 /* Copy APT Methods for simulator */,
+				FA06A3B41DDEE67800AA9B02 /* Copy APT trusted */,
 			);
 			buildRules = (
 			);
@@ -2202,6 +2322,7 @@
 				FA6C86E11D76200200FB99CF /* ChangesController.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
 				FA6C86B61D75F26C00FB99CF /* PackageCell.mm in Sources */,
+				FA06A3BF1DDEE98000AA9B02 /* Platform.m in Sources */,
 				FA6C865A1D74C0C400FB99CF /* GeneralHelpers.mm in Sources */,
 				FA6C864F1D74BCB300FB99CF /* UIGlobals.mm in Sources */,
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,

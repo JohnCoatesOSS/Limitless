@@ -5,6 +5,7 @@
 //  Created on 8/29/16.
 //
 
+#import "Paths.h"
 #import "Menes/Menes.h"
 #import <notify.h>
 
@@ -33,7 +34,8 @@ static _finline void UpdateExternalStatus(uint64_t newStatus) {
 }
 
 static inline NSDate *GetStatusDate() {
-    return [[[NSFileManager defaultManager] attributesOfItemAtPath:@"/var/lib/dpkg/status" error:NULL] fileModificationDate];
+    return [[[NSFileManager defaultManager] attributesOfItemAtPath:[Paths dpkgStatus]
+                                                             error:NULL] fileModificationDate];
 }
 
 
