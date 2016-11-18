@@ -577,8 +577,9 @@
 }
 
 - (NSString *) stringWithFormat:(NSString *)format arguments:(WebScriptObject *)arguments {
-    //NSLog(@"SWF:\"%@\" A:%@", format, [arguments description]);
+    NSLog(@"SWF:\"%@\" A:%@", format, [arguments description]);
 #if (TARGET_OS_SIMULATOR)
+    assert(0);
     // TODO: fix casting error
     // Reinterpret_cast from 'id *' to 'va_list' (aka '__builtin_va_list') is not allowed
     return @"";
