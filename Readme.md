@@ -19,3 +19,7 @@ No promises on that front, that's solely up to Saurik's discretion as he is the 
 There are a lot of limitations to writing code for Cydia. Because it needs to support iOS 2.0+, new features can't be written taking advantage of Auto Layout, Storyboards, and all the hundreds of new APIs that have cropped up in the recent years. With Limitless the plan is to have none of these limitations. We'll implement features while targeting the latest jailbreak release, and with a popular style guide. Once approved to be backported, a feature will be re-written with a style guide that matches Cydia's current style, and with APIs that will maintain full compatibility with all iOS versions.
 
 #### [Cydia Backporting Style Guide](./Documentation/BackportingStyleGuide.md)
+
+### Compiling, Running
+
+Open XcodeProject/Cydia.xcodeproj
