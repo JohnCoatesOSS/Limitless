@@ -1,4 +1,5 @@
 ## Limitless
+![preview](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/preview.png)
 
 [![Gitter](https://badges.gitter.im/JohnCoatesOSS/Limitless.svg)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
