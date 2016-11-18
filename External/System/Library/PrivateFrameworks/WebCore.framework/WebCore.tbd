@@ -1,9 +1,10 @@
----
+--- !tapi-tbd-v2
 archs:                 [ armv7, armv7s, arm64, i386, x86_64 ]
 platform:              ios
 install-name:          /System/Library/PrivateFrameworks/WebCore.framework/WebCore
 current-version:       1.0.0
 compatibility-version: 1.0.0
+objc-constraint:       none
 exports:
   - archs:           [ armv7, armv7s, arm64, i386, x86_64 ]
     symbols:         [ _DOMException, _DOMRangeException, _DOMXPathException, _InitWebCoreThreadSystemInterface, _NSApp,
