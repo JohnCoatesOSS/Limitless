@@ -38,6 +38,8 @@
 		FA0311C01D1B2CFD008690CA /* LoadingViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BB1D1B2CFD008690CA /* LoadingViewController.mm */; };
 		FA0311C11D1B2CFD008690CA /* MIMEAddress.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0311BD1D1B2CFD008690CA /* MIMEAddress.mm */; };
 		FA0311C31D1B300E008690CA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311C21D1B300E008690CA /* UIKit.framework */; };
+		FA06A38E1DDEADFD00AA9B02 /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38D1DDEADFD00AA9B02 /* libapt-pkg.tbd */; };
+		FA06A3901DDEAE3600AA9B02 /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38F1DDEAE3600AA9B02 /* libapt-inst.tbd */; };
 		FA1247E71D778DB800C21DAC /* Paths.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1247E61D778DB800C21DAC /* Paths.mm */; };
 		FA1FE8C31D79D56D00CF5AAD /* error.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C21D79D56D00CF5AAD /* error.html */; };
 		FA1FE9201D79D58000CF5AAD /* localize.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C41D79D57F00CF5AAD /* localize.js */; };
@@ -426,7 +428,6 @@
 		FA03116F1D1B2B4E008690CA /* WebCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebCore.framework; path = ../External/System/Library/PrivateFrameworks/WebCore.framework; sourceTree = "<group>"; };
 		FA0311731D1B2B67008690CA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FA0311751D1B2B6C008690CA /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		FA0311771D1B2C0F008690CA /* libicucore.A.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.A.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/libicucore.A.tbd; sourceTree = DEVELOPER_DIR; };
 		FA0311791D1B2C14008690CA /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/libicucore.tbd; sourceTree = DEVELOPER_DIR; };
 		FA03117B1D1B2C78008690CA /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/IOKit.framework; sourceTree = DEVELOPER_DIR; };
 		FA03117D1D1B2C80008690CA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -477,6 +478,8 @@
 		FA0311BD1D1B2CFD008690CA /* MIMEAddress.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MIMEAddress.mm; sourceTree = "<group>"; };
 		FA0311BE1D1B2CFD008690CA /* ProgressEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressEvent.h; sourceTree = "<group>"; };
 		FA0311C21D1B300E008690CA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FA06A38D1DDEADFD00AA9B02 /* libapt-pkg.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-pkg.tbd"; path = "../External/usr/lib/libapt-pkg.tbd"; sourceTree = "<group>"; };
+		FA06A38F1DDEAE3600AA9B02 /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
 		FA1247E51D778DB800C21DAC /* Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Paths.h; sourceTree = "<group>"; };
 		FA1247E61D778DB800C21DAC /* Paths.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Paths.mm; sourceTree = "<group>"; };
 		FA1FE8C21D79D56D00CF5AAD /* error.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = error.html; path = MobileCydia.app/error.html; sourceTree = "<group>"; };
@@ -794,8 +797,6 @@
 		FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CYURLCache.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
-		FA9073F81D74554300BA0D1D /* libapt-inst.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-inst.tbd"; path = "../External/usr/lib/libapt-inst.tbd"; sourceTree = "<group>"; };
-		FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libapt-pkg.tbd"; path = "../External/usr/lib/libapt-pkg.tbd"; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = ../External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B01D74664600C674C9 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -813,6 +814,8 @@
 				FA03117E1D1B2C80008690CA /* QuartzCore.framework in Frameworks */,
 				FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */,
 				FA0311741D1B2B67008690CA /* SystemConfiguration.framework in Frameworks */,
+				FA06A3901DDEAE3600AA9B02 /* libapt-inst.tbd in Frameworks */,
+				FA06A38E1DDEADFD00AA9B02 /* libapt-pkg.tbd in Frameworks */,
 				FA03116C1D1B2B46008690CA /* Foundation.framework in Frameworks */,
 				FA03116A1D1B2B41008690CA /* CoreGraphics.framework in Frameworks */,
 				FA0311681D1B2B3D008690CA /* CoreFoundation.framework in Frameworks */,
@@ -941,10 +944,9 @@
 				FA0311671D1B2B3D008690CA /* CoreFoundation.framework */,
 				FA27AACC1D78EFE600563529 /* libapt-inst.dylib */,
 				FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */,
-				FA9073F81D74554300BA0D1D /* libapt-inst.tbd */,
-				FA9073FA1D7455D800BA0D1D /* libapt-pkg.tbd */,
+				FA06A38F1DDEAE3600AA9B02 /* libapt-inst.tbd */,
+				FA06A38D1DDEADFD00AA9B02 /* libapt-pkg.tbd */,
 				FA0311791D1B2C14008690CA /* libicucore.tbd */,
-				FA0311771D1B2C0F008690CA /* libicucore.A.tbd */,
 			);
 			name = "Frameworks & Libraries";
 			sourceTree = "<group>";
@@ -2665,16 +2667,20 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				DEVELOPMENT_TEAM = E6QK4MU6LM;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../External/System/Library/PrivateFrameworks\"";
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = ../Source/Headers/Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../External/usr/include\"",
 					"\"$(SRCROOT)/..\"",
 				);
 				INFOPLIST_FILE = Cydia/Info.plist;
+				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
@@ -2696,16 +2702,20 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				DEVELOPMENT_TEAM = E6QK4MU6LM;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../External/System/Library/PrivateFrameworks\"";
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = ../Source/Headers/Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../External/usr/include\"",
 					"\"$(SRCROOT)/..\"",
 				);
 				INFOPLIST_FILE = Cydia/Info.plist;
+				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../External/usr/lib\"";
 				OTHER_CFLAGS = (
