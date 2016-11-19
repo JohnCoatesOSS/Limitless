@@ -306,6 +306,7 @@
 		FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86F71D7625E700FB99CF /* StashController.mm */; };
 		FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
+		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811B11D74664600C674C9 /* AppDelegate.mm */; };
@@ -878,6 +879,8 @@
 		FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CYURLCache.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
+		FA7DB9001DE0276D00F874E6 /* APTManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTManager.h; sourceTree = "<group>"; };
+		FA7DB9011DE0276D00F874E6 /* APTManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTManager.mm; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = ../External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B01D74664600C674C9 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -1983,6 +1986,7 @@
 		FA6D8CA41D746B7F00283EDB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FA7DB8FF1DE0275000F874E6 /* APT */,
 				FA6C86F91D7626A300FB99CF /* Cache */,
 				FA6C86D51D761E1300FB99CF /* URL Handler */,
 				FA6C86621D74C48400FB99CF /* Database */,
@@ -2036,6 +2040,15 @@
 				FA6C86881D758DC700FB99CF /* Logging.mm */,
 			);
 			path = Debugging;
+			sourceTree = "<group>";
+		};
+		FA7DB8FF1DE0275000F874E6 /* APT */ = {
+			isa = PBXGroup;
+			children = (
+				FA7DB9001DE0276D00F874E6 /* APTManager.h */,
+				FA7DB9011DE0276D00F874E6 /* APTManager.mm */,
+			);
+			path = APT;
 			sourceTree = "<group>";
 		};
 		FAA811AB1D745FD100C674C9 /* Source */ = {
@@ -2342,6 +2355,7 @@
 				FA0311B61D1B2CDE008690CA /* SDURLCache.m in Sources */,
 				FA6C86B11D75F11100FB99CF /* ProgressController.mm in Sources */,
 				FA6C867C1D7577AA00FB99CF /* CydiaClause.mm in Sources */,
+				FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */,
 				FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */,
 				FA6C866B1D74C63200FB99CF /* ProgressEvent.mm in Sources */,
 				FA6C86F31D76236200FB99CF /* SourcesController.mm in Sources */,
