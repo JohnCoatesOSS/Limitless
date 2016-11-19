@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     }
 
     launch_data_dict_iterate(response, [=, &cydia](const char *name, launch_data_t value) {
-        if (launch_data_get_type(response) != LAUNCH_DATA_DICTIONARY)
+        if (launch_data_get_type(value) != LAUNCH_DATA_DICTIONARY)
             return;
 
         auto integer(launch_data_dict_lookup(value, LAUNCH_JOBKEY_PID));
