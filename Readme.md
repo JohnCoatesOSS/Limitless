@@ -22,6 +22,6 @@ There are a lot of limitations to writing code for Cydia. Because it needs to su
 #### [Cydia Backporting Style Guide](./Documentation/BackportingStyleGuide.md)
 
 ### Compiling, Running
-Clone this repo instead of downloading it as a zip, because the zip file seems to mess up some required symlinks. This is being worked on.
+Make sure Xcode's command line tools are installed by running `xcode-select --install` in Terminal
 
 Open XcodeProject/Cydia.xcodeproj
