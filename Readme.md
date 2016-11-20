@@ -1,7 +1,7 @@
 ## Limitless
 ![preview](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/preview.png)
 
-[![Gitter](https://badges.gitter.im/JohnCoatesOSS/Limitless.svg)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/JohnCoatesOSS/Limitless.svg)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Build Status](https://travis-ci.org/JohnCoatesOSS/Limitless.svg?branch=develop)](https://travis-ci.org/JohnCoatesOSS/Limitless)
 
 #### What is this project?
 What if Cydia, the popular jailbreak alternative to the App Store, didn't have to support iOS 2.0? What if it could use the latest iOS features? Limitless is a project aimed to be a vision of what Cydia can be if it's unrestricted. With a heavy focus on contributing to Cydia, new features will be open to be backported.
