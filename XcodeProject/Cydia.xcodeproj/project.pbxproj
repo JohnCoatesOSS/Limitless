@@ -2103,6 +2103,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA28E7211D1B21A5003D3724 /* Build configuration list for PBXNativeTarget "Cydia" */;
 			buildPhases = (
+				FA25322E1DE0FB2800D4FA86 /* Install Command Line Tools */,
 				FA28E7061D1B21A5003D3724 /* Sources */,
 				FA28E7071D1B21A5003D3724 /* Frameworks */,
 				FA28E7081D1B21A5003D3724 /* Resources */,
@@ -2271,6 +2272,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FA25322E1DE0FB2800D4FA86 /* Install Command Line Tools */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Install Command Line Tools";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if ! xcode-select -p > /dev/null 2>&1; then\n    echo 'Installing XCode command line tools..'\n    xcode-select --install\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FA28E7061D1B21A5003D3724 /* Sources */ = {
