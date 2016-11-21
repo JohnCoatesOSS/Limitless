@@ -1108,7 +1108,7 @@
 			path = Paths;
 			sourceTree = "<group>";
 		};
-		FA1FE97C1D79D58800CF5AAD /* Resources */ = {
+		FA1FE97C1D79D58800CF5AAD /* LegacyResources */ = {
 			isa = PBXGroup;
 			children = (
 				FA1FE9881D79D7E800CF5AAD /* Localization */,
@@ -1215,7 +1215,7 @@
 				FA1FE91F1D79D58000CF5AAD /* Sections.plist */,
 				FA1FE8C21D79D56D00CF5AAD /* error.html */,
 			);
-			name = Resources;
+			name = LegacyResources;
 			sourceTree = "<group>";
 		};
 		FA1FE9881D79D7E800CF5AAD /* Localization */ = {
@@ -1532,7 +1532,7 @@
 			children = (
 				FA0311C41D1B5BBA008690CA /* Frameworks & Libraries */,
 				FA28E7241D1B21C7003D3724 /* Project Root */,
-				FA28E70C1D1B21A5003D3724 /* Cydia */,
+				FA28E70C1D1B21A5003D3724 /* Resources */,
 				FA9010FC1DE12B1C00A607AC /* Tests */,
 				FA28E70B1D1B21A5003D3724 /* Products */,
 			);
@@ -1547,19 +1547,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FA28E70C1D1B21A5003D3724 /* Cydia */ = {
+		FA28E70C1D1B21A5003D3724 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				FA28E7191D1B21A5003D3724 /* Assets.xcassets */,
 				FA28E71E1D1B21A5003D3724 /* Info.plist */,
 			);
-			path = Cydia;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		FA28E7241D1B21C7003D3724 /* Project Root */ = {
 			isa = PBXGroup;
 			children = (
-				FA1FE97C1D79D58800CF5AAD /* Resources */,
+				FA1FE97C1D79D58800CF5AAD /* LegacyResources */,
 				FAA811AB1D745FD100C674C9 /* Source */,
 			);
 			name = "Project Root";
