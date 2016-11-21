@@ -9,7 +9,6 @@ Cydia_.deb
 debs
 .DS_Store
 *.o
-Images/
 cfversion
 setnsfpn
 bins
