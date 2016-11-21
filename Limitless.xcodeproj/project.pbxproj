@@ -1177,7 +1177,8 @@
 				FA1FE9BF1D79D82000CF5AAD /* Widgets.png */,
 				FA1FE9C01D79D82000CF5AAD /* X_Window.png */,
 			);
-			path = Sections;
+			name = Sections;
+			path = Images/Sections;
 			sourceTree = "<group>";
 		};
 		FA1FE9E81D79D83200CF5AAD /* ar.lproj */ = {
@@ -1979,7 +1980,8 @@
 				FA1FE98E1D79D7FB00CF5AAD /* uikit.png */,
 				FA1FE98F1D79D7FB00CF5AAD /* x.png */,
 			);
-			path = Purposes;
+			name = Purposes;
+			path = Images/Purposes;
 			sourceTree = "<group>";
 		};
 		FAA811AB1D745FD100C674C9 /* Source */ = {
@@ -2918,7 +2920,7 @@
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/External/usr/include\"",
-					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/Legacy\"",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
@@ -2926,9 +2928,9 @@
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/External/usr/lib\"";
 				OTHER_CFLAGS = (
 					"-idirafter",
-					"\"$(SRCROOT)/icu/icuSources/common\"",
+					"\"$(SRCROOT)/External/icu/icuSources/common\"",
 					"-idirafter",
-					"\"$(SRCROOT)/icu/icuSources/i18n\"",
+					"\"$(SRCROOT)/External/icu/icuSources/i18n\"",
 					"-idirafter",
 					/usr/include,
 				);
@@ -2954,7 +2956,7 @@
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/External/usr/include\"",
-					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/Legacy\"",
 				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
@@ -2962,9 +2964,9 @@
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/External/usr/lib\"";
 				OTHER_CFLAGS = (
 					"-idirafter",
-					"\"$(SRCROOT)/icu/icuSources/common\"",
+					"\"$(SRCROOT)/External/icu/icuSources/common\"",
 					"-idirafter",
-					"\"$(SRCROOT)/icu/icuSources/i18n\"",
+					"\"$(SRCROOT)/External/icu/icuSources/i18n\"",
 					"-idirafter",
 					/usr/include,
 				);
