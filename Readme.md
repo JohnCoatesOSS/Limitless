@@ -34,4 +34,4 @@ There are a lot of limitations to writing code for Cydia. Because it needs to su
 ### Compiling, Running
 Make sure Xcode's command line tools are installed by running `xcode-select --install` in Terminal
 
-Open XcodeProject/Cydia.xcodeproj
+Open Limitless.xcodeproj
