@@ -776,7 +776,7 @@
 		FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSDOMNodeList+Hooks.mm"; sourceTree = "<group>"; };
 		FA27AACC1D78EFE600563529 /* libapt-inst.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-inst.dylib"; path = "../External/usr/lib/dylibs/libapt-inst.dylib"; sourceTree = "<group>"; };
 		FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libapt-pkg.dylib"; path = "../External/usr/lib/dylibs/libapt-pkg.dylib"; sourceTree = "<group>"; };
-		FA28E70A1D1B21A5003D3724 /* Cydia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cydia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA28E70A1D1B21A5003D3724 /* Limitless.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Limitless.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA28E7191D1B21A5003D3724 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA28E71E1D1B21A5003D3724 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIWebDocumentView+BugFixes.mm"; sourceTree = "<group>"; };
@@ -1541,7 +1541,7 @@
 		FA28E70B1D1B21A5003D3724 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FA28E70A1D1B21A5003D3724 /* Cydia.app */,
+				FA28E70A1D1B21A5003D3724 /* Limitless.app */,
 				FA9010FB1DE12B1C00A607AC /* Tests.xctest */,
 			);
 			name = Products;
@@ -2131,9 +2131,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FA28E7091D1B21A5003D3724 /* Cydia */ = {
+		FA28E7091D1B21A5003D3724 /* Limitless */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FA28E7211D1B21A5003D3724 /* Build configuration list for PBXNativeTarget "Cydia" */;
+			buildConfigurationList = FA28E7211D1B21A5003D3724 /* Build configuration list for PBXNativeTarget "Limitless" */;
 			buildPhases = (
 				FA25322E1DE0FB2800D4FA86 /* Install Command Line Tools */,
 				FA28E7061D1B21A5003D3724 /* Sources */,
@@ -2148,9 +2148,9 @@
 			);
 			dependencies = (
 			);
-			name = Cydia;
+			name = Limitless;
 			productName = Cydia;
-			productReference = FA28E70A1D1B21A5003D3724 /* Cydia.app */;
+			productReference = FA28E70A1D1B21A5003D3724 /* Limitless.app */;
 			productType = "com.apple.product-type.application";
 		};
 		FA9010FA1DE12B1C00A607AC /* Tests */ = {
@@ -2192,7 +2192,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FA28E7051D1B21A5003D3724 /* Build configuration list for PBXProject "Cydia" */;
+			buildConfigurationList = FA28E7051D1B21A5003D3724 /* Build configuration list for PBXProject "Limitless" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -2224,7 +2224,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FA28E7091D1B21A5003D3724 /* Cydia */,
+				FA28E7091D1B21A5003D3724 /* Limitless */,
 				FA9010FA1DE12B1C00A607AC /* Tests */,
 			);
 		};
@@ -2460,7 +2460,7 @@
 /* Begin PBXTargetDependency section */
 		FA9011011DE12B1C00A607AC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = FA28E7091D1B21A5003D3724 /* Cydia */;
+			target = FA28E7091D1B21A5003D3724 /* Limitless */;
 			targetProxy = FA9011001DE12B1C00A607AC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -2983,7 +2983,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cydia.app/Cydia";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Limitless.app/Limitless";
 			};
 			name = Debug;
 		};
@@ -3002,14 +3002,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cydia.app/Cydia";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Limitless.app/Limitless";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FA28E7051D1B21A5003D3724 /* Build configuration list for PBXProject "Cydia" */ = {
+		FA28E7051D1B21A5003D3724 /* Build configuration list for PBXProject "Limitless" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA28E71F1D1B21A5003D3724 /* Debug */,
@@ -3018,7 +3018,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FA28E7211D1B21A5003D3724 /* Build configuration list for PBXNativeTarget "Cydia" */ = {
+		FA28E7211D1B21A5003D3724 /* Build configuration list for PBXNativeTarget "Limitless" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA28E7221D1B21A5003D3724 /* Debug */,
@@ -3034,6 +3034,7 @@
 				FA9011041DE12B1C00A607AC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

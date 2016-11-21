@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FA28E7091D1B21A5003D3724"
-               BuildableName = "Cydia.app"
-               BlueprintName = "Cydia"
-               ReferencedContainer = "container:Cydia.xcodeproj">
+               BuildableName = "Limitless.app"
+               BlueprintName = "Limitless"
+               ReferencedContainer = "container:Limitless.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "FA9010FA1DE12B1C00A607AC"
                BuildableName = "Tests.xctest"
                BlueprintName = "Tests"
-               ReferencedContainer = "container:Cydia.xcodeproj">
+               ReferencedContainer = "container:Limitless.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FA28E7091D1B21A5003D3724"
-            BuildableName = "Cydia.app"
-            BlueprintName = "Cydia"
-            ReferencedContainer = "container:Cydia.xcodeproj">
+            BuildableName = "Limitless.app"
+            BlueprintName = "Limitless"
+            ReferencedContainer = "container:Limitless.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,9 +66,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FA28E7091D1B21A5003D3724"
-            BuildableName = "Cydia.app"
-            BlueprintName = "Cydia"
-            ReferencedContainer = "container:Cydia.xcodeproj">
+            BuildableName = "Limitless.app"
+            BlueprintName = "Limitless"
+            ReferencedContainer = "container:Limitless.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -97,9 +97,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FA28E7091D1B21A5003D3724"
-            BuildableName = "Cydia.app"
-            BlueprintName = "Cydia"
-            ReferencedContainer = "container:Cydia.xcodeproj">
+            BuildableName = "Limitless.app"
+            BlueprintName = "Limitless"
+            ReferencedContainer = "container:Limitless.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
