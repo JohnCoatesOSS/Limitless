@@ -44,7 +44,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
     _transient NSObject<DatabaseDelegate> *delegate_;
     _transient NSObject<ProgressDelegate> *progress_;
     
-    CydiaStatus status_;
+    CydiaStatus *status_;
     
     int cydiafd_;
     int statusfd_;

@@ -468,7 +468,7 @@ errno == ENOTDIR \
         [emulated_ dismissModalViewControllerAnimated:YES];
     [window_ setUserInteractionEnabled:NO];
     
-    [self reloadDataWithInvocation:nil];
+    [self reloadDataWithInvocation: nil];
     [self refreshIfPossible];
     [self disemulate];
     

@@ -14,12 +14,11 @@ class CydiaStatus :
 public CancelStatus
 {
 private:
-    _transient NSObject<ProgressDelegate> *delegate_;
+    NSObject <ProgressDelegate> *delegate_;
     
 public:
-    CydiaStatus() :
-    delegate_(nil)
-    {
+    CydiaStatus() {
+        delegate_ = nil;
     }
     
     void setDelegate(NSObject<ProgressDelegate> *delegate) {

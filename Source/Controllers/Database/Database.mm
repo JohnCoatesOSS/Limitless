@@ -20,8 +20,9 @@
 
 + (Database *) sharedInstance {
     static _H<Database> instance;
-    if (instance == nil)
-        instance = [[[Database alloc] init] autorelease];
+    if (instance == nil) {
+        instance = [[Database new] autorelease];
+    }
     return instance;
 }
 
@@ -161,6 +162,7 @@
         resolver_ = NULL;
         fetcher_ = NULL;
         lock_ = NULL;
+        status_ = new CydiaStatus();
         
         zone_ = NSCreateZone(1024 * 1024, 256 * 1024, NO);
         
@@ -395,7 +397,7 @@
         policy_ = new pkgDepCache::Policy();
         records_ = new pkgRecords(cache_);
         resolver_ = new pkgProblemResolver(cache_);
-        fetcher_ = new pkgAcquire(&status_);
+        fetcher_ = new pkgAcquire(status_);
         lock_ = NULL;
         
         if (cache_->DelCount() != 0 || cache_->InstCount() != 0) {
@@ -671,7 +673,7 @@
 }
 
 - (void) update {
-    [self updateWithStatus:status_];
+    [self updateWithStatus:*status_];
 }
 
 - (void) updateWithStatus:(CancelStatus &)status {
@@ -711,7 +713,7 @@
 
 - (void) setProgressDelegate:(NSObject<ProgressDelegate> *)delegate {
     progress_ = delegate;
-    status_.setDelegate(delegate);
+    status_->setDelegate(delegate);
 }
 
 - (NSObject<ProgressDelegate> *) progressDelegate {
