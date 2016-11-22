@@ -1,0 +1,120 @@
+#!/usr/bin/ruby
+
+## project settings
+
+# in case we want to turn off .deb building quickly
+shouldBuildPackage = TRUE
+shouldInstallOnDevice = TRUE
+terminateProcess = nil #"SpringBoard"
+
+device = {name: '📱 iPhone 5s Black', ip:'192.168.1.161'}
+# device = {name: '📱 iPhone 5s', ip:'192.168.1.160'}
+# replace this with your device
+# device = {name: '📱 iPhone 6+', ip:'192.168.1.163'}
+
+# show output ASAP
+STDOUT.sync = true
+
+require 'fileutils'
+require 'pp'
+# require build tools
+scriptsDirectory = __dir__
+projectDirectory = File.expand_path(File.join(scriptsDirectory, ".."))
+buildToolsPath = File.join(scriptsDirectory, "Classes/All")
+require buildToolsPath
+
+bundleIdentifier = "oss.limitless.release"
+
+configuration = Configuration.new(
+                defaultDevice: device,
+                defaultBuildFolder: File.join(projectDirectory, "Release"),
+                defaultBuildConfiguration: "Release",
+                defaultTarget: "Limitless",
+                defaultProjectDirectory: projectDirectory,
+                defaultShouldInstallOnDevice: shouldInstallOnDevice,
+                defaultShouldBuildPackage: shouldBuildPackage,
+                defaultAppToTerminate: terminateProcess
+                )
+
+appBuild = XcodeBuild.new(
+           projectDirectory: configuration.projectDirectory,
+           target: configuration.target,
+           configuration: configuration.buildConfiguration,
+           sdk: "iphoneos",
+           buildFolder: File.join(configuration.buildFolder, "Device"),
+           workspace: nil,
+           bundleIdentifier: bundleIdentifier
+           )
+# build app
+if appBuild.build == false
+  exit 1
+end
+
+plistFilePath = appBuild.buildSetting 'INFOPLIST_FILE'
+plistFilePath = projectDirectory + "/#{plistFilePath}"
+
+plist = XcodePlist.new plistFilePath
+shortVersion = plist.property "CFBundleShortVersionString"
+betaBuild = plist.property "CFBundleVersion"
+versionEpoch = 1
+version = "#{shortVersion}~Beta#{betaBuild}"
+
+appExecutableFolderPath = appBuild.buildSetting 'EXECUTABLE_FOLDER_PATH'
+
+Dir.chdir(configuration.buildFolder) do
+  stagingDirectory = File.expand_path("#{configuration.buildFolder}/_")
+  packaging = Packaging.new(stagingDirectory:stagingDirectory, installationDevice:configuration.device)
+
+  # clear staging folder
+  packaging.clearStaging
+
+  # add entilements
+  entilementsPath = File.join(projectDirectory, "Resources/Legacy/entitlements.xml")
+  appBuild.signExecutableOutput(entilementsPath)
+
+  # copy app to staging
+  appInstallationPath = "/Applications"
+	packaging.createStagingDirectoryIfDoesntExist appInstallationPath
+  deviceAppDirectory = File.join(appBuild.buildFolder, appExecutableFolderPath)
+  appStagingDirectory = File.join(stagingDirectory, appInstallationPath)
+
+  puts "Copying app to staging: #{deviceAppDirectory} -> #{appStagingDirectory}"
+
+  FileUtils.cp_r(deviceAppDirectory, appStagingDirectory)
+
+  # copy over layout contents
+  packaging.copyLayoutFolderContents File.join(projectDirectory, "layout")
+
+  # update control file
+  controlFilepath = File.join(stagingDirectory, "DEBIAN/control")
+  controlContents = File.read(controlFilepath)
+  controlContents.gsub!(/(Version:).*/i, "\\1 #{versionEpoch}:#{version}")
+  open(controlFilepath, 'w') { |fileHandle|
+  	fileHandle.puts controlContents
+  }
+
+  if configuration.shouldBuildPackage
+    filename = "Limitless_#{version}.deb"
+
+    packaging.buildPackage filename
+    packagePath = File.expand_path(filename)
+    # show file in finder
+    system "open -R \"#{packagePath}\""
+
+    if configuration.shouldInstallOnDevice
+
+			packaging.installOnDevice
+
+			if configuration.appToTerminate
+				packaging.terminateApp configuration.appToTerminate
+			end # app to terminate
+
+			if configuration.appToLaunch
+				packaging.launchApp configuration.appToLaunch
+			end # app to launch
+
+    end # device install
+  end # build package
+end # build folder
+
+puts "Finished building at: " + Time.now.inspect
