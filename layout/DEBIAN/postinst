@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# run uicache to make sure the Limitless icon is showing up
+# fork it because sometimes it hangs
+su mobile -c uicache >/dev/null 2>&1 & disown
+
+echo "Thanks for being a part of Limitless! If you're interested in helping with the project, please check out our GitHub page."
+exit 0;

@@ -7,7 +7,9 @@ class XcodeBuild
                   sdk:"iphoneos",
                   buildFolder:"Release",
                   workspace: nil,
-                  bundleIdentifier: nil
+                  bundleIdentifier: nil,
+                  preprocessorDefinitions: nil,
+                  clean: false
                   )
     @projectDirectory = projectDirectory
     @target = target
@@ -16,6 +18,8 @@ class XcodeBuild
     @buildFolder = buildFolder
     @workspace = workspace
     @bundleIdentifier = bundleIdentifier
+    @preprocessorDefinitions = preprocessorDefinitions
+    @clean = clean
 
     if projectDirectory == nil || target == nil
       puts "Error: Invalid projectDirectory or target passed to XcodeBuild"
@@ -33,11 +37,15 @@ class XcodeBuild
       ]
     end
 
+    clean = ""
+    if @clean
+      clean = "clean"
+    end
     command += [
     "-scheme \"#{@target}\"",
     "-configuration", @configuration,
     "-sdk", @sdk,
-    "build",
+    clean, "build",
     "CONFIGURATION_BUILD_DIR=\"#{@buildFolder}\"",
     "CONFIGURATION_TEMP_DIR=\"#{@buildFolder}/temp\"",
     "BUILD_DIR=\"#{@buildFolder}\"",
@@ -47,6 +55,10 @@ class XcodeBuild
 
     if @bundleIdentifier
       command += [ "PRODUCT_BUNDLE_IDENTIFIER=\"#{@bundleIdentifier}\""]
+    end
+
+    if @preprocessorDefinitions
+      command += [ "GCC_PREPROCESSOR_DEFINITIONS=\"#{@preprocessorDefinitions}\""]
     end
 
     return command

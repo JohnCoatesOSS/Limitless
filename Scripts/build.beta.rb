@@ -5,7 +5,12 @@
 # in case we want to turn off .deb building quickly
 shouldBuildPackage = TRUE
 shouldInstallOnDevice = TRUE
+showDebPackageInFinder = FALSE
 terminateProcess = nil #"SpringBoard"
+waitForDebugger = TRUE
+launchApp = TRUE
+attachXcode = TRUE
+clean = TRUE
 
 device = {name: '📱 iPhone 5s Black', ip:'192.168.1.161'}
 # device = {name: '📱 iPhone 5s', ip:'192.168.1.160'}
@@ -24,6 +29,15 @@ buildToolsPath = File.join(scriptsDirectory, "Classes/All")
 require buildToolsPath
 
 bundleIdentifier = "oss.limitless.release"
+appToLaunch = nil
+if launchApp
+  terminateProcess = "Limitless"
+  appToLaunch = "oss.limitless.release"
+
+  if waitForDebugger
+    attachXcode = TRUE
+  end
+end
 
 configuration = Configuration.new(
                 defaultDevice: device,
@@ -33,9 +47,14 @@ configuration = Configuration.new(
                 defaultProjectDirectory: projectDirectory,
                 defaultShouldInstallOnDevice: shouldInstallOnDevice,
                 defaultShouldBuildPackage: shouldBuildPackage,
-                defaultAppToTerminate: terminateProcess
+                defaultAppToTerminate: terminateProcess,
+                defaultAppToLaunch: appToLaunch
                 )
 
+preprocessorDefinitions = ""
+if waitForDebugger
+  preprocessorDefinitions += "WAIT_FOR_DEBUGGER=1"
+end
 appBuild = XcodeBuild.new(
            projectDirectory: configuration.projectDirectory,
            target: configuration.target,
@@ -43,7 +62,9 @@ appBuild = XcodeBuild.new(
            sdk: "iphoneos",
            buildFolder: File.join(configuration.buildFolder, "Device"),
            workspace: nil,
-           bundleIdentifier: bundleIdentifier
+           bundleIdentifier: bundleIdentifier,
+           preprocessorDefinitions: preprocessorDefinitions,
+           clean: clean
            )
 # build app
 if appBuild.build == false
@@ -56,10 +77,14 @@ plistFilePath = projectDirectory + "/#{plistFilePath}"
 plist = XcodePlist.new plistFilePath
 shortVersion = plist.property "CFBundleShortVersionString"
 betaBuild = plist.property "CFBundleVersion"
-versionEpoch = 1
 version = "#{shortVersion}~Beta#{betaBuild}"
 
 appExecutableFolderPath = appBuild.buildSetting 'EXECUTABLE_FOLDER_PATH'
+
+if attachXcode
+  attachScript = File.join(scriptsDirectory, "attach")
+  system("nohup \"#{attachScript}\" &")
+end
 
 Dir.chdir(configuration.buildFolder) do
   stagingDirectory = File.expand_path("#{configuration.buildFolder}/_")
@@ -86,20 +111,18 @@ Dir.chdir(configuration.buildFolder) do
   packaging.copyLayoutFolderContents File.join(projectDirectory, "layout")
 
   # update control file
-  controlFilepath = File.join(stagingDirectory, "DEBIAN/control")
-  controlContents = File.read(controlFilepath)
-  controlContents.gsub!(/(Version:).*/i, "\\1 #{versionEpoch}:#{version}")
-  open(controlFilepath, 'w') { |fileHandle|
-  	fileHandle.puts controlContents
-  }
+  packaging.setControlVersion(version)
+  packaging.setControlPackage("limitless.beta")
+  packaging.setControlReplaces("limitless")
 
   if configuration.shouldBuildPackage
     filename = "Limitless_#{version}.deb"
 
     packaging.buildPackage filename
     packagePath = File.expand_path(filename)
-    # show file in finder
-    system "open -R \"#{packagePath}\""
+    if showDebPackageInFinder
+      system "open -R \"#{packagePath}\""
+    end
 
     if configuration.shouldInstallOnDevice
 

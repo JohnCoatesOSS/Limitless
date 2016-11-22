@@ -124,6 +124,34 @@ class Packaging
 
   end # copyLayoutFolderContents
 
+  def setControlVersion(version)
+    controlFilepath = File.join(@stagingDirectory, "DEBIAN/control")
+    controlContents = File.read(controlFilepath)
+    controlContents.gsub!(/(Version:).*/i, "\\1 #{version}")
+    open(controlFilepath, 'w') { |fileHandle|
+      fileHandle.puts controlContents
+    }
+  end
+
+  def setControlPackage(package)
+    controlFilepath = File.join(@stagingDirectory, "DEBIAN/control")
+    controlContents = File.read(controlFilepath)
+    controlContents.gsub!(/(Package:).*/i, "\\1 #{package}")
+    open(controlFilepath, 'w') { |fileHandle|
+      fileHandle.puts controlContents
+    }
+  end
+
+  def setControlReplaces(replaces)
+    controlFilepath = File.join(@stagingDirectory, "DEBIAN/control")
+    controlContents = File.read(controlFilepath)
+    controlContents.gsub!(/(Replaces:).*/i, "\\1 #{replaces}")
+    controlContents.gsub!(/(Conflicts:).*/i, "\\1 #{replaces}")
+    open(controlFilepath, 'w') { |fileHandle|
+      fileHandle.puts controlContents
+    }
+  end
+
   # Package Building & install
 
   def buildPackage(filename)
