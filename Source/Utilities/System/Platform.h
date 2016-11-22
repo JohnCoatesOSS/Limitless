@@ -11,5 +11,5 @@
 @interface Platform : NSObject
 
 + (BOOL)isSandboxed;
-
++ (BOOL)shouldWaitForDebugger;
 @end

@@ -23,4 +23,12 @@
     }
 }
 
++ (BOOL)shouldWaitForDebugger {
+    #ifdef WAIT_FOR_DEBUGGER
+    return TRUE;
+    #endif
+    
+    return FALSE;
+}
+
 @end

@@ -9,8 +9,14 @@
 #import "Application.h"
 #import "AppDelegate.h"
 #import "Startup.h"
+#include <signal.h>
+#include <csignal>
 
 int main(int argc, char *argv[]) {
+    if ([Platform shouldWaitForDebugger]) {
+        raise(SIGSTOP);
+    }
+
     @autoreleasepool {
         [Startup runStartupTasks];
         return UIApplicationMain(argc, argv,
