@@ -123,13 +123,12 @@ static inline void PackageImport(const void *key, const void *value, void *conte
 }
 
 static inline void SaveConfig(NSObject *lock) {
-    // TODO: Uncomment. Causing crash right now
-//    @synchronized (lock) {
-//        _trace();
-//        MetaFile_.Sync();
-//        _trace();
-//    }
-    
+    @synchronized (lock) {
+        _trace();
+        MetaFile_.Sync();
+        _trace();
+    }
+
     CFPreferencesSetMultiple((CFDictionaryRef) [NSDictionary dictionaryWithObjectsAndKeys:
                                                 Values_, @"CydiaValues",
                                                 Sections_, @"CydiaSections",

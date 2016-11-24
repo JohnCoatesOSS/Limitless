@@ -4,5 +4,11 @@
 # fork it because sometimes it hangs
 su mobile -c uicache >/dev/null 2>&1 & disown
 
-echo "Thanks for being a part of Limitless! If you're interested in helping with the project, please check out our GitHub page."
+# make folder for metadata.cb0
+mkdir -p /var/mobile/Library/Limitless
+# set folder to be owned by mobile
+chown 501:501 /var/mobile/Library/Limitless
+chmod 0755 /var/mobile/Library/Limitless
+
+echo "Thanks for being a part of Limitless! If you're interested in helping with the project, please check out our GitHub page at http://github.com/JohnCoatesOSS/Limitless"
 exit 0;
