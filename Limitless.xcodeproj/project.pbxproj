@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		FAA88F061DE7738100039F54 /* lint */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = FAA88F071DE7738100039F54 /* Build configuration list for PBXAggregateTarget "lint" */;
+			buildPhases = (
+				FAA88F0A1DE7738600039F54 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = lint;
+			productName = lint;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */; };
 		FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */ = {isa = PBXBuildFile; fileRef = FA01D2111D1B22B100B49E70 /* lookup3.c */; };
@@ -2197,6 +2211,11 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = FA28E7091D1B21A5003D3724;
 					};
+					FAA88F061DE7738100039F54 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = E6QK4MU6LM;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = FA28E7051D1B21A5003D3724 /* Build configuration list for PBXProject "Limitless" */;
@@ -2233,6 +2252,7 @@
 			targets = (
 				FA28E7091D1B21A5003D3724 /* Limitless */,
 				FA9010FA1DE12B1C00A607AC /* Tests */,
+				FAA88F061DE7738100039F54 /* lint */,
 			);
 		};
 /* End PBXProject section */
@@ -2358,6 +2378,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if ! xcode-select -p > /dev/null 2>&1; then\n    echo 'Installing XCode command line tools..'\n    xcode-select --install\nfi";
+		};
+		FAA88F0A1DE7738600039F54 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "source ~/.bash_profile\necho $PATH\nxcodebuild -scheme Limitless clean\nset -o pipefail && xcodebuild -scheme Limitless | xcpretty -r json-compilation-database --output compile_commands.json\noclint-json-compilation-database -- -report-type xcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3019,6 +3052,22 @@
 			};
 			name = Release;
 		};
+		FAA88F081DE7738100039F54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FAA88F091DE7738100039F54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -3048,6 +3097,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		FAA88F071DE7738100039F54 /* Build configuration list for PBXAggregateTarget "lint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAA88F081DE7738100039F54 /* Debug */,
+				FAA88F091DE7738100039F54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

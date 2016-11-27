@@ -1,0 +1,46 @@
+# http://oclint-docs.readthedocs.io/en/stable/howto/rcfile.html
+# http://oclint-docs.readthedocs.io/en/stable/howto/thresholds.html
+# http://oclint-docs.readthedocs.io/en/stable/rules/index.html
+report-type: xcode
+max-priority-1: 9999
+max-priority-2: 9999
+max-priority-3: 9999
+disable-rules:
+- GotoStatement
+- LongLine
+- ShortVariableName
+- BitwiseOperatorInConditional
+- UselessParentheses
+- SwitchStatementsShouldHaveDefault
+- DeepNestedBlock
+- InvertedLogic
+- CollapsibleIfStatements
+- MissingBreakInSwitchStatement
+- HighNpathComplexity
+- HighCyclomaticComplexity
+- UnnecessaryElseStatement
+- HighNcssMethod
+- UseEarlyExitsAndContinue
+- EmptyIfStatement
+# - ObjectSubscripting
+rule-configurations:
+  - key: CYCLOMATIC_COMPLEXITY
+    value: 15
+
+  - key: LONG_CLASS
+    value: 20000
+
+  - key: LONG_LINE
+    value: 120
+
+  - key: LONG_METHOD
+    value: 3000
+
+  - key: LONG_VARIABLE_NAME
+    value: 30
+
+  - key: MAXIMUM_IF_LENGTH
+    value: 20
+
+  - key: TOO_MANY_PARAMETERS
+    value: 5

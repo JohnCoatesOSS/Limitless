@@ -53,3 +53,4 @@ fastlane/report.xml
 fastlane/screenshots
 Release
 app/Pods
+/compile_commands.json
