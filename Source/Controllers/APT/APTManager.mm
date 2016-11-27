@@ -61,6 +61,7 @@
 
 - (void)initiateSystem {
     bool result = pkgInitSystem(*_config, _system);
+    [self switchOnDebugFlags];
     
     if (!result) {
         _config->Dump();
@@ -91,7 +92,7 @@
         _config->Set("Dir::Bin::dpkg", "/usr/local/bin/dpkg");
         _config->Set("Dir::Log::Terminal", [Paths cacheFile:@"apt.log"].UTF8String);
     } else {
-        _config->Set("Dir::Bin::dpkg", "/usr/libexec/cydia/cydo");
+        _config->Set("Dir::Bin::dpkg", "/Applications/Limitless.app/runAsSuperuser");
         std::string logs("/var/mobile/Library/Logs/Cydia");
         mkdir(logs.c_str(), 0755);
         _config->Set("Dir::Log::Terminal", logs + "/apt.log");
@@ -114,15 +115,19 @@
 
 - (void)sandboxSetup {
     if ([Platform isSandboxed]) {
-        _config->Set("Debug", "true");
-        _config->Set("Debug::Acquire", "true");
-        _config->Set("Debug::Acquire::gpgv", "true");
-        _config->Set("Debug::pkgPackageManager", "true");
-        _config->Set("Debug::GetListOfFilesInDir", "true");
-        _config->Set("Debug::pkgAcquire", "true");
-        _config->Set("Debug::pkgInitConfig", "true");
+        [self switchOnDebugFlags];
         _config->Set("Dir", [Paths applicationLibraryDirectory].UTF8String);
     }
+}
+
+- (void)switchOnDebugFlags {
+    _config->Set("Debug", "true");
+    _config->Set("Debug::Acquire", "true");
+    _config->Set("Debug::Acquire::gpgv", "true");
+    _config->Set("Debug::pkgPackageManager", "true");
+    _config->Set("Debug::GetListOfFilesInDir", "true");
+    _config->Set("Debug::pkgAcquire", "true");
+    _config->Set("Debug::pkgInitConfig", "true");
 }
 
 - (void)ensureRequiredFilesExist {
