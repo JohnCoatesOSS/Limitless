@@ -477,7 +477,7 @@
 - (NSNumber *) du:(NSString *)path {
     NSNumber *value(nil);
     
-    FILE *du(popen([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/du -ks %@", ShellEscape(path)] UTF8String], "r"));
+    FILE *du(popen([[NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/du -ks %@", ShellEscape(path)] UTF8String], "r"));
     if (du != NULL) {
         char line[1024];
         while (fgets(line, sizeof(line), du) != NULL) {

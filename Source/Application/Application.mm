@@ -391,7 +391,7 @@ errno == ENOTDIR \
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     UpdateExternalStatus(1);
     [self yieldToSelector:@selector(system:)
-               withObject:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/free.sh"];
+               withObject:@"/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/free.sh"];
     UpdateExternalStatus(0);
     
     [self removeStashController];
@@ -1243,7 +1243,7 @@ errno == ENOTDIR \
                 for (Package *broken in (id) broken_) {
                     [broken remove];
                     NSString *id(ShellEscape([broken id]));
-                    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/rm -f"
+                    system([[NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser /bin/rm -f"
                              " /var/lib/dpkg/info/%@.prerm"
                              " /var/lib/dpkg/info/%@.postrm"
                              " /var/lib/dpkg/info/%@.preinst"

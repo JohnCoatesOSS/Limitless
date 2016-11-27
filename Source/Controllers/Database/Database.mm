@@ -511,7 +511,7 @@
     } }
 
 - (void) configure {
-    NSString *dpkg = [NSString stringWithFormat:@"/usr/libexec/cydo --configure -a --status-fd %u", statusfd_];
+    NSString *dpkg = [NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser --configure -a --status-fd %u", statusfd_];
     _trace();
     system([dpkg UTF8String]);
     _trace();
@@ -629,7 +629,7 @@
     struct stat info;
     if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG) {
         if (![Device isSimulator]) {
-            system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/cp --remove-destination %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
+            system([[NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser /bin/cp --remove-destination %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
         }
     }
     
