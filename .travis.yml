@@ -1,9 +1,11 @@
 language: objective-c
 osx_image: xcode8
 install:
-- gem install xcpretty
+  - gem install xcpretty
 script:
-- set -o pipefail && env NSUnbufferedIO=YES xcodebuild -project Limitless.xcodeproj -scheme Limitless -destination 'platform=iOS Simulator,name=iPhone 6s' build test | xcpretty
+  - set -o pipefail && env NSUnbufferedIO=YES xcodebuild -project Limitless.xcodeproj -scheme Limitless -destination 'platform=iOS Simulator,name=iPhone 6s' build test | xcpretty
+after_success:
+  - sleep 15
 notifications:
   webhooks:
     urls:
