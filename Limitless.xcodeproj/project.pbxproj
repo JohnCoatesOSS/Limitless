@@ -494,7 +494,6 @@
 
 /* Begin PBXFileReference section */
 		FA01D20C1D1B22B100B49E70 /* cfversion.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cfversion.mm; sourceTree = "<group>"; };
-		FA01D20D1D1B22B100B49E70 /* cydo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cydo.cpp; sourceTree = "<group>"; };
 		FA01D20E1D1B22B100B49E70 /* Cytore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cytore.hpp; sourceTree = "<group>"; };
 		FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DiskUsage.cpp; sourceTree = "<group>"; };
 		FA01D2101D1B22B100B49E70 /* iPhonePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhonePrivate.h; sourceTree = "<group>"; };
@@ -964,7 +963,6 @@
 				FA03117F1D1B2CBD008690CA /* CyteKit */,
 				FA03119B1D1B2CBD008690CA /* Menes */,
 				FA01D20C1D1B22B100B49E70 /* cfversion.mm */,
-				FA01D20D1D1B22B100B49E70 /* cydo.cpp */,
 				FA01D20E1D1B22B100B49E70 /* Cytore.hpp */,
 				FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */,
 				FA01D2101D1B22B100B49E70 /* iPhonePrivate.h */,
@@ -3197,6 +3195,7 @@
 				FA3A18391DEAB1F4000557AC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FA9011021DE12B1C00A607AC /* Build configuration list for PBXNativeTarget "Tests" */ = {
 			isa = XCConfigurationList;
