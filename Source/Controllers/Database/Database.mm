@@ -303,19 +303,30 @@
         [sourceList_ removeAllObjects];
         
         _error->Discard();
-        
-        delete list_;
+        if (list_) {
+            delete list_;
+        }
         list_ = NULL;
         manager_ = NULL;
-        delete lock_;
+        if (lock_) {
+            delete lock_;
+        }
         lock_ = NULL;
-        delete fetcher_;
+        if (fetcher_) {
+            delete fetcher_;
+        }
         fetcher_ = NULL;
-        delete resolver_;
+        if (resolver_) {
+            delete resolver_;
+        }
         resolver_ = NULL;
-        delete records_;
+        if (records_) {
+            delete records_;
+        }
         records_ = NULL;
-        delete policy_;
+        if (policy_) {
+            delete policy_;
+        }
         policy_ = NULL;
         
         cache_.Close();
