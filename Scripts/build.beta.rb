@@ -72,8 +72,19 @@ appBuild = XcodeBuild.new(
            preprocessorDefinitions: preprocessorDefinitions,
            clean: clean
            )
-# build app
 if appBuild.build == false
+  exit 1
+end
+
+runAsSuperuserBuild = XcodeBuild.new(
+           projectDirectory: configuration.projectDirectory,
+           target: "runAsSuperuser",
+           configuration: configuration.buildConfiguration,
+           sdk: "iphoneos",
+           buildFolder: File.join(configuration.buildFolder, "Device"),
+           clean: clean
+           )
+if runAsSuperuserBuild.build == false
   exit 1
 end
 
@@ -112,6 +123,14 @@ Dir.chdir(configuration.buildFolder) do
   puts "Copying app to staging: #{deviceAppDirectory} -> #{appStagingDirectory}"
 
   FileUtils.cp_r(deviceAppDirectory, appStagingDirectory)
+
+  # copy runAsSuperuser to staging
+  runAsSuperuserDestination = "/Applications/Limitless.app/runAsSuperuser"
+  runAsSuperuserStagingDestination = File.join(stagingDirectory, runAsSuperuserDestination)
+  runAsSuperuserExecutable = runAsSuperuserBuild.executableOutputPath()
+
+  puts "Copying runAsSuperuser to staging: #{runAsSuperuserExecutable} -> #{runAsSuperuserStagingDestination}"
+  FileUtils.copy(runAsSuperuserExecutable, runAsSuperuserStagingDestination)
 
   # copy over layout contents
   packaging.copyLayoutFolderContents File.join(projectDirectory, "layout")
