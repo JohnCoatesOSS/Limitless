@@ -38,11 +38,17 @@ if launchApp
     attachXcode = TRUE
   end
 end
+buildConfiguration = "Release"
+
+if attachXcode
+  # Debug mode so variables are readable
+  buildConfiguration = "Debug"
+end
 
 configuration = Configuration.new(
                 defaultDevice: device,
                 defaultBuildFolder: File.join(projectDirectory, "Release"),
-                defaultBuildConfiguration: "Release",
+                defaultBuildConfiguration: buildConfiguration,
                 defaultTarget: "Limitless",
                 defaultProjectDirectory: projectDirectory,
                 defaultShouldInstallOnDevice: shouldInstallOnDevice,
