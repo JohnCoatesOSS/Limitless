@@ -34,7 +34,7 @@
     volatile bool &stopped(*reinterpret_cast<bool *>([[context objectAtIndex:2] pointerValue]));
 
     /* XXX: deal with exceptions */
-    id value([self performSelector:selector withObject:object]);
+    id value = [self performSelector:selector withObject:object];
 
     NSMethodSignature *signature([self methodSignatureForSelector:selector]);
     [context removeAllObjects];
