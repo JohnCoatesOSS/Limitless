@@ -81,7 +81,7 @@ version = "#{shortVersion}~Beta#{betaBuild}"
 
 appExecutableFolderPath = appBuild.buildSetting 'EXECUTABLE_FOLDER_PATH'
 
-if attachXcode
+if launchApp && attachXcode
   attachScript = File.join(scriptsDirectory, "attach")
   system("nohup \"#{attachScript}\" &")
 end
