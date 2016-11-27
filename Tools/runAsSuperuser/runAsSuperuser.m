@@ -1,12 +1,9 @@
 //
-//  main.m
 //  runAsSuperuser
-//
 //
 
 #import <Foundation/Foundation.h>
 #import <sysexits.h>
-#import <launch.h>
 
 char **dpkgArgvWithDebugArgumentAppended(int argc, char *argv[]) {
     char **newArgv = (char **)malloc((argc + 2) * sizeof(*newArgv));
