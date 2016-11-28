@@ -74,7 +74,7 @@
 
 #pragma mark - Application Lifecycle
 
-- (void) applicationDidFinishLaunching:(id)unused {
+- (BOOL)application:(id)unused didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSLog(@"didFinishLaunching");
     _trace();
     [self setApplicationShakeSupport];
@@ -91,10 +91,19 @@
     [self setUpDatabase];
     [self setUpWindow];
     [self setUpViewControllers];
-    [self setUpNavigationControllerAndTabBar];
-    
+	
+	// If the app was opened from a shortcut
+	if (launchOptions[UIApplicationLaunchOptionsShortcutItemKey] != nil) {
+		// Set the selectedIndex to the corresponding index so that loadData selected the right index (since it used to set it auto. to 0)
+		selectedIndex = (int)shortcutToIndex[((UIApplicationShortcutItem*)launchOptions[UIApplicationLaunchOptionsShortcutItemKey]).type];
+	}
+	
+	[self setUpNavigationControllerAndTabBar];
+	
     [self performSelector:@selector(loadData) withObject:nil afterDelay:0];
     _trace();
+	
+	return YES;
 }
 
 - (void) applicationWillSuspend {
@@ -476,7 +485,6 @@ errno == ENOTDIR \
     
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
     NSArray *saved = [[[state objectForKey:@"InterfaceState"] mutableCopy] autorelease];
-    int standardIndex = 0;
     NSArray *standard = [self defaultStartPages];
     
     BOOL valid = YES;
@@ -511,7 +519,7 @@ errno == ENOTDIR \
         [tabbar_ setSelectedIndex:savedIndex];
         items = saved;
     } else {
-        [tabbar_ setSelectedIndex:standardIndex];
+        [tabbar_ setSelectedIndex:selectedIndex];
         items = standard;
     }
     
@@ -1302,5 +1310,18 @@ errno == ENOTDIR \
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
+#pragma mark - 3D Touch
+
+int selectedIndex(0);
+NSDictionary *shortcutToIndex = @{@"sources": @1, @"changes": @2, @"installed": @3, @"search": @4};
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
+	
+	// This function is called while the app is already open. If it isn't, the shortcut handling is done in didFinishLaunchingWithOptions
+	
+	// Go to the correct index
+	[(CydiaTabBarController*)self.keyWindow.rootViewController setSelectedIndex:(NSUInteger)shortcutToIndex[shortcutItem.type]];
+	
+}
 
 @end
