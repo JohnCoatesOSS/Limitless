@@ -57,9 +57,9 @@ configuration = Configuration.new(
                 defaultAppToLaunch: appToLaunch
                 )
 
-preprocessorDefinitions = ""
+preprocessorDefinitions = "RELEASE_BUILD=1 "
 if waitForDebugger
-  preprocessorDefinitions += "WAIT_FOR_DEBUGGER=1"
+  preprocessorDefinitions += " WAIT_FOR_DEBUGGER=1"
 end
 appBuild = XcodeBuild.new(
            projectDirectory: configuration.projectDirectory,
