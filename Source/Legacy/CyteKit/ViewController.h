@@ -35,7 +35,7 @@
 - (UIViewController *) parentOrPresentingViewController;
 @end
 
-@interface CyteViewController : UIViewController {
+@interface CyteViewController : UIViewController <UIViewControllerPreviewingDelegate> {
     _transient id delegate_;
     BOOL loaded_;
     _H<UIColor> color_;

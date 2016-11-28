@@ -2176,7 +2176,7 @@
 				TargetAttributes = {
 					FA28E7091D1B21A5003D3724 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = E6QK4MU6LM;
+						DevelopmentTeam = 9UKYMVL752;
 						ProvisioningStyle = Automatic;
 					};
 					FA3A18321DEAB1F3000557AC = {
@@ -2958,7 +2958,7 @@
 				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				DEVELOPMENT_TEAM = 9UKYMVL752;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
@@ -2989,7 +2989,7 @@
 				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				DEVELOPMENT_TEAM = 9UKYMVL752;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
