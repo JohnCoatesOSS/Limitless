@@ -26,6 +26,8 @@ extern NSString * const kCAFilterNearest;
 #include <WebKit/DOMHTMLBodyElement.h>
 #include <WebKit/DOMRGBColor.h>
 
+#include <SafariServices/SFSafariViewController.h>
+
 #include <dlfcn.h>
 #include <objc/runtime.h>
 
@@ -40,6 +42,7 @@ JSValueRef (*$JSObjectCallAsFunction)(JSContextRef, JSObjectRef, JSObjectRef, si
 
 // XXX: centralize these special class things to some file or mechanism?
 static Class $MFMailComposeViewController;
+static Class $SFSafariViewController;
 
 float CYScrollViewDecelerationRateNormal;
 
@@ -143,6 +146,9 @@ float CYScrollViewDecelerationRateNormal;
 
     dlopen("/System/Library/Frameworks/MessageUI.framework/MessageUI", RTLD_GLOBAL | RTLD_LAZY);
     $MFMailComposeViewController = objc_getClass("MFMailComposeViewController");
+
+    dlopen("/System/Library/Frameworks/SafariServices.framework/SafariServices", RTLD_GLOBAL | RTLD_LAZY);
+    $SFSafariViewController = objc_getClass("SFSafariViewController");
 
     if (float *_UIScrollViewDecelerationRateNormal = reinterpret_cast<float *>(dlsym(RTLD_DEFAULT, "UIScrollViewDecelerationRateNormal")))
         CYScrollViewDecelerationRateNormal = *_UIScrollViewDecelerationRateNormal;
@@ -346,6 +352,17 @@ float CYScrollViewDecelerationRateNormal;
         [app openURL:url];
 }
 
+- (void) _openSafariViewControllerForURL:(NSURL *)url {
+    if ($SFSafariViewController != nil && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"])) {
+        SFSafariViewController *controller([[[$SFSafariViewController alloc] initWithURL:url] autorelease]);
+        [self presentModalViewController:controller animated:YES];
+        return;
+    }
+
+    UIApplication *app([UIApplication sharedApplication]);
+    [app openURL:url];
+}
+
 - (bool) _allowJavaScriptPanel {
     return true;
 }
@@ -537,7 +554,7 @@ float CYScrollViewDecelerationRateNormal;
         return;
 
     if ([name isEqualToString:@"_open"])
-        [delegate_ openURL:url];
+        [self _openSafariViewControllerForURL:request.URL];
     else {
         NSString *scheme([[url scheme] lowercaseString]);
         if ([scheme isEqualToString:@"mailto"])
