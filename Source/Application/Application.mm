@@ -1371,8 +1371,6 @@ NSString* repoURL(@"");
 		[tabbar_ setSelectedIndex:1];
 		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
 		NSString *currentRepoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
-		//repoURL = currentRepoURL;
-		NSLog(@"%@", currentRepoURL);
 		[sVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
 	}
 	

@@ -44,7 +44,7 @@
     [super viewDidAppear:animated];
     [list_ deselectRowAtIndexPath:[list_ indexPathForSelectedRow] animated:animated];
 	
-	if (![currentRepoURL isEqualToString:@""]) {
+	if (currentRepoURL && ![currentRepoURL isEqualToString:@""]) {
 		[self selectSourceWithURL:currentRepoURL];
 		currentRepoURL = @"";
 	}
@@ -90,10 +90,46 @@
     Source *source([self sourceAtIndexPath:indexPath]);
     if (source == nil)
         [cell setAllSource];
-    else
+	else {
         [cell setSource:source];
-    
+		UILongPressGestureRecognizer *favouriteGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(favouriteGestureRecognized:)];
+		[cell addGestureRecognizer:favouriteGesture];
+	}
+	
     return cell;
+}
+
+-(void)favouriteGestureRecognized:(UILongPressGestureRecognizer*)gestureRecognizer {
+	if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+		Source *currentSource([self sourceAtIndexPath:[list_ indexPathForCell:(UITableViewCell*)gestureRecognizer.view]]);
+		
+		UIAlertController *favouriteSheet([UIAlertController alertControllerWithTitle:@"Set as favourite" message:[NSString stringWithFormat:@"Choose which favourite to replace with \"%@\"", currentSource.name] preferredStyle:UIAlertControllerStyleActionSheet]);
+		
+		UIApplicationShortcutItem *firstShortcut([UIApplication sharedApplication].shortcutItems[0]);
+		UIApplicationShortcutItem *secondShortcut([UIApplication sharedApplication].shortcutItems[1]);
+		
+		UIAlertAction *firstPlaceAction([UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Slot 1 \"%@\"", firstShortcut.localizedTitle] style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){
+			UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo1" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rooturi}];
+			NSMutableArray *newShortcuts = [NSMutableArray arrayWithArray:[UIApplication sharedApplication].shortcutItems];
+			newShortcuts[0] = newShortcut;
+			[UIApplication sharedApplication].shortcutItems = newShortcuts;
+		}]);
+		
+		UIAlertAction *secondPlaceAction([UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Slot 2 \"%@\"", secondShortcut.localizedTitle] style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){
+			UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo2" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rooturi}];
+			NSMutableArray *newShortcuts = [NSMutableArray arrayWithArray:[UIApplication sharedApplication].shortcutItems];
+			newShortcuts[1] = newShortcut;
+			[UIApplication sharedApplication].shortcutItems = newShortcuts;
+
+		}]);
+		UIAlertAction *cancelAction([UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:nil]);
+		
+		[favouriteSheet addAction:firstPlaceAction];
+		[favouriteSheet addAction:secondPlaceAction];
+		[favouriteSheet addAction:cancelAction];
+		
+		[self presentViewController:favouriteSheet animated:true completion:nil];
+	}
 }
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -465,8 +501,6 @@
 
 #pragma mark - 3D Touch
 
-
-
 - (void) selectSourceWithURL:(NSString*)sourceURL {
 	
 	// If sources is nil, then it hasn't fully loaded yet. We'll call this function again on viewDidAppear
@@ -487,8 +521,8 @@
 		}
 	}
 	
-	// Face of disappointment either from a bug or from the user deleting the source :/
-	NSLog(@":/");
+	// If the source is not found, or a bug happens, the program will reach this line
+	NSLog(@"Source \"%@\" not found in the list of sources", sourceURL);
 	
 }
 
