@@ -22,8 +22,6 @@
 #ifndef CyteKit_CydiaBrowser_H
 #define CyteKit_CydiaBrowser_H
 
-#include <UIKit/UIKit.h>
-
 #include <WebKit/DOMNodeList.h>
 #include <WebKit/WebFrame.h>
 #include <WebKit/WebPolicyDelegate.h>
