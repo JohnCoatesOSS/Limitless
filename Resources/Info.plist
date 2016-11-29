@@ -39,5 +39,24 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeUpdate</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Respring</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>respring</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeSearch</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Enter Safe Mode</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>safemode</string>
+		</dict>
+	</array>
 </dict>
 </plist>
