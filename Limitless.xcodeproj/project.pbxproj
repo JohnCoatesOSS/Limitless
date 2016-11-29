@@ -2157,7 +2157,7 @@
 		FA28E7021D1B21A5003D3724 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = LMT;
+				CLASSPREFIX = LMX;
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = Limitless;
 				TargetAttributes = {
