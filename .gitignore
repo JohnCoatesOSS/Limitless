@@ -1,7 +1,6 @@
 sysroot
 MobileCydia
 CydiaAppliance
-postinst
 _
 __
 Cydia.deb
@@ -9,8 +8,6 @@ Cydia_.deb
 debs
 .DS_Store
 *.o
-Images/
-Version.h
 cfversion
 setnsfpn
 bins
@@ -28,7 +25,7 @@ xcodeBuild/*.control
 
 # Swift Package Manager
 .build/
-Packages/
+/Packages/
 
 
 ## Build generated
@@ -56,3 +53,4 @@ fastlane/report.xml
 fastlane/screenshots
 Release
 app/Pods
+/compile_commands.json

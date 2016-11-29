@@ -1,0 +1,1 @@
+#define CYDIA_VERSION "1.1.26+8.g9ea3158+"

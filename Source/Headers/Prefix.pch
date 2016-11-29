@@ -1,0 +1,27 @@
+//
+//  Prefix.pch
+//  Cydia
+//
+//  Created on 8/29/16.
+//
+
+#ifdef __OBJC__
+#import <Compatibility/macOSToiOSBridge.h>
+#import "Device.h"
+#import "Platform.h"
+#endif
+
+#ifndef _assert
+#define _assert(test) do \
+if (!(test)) { \
+fprintf(stderr, "_assert(%d:%s)@%s:%u[%s]\n", errno, #test, __FILE__, __LINE__, __FUNCTION__); \
+assert(test); \
+exit(-1); \
+} \
+while (false)
+#endif
+
+#if (TARGET_OS_SIMULATOR)
+// temporary to avoid all the annoying warnings
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
