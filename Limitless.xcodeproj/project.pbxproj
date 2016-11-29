@@ -2111,7 +2111,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA28E7211D1B21A5003D3724 /* Build configuration list for PBXNativeTarget "Limitless" */;
 			buildPhases = (
-				FA25322E1DE0FB2800D4FA86 /* Install Command Line Tools */,
+				FA25322E1DE0FB2800D4FA86 /* Symlinks Setup */,
 				FA28E7061D1B21A5003D3724 /* Sources */,
 				FA28E7071D1B21A5003D3724 /* Frameworks */,
 				FA28E7081D1B21A5003D3724 /* Resources */,
@@ -2352,19 +2352,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		FA25322E1DE0FB2800D4FA86 /* Install Command Line Tools */ = {
+		FA25322E1DE0FB2800D4FA86 /* Symlinks Setup */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Install Command Line Tools";
+			name = "Symlinks Setup";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if ! xcode-select -p > /dev/null 2>&1; then\n    echo 'Installing XCode command line tools..'\n    xcode-select --install\nfi";
+			shellScript = "setUpSymlinksScript=\"${PROJECT_DIR}/Scripts/setUpSymlinks.rb\"\n/usr/bin/env ruby $setUpSymlinksScript";
 		};
 		FAA88F0A1DE7738600039F54 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2885,6 +2885,7 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/External/usr/include\"",
 					"\"$(SRCROOT)/Source/Legacy\"",
+					"\"$(SRCROOT)/External/Headers\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
@@ -2936,6 +2937,7 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/External/usr/include\"",
 					"\"$(SRCROOT)/Source/Legacy\"",
+					"\"$(SRCROOT)/External/Headers\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
