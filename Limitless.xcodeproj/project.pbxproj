@@ -251,6 +251,9 @@
 		FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA3A18361DEAB1F3000557AC /* runAsSuperuser.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3A18351DEAB1F3000557AC /* runAsSuperuser.m */; };
+		FA3D50DA1DED8C870046A0AC /* LMXTransliterate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50D91DED8C870046A0AC /* LMXTransliterate.mm */; };
+		FA3D50DF1DED900E0046A0AC /* TMXTransliteration.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50DE1DED900E0046A0AC /* TMXTransliteration.mm */; };
+		FA3D50E41DED9D050046A0AC /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3D50E31DED9D050046A0AC /* libicucore.tbd */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
 		FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */; };
@@ -309,6 +312,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		FA3D50E01DED981D0046A0AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA28E7021D1B21A5003D3724 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA3A18321DEAB1F3000557AC;
+			remoteInfo = runAsSuperuser;
+		};
 		FA9011001DE12B1C00A607AC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA28E7021D1B21A5003D3724 /* Project object */;
@@ -738,6 +748,10 @@
 		FA3A18331DEAB1F3000557AC /* runAsSuperuser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = runAsSuperuser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA3A18351DEAB1F3000557AC /* runAsSuperuser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = runAsSuperuser.m; sourceTree = "<group>"; };
 		FA3A18371DEAB1F3000557AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA3D50D81DED8C870046A0AC /* LMXTransliterate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXTransliterate.h; sourceTree = "<group>"; };
+		FA3D50D91DED8C870046A0AC /* LMXTransliterate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LMXTransliterate.mm; sourceTree = "<group>"; };
+		FA3D50DE1DED900E0046A0AC /* TMXTransliteration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TMXTransliteration.mm; sourceTree = "<group>"; };
+		FA3D50E31DED9D050046A0AC /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIWebDocumentView+BugFixes.mm"; sourceTree = "<group>"; };
 		FA6C862E1D749D1D00FB99CF /* CyteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CyteKit.h; sourceTree = "<group>"; };
 		FA6C862F1D749D4700FB99CF /* Apt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Apt.h; sourceTree = "<group>"; };
@@ -892,6 +906,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA3D50E41DED9D050046A0AC /* libicucore.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1369,6 +1384,7 @@
 				FA3A182E1DEAB1C6000557AC /* Tools */,
 				FA0311C41D1B5BBA008690CA /* Frameworks & Libraries */,
 				FA28E70B1D1B21A5003D3724 /* Products */,
+				FA3D50E21DED9D050046A0AC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1408,6 +1424,31 @@
 				FA3A18371DEAB1F3000557AC /* Info.plist */,
 			);
 			path = runAsSuperuser;
+			sourceTree = "<group>";
+		};
+		FA3D50D71DED8BFF0046A0AC /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				FA3D50D81DED8C870046A0AC /* LMXTransliterate.h */,
+				FA3D50D91DED8C870046A0AC /* LMXTransliterate.mm */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		FA3D50DB1DED8FBC0046A0AC /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				FA3D50DE1DED900E0046A0AC /* TMXTransliteration.mm */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		FA3D50E21DED9D050046A0AC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA3D50E31DED9D050046A0AC /* libicucore.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		FA6C86291D749C5300FB99CF /* Categories */ = {
@@ -1857,6 +1898,7 @@
 				FA6C86F91D7626A300FB99CF /* Cache */,
 				FA6C86D51D761E1300FB99CF /* URL Handler */,
 				FA6C86621D74C48400FB99CF /* Database */,
+				FA3D50D71DED8BFF0046A0AC /* Localization */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1921,6 +1963,7 @@
 		FA9010FC1DE12B1C00A607AC /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FA3D50DB1DED8FBC0046A0AC /* Localization */,
 				FA9010FD1DE12B1C00A607AC /* Tests.m */,
 				FA9010FF1DE12B1C00A607AC /* Info.plist */,
 			);
@@ -2145,6 +2188,7 @@
 			);
 			dependencies = (
 				FA9011011DE12B1C00A607AC /* PBXTargetDependency */,
+				FA3D50E11DED981D0046A0AC /* PBXTargetDependency */,
 			);
 			name = Tests;
 			productName = Tests;
@@ -2423,6 +2467,7 @@
 				FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA6C86971D75910E00FB99CF /* CydiaWebViewController.mm in Sources */,
+				FA3D50DA1DED8C870046A0AC /* LMXTransliterate.mm in Sources */,
 				FA6C86DE1D761F3600FB99CF /* SectionsController.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA6C86EA1D7621CC00FB99CF /* InstalledController.mm in Sources */,
@@ -2473,12 +2518,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA9010FE1DE12B1C00A607AC /* Tests.m in Sources */,
+				FA3D50DF1DED900E0046A0AC /* TMXTransliteration.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		FA3D50E11DED981D0046A0AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA3A18321DEAB1F3000557AC /* runAsSuperuser */;
+			targetProxy = FA3D50E01DED981D0046A0AC /* PBXContainerItemProxy */;
+		};
 		FA9011011DE12B1C00A607AC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FA28E7091D1B21A5003D3724 /* Limitless */;
