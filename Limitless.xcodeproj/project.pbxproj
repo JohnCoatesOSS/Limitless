@@ -2832,8 +2832,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2879,6 +2879,12 @@
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/External/usr/lib\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-idirafter",
+					"\"$(SRCROOT)/External/icu/icuSources/common\"",
+					"-idirafter",
+					"\"$(SRCROOT)/External/icu/icuSources/i18n\"",
+				);
 				OTHER_LDFLAGS = "-v";
 				SDKROOT = iphoneos;
 			};
@@ -2890,8 +2896,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2931,6 +2937,12 @@
 				LD_NO_PIE = NO;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/External/usr/lib\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = (
+					"-idirafter",
+					"\"$(SRCROOT)/External/icu/icuSources/common\"",
+					"-idirafter",
+					"\"$(SRCROOT)/External/icu/icuSources/i18n\"",
+				);
 				OTHER_LDFLAGS = "-v";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -2943,25 +2955,15 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
-				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9UKYMVL752;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
-				OTHER_CFLAGS = (
-					"-idirafter",
-					"\"$(SRCROOT)/External/icu/icuSources/common\"",
-					"-idirafter",
-					"\"$(SRCROOT)/External/icu/icuSources/i18n\"",
-					"-idirafter",
-					/usr/include,
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2974,25 +2976,15 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
-				CLANG_ENABLE_MODULES = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9UKYMVL752;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
-				OTHER_CFLAGS = (
-					"-idirafter",
-					"\"$(SRCROOT)/External/icu/icuSources/common\"",
-					"-idirafter",
-					"\"$(SRCROOT)/External/icu/icuSources/i18n\"",
-					"-idirafter",
-					/usr/include,
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3036,17 +3028,17 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = E6QK4MU6LM;
 				ENABLE_TESTABILITY = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Limitless.app/Limitless";
 			};
@@ -3057,15 +3049,15 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = oss.Cydia.Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Limitless.app/Limitless";
 			};
