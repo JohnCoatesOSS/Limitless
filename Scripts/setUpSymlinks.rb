@@ -22,7 +22,7 @@ sdkPath = macOSSDKPath()
 sdkFrameworksDirectory = File.join(sdkPath, "System/Library/Frameworks")
 scriptsDirectory = __dir__
 projectDirectory = File.expand_path(File.join(scriptsDirectory, ".."))
-headersDirectory = File.join(projectDirectory, "External/Headers")
+headersDirectory = File.join(projectDirectory, "External/Headers/Linked")
 
 frameworkDirectories = {
   AE: "CoreServices.framework/Frameworks/AE.framework/Headers",
@@ -33,11 +33,13 @@ frameworkDirectories = {
   FSEvents: "CoreServices.framework/Frameworks/FSEvents.framework/Headers",
   IOKit: "IOKit.framework/Headers",
   IOSurface: "IOSurface.framework/Headers",
+  JavaScriptCore: "JavaScriptCore.framework/Headers",
   LaunchServices: "CoreServices.framework/Frameworks/LaunchServices.framework/Headers",
   Metadata: "CoreServices.framework/Frameworks/Metadata.framework/Headers",
   OSServices: "CoreServices.framework/Frameworks/OSServices.framework/Headers",
   SearchKit: "CoreServices.framework/Frameworks/SearchKit.framework/Headers",
-  SharedFileList: "CoreServices.framework/Frameworks/SharedFileList.framework/Headers"
+  SharedFileList: "CoreServices.framework/Frameworks/SharedFileList.framework/Headers",
+  WebKit: "WebKit.framework/Headers"
 }
 
 frameworkDirectories.each_pair do |directoryName, targetPath|

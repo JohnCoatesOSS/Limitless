@@ -2880,6 +2880,7 @@
 					"\"$(SRCROOT)/External/usr/include\"",
 					"\"$(SRCROOT)/Source/Legacy\"",
 					"\"$(SRCROOT)/External/Headers\"",
+					"\"$(SRCROOT)/External/Headers/Linked\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
@@ -2932,6 +2933,7 @@
 					"\"$(SRCROOT)/External/usr/include\"",
 					"\"$(SRCROOT)/Source/Legacy\"",
 					"\"$(SRCROOT)/External/Headers\"",
+					"\"$(SRCROOT)/External/Headers/Linked\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
