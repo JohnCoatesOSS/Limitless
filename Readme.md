@@ -32,6 +32,5 @@ There are a lot of limitations to writing code for Cydia. Because it needs to su
 #### [Cydia Backporting Style Guide](./Documentation/BackportingStyleGuide.md)
 
 ### Compiling, Running
-Make sure Xcode's command line tools are installed by running `xcode-select --install` in Terminal
 
 Open Limitless.xcodeproj
