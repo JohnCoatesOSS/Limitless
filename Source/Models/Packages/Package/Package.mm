@@ -1015,7 +1015,7 @@
 
 - (bool)isFavorited {
     
-    return [[database_ currentFavorites] containsObject:self];
+    return [[database_ currentFavorites] containsObject:[self id]];
 }
 - (void) setIndex:(size_t)index {
     if (metadata_->index_ != index)
