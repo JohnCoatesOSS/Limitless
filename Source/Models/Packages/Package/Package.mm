@@ -717,8 +717,12 @@
     if (icon == nil) if (Source *source = [self source]) if (NSString *dicon = [source defaultIcon])
         if ([dicon hasPrefix:@"file:///"])
             icon = [UIImage imageAtPath:[[dicon substringFromIndex:7] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    if (icon == nil)
-        icon = [UIImage imageNamed:@"unknown.png"];
+    if (icon == nil) {
+        icon = [UIImage imageNamed:[section stringByReplacingOccurrencesOfString:@" " withString:@"_"]];
+        if (icon == nil) {
+            icon = [UIImage imageNamed:@"unknown.png"];
+        }
+    }
     return icon;
 }
 
