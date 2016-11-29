@@ -18,7 +18,10 @@
     _H<UITableView, 2> list_;
     _H<NSMutableArray> sources_;
     int offset_;
-    
+	
+	// This has to be created as creating the variable inside the class makes it get overriden by random stuff xD
+	_H<NSString> currentRepoURL;
+	
     _H<NSString> href_;
     _H<UIProgressHUD> hud_;
     _H<NSError> error_;
@@ -33,5 +36,7 @@
 - (void) updateButtonsForEditingStatusAnimated:(BOOL)animated;
 
 - (void) showAddSourcePrompt;
+
+- (void) selectSourceWithURL:(NSString*)url;
 
 @end
