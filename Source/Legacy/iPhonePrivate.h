@@ -1,5 +1,4 @@
-#ifndef CYDIA_UIKITPRIVATE_H
-#define CYDIA_UIKITPRIVATE_H
+#pragma once
 
 // #include <*> {{{
 #include <GraphicsServices/GraphicsServices.h>
@@ -456,5 +455,3 @@ extern "C" NSString *SBSCopyIconImagePathForDisplayIdentifier(NSString *);
 extern "C" UIImage *_UIImageWithName(NSString *name);
 extern "C" void UISetColor(CGColorRef color);
 // }}}
-
-#endif//CYDIA_UIKITPRIVATE_H
