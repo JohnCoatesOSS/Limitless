@@ -43,6 +43,11 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [list_ deselectRowAtIndexPath:[list_ indexPathForSelectedRow] animated:animated];
+	
+	if (![currentRepoURL isEqualToString:@""]) {
+		[self selectSourceWithURL:currentRepoURL];
+		currentRepoURL = @"";
+	}
 }
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
@@ -456,6 +461,35 @@
 - (void) editButtonClicked {
     [list_ setEditing:![list_ isEditing] animated:YES];
     [self updateButtonsForEditingStatusAnimated:YES];
+}
+
+#pragma mark - 3D Touch
+
+
+
+- (void) selectSourceWithURL:(NSString*)sourceURL {
+	
+	// If sources is nil, then it hasn't fully loaded yet. We'll call this function again on viewDidAppear
+	if (!sources_.operator->()) {
+		currentRepoURL = sourceURL;
+		return;
+	}
+	
+	// Otherwise, we'll find the source we want and select it
+	NSLog(@"Selecting source: %@", sourceURL);
+	
+	for (int i = 0; i < [sources_ count]; i++) {
+		Source *currentSource = [sources_ objectAtIndex:i];
+		if ([[currentSource rooturi] isEqualToString:sourceURL]) {
+			[list_ selectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1] animated:false scrollPosition:UITableViewScrollPositionNone];
+			[[list_ delegate] tableView:list_ didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
+			return;
+		}
+	}
+	
+	// Face of disappointment either from a bug or from the user deleting the source :/
+	NSLog(@":/");
+	
 }
 
 @end

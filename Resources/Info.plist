@@ -43,35 +43,19 @@
 	<array>
 		<dict>
 			<key>UIApplicationShortcutItemIconType</key>
-			<string></string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Sources</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>sources</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeTime</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Changes</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>changes</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeUpdate</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>Installed</string>
+			<string>Respring</string>
 			<key>UIApplicationShortcutItemType</key>
-			<string>installed</string>
+			<string>respring</string>
 		</dict>
 		<dict>
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeSearch</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>Search</string>
+			<string>Enter Safe Mode</string>
 			<key>UIApplicationShortcutItemType</key>
-			<string>search</string>
+			<string>safemode</string>
 		</dict>
 	</array>
 </dict>

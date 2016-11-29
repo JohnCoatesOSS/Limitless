@@ -5,6 +5,8 @@
 //  Created on 8/31/16.
 //
 
+#import <spawn.h>
+
 #import "iPhonePrivate.h"
 #import "System.h"
 #import "Application.h"
@@ -74,7 +76,7 @@
 
 #pragma mark - Application Lifecycle
 
-- (BOOL)application:(id)unused didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSLog(@"didFinishLaunching");
     _trace();
     [self setApplicationShakeSupport];
@@ -90,15 +92,36 @@
     }
     [self setUpDatabase];
     [self setUpWindow];
-    [self setUpViewControllers];
+	[self setUpViewControllers];
+	[self setUpNavigationControllerAndTabBar];
+	
+	// - Homescreen Shortcut Start
 	
 	// If the app was opened from a shortcut
 	if (launchOptions[UIApplicationLaunchOptionsShortcutItemKey] != nil) {
-		// Set the selectedIndex to the corresponding index so that loadData selected the right index (since it used to set it auto. to 0)
-		selectedIndex = (int)shortcutToIndex[((UIApplicationShortcutItem*)launchOptions[UIApplicationLaunchOptionsShortcutItemKey]).type];
+		// Handle it
+		UIApplicationShortcutItem *shortcutItem = (UIApplicationShortcutItem*)launchOptions[UIApplicationLaunchOptionsShortcutItemKey];
+		
+		if ([shortcutItem.type isEqualToString:@"respring"]) {
+			[self reloadSpringBoard];
+		} else if ([shortcutItem.type isEqualToString:@"safemode"]) {
+			[self enterSafeMode];
+			
+		// -(void)loadData has some pretty weird behaviour, so I have some code which sets the selectedIndex to 1 (sources), then have a function which selects the appropriate source based on the URL. Chances of URL conflict should be none.
+		} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
+			travelToRepo = YES;
+			repoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
+		}
 	}
 	
-	[self setUpNavigationControllerAndTabBar];
+	// If the shortcuts haven't been set before
+	if (application.shortcutItems.count == 0) {
+		UIMutableApplicationShortcutItem* firstRepo = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo1" localizedTitle:@"Cydia/Telesphoreo" localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": @"http://apt.saurik.com/"}];
+		UIMutableApplicationShortcutItem* secondRepo = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo2" localizedTitle:@"BigBoss" localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": @"http://apt.thebigboss.org/repofiles/cydia/"}];
+			application.shortcutItems = @[firstRepo, secondRepo];
+	}
+	
+	// - Homescreen Shortcut End
 	
     [self performSelector:@selector(loadData) withObject:nil afterDelay:0];
     _trace();
@@ -486,7 +509,8 @@ errno == ENOTDIR \
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
     NSArray *saved = [[[state objectForKey:@"InterfaceState"] mutableCopy] autorelease];
     NSArray *standard = [self defaultStartPages];
-    
+	int standardIndex(0);
+	
     BOOL valid = YES;
     
     if (saved == nil)
@@ -515,11 +539,18 @@ errno == ENOTDIR \
     }
     
     NSArray *items = nil;
+	
+	// If we need to go to the sources page, override what has been set before
+	if (travelToRepo) {
+		savedIndex = 1;
+		standardIndex = 1;
+	}
+
     if (valid) {
         [tabbar_ setSelectedIndex:savedIndex];
         items = saved;
     } else {
-        [tabbar_ setSelectedIndex:selectedIndex];
+        [tabbar_ setSelectedIndex:standardIndex];
         items = standard;
     }
     
@@ -538,7 +569,15 @@ errno == ENOTDIR \
         
         [navigation setViewControllers:current];
     }
-    
+	
+	// Get the sources controller, and call our function to select it when the VC + database loads
+	if (travelToRepo && ![repoURL isEqualToString:@""]) {
+		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
+		[sVC selectSourceWithURL:repoURL];
+		repoURL = @"";
+		travelToRepo = NO;
+	}
+	
     // (Try to) show the startup URL.
     if (starturl_ != nil) {
         [self openCydiaURL:starturl_ forExternal:YES];
@@ -1192,15 +1231,18 @@ errno == ENOTDIR \
 #pragma mark - SpringBoard
 
 - (void) reloadSpringBoard {
-    if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
-        system("/bin/launchctl stop com.apple.backboardd");
-    else
-        system("/bin/launchctl stop com.apple.SpringBoard");
-    sleep(15);
-    system("/usr/bin/killall backboardd SpringBoard");
+	if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
+		system("/bin/launchctl stop com.apple.backboardd");
+	else
+		system("/bin/launchctl stop com.apple.SpringBoard");
+	sleep(15);
+	system("/usr/bin/killall backboardd SpringBoard");
 }
 
-
+// Not too sure on how to implement this in the future.
+- (void) enterSafeMode {
+	system("/usr/bin/killall -SEGV SpringBoard");
+}
 
 - (void) _uicache {
     _trace();
@@ -1312,15 +1354,27 @@ errno == ENOTDIR \
 
 #pragma mark - 3D Touch
 
-int selectedIndex(0);
-NSDictionary *shortcutToIndex = @{@"sources": @1, @"changes": @2, @"installed": @3, @"search": @4};
+BOOL travelToRepo(false);
+NSString* repoURL(@"");
 
 - (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
 	
 	// This function is called while the app is already open. If it isn't, the shortcut handling is done in didFinishLaunchingWithOptions
-	
-	// Go to the correct index
-	[(CydiaTabBarController*)self.keyWindow.rootViewController setSelectedIndex:(NSUInteger)shortcutToIndex[shortcutItem.type]];
+	if ([shortcutItem.type isEqualToString:@"respring"]) {
+		NSLog(@"Respringing through 3D Touch");
+		[self reloadSpringBoard];
+	} else if ([shortcutItem.type isEqualToString:@"safemode"]) {
+		NSLog(@"Entering Safe Mode through 3D Touch");
+		[self enterSafeMode];
+	} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
+		NSLog(@"Travelling to a repo through 3D Touch");
+		[tabbar_ setSelectedIndex:1];
+		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
+		NSString *currentRepoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
+		//repoURL = currentRepoURL;
+		NSLog(@"%@", currentRepoURL);
+		[sVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
+	}
 	
 }
 
