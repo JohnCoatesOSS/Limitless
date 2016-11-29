@@ -305,7 +305,6 @@
 		FA9010FE1DE12B1C00A607AC /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9010FD1DE12B1C00A607AC /* Tests.m */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
-		FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811B11D74664600C674C9 /* AppDelegate.mm */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
 /* End PBXBuildFile section */
 
@@ -857,8 +856,6 @@
 		FA9010FF1DE12B1C00A607AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		FAA811B01D74664600C674C9 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		FAA811B11D74664600C674C9 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1997,8 +1994,6 @@
 				FAA811AE1D745FF700C674C9 /* main.mm */,
 				FA23E2BF1D774FEA001FBE4A /* Application.h */,
 				FA23E2C01D774FEA001FBE4A /* Application.mm */,
-				FAA811B01D74664600C674C9 /* AppDelegate.h */,
-				FAA811B11D74664600C674C9 /* AppDelegate.mm */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -2424,7 +2419,6 @@
 				FA0311AB1D1B2CBD008690CA /* ViewController.mm in Sources */,
 				FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */,
 				FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */,
-				FAA811B21D74664600C674C9 /* AppDelegate.mm in Sources */,
 				FAA811AF1D745FF700C674C9 /* main.mm in Sources */,
 				FA0311AE1D1B2CBD008690CA /* WebViewController.mm in Sources */,
 				FA6C86861D758D4000FB99CF /* Section.mm in Sources */,
