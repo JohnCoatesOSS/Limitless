@@ -1013,6 +1013,10 @@
     return [self hasTag:@"cydia::commercial"];
 }
 
+- (bool)isFavorited {
+    
+    return [[database_ currentFavorites] containsObject:self];
+}
 - (void) setIndex:(size_t)index {
     if (metadata_->index_ != index)
         metadata_->index_ = index;

@@ -777,4 +777,19 @@
     } return *mapped;
 }
 
+// new favorites list
+- (NSArray *)currentFavorites {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"FavoritesPackages"];
+}
+
+- (void)addPackageToFavoritesList:(Package *)package {
+    NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavorites]];
+    if (currentFavoritesMutable == nil) {
+        currentFavoritesMutable = [[NSMutableArray alloc] init];
+    }
+    NSString *packageID = package.id;
+    [currentFavoritesMutable addObject:packageID];
+    [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoritesPackages"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 @end

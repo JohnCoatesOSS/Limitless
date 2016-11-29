@@ -33,4 +33,5 @@
 
 - (void) didSelectPackage:(Package *)package;
 
+- (void)updateInstalledListIfNeeded:(BOOL)needed;
 @end

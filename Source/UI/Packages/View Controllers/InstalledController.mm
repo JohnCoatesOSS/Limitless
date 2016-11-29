@@ -37,6 +37,10 @@
 
 - (void) useFilter:(UISegmentedControl *)segmented {
     NSInteger selected([segmented selectedSegmentIndex]);
+    [self updateInstalledListIfNeeded:NO];
+    if (selected == 3) {
+        return [self updateInstalledListIfNeeded:YES];
+    }
     if (selected == 2)
         return [self useRecent];
     bool simple(selected == 0);
@@ -48,7 +52,9 @@
         }];
         
         [self setSorter:nullptr];
-    } }
+    }
+    
+}
 
 - (NSArray *) sectionsForPackages:(NSMutableArray *)packages {
     if (sectioned_)
@@ -93,7 +99,10 @@
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
-        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), nil]] autorelease]);
+        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), UCLocalize("FAVORITES"), nil]] autorelease]);
+        segmented.layer.cornerRadius = CGRectGetHeight(segmented.bounds) / 2;
+        segmented.layer.borderColor = [UIColor colorWithRed:138 green:89 blue:255 alpha: 1.0].CGColor;
+        segmented.layer.borderWidth = 1;
         [segmented setSelectedSegmentIndex:0];
         [segmented setSegmentedControlStyle:UISegmentedControlStyleBar];
         [[self navigationItem] setTitleView:segmented];
