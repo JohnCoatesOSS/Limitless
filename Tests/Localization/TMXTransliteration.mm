@@ -29,7 +29,7 @@
     [super tearDown];
 }
 
-- (void)testVietnameseToGreekICU {
+- (void)testLatinToGreekICU {
     NSString *icuIdentifier = @"Latin-Greek";
     unichar *uid = (unichar *)[icuIdentifier cStringUsingEncoding:NSUnicodeStringEncoding];
     
