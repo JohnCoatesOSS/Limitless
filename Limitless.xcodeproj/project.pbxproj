@@ -2392,7 +2392,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "setUpSymlinksScript=\"${PROJECT_DIR}/Scripts/setUpSymlinks.rb\"\n/usr/bin/env ruby $setUpSymlinksScript";
+			shellScript = "setUpSymlinksScript=\"${PROJECT_DIR}/Scripts/setUpSymlinks.rb\"\n/usr/bin/env ruby \"${setUpSymlinksScript}\"";
 		};
 		FAA88F0A1DE7738600039F54 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
