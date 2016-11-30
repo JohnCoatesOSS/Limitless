@@ -95,7 +95,6 @@
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
         UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), nil]] autorelease]);
         [segmented setSelectedSegmentIndex:0];
-        [segmented setSegmentedControlStyle:UISegmentedControlStyleBar];
         [[self navigationItem] setTitleView:segmented];
         
         [segmented addTarget:self action:@selector(modeChanged:) forEvents:UIControlEventValueChanged];

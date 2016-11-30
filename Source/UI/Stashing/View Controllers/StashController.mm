@@ -15,7 +15,7 @@
     [view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
     [self setView:view];
     
-    [view setBackgroundColor:[UIColor viewFlipsideBackgroundColor]];
+    [view setBackgroundColor:[UIColor blackColor]];
     
     spinner_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge] autorelease];
     CGRect spinrect = [spinner_ frame];

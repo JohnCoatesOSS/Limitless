@@ -71,8 +71,8 @@
 - (void) keyboardWillShow:(NSNotification *)notification {
     CGRect bounds;
     CGPoint center;
-    [[[notification userInfo] objectForKey:UIKeyboardBoundsUserInfoKey] getValue:&bounds];
-    [[[notification userInfo] objectForKey:UIKeyboardCenterEndUserInfoKey] getValue:&center];
+    [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] getValue:&bounds];
+    [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&center];
     
     NSTimeInterval duration;
     UIViewAnimationCurve curve;

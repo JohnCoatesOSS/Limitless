@@ -157,7 +157,7 @@
           "deb http://apt.thebigboss.org/repofiles/cydia/ stable main\n"
           "deb http://cydia.zodttd.com/repo/cydia/ stable main\n"
           "deb http://apt.modmyi.com/ stable main\n",
-          kCFCoreFoundationVersionNumber] writeToFile:cydiaList atomically:YES];
+          kCFCoreFoundationVersionNumber] writeToFile:cydiaList atomically:YES encoding:NSUTF8StringEncoding error:nil];
     }
     
     // set executable permission on files

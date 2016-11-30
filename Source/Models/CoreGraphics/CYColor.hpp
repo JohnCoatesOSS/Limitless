@@ -11,7 +11,6 @@
 
 class CYColor {
 private:
-    CGColorRef color_;
     
     static CGColorRef Create_(CGColorSpaceRef space, float red, float green, float blue, float alpha) {
         CGFloat color[] = {red, green, blue, alpha};
@@ -19,6 +18,8 @@ private:
     }
     
 public:
+	CGColorRef color_;
+	
     CYColor() :
     color_(NULL)
     {

@@ -32,7 +32,7 @@
     
     // on the iPad, this view controller is ALSO visible. :(
     if ([Device isPad])
-        if (UIViewController *modal = [self modalViewController])
+        if (UIViewController *modal = [self presentedViewController])
             if ([modal modalPresentationStyle] == UIModalPresentationFormSheet)
                 if (UIViewController *top = [self topViewController])
                     if (top != visible)

@@ -97,15 +97,27 @@
     if (editing_)
         width -= 9 + [switch_ frame].size.width;
     
-    if (!highlighted)
+	if (!highlighted) {
         UISetColor(Black_);
-    [name_ drawAtPoint:CGPointMake(48, 12) forWidth:(width - 58) withFont:Font18_ lineBreakMode:NSLineBreakByTruncatingTail];
+		
+		NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+		[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
+		
+		[name_ drawInRect:CGRectMake(48, 12, width-58, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSForegroundColorAttributeName:[UIColor colorWithCGColor:Black_.color_], NSParagraphStyleAttributeName: truncatingStyle}];
+	} else {
+		
+		NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+		[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
+		
+		[name_ drawInRect:CGRectMake(48, 12, width-58, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle}];
+	}
+	
     
-    CGSize size = [count_ sizeWithFont:Font14_];
+	CGSize size = [count_ sizeWithAttributes:@{NSFontAttributeName: Font14_}];
     
     UISetColor(Folder_);
     if (count_ != nil)
-        [count_ drawAtPoint:CGPointMake(Retina(10 + (30 - size.width) / 2), 18) withFont:Font12Bold_];
+		[count_ drawInRect:CGRectMake(Retina(10 + (30 - size.width) / 2), 18, CGFLOAT_MAX, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12Bold_, NSForegroundColorAttributeName: [UIColor colorWithCGColor:Folder_.color_]}];
 }
 
 @end

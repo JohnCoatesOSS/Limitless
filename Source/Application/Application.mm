@@ -229,7 +229,7 @@
         return false;
     }
     
-    if ([tabbar_ modalViewController] != nil)
+    if ([tabbar_ presentedViewController] != nil)
         return false;
     
     // Use external process status API internally.
@@ -420,7 +420,7 @@ errno == ENOTDIR \
 }
 
 - (void) stash {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     UpdateExternalStatus(1);
     [self yieldToSelector:@selector(system:)
                withObject:@"/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/free.sh"];
@@ -496,8 +496,8 @@ errno == ENOTDIR \
 
 - (void) loadData {
     _trace();
-    if ([emulated_ modalViewController] != nil)
-        [emulated_ dismissModalViewControllerAnimated:YES];
+    if ([emulated_ presentedViewController] != nil)
+		[emulated_ dismissViewControllerAnimated:true completion:nil];
     [window_ setUserInteractionEnabled:NO];
     
     [self reloadDataWithInvocation: nil];
@@ -728,11 +728,8 @@ errno == ENOTDIR \
 
 #pragma mark - View Controllers
 
-- (void) presentModalViewController:(UIViewController *)controller
-                              force:(BOOL)force {
-    UINavigationController *navigation = [[[UINavigationController alloc]
-                                           initWithRootViewController:controller]
-                                          autorelease];
+- (void) presentModalViewController:(UIViewController *)controller force:(BOOL)force {
+    UINavigationController *navigation = [[[UINavigationController alloc] initWithRootViewController:controller] autorelease];
     
     UIViewController *parent;
     if (emulated_ == nil)
@@ -746,7 +743,7 @@ errno == ENOTDIR \
     
     if ([Device isPad])
         [navigation setModalPresentationStyle:UIModalPresentationFormSheet];
-    [parent presentModalViewController:navigation animated:YES];
+    [parent presentViewController:navigation animated:YES completion:nil];
 }
 
 - (void) disemulate {
@@ -911,7 +908,7 @@ errno == ENOTDIR \
     [window_ setUserInteractionEnabled:NO];
     
     UIViewController *target(tabbar_);
-    if (UIViewController *modal = [target modalViewController])
+    if (UIViewController *modal = [target presentedViewController])
         target = modal;
     
     [hud showInView:[target view]];
@@ -1150,7 +1147,7 @@ errno == ENOTDIR \
     
     if ([Device isPad])
         [confirm_ setModalPresentationStyle:UIModalPresentationFormSheet];
-    [tabbar_ presentModalViewController:confirm_ animated:YES];
+    [tabbar_ presentViewController:confirm_ animated:YES completion:nil];
     
     return true;
 }

@@ -47,7 +47,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         
         [alert dismissWithClickedButtonIndex:-1 animated:YES];
     } else if ([context isEqualToString:@"unable"]) {
-        [self dismissModalViewControllerAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
         [alert dismissWithClickedButtonIndex:-1 animated:YES];
     } else {
         [super alertView:alert clickedButtonAtIndex:button];
@@ -56,7 +56,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 - (void) _doContinue {
     [delegate_ cancelAndClear:NO];
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (id) invokeDefaultMethodWithArguments:(NSArray *)args {
@@ -279,7 +279,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 - (void) cancelButtonClicked {
     [delegate_ cancelAndClear:YES];
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #if !AlwaysReload

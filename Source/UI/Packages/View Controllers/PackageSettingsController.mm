@@ -110,12 +110,12 @@
     [ignoredSwitch_ addTarget:self action:@selector(onIgnored:) forEvents:UIControlEventValueChanged];
     
     subscribedCell_ = [[[UITableViewCell alloc] init] autorelease];
-    [subscribedCell_ setText:UCLocalize("SHOW_ALL_CHANGES")];
+    [[subscribedCell_ textLabel] setText:UCLocalize("SHOW_ALL_CHANGES")];
     [subscribedCell_ setAccessoryView:subscribedSwitch_];
     [subscribedCell_ setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     ignoredCell_ = [[[UITableViewCell alloc] init] autorelease];
-    [ignoredCell_ setText:UCLocalize("IGNORE_UPGRADES")];
+    [[ignoredCell_ textLabel] setText:UCLocalize("IGNORE_UPGRADES")];
     [ignoredCell_ setAccessoryView:ignoredSwitch_];
     [ignoredCell_ setSelectionStyle:UITableViewCellSelectionStyleNone];
 }
