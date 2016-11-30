@@ -22,5 +22,6 @@
 - (void) setSource:(Source *)source;
 - (void) setFetch:(NSNumber *)fetch;
 - (void) setAllSource;
+- (SourceCell *) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier;
 
 @end

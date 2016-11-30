@@ -30,7 +30,7 @@ NSString *CYHex(NSData *data, bool reverse) {
     
     size_t length([data length]);
     uint8_t bytes[length];
-    [data getBytes:bytes];
+    [data getBytes:bytes length:length];
     
     char string[length * 2 + 1];
     for (size_t i(0); i != length; ++i)

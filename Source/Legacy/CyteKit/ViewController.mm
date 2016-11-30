@@ -38,7 +38,7 @@
 }
 
 - (void) unloadData {
-    if (UIViewController *modal = [self modalViewController])
+    if (UIViewController *modal = [self presentedViewController])
         [modal unloadData];
 }
 

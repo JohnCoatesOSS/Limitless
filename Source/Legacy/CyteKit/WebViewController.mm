@@ -326,7 +326,7 @@ float CYScrollViewDecelerationRateNormal;
 }
 
 - (void) mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void) _setupMail:(MFMailComposeViewController *)controller {
@@ -341,7 +341,7 @@ float CYScrollViewDecelerationRateNormal;
 
         [self _setupMail:controller];
 
-        [self presentModalViewController:controller animated:YES];
+        [self presentViewController:controller animated:YES completion:nil];
         return;
     }
 
@@ -355,7 +355,7 @@ float CYScrollViewDecelerationRateNormal;
 - (void) _openSafariViewControllerForURL:(NSURL *)url {
     if ($SFSafariViewController != nil && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"])) {
         SFSafariViewController *controller([[[$SFSafariViewController alloc] initWithURL:url] autorelease]);
-        [self presentModalViewController:controller animated:YES];
+		[self presentViewController:controller animated:YES completion:nil];
         return;
     }
 
@@ -451,7 +451,7 @@ float CYScrollViewDecelerationRateNormal;
             action:@selector(close)
         ] autorelease]];
 
-        [[self navigationController] presentModalViewController:navigation animated:YES];
+        [[self navigationController] presentViewController:navigation animated:true completion:nil];
     }
 }
 
@@ -755,7 +755,7 @@ float CYScrollViewDecelerationRateNormal;
 // }}}
 
 - (void) close {
-    [[[self navigationController] parentOrPresentingViewController] dismissModalViewControllerAnimated:YES];
+    [[[self navigationController] parentOrPresentingViewController] dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void) alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)button {
@@ -840,7 +840,7 @@ float CYScrollViewDecelerationRateNormal;
         return nil;
 
     if (UINavigationController *navigation = [self navigationController])
-        if ([[navigation parentOrPresentingViewController] modalViewController] == navigation)
+        if ([[navigation parentOrPresentingViewController] presentedViewController] == navigation)
             return [[[UIBarButtonItem alloc]
                 initWithTitle:UCLocalize("CLOSE")
                 style:UIBarButtonItemStylePlain
@@ -984,8 +984,6 @@ float CYScrollViewDecelerationRateNormal;
 
     if ([webview_ respondsToSelector:@selector(setDataDetectorTypes:)])
         [webview_ setDataDetectorTypes:UIDataDetectorTypeAutomatic];
-    else
-        [webview_ setDetectsPhoneNumbers:NO];
 
     [webview_ setScalesPageToFit:YES];
 

@@ -23,10 +23,10 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:reuseIdentifier] autorelease];
-        [cell setFont:[UIFont systemFontOfSize:16]];
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier] autorelease];
+        [[cell textLabel] setFont:[UIFont systemFontOfSize:16]];
     }
-    [cell setText:[files_ objectAtIndex:indexPath.row]];
+    [[cell textLabel] setText:[files_ objectAtIndex:indexPath.row]];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     return cell;
