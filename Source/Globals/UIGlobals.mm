@@ -32,17 +32,6 @@ _H<UIFont> Font18_;
 _H<UIFont> Font18Bold_;
 _H<UIFont> Font22Bold_;
 
-// Collation
-_H<NSLocale> CollationLocale_;
-_H<NSArray> CollationThumbs_;
-std::vector<NSInteger> CollationOffset_;
-_H<NSArray> CollationTitles_;
-_H<NSArray> CollationStarts_;
-UTransliterator *CollationTransl_;
-
-typedef std::basic_string<UChar> ustring;
-ustring CollationString_;
-
 // Locale
 CFLocaleRef Locale_;
 NSArray *Languages_;

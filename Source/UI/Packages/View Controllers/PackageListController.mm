@@ -174,8 +174,11 @@
     return thumbs_;
 }
 
-- (NSInteger) tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
-    return offset_[index];
+- (NSInteger) tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title
+                atIndex:(NSInteger)index {
+    NSNumber *section = _sectionsForIndexTitles[index];
+    
+    return section.integerValue;
 }
 
 - (void) updateHeight {
@@ -215,7 +218,7 @@
     sections_ = nil;
     
     thumbs_ = nil;
-    offset_.clear();
+    _sectionsForIndexTitles = nil;
     
     [super releaseSubviews];
 }
@@ -276,7 +279,7 @@ reload:
         reloading_ = 0;
         
         thumbs_ = nil;
-        offset_.clear();
+        _sectionsForIndexTitles = nil;
         
         packages_ = packages;
         
@@ -306,15 +309,17 @@ reload:
     NSMutableArray *sections([NSMutableArray arrayWithCapacity:16]);
     Section *section(prefix);
     
-    thumbs_ = CollationThumbs_;
-    offset_ = CollationOffset_;
+    thumbs_ = LMXLocalizedTableSections.collationTableIndexTitles;
+    _sectionsForIndexTitles = [LMXLocalizedTableSections sectionsForIndexTitles];
     
+    NSArray *sectionStartStrings = LMXLocalizedTableSections.sectionStartStrings;
     size_t offset(0);
-    size_t offsets([CollationStarts_ count]);
+    size_t offsets = [sectionStartStrings count];
     
-    NSString *start([CollationStarts_ objectAtIndex:offset]);
+    NSString *start([sectionStartStrings objectAtIndex:offset]);
     size_t length([start length]);
     
+    NSArray *sectionTitles = LMXLocalizedTableSections.sectionTitles;
     for (size_t index(0); index != end; ++index) {
         if (start != nil) {
             Package *package([packages objectAtIndex:index]);
@@ -322,11 +327,11 @@ reload:
             
             //while ([start compare:name options:NSNumericSearch range:NSMakeRange(0, length) locale:CollationLocale_] != NSOrderedDescending) {
             while (StringNameCompare(start, name, length) != kCFCompareGreaterThan) {
-                NSString *title([CollationTitles_ objectAtIndex:offset]);
+                NSString *title = [sectionTitles objectAtIndex:offset];
                 section = [[[Section alloc] initWithName:title row:index localize:NO] autorelease];
                 [sections addObject:section];
                 
-                start = ++offset == offsets ? nil : [CollationStarts_ objectAtIndex:offset];
+                start = ++offset == offsets ? nil : [sectionStartStrings objectAtIndex:offset];
                 if (start == nil)
                     break;
                 length = [start length];
@@ -337,7 +342,7 @@ reload:
     }
     
     for (; offset != offsets; ++offset) {
-        NSString *title([CollationTitles_ objectAtIndex:offset]);
+        NSString *title = [sectionTitles objectAtIndex:offset];
         Section *section([[[Section alloc] initWithName:title row:end localize:NO] autorelease]);
         [sections addObject:section];
     }
