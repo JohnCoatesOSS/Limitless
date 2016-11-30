@@ -124,10 +124,10 @@
     }
     
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
-        UISetColor(White_);
+        UISetColor([UIColor whiteColor].CGColor);
 	
     if (!highlighted)
-        UISetColor(Black_);
+        UISetColor([UIColor blackColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -135,8 +135,8 @@
 	[origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle}];
     
     if (!highlighted)
-        UISetColor(Gray_);
-	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor colorWithCGColor:Gray_.color_]:[UIColor blackColor])}];
+        UISetColor([UIColor cydia_gray].CGColor);
+	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_gray] : [UIColor blackColor])}];
 }
 
 - (void) setFetch:(NSNumber *)fetch {
