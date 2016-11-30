@@ -7,8 +7,9 @@
 
 #import "Menes/Menes.h"
 #import "CyteKit.h"
+#import "Database.h"
 
-@class Database, UIProgressHUD;
+@class Source, UIProgressHUD;
 
 @interface SourcesController : CyteViewController
 <UITableViewDataSource, UITableViewDelegate> {

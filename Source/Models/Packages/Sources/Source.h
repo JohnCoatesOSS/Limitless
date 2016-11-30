@@ -50,6 +50,7 @@
 - (metaIndex *) metaIndex;
 - (NSDictionary *) record;
 - (BOOL) trusted;
+- (bool)isFavorited;
 
 - (NSString *) rooturi;
 - (NSString *) distribution;

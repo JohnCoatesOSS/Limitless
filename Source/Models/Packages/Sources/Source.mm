@@ -239,6 +239,10 @@
     return true;
 }
 
+- (bool)isFavorited {
+    return [[database_ currentFavoriteRepos] containsObject:[self host]];
+}
+
 - (void) _remove {
     [Sources_ removeObjectForKey:[self key]];
 }
