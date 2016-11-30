@@ -60,7 +60,12 @@ frameworkDirectories.each_pair do |directoryName, targetPath|
     File.unlink(directory)
   elsif File.exist?(directory)
     puts "Expected #{directory} to be a symlink, but it's not. This might cause issues."
-    next
+    if !File.directory?(directory)
+      puts "Expected #{directory} to be a directory, deleting."
+      File.unlink(directory)
+    else
+      next
+    end
   end # File.symlink?(directory)
   puts "Creating symlink to #{target} at #{directory}"
   File.symlink(target, directory)
