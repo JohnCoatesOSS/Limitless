@@ -12,9 +12,9 @@ private:
     bool cancelled_;
     
 public:
-    CancelStatus() :
-    cancelled_(false)
-    {
+    CancelStatus() {
+        // TODO: Figure out why this causes crash
+//        cancelled_ = false;
     }
     
     virtual bool MediaChange(std::string media, std::string drive) {

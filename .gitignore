@@ -1,7 +1,6 @@
 sysroot
 MobileCydia
 CydiaAppliance
-postinst
 _
 __
 Cydia.deb
@@ -9,7 +8,6 @@ Cydia_.deb
 debs
 .DS_Store
 *.o
-Images/
 cfversion
 setnsfpn
 bins
@@ -55,3 +53,4 @@ fastlane/report.xml
 fastlane/screenshots
 Release
 app/Pods
+/compile_commands.json

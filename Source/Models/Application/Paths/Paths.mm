@@ -23,7 +23,7 @@
         return path;
     }
     
-    return @"/var/mobile/Library/Cydia";
+    return @"/var/mobile/Library/Limitless";
 }
 
 + (NSString *)varLibCydiaDirectory {

@@ -1,4 +1,5 @@
 ### Backporting Style Guide
+This is a catalog of what Cydia does differently from Limitless so that we can transfer our code back to Cydia.
 
 ### Loops
 Use the defined iteration patterns.

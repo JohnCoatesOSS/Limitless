@@ -1,0 +1,14 @@
+Package: limitless
+Name: Limitless
+Depends: apt7-lib, apt7-key, darwintools, debianutils, org.thebigboss.repo.icons, sed, shell-cmds, system-cmds, uikittools (>= 1.1.4), firmware (>= 9.0)
+Conflicts:
+Replaces:
+Pre-Depends: debianutils
+Version: 1:1.0~Beta1
+Architecture: iphoneos-arm
+Description: Fork of Cydia
+Maintainer: John Coates
+Author: Jay Freeman (saurik)
+Section: Tweaks
+Icon: file:///Applications/Limitless.app/Icon-60.png
+Tag: purpose::uikit, role::enduser

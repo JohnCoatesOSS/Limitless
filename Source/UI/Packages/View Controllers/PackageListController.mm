@@ -374,4 +374,39 @@ reload:
     [self resetCursor];
 }
 
+#pragma mark - 3D touch
+- (void)viewDidLoad{
+    [super viewDidLoad];
+    if ([self isForceTouchAvailable]) {
+        self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.view];
+    }
+}
+- (BOOL)isForceTouchAvailable {
+    BOOL isForceTouchAvailable = NO;
+    if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
+        isForceTouchAvailable = self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable;
+    }
+    return isForceTouchAvailable;
+}
+- (UIViewController *)previewingContext:(id )previewingContext viewControllerForLocation:(CGPoint)location{
+    if ([self.presentedViewController isKindOfClass:[CYPackageController class]]) {
+        return nil;
+    }
+    
+    CGPoint cellPostion = [list_ convertPoint:location fromView:self.view];
+    NSIndexPath *path = [list_ indexPathForRowAtPoint:cellPostion];
+    
+    if (path) {
+        Package *package([self packageAtIndexPath:path]);
+        package = [database_ packageWithName:[package id]];
+        CYPackageController *view([[[CYPackageController alloc] initWithDatabase:database_ forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]] autorelease]);
+        [view setDelegate:delegate_];
+        return view;
+    }
+    return nil;
+}
+- (void)previewingContext:(id )previewingContext commitViewController: (UIViewController *)viewControllerToCommit {
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
+}
+
 @end

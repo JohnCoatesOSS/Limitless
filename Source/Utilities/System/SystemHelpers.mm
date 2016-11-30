@@ -41,7 +41,7 @@ NSString *CYHex(NSData *data, bool reverse) {
 
 NSString *UniqueIdentifier(UIDevice *device) {
     if ([Device isSimulator]) {
-        NSString *simulatorFakeDeviceID = @"0011111110000001011000011111110111110000";
+        NSString *simulatorFakeDeviceID = @"0100110001001101010100110110100101101101";
         return simulatorFakeDeviceID;
     }
     if (kCFCoreFoundationVersionNumber < 800) { // iOS 7.x

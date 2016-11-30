@@ -1,7 +1,10 @@
 ## Limitless
-![preview](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/preview.png)
+
+![header](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/Documentation/images/readmeHeader.png)
 
 [![Gitter](https://badges.gitter.im/JohnCoatesOSS/Limitless.svg)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Build Status](https://travis-ci.org/JohnCoatesOSS/Limitless.svg?branch=develop)](https://travis-ci.org/JohnCoatesOSS/Limitless)
+
+![preview](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/Documentation/images/preview.png)
 
 #### What is this project?
 What if Cydia, the popular jailbreak alternative to the App Store, didn't have to support iOS 2.0? What if it could use the latest iOS features? Limitless is a project aimed to be a vision of what Cydia can be if it's unrestricted. With a heavy focus on contributing to Cydia, new features will be open to be backported.
@@ -11,6 +14,13 @@ Many coders find it hard to get up and running with contributing to Cydia. This 
 
 #### How will the changes be implemented into Cydia?
 No promises on that front, that's solely up to Saurik's discretion as he is the creator and maintainer of Cydia. The goal is to first implement a feature in Limitless, then submit for consideration to Saurik, and if given the go-ahead we'll backport to Cydia's constraints.
+
+#### Design Goals
+
+- Bring in features requested by the community.
+- Develop a vision for the future of the jailbreak community, and execute based on that vision.
+- Clean up the Cydia codebase.
+- Backport features for Cydia that make sense to be integrated.
 
 #### Community
 - **Want to join the project?** [Join the chat on Gitter.](https://gitter.im/JohnCoatesOSS/Limitless) Looking for coders, designers, feature managers, anyone that wants to help.
@@ -22,6 +32,5 @@ There are a lot of limitations to writing code for Cydia. Because it needs to su
 #### [Cydia Backporting Style Guide](./Documentation/BackportingStyleGuide.md)
 
 ### Compiling, Running
-Make sure Xcode's command line tools are installed by running `xcode-select --install` in Terminal
 
-Open XcodeProject/Cydia.xcodeproj
+Open Limitless.xcodeproj

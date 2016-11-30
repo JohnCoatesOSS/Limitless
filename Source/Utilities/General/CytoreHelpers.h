@@ -128,7 +128,7 @@ static inline void SaveConfig(NSObject *lock) {
         MetaFile_.Sync();
         _trace();
     }
-    
+
     CFPreferencesSetMultiple((CFDictionaryRef) [NSDictionary dictionaryWithObjectsAndKeys:
                                                 Values_, @"CydiaValues",
                                                 Sections_, @"CydiaSections",

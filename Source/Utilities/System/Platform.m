@@ -10,7 +10,18 @@
 
 @implementation Platform
 
++ (BOOL)publicReleaseBuild {
+    #ifdef RELEASE_BUILD
+    return TRUE;
+    #endif
+    return FALSE;
+}
+
 + (BOOL)isSandboxed {
+    if ([self publicReleaseBuild]) {
+        return FALSE;
+    }
+    
     if ([Device isSimulator]) {
         return TRUE;
     }
@@ -21,6 +32,14 @@
     } else {
         return TRUE;
     }
+}
+
++ (BOOL)shouldWaitForDebugger {
+    #ifdef WAIT_FOR_DEBUGGER
+    return TRUE;
+    #endif
+    
+    return FALSE;
 }
 
 @end

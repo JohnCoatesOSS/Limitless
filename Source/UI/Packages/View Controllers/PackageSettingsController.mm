@@ -57,7 +57,7 @@
     const char *package([name_ UTF8String]);
     bool on([ignoredSwitch_ isOn]);
     
-    FILE *dpkg(popen("/usr/libexec/cydia/cydo --set-selections", "w"));
+    FILE *dpkg(popen("/Applications/Limitless.app/runAsSuperuser --set-selections", "w"));
     fwrite(package, strlen(package), 1, dpkg);
     
     if (on)

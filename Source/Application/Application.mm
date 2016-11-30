@@ -5,6 +5,8 @@
 //  Created on 8/31/16.
 //
 
+#import <spawn.h>
+
 #import "iPhonePrivate.h"
 #import "System.h"
 #import "Application.h"
@@ -74,7 +76,7 @@
 
 #pragma mark - Application Lifecycle
 
-- (void) applicationDidFinishLaunching:(id)unused {
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSLog(@"didFinishLaunching");
     _trace();
     [self setApplicationShakeSupport];
@@ -90,11 +92,41 @@
     }
     [self setUpDatabase];
     [self setUpWindow];
-    [self setUpViewControllers];
-    [self setUpNavigationControllerAndTabBar];
-    
+	[self setUpViewControllers];
+	[self setUpNavigationControllerAndTabBar];
+	
+	// - Homescreen Shortcut Start
+	
+	// If the app was opened from a shortcut
+	if (launchOptions[UIApplicationLaunchOptionsShortcutItemKey] != nil) {
+		// Handle it
+		UIApplicationShortcutItem *shortcutItem = (UIApplicationShortcutItem*)launchOptions[UIApplicationLaunchOptionsShortcutItemKey];
+		
+		if ([shortcutItem.type isEqualToString:@"respring"]) {
+			[self reloadSpringBoard];
+		} else if ([shortcutItem.type isEqualToString:@"safemode"]) {
+			[self enterSafeMode];
+			
+		// -(void)loadData has some pretty weird behaviour, so I have some code which sets the selectedIndex to 1 (sources), then have a function which selects the appropriate source based on the URL. Chances of URL conflict should be none.
+		} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
+			travelToRepo = YES;
+			repoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
+		}
+	}
+	
+	// If the shortcuts haven't been set before
+	if (application.shortcutItems.count == 0) {
+		UIMutableApplicationShortcutItem* firstRepo = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo1" localizedTitle:@"Cydia/Telesphoreo" localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": @"http://apt.saurik.com/"}];
+		UIMutableApplicationShortcutItem* secondRepo = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo2" localizedTitle:@"BigBoss" localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": @"http://apt.thebigboss.org/repofiles/cydia/"}];
+			application.shortcutItems = @[firstRepo, secondRepo];
+	}
+	
+	// - Homescreen Shortcut End
+	
     [self performSelector:@selector(loadData) withObject:nil afterDelay:0];
     _trace();
+	
+	return YES;
 }
 
 - (void) applicationWillSuspend {
@@ -287,7 +319,7 @@
     NSMutableArray *items;
     if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0) {
         items = [NSMutableArray arrayWithObjects:
-                 [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage imageNamed:@"home.png"] tag:0] autorelease],
+                 [[[UITabBarItem alloc] initWithTitle:@"Home" image:[UIImage imageNamed:@"home.png"] tag:0] autorelease],
                  [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage imageNamed:@"install.png"] tag:0] autorelease],
                  [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage imageNamed:@"changes.png"] tag:0] autorelease],
                  [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage imageNamed:@"manage.png"] tag:0] autorelease],
@@ -295,7 +327,7 @@
                  nil];
     } else {
         items = [NSMutableArray arrayWithObjects:
-                 [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage imageNamed:@"home7.png"] selectedImage:[UIImage imageNamed:@"home7s.png"]] autorelease],
+                 [[[UITabBarItem alloc] initWithTitle:@"Home" image:[UIImage imageNamed:@"home7.png"] selectedImage:[UIImage imageNamed:@"home7s.png"]] autorelease],
                  [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage imageNamed:@"install7.png"] selectedImage:[UIImage imageNamed:@"install7s.png"]] autorelease],
                  [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage imageNamed:@"changes7.png"] selectedImage:[UIImage imageNamed:@"changes7s.png"]] autorelease],
                  [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage imageNamed:@"manage7.png"] selectedImage:[UIImage imageNamed:@"manage7s.png"]] autorelease],
@@ -391,7 +423,7 @@ errno == ENOTDIR \
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
     UpdateExternalStatus(1);
     [self yieldToSelector:@selector(system:)
-               withObject:@"/usr/libexec/cydia/cydo /usr/libexec/cydia/free.sh"];
+               withObject:@"/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/free.sh"];
     UpdateExternalStatus(0);
     
     [self removeStashController];
@@ -468,7 +500,7 @@ errno == ENOTDIR \
         [emulated_ dismissModalViewControllerAnimated:YES];
     [window_ setUserInteractionEnabled:NO];
     
-    [self reloadDataWithInvocation:nil];
+    [self reloadDataWithInvocation: nil];
     [self refreshIfPossible];
     [self disemulate];
     
@@ -476,9 +508,9 @@ errno == ENOTDIR \
     
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
     NSArray *saved = [[[state objectForKey:@"InterfaceState"] mutableCopy] autorelease];
-    int standardIndex = 0;
     NSArray *standard = [self defaultStartPages];
-    
+	int standardIndex(0);
+	
     BOOL valid = YES;
     
     if (saved == nil)
@@ -507,6 +539,13 @@ errno == ENOTDIR \
     }
     
     NSArray *items = nil;
+	
+	// If we need to go to the sources page, override what has been set before
+	if (travelToRepo) {
+		savedIndex = 1;
+		standardIndex = 1;
+	}
+
     if (valid) {
         [tabbar_ setSelectedIndex:savedIndex];
         items = saved;
@@ -530,7 +569,15 @@ errno == ENOTDIR \
         
         [navigation setViewControllers:current];
     }
-    
+	
+	// Get the sources controller, and call our function to select it when the VC + database loads
+	if (travelToRepo && ![repoURL isEqualToString:@""]) {
+		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
+		[sVC selectSourceWithURL:repoURL];
+		repoURL = @"";
+		travelToRepo = NO;
+	}
+	
     // (Try to) show the startup URL.
     if (starturl_ != nil) {
         [self openCydiaURL:starturl_ forExternal:YES];
@@ -1184,15 +1231,18 @@ errno == ENOTDIR \
 #pragma mark - SpringBoard
 
 - (void) reloadSpringBoard {
-    if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
-        system("/bin/launchctl stop com.apple.backboardd");
-    else
-        system("/bin/launchctl stop com.apple.SpringBoard");
-    sleep(15);
-    system("/usr/bin/killall backboardd SpringBoard");
+	if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
+		system("/bin/launchctl stop com.apple.backboardd");
+	else
+		system("/bin/launchctl stop com.apple.SpringBoard");
+	sleep(15);
+	system("/usr/bin/killall backboardd SpringBoard");
 }
 
-
+// Not too sure on how to implement this in the future.
+- (void) enterSafeMode {
+	system("/usr/bin/killall -SEGV SpringBoard");
+}
 
 - (void) _uicache {
     _trace();
@@ -1243,7 +1293,7 @@ errno == ENOTDIR \
                 for (Package *broken in (id) broken_) {
                     [broken remove];
                     NSString *id(ShellEscape([broken id]));
-                    system([[NSString stringWithFormat:@"/usr/libexec/cydia/cydo /bin/rm -f"
+                    system([[NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser /bin/rm -f"
                              " /var/lib/dpkg/info/%@.prerm"
                              " /var/lib/dpkg/info/%@.postrm"
                              " /var/lib/dpkg/info/%@.preinst"
@@ -1302,5 +1352,28 @@ errno == ENOTDIR \
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
+#pragma mark - 3D Touch
+
+BOOL travelToRepo(false);
+NSString* repoURL(@"");
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
+	
+	// This function is called while the app is already open. If it isn't, the shortcut handling is done in didFinishLaunchingWithOptions
+	if ([shortcutItem.type isEqualToString:@"respring"]) {
+		NSLog(@"Respringing through 3D Touch");
+		[self reloadSpringBoard];
+	} else if ([shortcutItem.type isEqualToString:@"safemode"]) {
+		NSLog(@"Entering Safe Mode through 3D Touch");
+		[self enterSafeMode];
+	} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
+		NSLog(@"Travelling to a repo through 3D Touch");
+		[tabbar_ setSelectedIndex:1];
+		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
+		NSString *currentRepoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
+		[sVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
+	}
+	
+}
 
 @end

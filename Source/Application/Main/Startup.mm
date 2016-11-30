@@ -139,7 +139,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     bool iOSVersionIsGreaterThanOrEqualTo8 = kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_8_0;
     if (![Device isSimulator] && iOSVersionIsGreaterThanOrEqualTo8) {
-        system("/usr/libexec/cydia/cydo /usr/libexec/cydia/setnsfpn /var/lib");
+        system("/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/setnsfpn /var/lib");
     }
     
     int version = [NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"
@@ -148,7 +148,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     if (![Device isSimulator]) {
         if (access("/User", F_OK) != 0 || version != 6) {
             _trace();
-            system("/usr/libexec/cydia/cydo /usr/libexec/cydia/firmware.sh");
+            system("/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/firmware.sh");
             _trace();
         }
     }
@@ -163,7 +163,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     }
     
     if (![Device isSimulator]) {
-        system("/usr/libexec/cydia/cydo /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
+        system("/Applications/Limitless.app/runAsSuperuser /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
     }
     
     [self setUpTheme];
@@ -391,7 +391,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     SaveConfig(nil);
     if (![Device isSimulator]) {
-        system("/usr/libexec/cydia/cydo /bin/rm -f /var/lib/cydia/metadata.plist");
+        system("/Applications/Limitless.app/runAsSuperuser /bin/rm -f /var/lib/cydia/metadata.plist");
     }
     
     $SBSSetInterceptsMenuButtonForever = reinterpret_cast<void (*)(bool)>(dlsym(RTLD_DEFAULT, "SBSSetInterceptsMenuButtonForever"));
