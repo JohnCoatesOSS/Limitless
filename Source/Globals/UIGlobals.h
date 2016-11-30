@@ -34,9 +34,6 @@ extern _H<UIFont> Font18_;
 extern _H<UIFont> Font18Bold_;
 extern _H<UIFont> Font22Bold_;
 
-// Collation
-typedef std::basic_string<UChar> ustring;
-
 // Locale
 extern CFLocaleRef Locale_;
 extern NSArray *Languages_;

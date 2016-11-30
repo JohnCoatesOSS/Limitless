@@ -14,7 +14,10 @@
 #import "System.h"
 #import "LMXLocalizedTableSections.h"
 #import <unicode/utrans.h>
+#import <unicode/ustring.h>
 #import "UIGlobals.h"
+
+typedef std::basic_string<UChar> ustring;
 
 // Collation
 
