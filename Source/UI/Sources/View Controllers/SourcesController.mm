@@ -144,20 +144,26 @@
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     Source *source([self sourceAtIndexPath:indexPath]);
     _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
-    [favoritesButton setImage:[UIImage imageNamed:@"home7s"] forState:UIControlStateNormal];
+    [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
     favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [favoritesButton setFrame:CGRectMake(0, 0, 200, 200)];
     [favoritesButton setBackgroundColor:[UIColor systemDarkGreenColor]];
     UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [tableView setEditing:NO animated:YES];
         [self favouriteMenu:source];
     }];
     
+    _UITableViewCellActionButton *shareButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
+    [shareButton setTitle:@"Share" forState:UIControlStateNormal];
+    [shareButton setBackgroundColor:[UIColor grayColor]];
+    UITableViewRowAction *copyAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        [tableView setEditing:NO animated:YES];
+        [self shareRepo:source];
+    }];
+    
     _UITableViewCellActionButton *removeButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
     [removeButton setTitle:@"Delete" forState:UIControlStateNormal];
     [removeButton setBackgroundColor:[UIColor redColor]];
     UITableViewRowAction *removeAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        Source *source([self sourceAtIndexPath:indexPath]);
         if (source == nil) return;
         
         [Sources_ removeObjectForKey:[source key]];
@@ -166,10 +172,12 @@
     }];
     
     [addToFavoritesAction _setButton:favoritesButton];
+    [copyAction _setButton:shareButton];
     [removeAction _setButton:removeButton];
     addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
+    copyAction.backgroundColor = [UIColor grayColor];
     removeAction.backgroundColor = [UIColor redColor];
-    return @[addToFavoritesAction, removeAction];
+    return @[addToFavoritesAction, copyAction, removeAction];
 }
 
 - (void) complete {
