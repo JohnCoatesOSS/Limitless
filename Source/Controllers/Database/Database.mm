@@ -777,4 +777,34 @@
     } return *mapped;
 }
 
+- (NSArray *)currentFavorites {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"FavoritesPackages"];
+}
+
+- (NSArray *)currentFavoriteRepos {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"FavoriteRepos"];
+}
+
+- (void)addPackageToFavoritesList:(Package *)package {
+    NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavorites]];
+    if (currentFavoritesMutable == nil) {
+        currentFavoritesMutable = [[NSMutableArray alloc] init];
+    }
+    NSString *packageID = package.id;
+    [currentFavoritesMutable addObject:packageID];
+    [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoritesPackages"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)addRepoToFavoritesList:(Source *)source {
+    NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavoriteRepos]];
+    if (currentFavoritesMutable == nil) {
+        currentFavoritesMutable = [[NSMutableArray alloc] init];
+    }
+    NSString *repoURL = source.rooturi;
+    [currentFavoritesMutable addObject:repoURL];
+    [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoriteRepos"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

@@ -120,6 +120,12 @@
     [self deselectWithAnimation:animated];
 }
 
+- (void)updateInstalledListIfNeeded:(BOOL)needed {
+    if (needed == YES) {
+        // reload table with favorites tweaks
+    }
+}
+
 - (void) didSelectPackage:(Package *)package {
     CYPackageController *view([[[CYPackageController alloc] initWithDatabase:database_ forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]] autorelease]);
     [view setDelegate:delegate_];
@@ -176,6 +182,27 @@
 
 - (NSInteger) tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
     return offset_[index];
+}
+
+- (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)path {
+    
+    Package *package([self packageAtIndexPath:path]);
+    package = [database_ packageWithName:[package id]];
+    
+    _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
+    [favoritesButton setFrame:CGRectMake(0, 0, 40, ([self isSummarized] ? 38 : 73))];
+    [favoritesButton setImage:[UIImage imageNamed:@"home7s"] forState:UIControlStateNormal];
+    favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [favoritesButton setBackgroundColor:[UIColor systemDarkGreenColor]];
+    UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        
+        [tableView setEditing:NO animated:YES];
+        [database_ addPackageToFavoritesList:package];
+        
+        }];
+    [addToFavoritesAction _setButton:favoritesButton];
+    addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
+    return @[addToFavoritesAction];
 }
 
 - (void) updateHeight {
