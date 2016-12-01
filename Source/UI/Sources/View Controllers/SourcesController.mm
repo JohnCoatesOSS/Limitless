@@ -62,8 +62,14 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
-        case 0: return 1;
-        case 1: return [sources_ count];
+        case 0:
+            return 1;
+        case 1:
+            if (_isFiltered) {
+                return [_favoriteRepos count];
+            } else {
+                return [sources_ count];
+            }
         default: return 0;
     }
 }
@@ -91,45 +97,19 @@
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
 
     Source *source([self sourceAtIndexPath:indexPath]);
-    if (source == nil)
+    
+    if (source == nil) {
         [cell setAllSource];
-    else
+    } else {
         [cell setSource:source];
+    }
+  
     return cell;
 }
 
-- (void)favouriteMenu:(Source *)currentSource {
-    UIAlertController *favouriteSheet([UIAlertController alertControllerWithTitle:@"Set as favourite" message:[NSString stringWithFormat:@"Choose which favourite to replace with \"%@\"", currentSource.name] preferredStyle:UIAlertControllerStyleActionSheet]);
-    
-    UIApplicationShortcutItem *firstShortcut([UIApplication sharedApplication].shortcutItems[0]);
-    UIApplicationShortcutItem *secondShortcut([UIApplication sharedApplication].shortcutItems[1]);
-    
-    UIAlertAction *firstPlaceAction([UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Slot 1 \"%@\"", firstShortcut.localizedTitle] style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){
-        UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo1" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rooturi}];
-        NSMutableArray *newShortcuts = [NSMutableArray arrayWithArray:[UIApplication sharedApplication].shortcutItems];
-        newShortcuts[0] = newShortcut;
-        [UIApplication sharedApplication].shortcutItems = newShortcuts;
-    }]);
-    
-    UIAlertAction *secondPlaceAction([UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Slot 2 \"%@\"", secondShortcut.localizedTitle] style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){
-        UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo2" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rooturi}];
-        NSMutableArray *newShortcuts = [NSMutableArray arrayWithArray:[UIApplication sharedApplication].shortcutItems];
-        newShortcuts[1] = newShortcut;
-        [UIApplication sharedApplication].shortcutItems = newShortcuts;
-        
-    }]);
-    UIAlertAction *cancelAction([UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:nil]);
-    
-    [favouriteSheet addAction:firstPlaceAction];
-    [favouriteSheet addAction:secondPlaceAction];
-    [favouriteSheet addAction:cancelAction];
-    
-    [self presentViewController:favouriteSheet animated:true completion:nil];
-}
-
 - (void)shareRepo:(Source *)source {
-    NSString *url = source.rooturi;
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:nil];
+    NSString *repoUrl = source.rooturi;
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[ repoUrl ] applicationActivities:nil];
     [self presentViewController:activityVC animated:YES completion:nil];
 }
 
@@ -148,15 +128,15 @@
     _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
     [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
     favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [favoritesButton setBackgroundColor:[UIColor systemDarkGreenColor]];
+    favoritesButton.backgroundColor = [UIColor systemDarkGreenColor];
     UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [tableView setEditing:NO animated:YES];
-        [self favouriteMenu:source];
+        [database_ addRepoToFavoritesList:source];
     }];
     
     _UITableViewCellActionButton *shareButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
     [shareButton setTitle:@"Share" forState:UIControlStateNormal];
-    [shareButton setBackgroundColor:[UIColor grayColor]];
+    shareButton.backgroundColor = [UIColor grayColor];
     UITableViewRowAction *copyAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [tableView setEditing:NO animated:YES];
         [self shareRepo:source];
@@ -164,9 +144,9 @@
     
     _UITableViewCellActionButton *removeButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
     [removeButton setTitle:@"Delete" forState:UIControlStateNormal];
-    [removeButton setBackgroundColor:[UIColor redColor]];
+    removeButton.backgroundColor = [UIColor redColor];
     UITableViewRowAction *removeAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        if (source == nil) return;
+        if (!source) return;
         
         [Sources_ removeObjectForKey:[source key]];
         [delegate_ _saveConfig];
@@ -179,7 +159,7 @@
     addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
     copyAction.backgroundColor = [UIColor grayColor];
     removeAction.backgroundColor = [UIColor redColor];
-    return @[addToFavoritesAction, copyAction, removeAction];
+    return @[ addToFavoritesAction, copyAction, removeAction ];
 }
 
 - (void) complete {
@@ -421,14 +401,11 @@
 
 - (void) viewDidLoad {
     [super viewDidLoad];
-    
-    [[self navigationItem] setTitle:UCLocalize("SOURCES")];
     [self updateButtonsForEditingStatusAnimated:NO];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
     [list_ setEditing:NO];
     [self updateButtonsForEditingStatusAnimated:NO];
 }
@@ -443,8 +420,24 @@
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super init]) != nil) {
+        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:@[ UCLocalize("SOURCES"), UCLocalize("FAVORITES") ]] autorelease]);
+        [segmented setSelectedSegmentIndex:0];
+        [[self navigationItem] setTitleView:segmented];
+        
+        [segmented addTarget:self action:@selector(modeChanged:) forEvents:UIControlEventValueChanged];
+        _isFiltered = NO;
         database_ = database;
     } return self;
+}
+
+- (void)modeChanged:(UISegmentedControl *)segmented {
+    NSInteger selected([segmented selectedSegmentIndex]);
+    if (selected == 1){
+        _isFiltered = YES;
+    } else {
+        _isFiltered = NO;
+    }
+    [list_ reloadData];
 }
 
 - (void) reloadData {

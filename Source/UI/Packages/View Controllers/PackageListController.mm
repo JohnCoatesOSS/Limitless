@@ -121,7 +121,7 @@
 }
 
 - (void)updateInstalledListIfNeeded:(BOOL)needed {
-    if (needed == YES) {
+    if (needed) {
         // reload table with favorites tweaks
     }
 }
@@ -193,10 +193,9 @@
     package = [database_ packageWithName:[package id]];
     
     _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
-    [favoritesButton setFrame:CGRectMake(0, 0, 40, ([self isSummarized] ? 38 : 73))];
     [favoritesButton setImage:[UIImage imageNamed:@"home7s"] forState:UIControlStateNormal];
     favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [favoritesButton setBackgroundColor:[UIColor systemDarkGreenColor]];
+    favoritesButton.backgroundColor = [UIColor systemDarkGreenColor];
     UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         
         [tableView setEditing:NO animated:YES];
@@ -205,7 +204,7 @@
     }];
     [addToFavoritesAction _setButton:favoritesButton];
     addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
-    return @[addToFavoritesAction];
+    return @[ addToFavoritesAction ];
 }
 
 - (void) updateHeight {

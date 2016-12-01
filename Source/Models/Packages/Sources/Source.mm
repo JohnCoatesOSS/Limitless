@@ -240,7 +240,7 @@
 }
 
 - (bool)isFavorited {
-    return [[database_ currentFavoriteRepos] containsObject:[self host]];
+    return [[database_ currentFavoriteRepos] containsObject:[self key]];
 }
 
 - (void) _remove {

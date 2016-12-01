@@ -13,7 +13,7 @@
     bool sectioned_;
 }
 
-- (id) initWithDatabase:(Database *)database;
-- (void) queueStatusDidChange;
+- (id)initWithDatabase:(Database *)database;
+- (void)queueStatusDidChange;
 
 @end

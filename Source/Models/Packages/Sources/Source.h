@@ -72,5 +72,6 @@
 
 - (void) setDelegate:(NSObject<SourceDelegate> *)delegate;
 - (bool) fetch;
+- (bool)isFavorited;
 
 @end

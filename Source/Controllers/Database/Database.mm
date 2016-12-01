@@ -788,7 +788,7 @@
 
 - (void)addPackageToFavoritesList:(Package *)package {
     NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavorites]];
-    if (currentFavoritesMutable == nil) {
+    if (!currentFavoritesMutable) {
         currentFavoritesMutable = [[NSMutableArray alloc] init];
     }
     NSString *packageID = package.id;
@@ -799,11 +799,11 @@
 
 - (void)addRepoToFavoritesList:(Source *)source {
     NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavoriteRepos]];
-    if (currentFavoritesMutable == nil) {
+    if (!currentFavoritesMutable) {
         currentFavoritesMutable = [[NSMutableArray alloc] init];
     }
-    NSString *repoURL = source.rooturi;
-    [currentFavoritesMutable addObject:repoURL];
+    NSString *repoKey = source.key;
+    [currentFavoritesMutable addObject:repoKey];
     [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoriteRepos"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
