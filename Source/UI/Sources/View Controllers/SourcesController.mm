@@ -144,9 +144,9 @@
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     Source *source([self sourceAtIndexPath:indexPath]);
     _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
-    [favoritesButton setFrame:CGRectMake(0, 0, 100, 100)];
     [favoritesButton setImage:[UIImage imageNamed:@"home7s"] forState:UIControlStateNormal];
     favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [favoritesButton setFrame:CGRectMake(0, 0, 200, 200)];
     [favoritesButton setBackgroundColor:[UIColor systemDarkGreenColor]];
     UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
         [tableView setEditing:NO animated:YES];
@@ -154,7 +154,6 @@
     }];
     
     _UITableViewCellActionButton *removeButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
-    [removeButton setFrame:CGRectMake(0, 0, 73, 73)];
     [removeButton setTitle:@"Delete" forState:UIControlStateNormal];
     [removeButton setBackgroundColor:[UIColor redColor]];
     UITableViewRowAction *removeAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
