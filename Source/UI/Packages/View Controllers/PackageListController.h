@@ -18,7 +18,7 @@
     _H<UITableView, 2> list_;
     
     _H<NSArray> thumbs_;
-    std::vector<NSInteger> offset_;
+    NSArray <NSNumber *> *_sectionsForIndexTitles;
     
     _H<NSString> title_;
     unsigned reloading_;

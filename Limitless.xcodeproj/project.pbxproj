@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		BC2569201DF00B4D000EA2C3 /* UIColor+CydiaColors.m in Sources */ = {isa = PBXBuildFile; fileRef = BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */; };
 		FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */; };
 		FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */ = {isa = PBXBuildFile; fileRef = FA01D2111D1B22B100B49E70 /* lookup3.c */; };
 		FA01D2211D1B22B100B49E70 /* Sources.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA01D2161D1B22B100B49E70 /* Sources.mm */; };
@@ -251,8 +252,8 @@
 		FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA3A18361DEAB1F3000557AC /* runAsSuperuser.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3A18351DEAB1F3000557AC /* runAsSuperuser.m */; };
-		FA3D50DA1DED8C870046A0AC /* LMXTransliterate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50D91DED8C870046A0AC /* LMXTransliterate.mm */; };
-		FA3D50DF1DED900E0046A0AC /* TMXTransliteration.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50DE1DED900E0046A0AC /* TMXTransliteration.mm */; };
+		FA3D50DA1DED8C870046A0AC /* LMXLocalizedTableSections.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50D91DED8C870046A0AC /* LMXLocalizedTableSections.mm */; };
+		FA3D50DF1DED900E0046A0AC /* TestLocalizedTableSection.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50DE1DED900E0046A0AC /* TestLocalizedTableSection.mm */; };
 		FA3D50E41DED9D050046A0AC /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3D50E31DED9D050046A0AC /* libicucore.tbd */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
@@ -307,6 +308,7 @@
 		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
+		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
 /* End PBXBuildFile section */
 
@@ -465,6 +467,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BC25691E1DF00B4D000EA2C3 /* UIColor+CydiaColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+CydiaColors.h"; sourceTree = "<group>"; };
+		BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CydiaColors.m"; sourceTree = "<group>"; };
 		FA01D20C1D1B22B100B49E70 /* cfversion.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cfversion.mm; sourceTree = "<group>"; };
 		FA01D20E1D1B22B100B49E70 /* Cytore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cytore.hpp; sourceTree = "<group>"; };
 		FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DiskUsage.cpp; sourceTree = "<group>"; };
@@ -747,9 +751,9 @@
 		FA3A18331DEAB1F3000557AC /* runAsSuperuser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = runAsSuperuser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA3A18351DEAB1F3000557AC /* runAsSuperuser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = runAsSuperuser.m; sourceTree = "<group>"; };
 		FA3A18371DEAB1F3000557AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FA3D50D81DED8C870046A0AC /* LMXTransliterate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXTransliterate.h; sourceTree = "<group>"; };
-		FA3D50D91DED8C870046A0AC /* LMXTransliterate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LMXTransliterate.mm; sourceTree = "<group>"; };
-		FA3D50DE1DED900E0046A0AC /* TMXTransliteration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TMXTransliteration.mm; sourceTree = "<group>"; };
+		FA3D50D81DED8C870046A0AC /* LMXLocalizedTableSections.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLocalizedTableSections.h; sourceTree = "<group>"; };
+		FA3D50D91DED8C870046A0AC /* LMXLocalizedTableSections.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LMXLocalizedTableSections.mm; sourceTree = "<group>"; };
+		FA3D50DE1DED900E0046A0AC /* TestLocalizedTableSection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TestLocalizedTableSection.mm; sourceTree = "<group>"; };
 		FA3D50E31DED9D050046A0AC /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIWebDocumentView+BugFixes.mm"; sourceTree = "<group>"; };
 		FA6C862E1D749D1D00FB99CF /* CyteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CyteKit.h; sourceTree = "<group>"; };
@@ -869,6 +873,8 @@
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
+		FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXLaunchProcess.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1427,8 +1433,8 @@
 		FA3D50D71DED8BFF0046A0AC /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				FA3D50D81DED8C870046A0AC /* LMXTransliterate.h */,
-				FA3D50D91DED8C870046A0AC /* LMXTransliterate.mm */,
+				FA3D50D81DED8C870046A0AC /* LMXLocalizedTableSections.h */,
+				FA3D50D91DED8C870046A0AC /* LMXLocalizedTableSections.mm */,
 			);
 			path = Localization;
 			sourceTree = "<group>";
@@ -1436,7 +1442,7 @@
 		FA3D50DB1DED8FBC0046A0AC /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				FA3D50DE1DED900E0046A0AC /* TMXTransliteration.mm */,
+				FA3D50DE1DED900E0046A0AC /* TestLocalizedTableSection.mm */,
 			);
 			path = Localization;
 			sourceTree = "<group>";
@@ -1501,6 +1507,8 @@
 				FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */,
 				FA23E2C61D77549F001FBE4A /* Display.h */,
 				FA23E2C71D7754A0001FBE4A /* Display.mm */,
+				BC25691E1DF00B4D000EA2C3 /* UIColor+CydiaColors.h */,
+				BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1537,6 +1545,8 @@
 				FA23E2CA1D776245001FBE4A /* Device.mm */,
 				FA06A3BD1DDEE98000AA9B02 /* Platform.h */,
 				FA06A3BE1DDEE98000AA9B02 /* Platform.m */,
+				FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */,
+				FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -2418,6 +2428,7 @@
 				FA0311AA1D1B2CBD008690CA /* TableViewCell.mm in Sources */,
 				FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */,
 				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
+				FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */,
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
 				FA6C86E41D7620A900FB99CF /* SearchController.mm in Sources */,
 				FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */,
@@ -2464,7 +2475,7 @@
 				FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA6C86971D75910E00FB99CF /* CydiaWebViewController.mm in Sources */,
-				FA3D50DA1DED8C870046A0AC /* LMXTransliterate.mm in Sources */,
+				FA3D50DA1DED8C870046A0AC /* LMXLocalizedTableSections.mm in Sources */,
 				FA6C86DE1D761F3600FB99CF /* SectionsController.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA6C86EA1D7621CC00FB99CF /* InstalledController.mm in Sources */,
@@ -2498,6 +2509,7 @@
 				FA6C86F31D76236200FB99CF /* SourcesController.mm in Sources */,
 				FA0311B11D1B2CBD008690CA /* radixSortWithSelector.mm in Sources */,
 				FA6C86EF1D76228B00FB99CF /* SourceCell.mm in Sources */,
+				BC2569201DF00B4D000EA2C3 /* UIColor+CydiaColors.m in Sources */,
 				FA0311C01D1B2CFD008690CA /* LoadingViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2514,7 +2526,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA3D50DF1DED900E0046A0AC /* TMXTransliteration.mm in Sources */,
+				FA3D50DF1DED900E0046A0AC /* TestLocalizedTableSection.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2920,6 +2932,7 @@
 					"\"$(SRCROOT)/Source/Legacy\"",
 					"\"$(SRCROOT)/External/Headers\"",
 					"\"$(SRCROOT)/External/Headers/Linked\"",
+					"\"$(SRCROOT)/External/Headers/Linked/SingleHeaders\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
@@ -2986,6 +2999,7 @@
 					"\"$(SRCROOT)/Source/Legacy\"",
 					"\"$(SRCROOT)/External/Headers\"",
 					"\"$(SRCROOT)/External/Headers/Linked\"",
+					"\"$(SRCROOT)/External/Headers/Linked/SingleHeaders\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;

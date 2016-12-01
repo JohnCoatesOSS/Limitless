@@ -11,8 +11,8 @@
 
 @implementation SectionCell
 
-- (id) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) != nil) {
+- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) != nil) {
         icon_ = [UIImage imageNamed:@"folder.png"];
         // XXX: this initial frame is wrong, but is fixed later
         switch_ = [[[UISwitch alloc] initWithFrame:CGRectMake(218, 9, 60, 25)] autorelease];
@@ -91,19 +91,19 @@
     [icon_ drawInRect:CGRectMake(7, 7, 32, 32)];
     
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
-        UISetColor(White_);
+        UISetColor([UIColor whiteColor].CGColor);
     
     float width(rect.size.width);
     if (editing_)
         width -= 9 + [switch_ frame].size.width;
     
 	if (!highlighted) {
-        UISetColor(Black_);
+        UISetColor([UIColor blackColor].CGColor);
 		
 		NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 		[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 		
-		[name_ drawInRect:CGRectMake(48, 12, width-58, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSForegroundColorAttributeName:[UIColor colorWithCGColor:Black_.color_], NSParagraphStyleAttributeName: truncatingStyle}];
+		[name_ drawInRect:CGRectMake(48, 12, width-58, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSForegroundColorAttributeName:[UIColor blackColor], NSParagraphStyleAttributeName: truncatingStyle}];
 	} else {
 		
 		NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -115,9 +115,9 @@
     
 	CGSize size = [count_ sizeWithAttributes:@{NSFontAttributeName: Font14_}];
     
-    UISetColor(Folder_);
+    UISetColor([UIColor cydia_folderColor].CGColor);
     if (count_ != nil)
-		[count_ drawInRect:CGRectMake(Retina(10 + (30 - size.width) / 2), 18, CGFLOAT_MAX, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12Bold_, NSForegroundColorAttributeName: [UIColor colorWithCGColor:Folder_.color_]}];
+		[count_ drawInRect:CGRectMake(Retina(10 + (30 - size.width) / 2), 18, CGFLOAT_MAX, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12Bold_, NSForegroundColorAttributeName: [UIColor cydia_folderColor]}];
 }
 
 @end

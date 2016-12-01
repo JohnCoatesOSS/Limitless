@@ -522,9 +522,9 @@
     } }
 
 - (void) configure {
-    NSString *dpkg = [NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser --configure -a --status-fd %u", statusfd_];
     _trace();
-    system([dpkg UTF8String]);
+    [LMXLaunchProcess launchProcessAtPath:@"/Applications/Limitless.app/runAsSuperuser"
+                            withArguments:@"--configure", @"-a", @"--status-fd", @(statusfd_), nil];
     _trace();
 }
 
@@ -640,7 +640,8 @@
     struct stat info;
     if (stat([nextended UTF8String], &info) != -1 && (info.st_mode & S_IFMT) == S_IFREG) {
         if (![Device isSimulator]) {
-            system([[NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser /bin/cp --remove-destination %@ %@", ShellEscape(nextended), ShellEscape(oextended)] UTF8String]);
+            [LMXLaunchProcess launchProcessAtPath:@"/Applications/Limitless.app/runAsSuperuser"
+                                    withArguments:@"/bin/cp", @"--remove-destination", nextended, oextended,  nil];
         }
     }
     

@@ -1215,7 +1215,7 @@ errno == ENOTDIR \
 
 #pragma mark - Utilities
 
-- (void) system:(NSString *)command {
+- (void) system:(NSString *)command DEPRECATED_ATTRIBUTE {
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
     
     _trace();
@@ -1228,23 +1228,25 @@ errno == ENOTDIR \
 #pragma mark - SpringBoard
 
 - (void) reloadSpringBoard {
-	if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
-		system("/bin/launchctl stop com.apple.backboardd");
-	else
-		system("/bin/launchctl stop com.apple.SpringBoard");
+    if (kCFCoreFoundationVersionNumber >= 700) { // XXX: iOS 6.x
+        [LMXLaunchProcess launchProcessAtPath:@"/bin/launchctl" withArguments:@"stop", @"com.apple.backboardd", nil];
+    }
+    else {
+        [LMXLaunchProcess launchProcessAtPath:@"/bin/launchctl" withArguments:@"stop", @"com.apple.SpringBoard", nil];
+    }
 	sleep(15);
-	system("/usr/bin/killall backboardd SpringBoard");
+    [LMXLaunchProcess launchProcessAtPath:@"/usr/bin/killall" withArguments:@"backboardd", @"SpringBoard", nil];
 }
 
 // Not too sure on how to implement this in the future.
 - (void) enterSafeMode {
-	system("/usr/bin/killall -SEGV SpringBoard");
+    [LMXLaunchProcess launchProcessAtPath:@"/usr/bin/killall" withArguments:@"-SEGV", @"SpringBoard", nil];
 }
 
 - (void) _uicache {
     _trace();
     if (![Device isSimulator]) {
-        system("/usr/bin/uicache");
+        [LMXLaunchProcess launchProcessAtPath:@"/usr/bin/uicache"];
     }
     _trace();
 }
@@ -1289,14 +1291,15 @@ errno == ENOTDIR \
             @synchronized (self) {
                 for (Package *broken in (id) broken_) {
                     [broken remove];
-                    NSString *id(ShellEscape([broken id]));
-                    system([[NSString stringWithFormat:@"/Applications/Limitless.app/runAsSuperuser /bin/rm -f"
-                             " /var/lib/dpkg/info/%@.prerm"
-                             " /var/lib/dpkg/info/%@.postrm"
-                             " /var/lib/dpkg/info/%@.preinst"
-                             " /var/lib/dpkg/info/%@.postinst"
-                             " /var/lib/dpkg/info/%@.extrainst_"
-                             "", id, id, id, id, id] UTF8String]);
+                    NSString *brokenID = [broken id];
+                    [LMXLaunchProcess launchProcessAtPath:@"/Applications/Limitless.app/runAsSuperuser"
+                                            withArguments: @"/bin/rm", @"-f",
+                     [NSString stringWithFormat:@"/var/lib/dpkg/info/%@.prerm", brokenID],
+                     [NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postrm", brokenID],
+                     [NSString stringWithFormat:@"/var/lib/dpkg/info/%@.preinst", brokenID],
+                     [NSString stringWithFormat:@"/var/lib/dpkg/info/%@.postinst", brokenID],
+                     [NSString stringWithFormat:@"/var/lib/dpkg/info/%@.extrainst_", brokenID],
+                     nil];
                 }
                 
                 [self resolve];

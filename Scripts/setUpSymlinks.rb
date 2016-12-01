@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 STDOUT.sync = true
 require 'pp'
+require 'fileutils'
 
 def macOSSDKPath()
   sdkPath = `xcodebuild -sdk macosx -version Path`.strip
@@ -17,6 +18,92 @@ def macOSSDKPath()
   return sdkPath
 end
 
+def createFrameworkLinks(headersDirectory: nil, sdkFrameworksDirectory: nil)
+  frameworkDirectories = {
+    AE: "CoreServices.framework/Frameworks/AE.framework/Headers",
+    ApplicationServices: "ApplicationServices.framework/Headers",
+    CarbonCore: "CoreServices.framework/Frameworks/CarbonCore.framework/Headers",
+    CoreServices: "CoreServices.framework/Headers",
+    DictionaryServices: "CoreServices.framework/Frameworks/DictionaryServices.framework/Headers",
+    FSEvents: "CoreServices.framework/Frameworks/FSEvents.framework/Headers",
+    IOKit: "IOKit.framework/Headers",
+    IOSurface: "IOSurface.framework/Headers",
+    JavaScriptCore: "JavaScriptCore.framework/Headers",
+    LaunchServices: "CoreServices.framework/Frameworks/LaunchServices.framework/Headers",
+    Metadata: "CoreServices.framework/Frameworks/Metadata.framework/Headers",
+    OSServices: "CoreServices.framework/Frameworks/OSServices.framework/Headers",
+    SearchKit: "CoreServices.framework/Frameworks/SearchKit.framework/Headers",
+    SharedFileList: "CoreServices.framework/Frameworks/SharedFileList.framework/Headers",
+    WebKit: "WebKit.framework/Headers"
+  }
+
+  frameworkDirectories.each_pair do |directoryName, target|
+    directory = File.join(headersDirectory, directoryName.to_s)
+    directory = File.expand_path(directory)
+    targetPath = File.join(sdkFrameworksDirectory, target)
+    targetPath = File.expand_path(targetPath)
+
+    ensureSymlink(atPath: directory, targetPath: targetPath, targetIsADirectory: true)
+  end
+end
+
+def createSingleHeaderLinks(singleHeadersDirectory: nil, sdkFrameworksDirectory: nil)
+  if !File.exist?(singleHeadersDirectory)
+    puts "Creating singleHeadersDirectory: #{singleHeadersDirectory}"
+    FileUtils.mkdir_p(singleHeadersDirectory)
+  end
+
+  headers = {
+    NSTask: "Foundation.framework/Headers/NSTask.h"
+  }
+
+  headers.each_pair do |headerName, target|
+    atPath = File.join(singleHeadersDirectory, headerName.to_s + ".h")
+    atPath = File.expand_path(atPath)
+    targetPath = File.join(sdkFrameworksDirectory, target)
+    ensureSymlink(atPath: atPath, targetPath: targetPath, targetIsADirectory: false)
+  end
+end
+
+def ensureSymlink(atPath: nil, targetPath: nil, targetIsADirectory: false)
+  if !File.exists?(targetPath)
+    raise "error: Error, couldn't find symlink destination: #{targetPath}"
+  end
+
+  if File.symlink?(atPath)
+    currentTarget = File.readlink(atPath)
+    if currentTarget == targetPath
+      return
+    end
+    puts "Header symlink points to #{currentTarget}, but should point to #{targetPath}. Updating."
+    File.unlink(atPath)
+  elsif File.exist?(atPath)
+    if targetIsADirectory
+      puts "Expected #{directory} to be a symlink, but it's not. This might cause issues."
+
+      if !File.directory?(directory)
+        puts "Expected #{directory} to be a directory, deleting."
+        File.unlink(directory)
+      elsif targetIsADirectory # supposed to be a directory and is
+        return
+      end
+    end # targetIsADirectory
+
+    if !targetIsADirectory
+      if File.directory?(directory)
+        puts "error: Expected #{atPath} to be a symlink, but found a directory."
+        exit 1
+      else
+        puts "Expected #{atPath} to be a symlink, but found a file. Deleting."
+        File.unlink(atPath)
+      end
+    end # !targetIsADirectory
+
+  end # File.exist?(atPath)
+
+  puts "Creating symlink to #{targetPath} at #{atPath}"
+  File.symlink(targetPath, atPath)
+end
 
 sdkPath = macOSSDKPath()
 sdkFrameworksDirectory = File.join(sdkPath, "System/Library/Frameworks")
@@ -24,49 +111,7 @@ scriptsDirectory = __dir__
 projectDirectory = File.expand_path(File.join(scriptsDirectory, ".."))
 headersDirectory = File.join(projectDirectory, "External/Headers/Linked")
 
-frameworkDirectories = {
-  AE: "CoreServices.framework/Frameworks/AE.framework/Headers",
-  ApplicationServices: "ApplicationServices.framework/Headers",
-  CarbonCore: "CoreServices.framework/Frameworks/CarbonCore.framework/Headers",
-  CoreServices: "CoreServices.framework/Headers",
-  DictionaryServices: "CoreServices.framework/Frameworks/DictionaryServices.framework/Headers",
-  FSEvents: "CoreServices.framework/Frameworks/FSEvents.framework/Headers",
-  IOKit: "IOKit.framework/Headers",
-  IOSurface: "IOSurface.framework/Headers",
-  JavaScriptCore: "JavaScriptCore.framework/Headers",
-  LaunchServices: "CoreServices.framework/Frameworks/LaunchServices.framework/Headers",
-  Metadata: "CoreServices.framework/Frameworks/Metadata.framework/Headers",
-  OSServices: "CoreServices.framework/Frameworks/OSServices.framework/Headers",
-  SearchKit: "CoreServices.framework/Frameworks/SearchKit.framework/Headers",
-  SharedFileList: "CoreServices.framework/Frameworks/SharedFileList.framework/Headers",
-  WebKit: "WebKit.framework/Headers"
-}
+createFrameworkLinks(headersDirectory: headersDirectory, sdkFrameworksDirectory: sdkFrameworksDirectory)
 
-frameworkDirectories.each_pair do |directoryName, targetPath|
-  directory = File.join(headersDirectory, directoryName.to_s)
-  directory = File.expand_path(directory)
-  target = File.join(sdkFrameworksDirectory, targetPath)
-
-  if !File.exists?(target)
-    raise "error: Error, couldn't find symlink destination: #{target}"
-  end
-
-  if File.symlink?(directory)
-    currentTarget = File.readlink(directory)
-    if currentTarget == target
-      next
-    end
-    puts "Header symlink points to #{currentTarget}, but should point to #{target}. Updating."
-    File.unlink(directory)
-  elsif File.exist?(directory)
-    puts "Expected #{directory} to be a symlink, but it's not. This might cause issues."
-    if !File.directory?(directory)
-      puts "Expected #{directory} to be a directory, deleting."
-      File.unlink(directory)
-    else
-      next
-    end
-  end # File.symlink?(directory)
-  puts "Creating symlink to #{target} at #{directory}"
-  File.symlink(target, directory)
-end
+singleHeadersDirectory = File.join(headersDirectory, "SingleHeaders")
+createSingleHeaderLinks(singleHeadersDirectory: singleHeadersDirectory, sdkFrameworksDirectory: sdkFrameworksDirectory)

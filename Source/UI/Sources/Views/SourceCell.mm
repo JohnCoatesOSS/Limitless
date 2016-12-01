@@ -11,6 +11,28 @@
 
 @implementation SourceCell
 
+- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) != nil) {
+        UIView *content([self contentView]);
+        CGRect bounds([content bounds]);
+        
+        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        [content_ setBackgroundColor:[UIColor whiteColor]];
+        [content addSubview:content_];
+        
+        [content_ setDelegate:self];
+        [content_ setOpaque:YES];
+        
+        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
+        [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
+        [content addSubview:indicator_];
+        
+        [[content_ layer] setContentsGravity:kCAGravityTopLeft];
+    } return self;
+}
+
+
 - (void) _setImage:(NSArray *)data {
     if ([url_ isEqual:[data objectAtIndex:0]]) {
         icon_ = [data objectAtIndex:1];
@@ -64,28 +86,6 @@
     [content_ setNeedsDisplay];
 }
 
-- (SourceCell *) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) != nil) {
-        UIView *content([self contentView]);
-        CGRect bounds([content bounds]);
-        
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
-        [content addSubview:content_];
-        
-        [content_ setDelegate:self];
-        [content_ setOpaque:YES];
-        
-        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
-        [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
-        [content addSubview:indicator_];
-        
-        [[content_ layer] setContentsGravity:kCAGravityTopLeft];       
-    
-    } return self;
-}
-
 - (void) layoutSubviews {
     [super layoutSubviews];
     
@@ -125,10 +125,10 @@
     }
     
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
-        UISetColor(White_);
+        UISetColor([UIColor whiteColor].CGColor);
 	
     if (!highlighted)
-        UISetColor(Black_);
+        UISetColor([UIColor blackColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -136,8 +136,8 @@
 	[origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle}];
     
     if (!highlighted)
-        UISetColor(Gray_);
-	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor colorWithCGColor:Gray_.color_]:[UIColor blackColor])}];
+        UISetColor([UIColor cydia_grayColor].CGColor);
+	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : [UIColor blackColor])}];
 }
 
 - (void) setFetch:(NSNumber *)fetch {

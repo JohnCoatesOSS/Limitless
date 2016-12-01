@@ -6,23 +6,8 @@
 //
 #import "Standard.h"
 #import "Unicode.h"
-#import "CYColor.hpp"
+#import "UIColor+CydiaColors.h"
 #import "Menes/Menes.h"
-
-// Colors
-extern CYColor Blue_;
-extern CYColor Blueish_;
-extern CYColor Black_;
-extern CYColor Folder_;
-extern CYColor Off_;
-extern CYColor White_;
-extern CYColor Gray_;
-extern CYColor Green_;
-extern CYColor Purple_;
-extern CYColor Purplish_;
-
-extern UIColor *InstallingColor_;
-extern UIColor *RemovingColor_;
 
 extern CGColorSpaceRef space_;
 
@@ -33,17 +18,6 @@ extern _H<UIFont> Font14_;
 extern _H<UIFont> Font18_;
 extern _H<UIFont> Font18Bold_;
 extern _H<UIFont> Font22Bold_;
-
-// Collation
-extern _H<NSLocale> CollationLocale_;
-extern _H<NSArray> CollationThumbs_;
-extern std::vector<NSInteger> CollationOffset_;
-extern _H<NSArray> CollationTitles_;
-extern _H<NSArray> CollationStarts_;
-extern UTransliterator *CollationTransl_;
-
-typedef std::basic_string<UChar> ustring;
-extern ustring CollationString_;
 
 // Locale
 extern CFLocaleRef Locale_;

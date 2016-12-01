@@ -2,7 +2,8 @@
 
 ![header](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/Documentation/images/readmeHeader.png)
 
-[![Gitter](https://badges.gitter.im/JohnCoatesOSS/Limitless.svg)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Build Status](https://travis-ci.org/JohnCoatesOSS/Limitless.svg?branch=develop)](https://travis-ci.org/JohnCoatesOSS/Limitless)
+[![Gitter](https://img.shields.io/gitter/room/JohnCoatesOSS/Limitless.svg?style=flat-square&colorB=46BC99)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build Status](https://img.shields.io/travis/JohnCoatesOSS/Limitless.svg?style=flat-square)](https://travis-ci.org/JohnCoatesOSS/Limitless)
 
 ![preview](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/Documentation/images/preview.png)
 
@@ -28,8 +29,6 @@ No promises on that front, that's solely up to Saurik's discretion as he is the 
 
 #### Why is it called Limitless?
 There are a lot of limitations to writing code for Cydia. Because it needs to support iOS 2.0+, new features can't be written taking advantage of Auto Layout, Storyboards, and all the hundreds of new APIs that have cropped up in the recent years. With Limitless the plan is to have none of these limitations. We'll implement features while targeting the latest jailbreak release, and with a popular style guide. Once approved to be backported, a feature will be re-written with a style guide that matches Cydia's current style, and with APIs that will maintain full compatibility with all iOS versions.
-
-#### [Cydia Backporting Style Guide](./Documentation/BackportingStyleGuide.md)
 
 ### Compiling, Running
 

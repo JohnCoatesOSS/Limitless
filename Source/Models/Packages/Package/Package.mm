@@ -10,7 +10,7 @@
 #import "DisplayHelpers.hpp"
 #import "Source.h"
 #import "Standard.h"
-#import "LMXTransliterate.h"
+#import "LMXLocalizedTableSections.h"
 
 #include <fstream>
 
@@ -237,7 +237,7 @@
             installed_.set(NULL, StripVersion_(current.VerStr()));
         _end
         
-        [LMXTransliterate transliterate:name_ pool:pool_ output:&transform_];
+        [LMXLocalizedTableSections transliterate:name_ pool:pool_ output:&transform_];
         
         _profile(Package$initWithVersion$Tags)
         pkgCache::TagIterator tag(iterator.TagList());
@@ -898,6 +898,27 @@
     NSString *string;
     NSRange range;
     NSUInteger length;
+	
+	// If we are filtering for an author
+	if ([[(NSString*)query[0] lowercaseString] isEqualToString:@"author:"]) {
+		NSMutableArray *authorTerms = [query mutableCopy];
+		[authorTerms removeObjectAtIndex:0];
+		[self parse];
+		if ([self author] && [self author].name && ![[self author].name isEqualToString:@""]) {
+			for (NSString *term in authorTerms) {
+				range = [[self author].name rangeOfString:term options:MatchCompareOptions_];
+				if (range.location != NSNotFound)
+					rank_ -= 4 * 100000;
+			}
+		} else if ([self maintainer] && [self maintainer].name && ![[self maintainer].name isEqualToString:@""]) {
+			for (NSString *term in authorTerms) {
+				range = [[self maintainer].name rangeOfString:term options:MatchCompareOptions_];
+				if (range.location != NSNotFound)
+					rank_ -= 4 * 1000000;
+			}
+		}
+		return rank_ != 0;
+	}
     
     string = [self name];
     length = [string length];
