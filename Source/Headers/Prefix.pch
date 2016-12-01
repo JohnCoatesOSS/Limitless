@@ -20,8 +20,3 @@ exit(-1); \
 } \
 while (false)
 #endif
-
-#if (TARGET_OS_SIMULATOR)
-// temporary to avoid all the annoying warnings
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
