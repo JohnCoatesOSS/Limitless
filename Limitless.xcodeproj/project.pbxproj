@@ -307,6 +307,7 @@
 		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
+		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
 /* End PBXBuildFile section */
 
@@ -869,6 +870,8 @@
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
+		FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXLaunchProcess.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1537,6 +1540,8 @@
 				FA23E2CA1D776245001FBE4A /* Device.mm */,
 				FA06A3BD1DDEE98000AA9B02 /* Platform.h */,
 				FA06A3BE1DDEE98000AA9B02 /* Platform.m */,
+				FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */,
+				FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -2418,6 +2423,7 @@
 				FA0311AA1D1B2CBD008690CA /* TableViewCell.mm in Sources */,
 				FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */,
 				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
+				FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */,
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
 				FA6C86E41D7620A900FB99CF /* SearchController.mm in Sources */,
 				FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */,
@@ -2920,6 +2926,7 @@
 					"\"$(SRCROOT)/Source/Legacy\"",
 					"\"$(SRCROOT)/External/Headers\"",
 					"\"$(SRCROOT)/External/Headers/Linked\"",
+					"\"$(SRCROOT)/External/Headers/Linked/SingleHeaders\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
@@ -2986,6 +2993,7 @@
 					"\"$(SRCROOT)/Source/Legacy\"",
 					"\"$(SRCROOT)/External/Headers\"",
 					"\"$(SRCROOT)/External/Headers/Linked\"",
+					"\"$(SRCROOT)/External/Headers/Linked/SingleHeaders\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
