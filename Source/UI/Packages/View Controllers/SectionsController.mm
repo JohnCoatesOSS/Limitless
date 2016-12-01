@@ -89,8 +89,9 @@
     static NSString *reuseIdentifier = @"SectionCell";
     
     SectionCell *cell = (SectionCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
-    if (cell == nil)
-		cell = [[[SectionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier] autorelease];
+    if (cell == nil) {
+        cell = [[[SectionCell alloc] initWithFrame:CGRectZero reuseIdentifier:reuseIdentifier] autorelease];
+    }
 	
     [cell setSection:[self sectionAtIndexPath:indexPath] editing:[self isEditing]];
     
