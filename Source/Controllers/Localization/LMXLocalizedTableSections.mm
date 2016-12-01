@@ -324,6 +324,4 @@ static NSArray *_sectionsForIndexTitles = nil;
     _sectionsForIndexTitles = [sectionsForIndexTitles retain];
 }
 
-
-
 @end
