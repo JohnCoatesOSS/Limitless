@@ -34,17 +34,6 @@ extern _H<UIFont> Font18_;
 extern _H<UIFont> Font18Bold_;
 extern _H<UIFont> Font22Bold_;
 
-// Collation
-extern _H<NSLocale> CollationLocale_;
-extern _H<NSArray> CollationThumbs_;
-extern std::vector<NSInteger> CollationOffset_;
-extern _H<NSArray> CollationTitles_;
-extern _H<NSArray> CollationStarts_;
-extern UTransliterator *CollationTransl_;
-
-typedef std::basic_string<UChar> ustring;
-extern ustring CollationString_;
-
 // Locale
 extern CFLocaleRef Locale_;
 extern NSArray *Languages_;

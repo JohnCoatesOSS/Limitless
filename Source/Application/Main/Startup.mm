@@ -117,7 +117,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
     [self setUpLibraryHacks];
     [self setUpLocale];
-    [self setUpIndexCollation];
     
     App_ = [NSBundle mainBundle].bundlePath;
     Advanced_ = TRUE;
@@ -210,58 +209,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     if (lang != NULL) {
         setenv("LANG", lang, true);
         setlocale(LC_ALL, lang);
-    }
-}
-
-+ (void)setUpIndexCollation {
-    if (Class $UILocalizedIndexedCollation = objc_getClass("UILocalizedIndexedCollation")) { @try {
-        NSBundle *bundle([NSBundle bundleForClass:$UILocalizedIndexedCollation]);
-        NSString *path([bundle pathForResource:@"UITableViewLocalizedSectionIndex" ofType:@"plist"]);
-        //path = @"/System/Library/Frameworks/UIKit.framework/.lproj/UITableViewLocalizedSectionIndex.plist";
-        NSDictionary *dictionary([NSDictionary dictionaryWithContentsOfFile:path]);
-        _H<UILocalizedIndexedCollation> collation([[[$UILocalizedIndexedCollation alloc] initWithDictionary:dictionary] autorelease]);
-        
-        CollationLocale_ = MSHookIvar<NSLocale *>(collation, "_locale");
-        
-        if (kCFCoreFoundationVersionNumber >= 800 && [[CollationLocale_ localeIdentifier] isEqualToString:@"zh@collation=stroke"]) {
-            CollationThumbs_ = [NSArray arrayWithObjects:@"1",@"•",@"4",@"•",@"7",@"•",@"10",@"•",@"13",@"•",@"16",@"•",@"19",@"A",@"•",@"E",@"•",@"I",@"•",@"M",@"•",@"R",@"•",@"V",@"•",@"Z",@"#",nil];
-            for (NSInteger offset : (NSInteger[]) {0,1,3,4,6,7,9,10,12,13,15,16,18,25,26,29,30,33,34,37,38,42,43,46,47,50,51})
-                CollationOffset_.push_back(offset);
-            CollationTitles_ = [NSArray arrayWithObjects:@"1 畫",@"2 畫",@"3 畫",@"4 畫",@"5 畫",@"6 畫",@"7 畫",@"8 畫",@"9 畫",@"10 畫",@"11 畫",@"12 畫",@"13 畫",@"14 畫",@"15 畫",@"16 畫",@"17 畫",@"18 畫",@"19 畫",@"20 畫",@"21 畫",@"22 畫",@"23 畫",@"24 畫",@"25 畫以上",@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",@"#",nil];
-            CollationStarts_ = [NSArray arrayWithObjects:@"一",@"丁",@"丈",@"不",@"且",@"丞",@"串",@"並",@"亭",@"乘",@"乾",@"傀",@"亂",@"僎",@"僵",@"儐",@"償",@"叢",@"儳",@"嚴",@"儷",@"儻",@"囌",@"囑",@"廳",@"a",@"b",@"c",@"d",@"e",@"f",@"g",@"h",@"i",@"j",@"k",@"l",@"m",@"n",@"o",@"p",@"q",@"r",@"s",@"t",@"u",@"v",@"w",@"x",@"y",@"z",@"ʒ",nil];
-        } else {
-            
-            CollationThumbs_ = [collation sectionIndexTitles];
-            for (size_t index(0), end([CollationThumbs_ count]); index != end; ++index)
-                CollationOffset_.push_back([collation sectionForSectionIndexTitleAtIndex:index]);
-            
-            CollationTitles_ = [collation sectionTitles];
-            CollationStarts_ = MSHookIvar<NSArray *>(collation, "_sectionStartStrings");
-            
-            NSString *transform = MSHookIvar<NSString *>(collation, "_transform");
-            if (transform != nil) {
-                /*if ([collation respondsToSelector:@selector(transformedCollationStringForString:)])
-                 CollationModify_ = [=](NSString *value) { return [collation transformedCollationStringForString:value]; };*/
-                const UChar *uid(reinterpret_cast<const UChar *>([transform cStringUsingEncoding:NSUnicodeStringEncoding]));
-                UErrorCode code(U_ZERO_ERROR);
-                CollationTransl_ = utrans_openU(uid, -1, UTRANS_FORWARD, NULL, 0, NULL, &code);
-                if (!U_SUCCESS(code))
-                    NSLog(@"%s", u_errorName(code));
-            }
-            
-        }
-    } @catch (NSException *e) {
-        NSLog(@"%@", e);
-        goto hard;
-    } } else hard: {
-        CollationLocale_ = [[[NSLocale alloc] initWithLocaleIdentifier:@"en@collation=dictionary"] autorelease];
-        
-        CollationThumbs_ = [NSArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",@"#",nil];
-        for (NSInteger offset(0); offset != 28; ++offset)
-            CollationOffset_.push_back(offset);
-        
-        CollationTitles_ = [NSArray arrayWithObjects:@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z",@"#",nil];
-        CollationStarts_ = [NSArray arrayWithObjects:@"a",@"b",@"c",@"d",@"e",@"f",@"g",@"h",@"i",@"j",@"k",@"l",@"m",@"n",@"o",@"p",@"q",@"r",@"s",@"t",@"u",@"v",@"w",@"x",@"y",@"z",@"ʒ",nil];
     }
 }
 

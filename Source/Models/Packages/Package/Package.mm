@@ -10,7 +10,7 @@
 #import "DisplayHelpers.hpp"
 #import "Source.h"
 #import "Standard.h"
-#import "LMXTransliterate.h"
+#import "LMXLocalizedTableSections.h"
 
 #include <fstream>
 
@@ -237,7 +237,7 @@
             installed_.set(NULL, StripVersion_(current.VerStr()));
         _end
         
-        [LMXTransliterate transliterate:name_ pool:pool_ output:&transform_];
+        [LMXLocalizedTableSections transliterate:name_ pool:pool_ output:&transform_];
         
         _profile(Package$initWithVersion$Tags)
         pkgCache::TagIterator tag(iterator.TagList());
