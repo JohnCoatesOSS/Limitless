@@ -11,6 +11,28 @@
 
 @implementation SourceCell
 
+- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) != nil) {
+        UIView *content([self contentView]);
+        CGRect bounds([content bounds]);
+        
+        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        [content_ setBackgroundColor:[UIColor whiteColor]];
+        [content addSubview:content_];
+        
+        [content_ setDelegate:self];
+        [content_ setOpaque:YES];
+        
+        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
+        [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
+        [content addSubview:indicator_];
+        
+        [[content_ layer] setContentsGravity:kCAGravityTopLeft];
+    } return self;
+}
+
+
 - (void) _setImage:(NSArray *)data {
     if ([url_ isEqual:[data objectAtIndex:0]]) {
         icon_ = [data objectAtIndex:1];
@@ -62,27 +84,6 @@
     origin_ = UCLocalize("ALL_SOURCES");
     label_ = UCLocalize("ALL_SOURCES_EX");
     [content_ setNeedsDisplay];
-}
-
-- (SourceCell *) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) != nil) {
-        UIView *content([self contentView]);
-        CGRect bounds([content bounds]);
-        
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
-        [content addSubview:content_];
-        
-        [content_ setDelegate:self];
-        [content_ setOpaque:YES];
-        
-        indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
-        [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
-        [content addSubview:indicator_];
-        
-        [[content_ layer] setContentsGravity:kCAGravityTopLeft];
-    } return self;
 }
 
 - (void) layoutSubviews {

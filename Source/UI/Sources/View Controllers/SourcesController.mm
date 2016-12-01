@@ -84,8 +84,9 @@
     static NSString *cellIdentifier = @"SourceCell";
     
     SourceCell *cell = (SourceCell *) [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-	//if (cell == nil) cell = [[[SourceCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
-	if (cell == nil) cell = [[[SourceCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellIdentifier] autorelease];
+    if (cell == nil) {
+         cell = [[[SourceCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
+    }
 
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     

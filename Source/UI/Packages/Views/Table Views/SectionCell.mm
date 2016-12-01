@@ -11,8 +11,8 @@
 
 @implementation SectionCell
 
-- (id) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if ((self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) != nil) {
+- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) != nil) {
         icon_ = [UIImage imageNamed:@"folder.png"];
         // XXX: this initial frame is wrong, but is fixed later
         switch_ = [[[UISwitch alloc] initWithFrame:CGRectMake(218, 9, 60, 25)] autorelease];
