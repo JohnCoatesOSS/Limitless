@@ -81,7 +81,8 @@
         [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
         [content addSubview:indicator_];
         
-        [[content_ layer] setContentsGravity:kCAGravityTopLeft];
+        [[content_ layer] setContentsGravity:kCAGravityTopLeft];       
+    
     } return self;
 }
 
