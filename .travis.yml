@@ -7,6 +7,10 @@ script:
   - set -o pipefail && env NSUnbufferedIO=YES xcodebuild -project Limitless.xcodeproj -scheme Limitless -destination generic/platform=iOS build | xcpretty
 after_success:
   - sleep 15
+branches:
+  only:
+  - master
+  - develop
 notifications:
   webhooks:
     urls:
