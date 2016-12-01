@@ -139,7 +139,8 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     bool iOSVersionIsGreaterThanOrEqualTo8 = kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_8_0;
     if (![Device isSimulator] && iOSVersionIsGreaterThanOrEqualTo8) {
-        system("/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/setnsfpn /var/lib");
+        [LMXLaunchProcess launchProcessAtPath:@"/Applications/Limitless.app/runAsSuperuser"
+                                withArguments:@"/usr/libexec/cydia/setnsfpn", @"/var/lib", nil];
     }
     
     int version = [NSString stringWithContentsOfFile:@"/var/lib/cydia/firmware.ver"
@@ -148,7 +149,8 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     if (![Device isSimulator]) {
         if (access("/User", F_OK) != 0 || version != 6) {
             _trace();
-            system("/Applications/Limitless.app/runAsSuperuser /usr/libexec/cydia/firmware.sh");
+            [LMXLaunchProcess launchProcessAtPath:@"/Applications/Limitless.app/runAsSuperuser"
+                                    withArguments:@"/usr/libexec/cydia/firmware.sh", nil];
             _trace();
         }
     }
@@ -163,7 +165,12 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     }
     
     if (![Device isSimulator]) {
-        system("/Applications/Limitless.app/runAsSuperuser /bin/ln -sf /var/mobile/Library/Caches/com.saurik.Cydia/sources.list /etc/apt/sources.list.d/cydia.list");
+        [LMXLaunchProcess launchProcessAtPath:@"/Applications/Limitless.app/runAsSuperuser"
+                                withArguments:
+         @"/bin/ln",
+         @"-sf",
+         @"/var/mobile/Library/Caches/com.saurik.Cydia/sources.list",
+         @"/etc/apt/sources.list.d/cydia.list", nil];
     }
     
     [self setUpTheme];
@@ -391,7 +398,8 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     SaveConfig(nil);
     if (![Device isSimulator]) {
-        system("/Applications/Limitless.app/runAsSuperuser /bin/rm -f /var/lib/cydia/metadata.plist");
+        [LMXLaunchProcess launchProcessAtPath:@"/Applications/Limitless.app/runAsSuperuser"
+                                withArguments:@"/bin/rm", @"-f", @"/var/lib/cydia/metadata.plist", nil];
     }
     
     $SBSSetInterceptsMenuButtonForever = reinterpret_cast<void (*)(bool)>(dlsym(RTLD_DEFAULT, "SBSSetInterceptsMenuButtonForever"));
