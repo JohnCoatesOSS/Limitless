@@ -4,7 +4,7 @@ install:
   - gem install xcpretty
 script:
   - set -o pipefail && env NSUnbufferedIO=YES xcodebuild -project Limitless.xcodeproj -scheme Limitless -destination 'platform=iOS Simulator,name=iPhone 6s' build | xcpretty
-  - set -o pipefail && env NSUnbufferedIO=YES xcodebuild -project Limitless.xcodeproj -scheme Limitless -destination generic/platform=iOS build | xcpretty
+  - set -o pipefail && env NSUnbufferedIO=YES xcodebuild -project Limitless.xcodeproj -scheme Limitless -destination generic/platform=iOS build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty
 after_success:
   - sleep 15
 branches:
