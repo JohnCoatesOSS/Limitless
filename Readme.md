@@ -2,7 +2,8 @@
 
 ![header](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/Documentation/images/readmeHeader.png)
 
-[![Gitter](https://badges.gitter.im/JohnCoatesOSS/Limitless.svg)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Build Status](https://travis-ci.org/JohnCoatesOSS/Limitless.svg?branch=develop)](https://travis-ci.org/JohnCoatesOSS/Limitless)
+[![Gitter](https://img.shields.io/gitter/room/JohnCoatesOSS/Limitless.svg?style=flat-square&colorB=46BC99)](https://gitter.im/JohnCoatesOSS/Limitless?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build Status](https://img.shields.io/travis/JohnCoatesOSS/Limitless.svg?style=flat-square)](https://travis-ci.org/JohnCoatesOSS/Limitless)
 
 ![preview](https://raw.githubusercontent.com/JohnCoatesOSS/Limitless/develop/Documentation/images/preview.png)
 
