@@ -115,9 +115,9 @@
     
 	CGSize size = [count_ sizeWithAttributes:@{NSFontAttributeName: Font14_}];
     
-    UISetColor([UIColor cydia_folder].CGColor);
+    UISetColor([UIColor cydia_folderColor].CGColor);
     if (count_ != nil)
-		[count_ drawInRect:CGRectMake(Retina(10 + (30 - size.width) / 2), 18, CGFLOAT_MAX, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12Bold_, NSForegroundColorAttributeName: [UIColor cydia_folder]}];
+		[count_ drawInRect:CGRectMake(Retina(10 + (30 - size.width) / 2), 18, CGFLOAT_MAX, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12Bold_, NSForegroundColorAttributeName: [UIColor cydia_folderColor]}];
 }
 
 @end

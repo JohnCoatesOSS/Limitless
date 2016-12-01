@@ -150,8 +150,8 @@
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
 	if (!highlighted) {
-        UISetColor(commercial_ ? [UIColor cydia_purple].CGColor : [UIColor blackColor].CGColor);
-		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_purple] : [UIColor blackColor])}];
+        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : [UIColor blackColor].CGColor);
+		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialColor] : [UIColor blackColor])}];
 	} else {
 		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle}];
 	}
@@ -196,7 +196,7 @@
         UISetColor([UIColor whiteColor].CGColor);
     
     if (!highlighted)
-        UISetColor(commercial_ ? [UIColor cydia_purple].CGColor : [UIColor blackColor].CGColor);
+        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : [UIColor blackColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -205,8 +205,8 @@
 	[source_ drawInRect:CGRectMake(58, 29, (width - 29), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle}];
     
 	if (!highlighted) {
-        UISetColor(commercial_ ? [UIColor cydia_purplish].CGColor : [UIColor cydia_gray].CGColor);
-		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_purplish] : [UIColor cydia_gray])}];
+        UISetColor(commercial_ ? [UIColor cydia_commercialVariantColor].CGColor : [UIColor cydia_grayColor].CGColor);
+		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialVariantColor] : [UIColor cydia_grayColor])}];
 	} else
 		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle}];
     

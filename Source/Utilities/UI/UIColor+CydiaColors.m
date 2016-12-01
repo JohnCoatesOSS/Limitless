@@ -10,35 +10,35 @@
 
 @implementation UIColor (CydiaColors)
 
-+ (UIColor*) cydia_blue {
++ (UIColor*) cydia_blueColor {
 	return [UIColor colorWithRed:0.2 green:0.2 blue:1.0 alpha:1];
 }
 
-+ (UIColor*) cydia_blueish {
++ (UIColor*) cydia_blueVariantColor {
 	return [UIColor colorWithRed:25/255 green:50/255 blue:80/255 alpha:1];
 }
 
-+ (UIColor*) cydia_folder {
++ (UIColor*) cydia_folderColor {
 	return [UIColor colorWithRed:142/255 green:142/255 blue:147/255 alpha:1];
 }
 
-+ (UIColor*) cydia_off {
++ (UIColor*) cydia_offColor {
 	return [UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1];
 }
 
-+ (UIColor*) cydia_gray {
++ (UIColor*) cydia_grayColor {
 	return [UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1];
 }
 
-+ (UIColor*) cydia_green {
++ (UIColor*) cydia_greenColor {
 	return [UIColor colorWithRed:0.0 green:0.5 blue:0.0 alpha:1];
 }
 
-+ (UIColor*) cydia_purple {
++ (UIColor*) cydia_commercialColor {
 	return [UIColor colorWithRed:0.0 green:0.0 blue:0.7 alpha:1];
 }
 
-+ (UIColor*) cydia_purplish {
++ (UIColor*) cydia_commercialVariantColor {
 	return [UIColor colorWithRed:0.4 green:0.4 blue:0.8 alpha:1];
 }
 
@@ -51,3 +51,16 @@
 }
 
 @end
+
+/*
+ + (UIColor*) cydia_blueColor;
+ + (UIColor*) cydia_blueVariantColor;
+ + (UIColor*) cydia_folderColor;
+ + (UIColor*) cydia_offColor;
+ + (UIColor*) cydia_grayColor;
+ + (UIColor*) cydia_greenColor;
+ + (UIColor*) cydia_commercialColor;
+ + (UIColor*) cydia_commercialVariantColor;
+ + (UIColor*) cydia_installingColor;
+ + (UIColor*) cydia_removingColor;
+*/

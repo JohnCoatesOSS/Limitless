@@ -135,8 +135,8 @@
 	[origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle}];
     
     if (!highlighted)
-        UISetColor([UIColor cydia_gray].CGColor);
-	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_gray] : [UIColor blackColor])}];
+        UISetColor([UIColor cydia_grayColor].CGColor);
+	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : [UIColor blackColor])}];
 }
 
 - (void) setFetch:(NSNumber *)fetch {

@@ -9,14 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @interface UIColor (CydiaColors)
-+ (UIColor*) cydia_blue;
-+ (UIColor*) cydia_blueish;
-+ (UIColor*) cydia_folder;
-+ (UIColor*) cydia_off;
-+ (UIColor*) cydia_gray;
-+ (UIColor*) cydia_green;
-+ (UIColor*) cydia_purple;
-+ (UIColor*) cydia_purplish;
++ (UIColor*) cydia_blueColor;
++ (UIColor*) cydia_blueVariantColor;
++ (UIColor*) cydia_folderColor;
++ (UIColor*) cydia_offColor;
++ (UIColor*) cydia_grayColor;
++ (UIColor*) cydia_greenColor;
++ (UIColor*) cydia_commercialColor;
++ (UIColor*) cydia_commercialVariantColor;
 + (UIColor*) cydia_installingColor;
 + (UIColor*) cydia_removingColor;
 @end
