@@ -86,10 +86,10 @@
         
         if (NSString *mode = [package mode]) {
             if ([mode isEqualToString:@"REMOVE"] || [mode isEqualToString:@"PURGE"]) {
-                color = RemovingColor_;
+                color = [UIColor cydia_removingColor];
                 placard = @"removing";
             } else {
-                color = InstallingColor_;
+                color = [UIColor cydia_installingColor];
                 placard = @"installing";
             }
         } else {
@@ -144,14 +144,14 @@
     }
     
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
-        UISetColor(White_);
+        UISetColor([UIColor whiteColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
 	if (!highlighted) {
-        UISetColor(commercial_ ? Purple_ : Black_);
-		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor colorWithCGColor:Purple_.color_] : [UIColor colorWithCGColor:Black_.color_])}];
+        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : [UIColor blackColor].CGColor);
+		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialColor] : [UIColor blackColor])}];
 	} else {
 		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle}];
 	}
@@ -193,10 +193,10 @@
     }
     
     if (highlighted && kCFCoreFoundationVersionNumber < 800)
-        UISetColor(White_);
+        UISetColor([UIColor whiteColor].CGColor);
     
     if (!highlighted)
-        UISetColor(commercial_ ? Purple_ : Black_);
+        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : [UIColor blackColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -205,8 +205,8 @@
 	[source_ drawInRect:CGRectMake(58, 29, (width - 29), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle}];
     
 	if (!highlighted) {
-        UISetColor(commercial_ ? Purplish_ : Gray_);
-		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor colorWithCGColor:Purplish_.color_] : [UIColor colorWithCGColor:Gray_.color_])}];
+        UISetColor(commercial_ ? [UIColor cydia_commercialVariantColor].CGColor : [UIColor cydia_grayColor].CGColor);
+		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialVariantColor] : [UIColor cydia_grayColor])}];
 	} else
 		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle}];
     

@@ -368,20 +368,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
 
 + (void)setUpTheme {
     space_ = CGColorSpaceCreateDeviceRGB();
-    
-    Blue_.Set(space_, 0.2, 0.2, 1.0, 1.0);
-    Blueish_.Set(space_, 0x19/255.f, 0x32/255.f, 0x50/255.f, 1.0);
-    Black_.Set(space_, 0.0, 0.0, 0.0, 1.0);
-    Folder_.Set(space_, 0x8e/255.f, 0x8e/255.f, 0x93/255.f, 1.0);
-    Off_.Set(space_, 0.9, 0.9, 0.9, 1.0);
-    White_.Set(space_, 1.0, 1.0, 1.0, 1.0);
-    Gray_.Set(space_, 0.4, 0.4, 0.4, 1.0);
-    Green_.Set(space_, 0.0, 0.5, 0.0, 1.0);
-    Purple_.Set(space_, 0.0, 0.0, 0.7, 1.0);
-    Purplish_.Set(space_, 0.4, 0.4, 0.8, 1.0);
-    
-    InstallingColor_ = [UIColor colorWithRed:0.88f green:1.00f blue:0.88f alpha:1.00f];
-    RemovingColor_ = [UIColor colorWithRed:1.00f green:0.88f blue:0.88f alpha:1.00f];
 }
 
 #pragma mark - Copying

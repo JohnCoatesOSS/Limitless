@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		BC2569201DF00B4D000EA2C3 /* UIColor+CydiaColors.m in Sources */ = {isa = PBXBuildFile; fileRef = BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */; };
 		FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */; };
 		FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */ = {isa = PBXBuildFile; fileRef = FA01D2111D1B22B100B49E70 /* lookup3.c */; };
 		FA01D2211D1B22B100B49E70 /* Sources.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA01D2161D1B22B100B49E70 /* Sources.mm */; };
@@ -466,6 +467,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BC25691E1DF00B4D000EA2C3 /* UIColor+CydiaColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+CydiaColors.h"; sourceTree = "<group>"; };
+		BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CydiaColors.m"; sourceTree = "<group>"; };
 		FA01D20C1D1B22B100B49E70 /* cfversion.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cfversion.mm; sourceTree = "<group>"; };
 		FA01D20E1D1B22B100B49E70 /* Cytore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cytore.hpp; sourceTree = "<group>"; };
 		FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DiskUsage.cpp; sourceTree = "<group>"; };
@@ -1504,6 +1507,8 @@
 				FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */,
 				FA23E2C61D77549F001FBE4A /* Display.h */,
 				FA23E2C71D7754A0001FBE4A /* Display.mm */,
+				BC25691E1DF00B4D000EA2C3 /* UIColor+CydiaColors.h */,
+				BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -2504,6 +2509,7 @@
 				FA6C86F31D76236200FB99CF /* SourcesController.mm in Sources */,
 				FA0311B11D1B2CBD008690CA /* radixSortWithSelector.mm in Sources */,
 				FA6C86EF1D76228B00FB99CF /* SourceCell.mm in Sources */,
+				BC2569201DF00B4D000EA2C3 /* UIColor+CydiaColors.m in Sources */,
 				FA0311C01D1B2CFD008690CA /* LoadingViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

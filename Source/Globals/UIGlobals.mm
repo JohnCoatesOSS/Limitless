@@ -7,21 +7,6 @@
 
 #import "UIGlobals.h"
 
-// Colors
-CYColor Blue_;
-CYColor Blueish_;
-CYColor Black_;
-CYColor Folder_;
-CYColor Off_;
-CYColor White_;
-CYColor Gray_;
-CYColor Green_;
-CYColor Purple_;
-CYColor Purplish_;
-
-UIColor *InstallingColor_;
-UIColor *RemovingColor_;
-
 CGColorSpaceRef space_;
 
 // Fonts
