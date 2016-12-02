@@ -65,11 +65,7 @@
         case 0:
             return 1;
         case 1:
-            if (_isFiltered) {
-                return [_favoriteRepos count];
-            } else {
-                return [sources_ count];
-            }
+            return [sources_ count];
         default: return 0;
     }
 }
@@ -82,9 +78,10 @@
             return nil;
         NSUInteger index([indexPath row]);
         if (index >= [sources_ count])
-            return nil;
+                return nil;
         return [sources_ objectAtIndex:index];
-    } }
+    }
+}
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"SourceCell";
@@ -125,14 +122,6 @@
 
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     Source *source([self sourceAtIndexPath:indexPath]);
-    _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
-    [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
-    favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    favoritesButton.backgroundColor = [UIColor systemDarkGreenColor];
-    UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        [tableView setEditing:NO animated:YES];
-        [database_ addRepoToFavoritesList:source];
-    }];
     
     _UITableViewCellActionButton *shareButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
     [shareButton setTitle:@"Share" forState:UIControlStateNormal];
@@ -153,13 +142,11 @@
         [delegate_ reloadDataWithInvocation:nil];
     }];
     
-    [addToFavoritesAction _setButton:favoritesButton];
     [copyAction _setButton:shareButton];
     [removeAction _setButton:removeButton];
-    addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
     copyAction.backgroundColor = [UIColor grayColor];
     removeAction.backgroundColor = [UIColor redColor];
-    return @[ addToFavoritesAction, copyAction, removeAction ];
+    return @[ copyAction, removeAction ];
 }
 
 - (void) complete {
@@ -420,24 +407,8 @@
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super init]) != nil) {
-        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:@[ UCLocalize("SOURCES"), UCLocalize("FAVORITES") ]] autorelease]);
-        [segmented setSelectedSegmentIndex:0];
-        [[self navigationItem] setTitleView:segmented];
-        
-        [segmented addTarget:self action:@selector(modeChanged:) forEvents:UIControlEventValueChanged];
-        _isFiltered = NO;
         database_ = database;
     } return self;
-}
-
-- (void)modeChanged:(UISegmentedControl *)segmented {
-    NSInteger selected([segmented selectedSegmentIndex]);
-    if (selected == 1){
-        _isFiltered = YES;
-    } else {
-        _isFiltered = NO;
-    }
-    [list_ reloadData];
 }
 
 - (void) reloadData {
@@ -448,6 +419,17 @@
         era_ = [database_ era];
         
         sources_ = [NSMutableArray arrayWithCapacity:16];
+        /*
+        _favoriteRepos = [[NSMutableArray alloc] init];
+        
+        NSArray *currentFavoriteRepos = [database_ currentFavoriteRepos];
+        for (Source *source in [database_ sources]) {
+            if (![currentFavoriteRepos containsObject:source.key]) {
+                continue;
+            }
+            [_favoriteRepos addObject:source];
+        }
+        */
         [sources_ addObjectsFromArray:[database_ sources]];
         _trace();
         [sources_ sortUsingSelector:@selector(compareByName:)];

@@ -31,8 +31,6 @@
     
     BOOL cydia_;
 }
-@property (assign, nonatomic) BOOL isFiltered;
-@property (strong, nonatomic) NSMutableArray *favoriteRepos;
 
 - (id)initWithDatabase:(Database *)database;
 - (void)updateButtonsForEditingStatusAnimated:(BOOL)animated;
