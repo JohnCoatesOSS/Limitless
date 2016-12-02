@@ -782,10 +782,6 @@
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"FavoritesPackages"];
 }
 
-- (NSArray *)currentFavoriteRepos {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"FavoriteRepos"];
-}
-
 - (void)addPackageToFavoritesList:(Package *)package {
     NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavorites]];
     if (!currentFavoritesMutable) {
@@ -794,17 +790,6 @@
     NSString *packageID = package.id;
     [currentFavoritesMutable addObject:packageID];
     [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoritesPackages"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)addRepoToFavoritesList:(Source *)source {
-    NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavoriteRepos]];
-    if (!currentFavoritesMutable) {
-        currentFavoritesMutable = [[NSMutableArray alloc] init];
-    }
-    NSString *repoKey = source.key;
-    [currentFavoritesMutable addObject:repoKey];
-    [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoriteRepos"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
