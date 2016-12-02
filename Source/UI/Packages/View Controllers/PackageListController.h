@@ -33,5 +33,6 @@
 - (NSArray *) sectionsForPackages:(NSMutableArray *)packages;
 
 - (void) didSelectPackage:(Package *)package;
+- (void)updateInstalledListIfNeeded:(BOOL)needed;
 
 @end

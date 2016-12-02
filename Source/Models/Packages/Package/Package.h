@@ -97,6 +97,7 @@ struct ParsedPackage {
 - (bool) setSubscribed:(bool)subscribed;
 
 - (BOOL) ignored;
+- (bool)isFavorited;
 
 - (NSString *) latest;
 - (NSString *) installed;
