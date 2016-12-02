@@ -120,12 +120,6 @@
     [self deselectWithAnimation:animated];
 }
 
-- (void)updateInstalledListIfNeeded:(BOOL)needed {
-    if (needed) {
-        // reload table with favorites tweaks
-    }
-}
-
 - (void) didSelectPackage:(Package *)package {
     CYPackageController *view([[[CYPackageController alloc] initWithDatabase:database_ forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]] autorelease]);
     [view setDelegate:delegate_];
@@ -156,10 +150,12 @@
         
         Section *section([sections_ objectAtIndex:[path section]]);
         NSInteger row([path row]);
-        Package *package([packages_ objectAtIndex:([section row] + row)]);
+        Package *package;
+        package = [packages_ objectAtIndex:([section row] + row)];
         return [[package retain] autorelease];
-    } }
-
+    }
+}
+    
 - (UITableViewCell *) tableView:(UITableView *)table cellForRowAtIndexPath:(NSIndexPath *)path {
     PackageCell *cell((PackageCell *) [table dequeueReusableCellWithIdentifier:@"Package"]);
     if (cell == nil)
@@ -167,6 +163,11 @@
     
     Package *package([database_ packageWithName:[[self packageAtIndexPath:path] id]]);
     [cell setPackage:package asSummary:[self isSummarized]];
+    
+    if (package.isFavorited) {
+        cell.contentView.backgroundColor = [UIColor colorWithRed:0.00 green:0.59 blue:0.53 alpha:1.0];
+    }
+    
     return cell;
 }
 
@@ -193,7 +194,7 @@
     package = [database_ packageWithName:[package id]];
     
     _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
-    [favoritesButton setImage:[UIImage imageNamed:@"home7s"] forState:UIControlStateNormal];
+    [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
     favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     favoritesButton.backgroundColor = [UIColor systemDarkGreenColor];
     UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
@@ -267,7 +268,8 @@
         NSArray *packages([database_ packages]);
         
         return [NSMutableArray arrayWithArray:packages];
-    } }
+    }
+}
 
 - (void) _reloadData {
     if (reloading_ != 0) {

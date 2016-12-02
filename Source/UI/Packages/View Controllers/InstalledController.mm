@@ -37,9 +37,8 @@
 
 - (void) useFilter:(UISegmentedControl *)segmented {
     NSInteger selected([segmented selectedSegmentIndex]);
-    [self updateInstalledListIfNeeded:NO];
     if (selected == 3) {
-        return [self updateInstalledListIfNeeded:YES];
+        //do anything?
     }
     if (selected == 2)
         return [self useRecent];
@@ -98,7 +97,7 @@
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
-        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), UCLocalize("FAVORITES"), nil]] autorelease]);
+        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:@[ UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), UCLocalize("FAVORITES") ]] autorelease]);
         [segmented setSelectedSegmentIndex:0];
         [[self navigationItem] setTitleView:segmented];
         

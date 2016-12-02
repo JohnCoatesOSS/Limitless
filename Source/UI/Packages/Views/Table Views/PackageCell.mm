@@ -40,9 +40,9 @@
     badge_ = nil;
     placard_ = nil;
     
-    if (package == nil)
+    if (package == nil) {
         [content_ setBackgroundColor:[UIColor whiteColor]];
-    else {
+    } else {
         [package parse];
         
         Source *source = [package source];
@@ -93,7 +93,11 @@
                 placard = @"installing";
             }
         } else {
-            color = [UIColor whiteColor];
+            if (package.isFavorited){
+                color = [UIColor colorWithRed:0.00 green:0.59 blue:0.53 alpha:1.0];
+            } else {
+                color = [UIColor whiteColor];
+            }
             
             if ([package installed] != nil)
                 placard = @"installed";
