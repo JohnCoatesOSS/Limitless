@@ -3179,16 +3179,12 @@
 				CLANG_ENABLE_MODULES = NO;
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-<<<<<<< HEAD
-				DEVELOPMENT_TEAM = 36G86N4FPV;
-=======
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer"
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
 				);
->>>>>>> upstream/develop
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -3211,15 +3207,11 @@
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-<<<<<<< HEAD
-				DEVELOPMENT_TEAM = 36G86N4FPV;
-=======
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
 				);
->>>>>>> upstream/develop
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
