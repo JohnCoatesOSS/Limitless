@@ -299,8 +299,6 @@
     }
 }
 
-
-
 - (void)setUpPackageLists {
     essential_ = [NSMutableArray arrayWithCapacity:4];
     broken_ = [NSMutableArray arrayWithCapacity:4];

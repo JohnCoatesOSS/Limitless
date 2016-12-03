@@ -15,7 +15,7 @@ attachXcode = FALSE
 clean = TRUE
 
 # replace this with your device
-device = {name: '📱 iPhone 5s', ip:'192.168.254.4'}
+device = {name: '📱 iPhone 7', ip:'127.0.0.1'}
 
 # show output ASAP
 STDOUT.sync = true

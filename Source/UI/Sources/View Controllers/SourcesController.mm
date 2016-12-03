@@ -474,17 +474,6 @@
         era_ = [database_ era];
         
         sources_ = [NSMutableArray arrayWithCapacity:16];
-        /*
-        _favoriteRepos = [[NSMutableArray alloc] init];
-        
-        NSArray *currentFavoriteRepos = [database_ currentFavoriteRepos];
-        for (Source *source in [database_ sources]) {
-            if (![currentFavoriteRepos containsObject:source.key]) {
-                continue;
-            }
-            [_favoriteRepos addObject:source];
-        }
-        */
         [sources_ addObjectsFromArray:[database_ sources]];
         _trace();
         [sources_ sortUsingSelector:@selector(compareByName:)];

@@ -2326,12 +2326,10 @@
 				TargetAttributes = {
 					FA28E7091D1B21A5003D3724 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 36G86N4FPV;
 						ProvisioningStyle = Automatic;
 					};
 					FA3A18321DEAB1F3000557AC = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = 36G86N4FPV;
 						ProvisioningStyle = Automatic;
 					};
 					FA9010FA1DE12B1C00A607AC = {
@@ -2341,7 +2339,6 @@
 					};
 					FAA88F061DE7738100039F54 = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = E6QK4MU6LM;
 						ProvisioningStyle = Automatic;
 					};
 					FAE642941DF13EC200E975B8 = {
@@ -3182,7 +3179,7 @@
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 36G86N4FPV;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
@@ -3193,7 +3190,7 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shade.Limitless;
+				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3209,7 +3206,7 @@
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 36G86N4FPV;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
@@ -3220,7 +3217,7 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shade.Limitless;
+				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3232,13 +3229,13 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = 36G86N4FPV;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_TESTABILITY = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = Tools/runAsSuperuser/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shade.Limitless.runAsSuperuser;
+				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.runAsSuperuser;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -3249,11 +3246,11 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = 36G86N4FPV;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tools/runAsSuperuser/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.shade.Limitless.runAsSuperuser;
+				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.runAsSuperuser;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -3299,7 +3296,7 @@
 		FAA88F081DE7738100039F54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				DEVELOPMENT_TEAM = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -3307,7 +3304,7 @@
 		FAA88F091DE7738100039F54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				DEVELOPMENT_TEAM = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
