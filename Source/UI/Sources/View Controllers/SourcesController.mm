@@ -18,6 +18,7 @@
 #import "Defines.h"
 #import "Source.h"
 #import "CydiaTabBarController.h"
+#import "LMXRespringController.h"
 
 @implementation SourcesController
 
@@ -489,8 +490,9 @@
 }
 
 - (void) refreshButtonClicked {
-    if ([delegate_ requestUpdate])
+    if ([delegate_ requestUpdate]) {
         [self updateButtonsForEditingStatusAnimated:YES];
+    }
 }
 
 - (void) cancelButtonClicked {
@@ -530,3 +532,4 @@
 }
 
 @end
+
