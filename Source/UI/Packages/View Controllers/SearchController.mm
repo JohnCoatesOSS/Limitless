@@ -123,7 +123,6 @@
             textField = [search_ searchField];
         else
             textField = MSHookIvar<UITextField *>(search_, "_searchField");
-        //Dark Mode check
         if(UIColor.isDarkModeEnabled) {
             [textField setBackgroundColor:[UIColor cydia_black]];
             [textField setTextColor:[UIColor whiteColor]];

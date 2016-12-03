@@ -351,7 +351,6 @@
     NSMutableArray *controllers([NSMutableArray array]);
     for (UITabBarItem *item in items) {
         UINavigationController *controller([[[UINavigationController alloc] init] autorelease]);
-        // [[controller navigationBar] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
         [controller setTabBarItem:item];
         [controllers addObject:controller];
     }
