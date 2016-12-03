@@ -19,4 +19,6 @@
 + (UIColor*) cydia_commercialVariantColor;
 + (UIColor*) cydia_installingColor;
 + (UIColor*) cydia_removingColor;
++ (UIColor*) cydia_tintColor;
++ (UIColor*) cydia_black;
 @end

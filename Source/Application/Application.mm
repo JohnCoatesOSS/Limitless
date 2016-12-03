@@ -287,6 +287,13 @@
     Font18_ = [UIFont systemFontOfSize:18];
     Font18Bold_ = [UIFont boldSystemFontOfSize:18];
     Font22Bold_ = [UIFont boldSystemFontOfSize:22];
+    
+    [[UINavigationBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    [[UITabBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
+    [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 - (void)setUpPackageLists {
@@ -339,6 +346,7 @@
     NSMutableArray *controllers([NSMutableArray array]);
     for (UITabBarItem *item in items) {
         UINavigationController *controller([[[UINavigationController alloc] init] autorelease]);
+        // [[controller navigationBar] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
         [controller setTabBarItem:item];
         [controllers addObject:controller];
     }
