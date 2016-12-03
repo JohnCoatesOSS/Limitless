@@ -101,8 +101,8 @@
         [cell setAllSource];
     } else {
         [cell setSource:source];
-        UILongPressGestureRecognizer *favouriteGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(favouriteGestureRecognized:)];
-        [cell addGestureRecognizer:favouriteGesture];
+        UILongPressGestureRecognizer *favoriteGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(favoriteGestureRecognized:)];
+        [cell addGestureRecognizer:favoriteGesture];
     }
   
     // TODO: fix background color
@@ -112,11 +112,11 @@
     return cell;
 }
 
--(void)favouriteGestureRecognized:(UILongPressGestureRecognizer*)gestureRecognizer {
+-(void)favoriteGestureRecognized:(UILongPressGestureRecognizer*)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
         Source *currentSource([self sourceAtIndexPath:[list_ indexPathForCell:(UITableViewCell*)gestureRecognizer.view]]);
         
-        UIAlertController *favouriteSheet([UIAlertController alertControllerWithTitle:@"Set as favourite" message:[NSString stringWithFormat:@"Choose which favourite to replace with \"%@\"", currentSource.name] preferredStyle:UIAlertControllerStyleActionSheet]);
+        UIAlertController *favoriteSheet([UIAlertController alertControllerWithTitle:@"Set as favorite" message:[NSString stringWithFormat:@"Choose which favorite to replace with \"%@\"", currentSource.name] preferredStyle:UIAlertControllerStyleActionSheet]);
         
         UIApplicationShortcutItem *firstShortcut([UIApplication sharedApplication].shortcutItems[0]);
         UIApplicationShortcutItem *secondShortcut([UIApplication sharedApplication].shortcutItems[1]);
@@ -137,11 +137,11 @@
         }]);
         UIAlertAction *cancelAction([UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:nil]);
         
-        [favouriteSheet addAction:firstPlaceAction];
-        [favouriteSheet addAction:secondPlaceAction];
-        [favouriteSheet addAction:cancelAction];
+        [favoriteSheet addAction:firstPlaceAction];
+        [favoriteSheet addAction:secondPlaceAction];
+        [favoriteSheet addAction:cancelAction];
         
-        [self presentViewController:favouriteSheet animated:true completion:nil];
+        [self presentViewController:favoriteSheet animated:true completion:nil];
     }
 }
 
