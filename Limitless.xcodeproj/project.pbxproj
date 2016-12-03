@@ -2326,6 +2326,7 @@
 				TargetAttributes = {
 					FA28E7091D1B21A5003D3724 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 36G86N4FPV;
 						ProvisioningStyle = Automatic;
 					};
 					FA3A18321DEAB1F3000557AC = {
@@ -3179,8 +3180,8 @@
 				CLANG_ENABLE_MODULES = NO;
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer"
-				DEVELOPMENT_TEAM = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 36G86N4FPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
@@ -3207,7 +3208,7 @@
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 36G86N4FPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
