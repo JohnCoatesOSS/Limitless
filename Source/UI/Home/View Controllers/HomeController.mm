@@ -8,6 +8,7 @@
 #import "HomeController.h"
 #import "UIGlobals.h"
 #import "DisplayHelpers.hpp"
+#import "Delegates.h"
 
 @implementation HomeController
 
@@ -68,6 +69,13 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
              target:self
              action:@selector(aboutButtonClicked)
              ] autorelease];
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event{
+if (motion == UIEventSubtypeMotionShake) {
+Cydia *cyAppDelegate = (Cydia *)[UIApplication sharedApplication];
+[cyAppDelegate requestUpdate];
+    }
 }
 
 @end
