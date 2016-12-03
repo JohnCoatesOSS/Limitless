@@ -2339,7 +2339,6 @@
 					};
 					FAA88F061DE7738100039F54 = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = E6QK4MU6LM;
 						ProvisioningStyle = Automatic;
 					};
 					FAE642941DF13EC200E975B8 = {
@@ -3297,7 +3296,7 @@
 		FAA88F081DE7738100039F54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				DEVELOPMENT_TEAM = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -3305,7 +3304,7 @@
 		FAA88F091DE7738100039F54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = E6QK4MU6LM;
+				DEVELOPMENT_TEAM = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

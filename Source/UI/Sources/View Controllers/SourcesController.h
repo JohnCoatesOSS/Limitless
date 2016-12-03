@@ -32,11 +32,11 @@
     BOOL cydia_;
 }
 
-- (id) initWithDatabase:(Database *)database;
-- (void) updateButtonsForEditingStatusAnimated:(BOOL)animated;
+- (id)initWithDatabase:(Database *)database;
+- (void)updateButtonsForEditingStatusAnimated:(BOOL)animated;
 
-- (void) showAddSourcePrompt;
+- (void)showAddSourcePrompt;
 
-- (void) selectSourceWithURL:(NSString*)url;
+- (void)selectSourceWithURL:(NSString*)url;
 
 @end

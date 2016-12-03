@@ -40,9 +40,9 @@
     badge_ = nil;
     placard_ = nil;
     
-    if (package == nil)
+    if (package == nil) {
         [content_ setBackgroundColor:[UIColor whiteColor]];
-    else {
+    } else {
         [package parse];
         
         Source *source = [package source];
@@ -93,7 +93,13 @@
                 placard = @"installing";
             }
         } else {
-            color = [UIColor whiteColor];
+            if (package.isFavorited){
+                color = [UIColor cydia_favoritesColor];
+            } else if (UIColor.isDarkModeEnabled) {
+                color = [UIColor cydia_black];
+            } else {
+                color = [UIColor whiteColor];
+            }
             
             if ([package installed] != nil)
                 placard = @"installed";

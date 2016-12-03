@@ -19,8 +19,8 @@
     _H<UIActivityIndicatorView> indicator_;
 }
 
-- (void) setSource:(Source *)source;
-- (void) setFetch:(NSNumber *)fetch;
-- (void) setAllSource;
+- (void)setSource:(Source *)source;
+- (void)setFetch:(NSNumber *)fetch;
+- (void)setAllSource;
 
 @end

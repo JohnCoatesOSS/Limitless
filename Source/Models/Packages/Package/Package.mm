@@ -1034,6 +1034,10 @@
             cache->SetReInstall(iterator_, true);
     } }
 
+- (bool)isFavorited {
+    return [[database_ currentFavorites] containsObject:[self id]];
+}
+
 - (void) remove {
     @synchronized (database_) {
         if ([database_ era] != era_ || file_.end())

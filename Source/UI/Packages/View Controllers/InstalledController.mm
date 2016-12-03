@@ -33,10 +33,26 @@
         [self setSorter:[](NSMutableArray *packages) {
             [packages radixSortUsingSelector:@selector(recent)];
         }];
-    } }
+    }
+}
+
+static BOOL _isFiltered = NO;
+
++ (BOOL)isFiltered {
+    return _isFiltered;
+}
+
+- (void)setIsFiltered:(BOOL)isFiltered {
+    _isFiltered = isFiltered;
+}
 
 - (void) useFilter:(UISegmentedControl *)segmented {
     NSInteger selected([segmented selectedSegmentIndex]);
+    if (selected == 3) {
+        [self setIsFiltered:YES];
+    } else {
+        [self setIsFiltered:NO];
+    }
     if (selected == 2)
         return [self useRecent];
     bool simple(selected == 0);
@@ -48,7 +64,8 @@
         }];
         
         [self setSorter:nullptr];
-    } }
+    }
+}
 
 - (NSArray *) sectionsForPackages:(NSMutableArray *)packages {
     if (sectioned_)
@@ -93,7 +110,7 @@
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
-        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), nil]] autorelease]);
+        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:@[ UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), UCLocalize("FAVORITES") ]] autorelease]);
         [segmented setSelectedSegmentIndex:0];
         [[self navigationItem] setTitleView:segmented];
         
