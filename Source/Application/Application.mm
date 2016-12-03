@@ -289,7 +289,7 @@
     Font18Bold_ = [UIFont boldSystemFontOfSize:18];
     Font22Bold_ = [UIFont boldSystemFontOfSize:22];
     
-    if (UIColor.isDarkModeEnabled) {
+    if(UIColor.isDarkModeEnabled) {
         [[UINavigationBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
         [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
         [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];

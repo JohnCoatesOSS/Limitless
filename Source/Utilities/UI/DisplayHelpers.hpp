@@ -30,7 +30,6 @@ static _finline const char *StripVersion_(const char *version) {
     return colon == NULL ? version : colon + 1;
 }
 
-
 NSString *LocalizeSection(NSString *section);
 
 NSString *Simplify(NSString *title);
