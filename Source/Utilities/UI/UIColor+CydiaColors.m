@@ -58,6 +58,10 @@
     return [UIColor colorWithRed:0.09 green:0.08 blue:0.09 alpha:1.0];
 }
 
++ (UIColor*)cydia_favoritesColor {
+    return [UIColor colorWithRed:0.13 green:0.59 blue:0.95 alpha:1.0];
+}
+
 + (BOOL)isDarkModeEnabled {
     return NO;
 }

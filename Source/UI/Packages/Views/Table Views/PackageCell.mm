@@ -94,7 +94,9 @@
             }
         } else {
             if (package.isFavorited){
-                color = [UIColor colorWithRed:0.00 green:0.59 blue:0.53 alpha:1.0];
+                color = [UIColor cydia_favoritesColor];
+            } else if (UIColor.isDarkModeEnabled) {
+                color = [UIColor cydia_black];
             } else {
                 color = [UIColor whiteColor];
             }
