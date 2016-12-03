@@ -104,7 +104,7 @@
     
     // TODO: fix background color
     if(UIColor.isDarkModeEnabled) {
-        // [cell setBackgroundColor:[UIColor cydia_black]];
+        [cell setBackgroundColor:[UIColor cydia_black]];
     }
     
     return cell;
@@ -409,7 +409,7 @@
                                           style:UITableViewStylePlain] autorelease];
     // TODO: fix background color
     if(UIColor.isDarkModeEnabled) {
-        //[list_ setBackgroundColor:[UIColor cydia_black]];
+        [list_ setBackgroundColor:[UIColor cydia_black]];
     }
     [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
     [list_ setRowHeight:53];

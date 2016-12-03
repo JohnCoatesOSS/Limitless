@@ -59,7 +59,7 @@
 }
 
 + (BOOL) isDarkModeEnabled {
-    return NO;
+    return YES;
 }
 
 @end

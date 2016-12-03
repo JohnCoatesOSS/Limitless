@@ -8,7 +8,7 @@
 #import "PackageCell.h"
 #import "DisplayHelpers.hpp"
 #import "Source.h"
-
+#import "UIColor+CydiaColors.h"
 
 @implementation PackageCell
 

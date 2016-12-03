@@ -22,6 +22,7 @@
 #include "CyteKit/TableViewCell.h"
 
 #include "iPhonePrivate.h"
+#import "UIColor+CydiaColors.h"
 
 @implementation CyteTableViewCellContentView
 
