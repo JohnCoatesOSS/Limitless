@@ -163,9 +163,10 @@
     
     Package *package([database_ packageWithName:[[self packageAtIndexPath:path] id]]);
     [cell setPackage:package asSummary:[self isSummarized]];
+    _isFiltering = YES;
     
-    if (package.isFavorited) {
-        cell.contentView.backgroundColor = [UIColor colorWithRed:0.00 green:0.59 blue:0.53 alpha:1.0];
+    if (_isFiltering && !package.isFavorited) {
+        cell.hidden = YES;
     }
     
     return cell;
@@ -201,6 +202,7 @@
         
         [tableView setEditing:NO animated:YES];
         [database_ addPackageToFavoritesList:package];
+        [list_ reloadData];
         
     }];
     [addToFavoritesAction _setButton:favoritesButton];
