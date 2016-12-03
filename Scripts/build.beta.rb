@@ -15,7 +15,7 @@ attachXcode = FALSE
 clean = TRUE
 
 # replace this with your device
-device = {name: 'iPhone 5S', ip:'localhost'}
+device = {name: '📱 iPhone 5s', ip:'192.168.254.4'}
 
 # show output ASAP
 STDOUT.sync = true
@@ -28,11 +28,11 @@ projectDirectory = File.expand_path(File.join(scriptsDirectory, ".."))
 buildToolsPath = File.join(scriptsDirectory, "Classes/All")
 require buildToolsPath
 
-bundleIdentifier = "oss.limitless.release"
+bundleIdentifier = "com.shade.Limitless.release"
 appToLaunch = nil
 if launchApp
   terminateProcess = "Limitless"
-  appToLaunch = "oss.limitless.release"
+  appToLaunch = "com.shade.Limitless.release"
 
   if waitForDebugger
     attachXcode = TRUE

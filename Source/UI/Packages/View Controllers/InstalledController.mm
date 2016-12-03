@@ -33,12 +33,25 @@
         [self setSorter:[](NSMutableArray *packages) {
             [packages radixSortUsingSelector:@selector(recent)];
         }];
-    } }
+    }
+}
+
+static BOOL _isFiltered = NO;
+
++ (BOOL)isFiltered {
+    return _isFiltered;
+}
+
+- (void)setIsFiltered:(BOOL)isFiltered {
+    _isFiltered = isFiltered;
+}
 
 - (void) useFilter:(UISegmentedControl *)segmented {
     NSInteger selected([segmented selectedSegmentIndex]);
     if (selected == 3) {
-        //do anything?
+        [self setIsFiltered:YES];
+    } else {
+        [self setIsFiltered:NO];
     }
     if (selected == 2)
         return [self useRecent];

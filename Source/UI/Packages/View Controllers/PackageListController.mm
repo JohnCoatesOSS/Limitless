@@ -11,6 +11,7 @@
 #import "Section.h"
 #import "CYPackageController.h"
 #import "PackageCell.h"
+#import "InstalledController.h"
 
 @implementation PackageListController
 
@@ -151,7 +152,7 @@
         Section *section([sections_ objectAtIndex:[path section]]);
         NSInteger row([path row]);
         Package *package;
-        if (_isFiltering) {
+        if (InstalledController.isFiltered) {
             package = [[database_ currentFavorites] objectAtIndex:([section row] + row)];
         } else {
             package = [packages_ objectAtIndex:([section row] + row)];

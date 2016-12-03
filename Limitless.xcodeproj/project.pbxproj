@@ -2331,6 +2331,7 @@
 					};
 					FA3A18321DEAB1F3000557AC = {
 						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = 36G86N4FPV;
 						ProvisioningStyle = Automatic;
 					};
 					FA9010FA1DE12B1C00A607AC = {
@@ -3231,13 +3232,13 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 36G86N4FPV;
 				ENABLE_TESTABILITY = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = Tools/runAsSuperuser/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.runAsSuperuser;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shade.Limitless.runAsSuperuser;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -3248,11 +3249,11 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 36G86N4FPV;
 				INFOPLIST_FILE = Tools/runAsSuperuser/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.runAsSuperuser;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shade.Limitless.runAsSuperuser;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

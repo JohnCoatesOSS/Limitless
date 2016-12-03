@@ -12,6 +12,7 @@
 @interface InstalledController : FilteredPackageListController {
     bool sectioned_;
 }
+@property (class, readwrite) BOOL isFiltered;
 
 - (id)initWithDatabase:(Database *)database;
 - (void)queueStatusDidChange;

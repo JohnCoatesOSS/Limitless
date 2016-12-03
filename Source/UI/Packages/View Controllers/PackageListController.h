@@ -24,7 +24,6 @@
     unsigned reloading_;
 }
 @property (nonatomic, strong) id previewingContext;
-@property (nonatomic, assign) BOOL isFiltering;
 
 - (id)initWithDatabase:(Database *)database title:(NSString *)title;
 - (void)setDelegate:(id)delegate;
