@@ -50,6 +50,18 @@
 	return [UIColor colorWithRed:1.0 green:0.88 blue:0.88 alpha:1];
 }
 
++ (UIColor*) cydia_tintColor {
+    return [UIColor colorWithRed:0.21 green:0.20 blue:0.21 alpha:1.0];
+}
+
++ (UIColor*) cydia_black {
+    return [UIColor colorWithRed:0.09 green:0.08 blue:0.09 alpha:1.0];
+}
+
++ (BOOL) isDarkModeEnabled {
+    return NO;
+}
+
 @end
 
 /*

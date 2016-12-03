@@ -19,6 +19,7 @@
 #import "Source.h"
 #import "CydiaTabBarController.h"
 #import "LMXRespringController.h"
+#import "UIColor+CydiaColors.h"
 
 @implementation SourcesController
 
@@ -100,6 +101,12 @@
 		[cell addGestureRecognizer:favouriteGesture];
 	}
 	
+    
+    // TODO: fix background color
+    if(UIColor.isDarkModeEnabled) {
+        // [cell setBackgroundColor:[UIColor cydia_black]];
+    }
+    
     return cell;
 }
 
@@ -400,6 +407,10 @@
 - (void) loadView {
     list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]
                                           style:UITableViewStylePlain] autorelease];
+    // TODO: fix background color
+    if(UIColor.isDarkModeEnabled) {
+        //[list_ setBackgroundColor:[UIColor cydia_black]];
+    }
     [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
     [list_ setRowHeight:53];
     [(UITableView *) list_ setDataSource:self];
@@ -409,6 +420,7 @@
 
 - (void) viewDidLoad {
     [super viewDidLoad];
+    
     
     [[self navigationItem] setTitle:UCLocalize("SOURCES")];
     [self updateButtonsForEditingStatusAnimated:NO];
