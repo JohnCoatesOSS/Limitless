@@ -889,32 +889,32 @@
     return rank_;
 }
 
-- (BOOL) matches:(NSArray *)query {
+- (BOOL) matches:(NSArray<NSString *> *)query {
     if (query == nil || [query count] == 0)
         return NO;
-    
     rank_ = 0;
     
     NSString *string;
     NSRange range;
     NSUInteger length;
 	
-	// If we are filtering for an author
-	if ([[(NSString*)query[0] lowercaseString] isEqualToString:@"author:"]) {
+	if ([query[0].lowercaseString isEqualToString:@"author:"]) {
 		NSMutableArray *authorTerms = [query mutableCopy];
 		[authorTerms removeObjectAtIndex:0];
 		[self parse];
-		if ([self author] && [self author].name && ![[self author].name isEqualToString:@""]) {
+		if (self.author.name.length > 0) {
 			for (NSString *term in authorTerms) {
-				range = [[self author].name rangeOfString:term options:MatchCompareOptions_];
-				if (range.location != NSNotFound)
+				range = [self.author.name rangeOfString:term options:MatchCompareOptions_];
+                if (range.location != NSNotFound) {
 					rank_ -= 4 * 100000;
+                }
 			}
-		} else if ([self maintainer] && [self maintainer].name && ![[self maintainer].name isEqualToString:@""]) {
+		} else if (self.maintainer.name.length > 0) {
 			for (NSString *term in authorTerms) {
-				range = [[self maintainer].name rangeOfString:term options:MatchCompareOptions_];
-				if (range.location != NSNotFound)
+				range = [self.maintainer.name rangeOfString:term options:MatchCompareOptions_];
+                if (range.location != NSNotFound) {
 					rank_ -= 4 * 1000000;
+                }
 			}
 		}
 		return rank_ != 0;
