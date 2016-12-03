@@ -101,7 +101,9 @@
 		[cell addGestureRecognizer:favouriteGesture];
 	}
 	
-    [cell setBackgroundColor:[UIColor cydia_black]];
+    
+    // TODO: fix background shit
+    // [cell setBackgroundColor:[UIColor cydia_black]];
     
     return cell;
 }
@@ -403,7 +405,8 @@
 - (void) loadView {
     list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]
                                           style:UITableViewStylePlain] autorelease];
-    [list_ setBackgroundColor:[UIColor cydia_black]];
+    // TODO: fix background shit
+    //[list_ setBackgroundColor:[UIColor cydia_black]];
     [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
     [list_ setRowHeight:53];
     [(UITableView *) list_ setDataSource:self];
