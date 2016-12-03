@@ -161,6 +161,14 @@
     [[self navigationController] pushViewController:controller animated:YES];
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([indexPath section] != 1) {
+        return NO;
+    }
+    Source *source = [self sourceAtIndexPath:indexPath];
+    return [source record] != nil;
+}
+
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     Source *source([self sourceAtIndexPath:indexPath]);
     
