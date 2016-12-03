@@ -8,6 +8,7 @@
 #import "SourceCell.h"
 #import "Source.h"
 #import "DisplayHelpers.hpp"
+#import "UIColor+CydiaColors.h"
 
 @implementation SourceCell
 
@@ -18,7 +19,12 @@
         
         content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
         [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
+        if (UIColor.isDarkModeEnabled) {
+            [content_ setBackgroundColor:[UIColor cydia_black]];
+        } else {
+            [content_ setBackgroundColor:[UIColor whiteColor]];
+        }
+        
         [content addSubview:content_];
         
         [content_ setDelegate:self];
@@ -128,7 +134,7 @@
         UISetColor([UIColor whiteColor].CGColor);
 	
     if (!highlighted)
-        UISetColor([UIColor blackColor].CGColor);
+        UISetColor([UIColor whiteColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -136,8 +142,8 @@
 	[origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle}];
     
     if (!highlighted)
-        UISetColor([UIColor cydia_grayColor].CGColor);
-	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : [UIColor blackColor])}];
+        UISetColor([UIColor whiteColor].CGColor);
+	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : [UIColor whiteColor])}];
 }
 
 - (void) setFetch:(NSNumber *)fetch {

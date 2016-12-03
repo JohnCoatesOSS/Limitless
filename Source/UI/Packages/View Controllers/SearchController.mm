@@ -124,6 +124,12 @@
         else
             textField = MSHookIvar<UITextField *>(search_, "_searchField");
         
+        if(UIColor.isDarkModeEnabled) {
+            [textField setBackgroundColor:[UIColor cydia_black]];
+            [textField setTextColor:[UIColor whiteColor]];
+            [textField setKeyboardAppearance:UIKeyboardAppearanceDark];
+        }
+        
         [textField setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin];
         [textField setEnablesReturnKeyAutomatically:NO];
         [[self navigationItem] setTitleView:textField];

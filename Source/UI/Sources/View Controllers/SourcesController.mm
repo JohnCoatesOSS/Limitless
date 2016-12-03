@@ -96,6 +96,10 @@
 
     Source *source([self sourceAtIndexPath:indexPath]);
     
+    if (UIColor.isDarkModeEnabled) {
+        cell.backgroundColor = [UIColor cydia_black];
+    }
+    
     if (source == nil) {
         [cell setAllSource];
     } else {

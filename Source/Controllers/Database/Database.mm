@@ -788,7 +788,11 @@
         currentFavoritesMutable = [[NSMutableArray alloc] init];
     }
     NSString *packageID = package.id;
-    [currentFavoritesMutable addObject:packageID];
+    if ([currentFavoritesMutable containsObject:packageID]) {
+        [currentFavoritesMutable removeObject:packageID];
+    } else {
+        [currentFavoritesMutable addObject:packageID];
+    }
     [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoritesPackages"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }

@@ -151,7 +151,11 @@
         Section *section([sections_ objectAtIndex:[path section]]);
         NSInteger row([path row]);
         Package *package;
-        package = [packages_ objectAtIndex:([section row] + row)];
+        if (_isFiltering) {
+            package = [[database_ currentFavorites] objectAtIndex:([section row] + row)];
+        } else {
+            package = [packages_ objectAtIndex:([section row] + row)];
+        }
         return [[package retain] autorelease];
     }
 }
@@ -163,11 +167,6 @@
     
     Package *package([database_ packageWithName:[[self packageAtIndexPath:path] id]]);
     [cell setPackage:package asSummary:[self isSummarized]];
-    _isFiltering = YES;
-    
-    if (_isFiltering && !package.isFavorited) {
-        cell.hidden = YES;
-    }
     
     return cell;
 }
