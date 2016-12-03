@@ -58,11 +58,17 @@
     return [UIColor colorWithRed:0.09 green:0.08 blue:0.09 alpha:1.0];
 }
 
-+ (BOOL) isDarkModeEnabled {
-    return YES;
+static BOOL _isDarkModeEnabled = NO;
++ (BOOL)isDarkModeEnabled {
+    return _isDarkModeEnabled;
+}
+
++ (void)setIsDarkModeEnabled:(BOOL)enabled {
+    _isDarkModeEnabled = enabled;
 }
 
 @end
+
 
 /*
  + (UIColor*) cydia_blueColor;

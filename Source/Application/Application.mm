@@ -290,6 +290,18 @@
     Font18Bold_ = [UIFont boldSystemFontOfSize:18];
     Font22Bold_ = [UIFont boldSystemFontOfSize:22];
     
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"HH.mm"];
+    NSString *strCurrentTime = [dateFormatter stringFromDate:[NSDate date]];
+    
+    NSLog(@"Check float value: %.2f",[strCurrentTime floatValue]);
+    if ([strCurrentTime floatValue] >= 18.00 || [strCurrentTime floatValue]  <= 6.00){
+        NSLog(@"It's night time");
+        UIColor.isDarkModeEnabled = YES;
+    }else{
+        NSLog(@"It's day time");
+        UIColor.isDarkModeEnabled = NO;
+    }
     
     if(UIColor.isDarkModeEnabled) {
         [[UINavigationBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
