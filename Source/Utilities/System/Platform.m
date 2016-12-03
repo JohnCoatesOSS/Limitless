@@ -2,8 +2,7 @@
 //  Platform.m
 //  Cydia
 //
-//  Created by John Coates on 11/17/16.
-//  Copyright © 2016 Cydia. All rights reserved.
+//  11/17/16.
 //
 
 #import "Platform.h"

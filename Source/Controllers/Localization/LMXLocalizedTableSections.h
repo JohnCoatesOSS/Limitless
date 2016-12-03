@@ -2,8 +2,8 @@
 //  LMXLocalizedTableSections.h
 //  Limitless
 //
-//  Created by John Coates on 11/29/16.
-//  Copyright © 2016 Limitless. All rights reserved.
+//  11/29/16.
+//  
 //
 
 #import <Foundation/Foundation.h>
