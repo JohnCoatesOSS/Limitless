@@ -3,7 +3,7 @@
 //  Limitless
 //
 //  Created by George Dan on 30/11/16.
-//  Copyright © 2016 Limitless. All rights reserved.
+//  
 //
 
 #import "UIColor+CydiaColors.h"

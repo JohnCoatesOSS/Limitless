@@ -2,7 +2,7 @@
 //  DisplayHelpers.mm
 //  Cydia
 //
-//  Created by John Coates on 8/29/16.
+//   8/29/16.
 //  Copyright © 2016 Cydia. All rights reserved.
 //
 

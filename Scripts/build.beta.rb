@@ -2,20 +2,20 @@
 
 ## project settings
 
+releaseConfiguration = FALSE
+
 # in case we want to turn off .deb building quickly
 shouldBuildPackage = TRUE
 shouldInstallOnDevice = TRUE
 showDebPackageInFinder = FALSE
-terminateProcess = nil #"SpringBoard"
-waitForDebugger = TRUE
-launchApp = TRUE
-attachXcode = TRUE
+terminateProcess = "Limitless"
+waitForDebugger = FALSE
+launchApp = FALSE
+attachXcode = FALSE
 clean = TRUE
 
-device = {name: '📱 iPhone 5s Black', ip:'192.168.1.161'}
-# device = {name: '📱 iPhone 5s', ip:'192.168.1.160'}
 # replace this with your device
-# device = {name: '📱 iPhone 6+', ip:'192.168.1.163'}
+device = {name: '📱 iPhone 7', ip:'127.0.0.1'}
 
 # show output ASAP
 STDOUT.sync = true
@@ -40,7 +40,7 @@ if launchApp
 end
 buildConfiguration = "Release"
 
-if attachXcode
+if !releaseConfiguration
   # Debug mode so variables are readable
   buildConfiguration = "Debug"
 end
