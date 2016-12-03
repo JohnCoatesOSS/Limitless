@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface UIColor (CydiaColors)
+@property (class, readonly) BOOL isDarkModeEnabled;
 + (UIColor*) cydia_blueColor;
 + (UIColor*) cydia_blueVariantColor;
 + (UIColor*) cydia_folderColor;

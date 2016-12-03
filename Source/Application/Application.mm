@@ -40,6 +40,8 @@
 #import "CYPackageController.h"
 #import "ConfirmationController.h"
 #import "LMXRespringController.h"
+#import "UIColor+CydiaColors.h"
+
 
 @interface Application () {
     _H<UIWindow> window_;
@@ -288,12 +290,15 @@
     Font18Bold_ = [UIFont boldSystemFontOfSize:18];
     Font22Bold_ = [UIFont boldSystemFontOfSize:22];
     
-    [[UINavigationBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-    [[UITabBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
-    [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    if(UIColor.isDarkModeEnabled) {
+        [[UINavigationBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
+        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+        [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+        [[UITabBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
+        [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    }
 }
 
 - (void)setUpPackageLists {
