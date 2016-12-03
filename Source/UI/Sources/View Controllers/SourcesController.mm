@@ -490,9 +490,9 @@
 }
 
 - (void) refreshButtonClicked {
-    [LMXRespringController startRespring];
-//    if ([delegate_ requestUpdate])
-//        [self updateButtonsForEditingStatusAnimated:YES];
+    if ([delegate_ requestUpdate]) {
+        [self updateButtonsForEditingStatusAnimated:YES];
+    }
 }
 
 - (void) cancelButtonClicked {
