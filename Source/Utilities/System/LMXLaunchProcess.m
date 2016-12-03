@@ -2,8 +2,7 @@
 //  LMXLaunchProcess.m
 //  Limitless
 //
-//  Created by John Coates on 11/30/16.
-//  Copyright © 2016 Limitless. All rights reserved.
+//  11/30/16.
 //
 
 #import "LMXLaunchProcess.h"
@@ -74,7 +73,9 @@
     
     NSTask *task = [NSTask new];
     task.launchPath = path;
-    task.arguments = argumentsList;
+    if (argumentsList != nil) {
+        task.arguments = argumentsList;
+    }
     
     task.standardInput = [NSFileHandle fileHandleWithNullDevice];
     NSPipe *pipe = [NSPipe pipe];

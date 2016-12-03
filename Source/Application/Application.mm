@@ -39,6 +39,7 @@
 #import "DisplayHelpers.hpp"
 #import "CYPackageController.h"
 #import "ConfirmationController.h"
+#import "LMXRespringController.h"
 
 @interface Application () {
     _H<UIWindow> window_;
@@ -1228,14 +1229,7 @@ errno == ENOTDIR \
 #pragma mark - SpringBoard
 
 - (void) reloadSpringBoard {
-    if (kCFCoreFoundationVersionNumber >= 700) { // XXX: iOS 6.x
-        [LMXLaunchProcess launchProcessAtPath:@"/bin/launchctl" withArguments:@"stop", @"com.apple.backboardd", nil];
-    }
-    else {
-        [LMXLaunchProcess launchProcessAtPath:@"/bin/launchctl" withArguments:@"stop", @"com.apple.SpringBoard", nil];
-    }
-	sleep(15);
-    [LMXLaunchProcess launchProcessAtPath:@"/usr/bin/killall" withArguments:@"backboardd", @"SpringBoard", nil];
+    [LMXRespringController startRespring];
 }
 
 // Not too sure on how to implement this in the future.
