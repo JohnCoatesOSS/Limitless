@@ -22,4 +22,5 @@
 + (UIColor*) cydia_removingColor;
 + (UIColor*) cydia_tintColor;
 + (UIColor*) cydia_black;
++ (UIColor*) cydia_favoritesColor;
 @end

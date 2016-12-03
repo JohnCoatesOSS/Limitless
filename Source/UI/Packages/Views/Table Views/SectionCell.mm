@@ -8,6 +8,7 @@
 #import "SectionCell.h"
 #import "iPhonePrivate.h"
 #import "DisplayHelpers.hpp"
+#import "UIColor+CydiaColors.h"
 
 @implementation SectionCell
 
@@ -24,7 +25,11 @@
         content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
         [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
         [content addSubview:content_];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
+        if (UIColor.isDarkModeEnabled) {
+            [content_ setBackgroundColor:[UIColor cydia_tintColor]];
+        } else {
+            [content_ setBackgroundColor:[UIColor whiteColor]];
+        }
         
         [content_ setDelegate:self];
     } return self;

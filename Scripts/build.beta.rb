@@ -28,11 +28,11 @@ projectDirectory = File.expand_path(File.join(scriptsDirectory, ".."))
 buildToolsPath = File.join(scriptsDirectory, "Classes/All")
 require buildToolsPath
 
-bundleIdentifier = "oss.limitless.release"
+bundleIdentifier = "oss.Limitless.release"
 appToLaunch = nil
 if launchApp
   terminateProcess = "Limitless"
-  appToLaunch = "oss.limitless.release"
+  appToLaunch = "oss.Limitless.release"
 
   if waitForDebugger
     attachXcode = TRUE

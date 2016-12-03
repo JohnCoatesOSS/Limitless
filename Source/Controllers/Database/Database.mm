@@ -778,4 +778,23 @@
     } return *mapped;
 }
 
+- (NSArray *)currentFavorites {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"FavoritesPackages"];
+}
+
+- (void)addPackageToFavoritesList:(Package *)package {
+    NSMutableArray *currentFavoritesMutable = [[NSMutableArray alloc] initWithArray:[self currentFavorites]];
+    if (!currentFavoritesMutable) {
+        currentFavoritesMutable = [[NSMutableArray alloc] init];
+    }
+    NSString *packageID = package.id;
+    if ([currentFavoritesMutable containsObject:packageID]) {
+        [currentFavoritesMutable removeObject:packageID];
+    } else {
+        [currentFavoritesMutable addObject:packageID];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:[currentFavoritesMutable copy] forKey:@"FavoritesPackages"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

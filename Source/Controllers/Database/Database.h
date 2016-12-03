@@ -97,4 +97,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 
 - (NSString *) mappedSectionForPointer:(const char *)pointer;
 
+- (NSArray *)currentFavorites;
+- (void)addPackageToFavoritesList:(Package *)package;
+
 @end

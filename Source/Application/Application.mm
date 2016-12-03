@@ -42,7 +42,6 @@
 #import "LMXRespringController.h"
 #import "UIColor+CydiaColors.h"
 
-
 @interface Application () {
     _H<UIWindow> window_;
     _H<CydiaTabBarController> tabbar_;
@@ -289,7 +288,6 @@
     Font18_ = [UIFont systemFontOfSize:18];
     Font18Bold_ = [UIFont boldSystemFontOfSize:18];
     Font22Bold_ = [UIFont boldSystemFontOfSize:22];
-    
     
     if(UIColor.isDarkModeEnabled) {
         [[UINavigationBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
