@@ -82,6 +82,10 @@
     return [UIColor colorWithRed:0.3 green:0.1 blue:0.1 alpha:1];
 }
 
++ (UIColor*) cydia_darkCommercialColor {
+    return [UIColor colorWithRed:0.2 green:0.2 blue:1.0 alpha:1];
+}
+
 static BOOL _isDarkModeEnabled = NO;
 + (BOOL)isDarkModeEnabled {
     return _isDarkModeEnabled;

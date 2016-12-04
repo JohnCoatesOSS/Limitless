@@ -28,4 +28,5 @@
 + (UIColor*) cydia_darkTableViewCellSelection;
 + (UIColor*) cydia_darkInstallingColor;
 + (UIColor*) cydia_darkRemovingColor;
++ (UIColor*) cydia_darkCommercialColor;
 @end

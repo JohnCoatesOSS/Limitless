@@ -150,8 +150,8 @@
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
 	if (!highlighted) {
-        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : [UIColor blackColor].CGColor);
-		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialColor] : [UIColor blackColor])}];
+        UISetColor((commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])).CGColor);
+		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]))}];
 	} else {
 		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle}];
 	}
@@ -196,12 +196,12 @@
         UISetColor([UIColor whiteColor].CGColor);
     
     if (!highlighted)
-        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]).CGColor);
+        UISetColor((commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])).CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
-    [name_ drawInRect:CGRectMake(48, 8, (width - (placard_ == nil ? 80 : 106)), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])}];
+    [name_ drawInRect:CGRectMake(48, 8, (width - (placard_ == nil ? 80 : 106)), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]))}];
 	[source_ drawInRect:CGRectMake(58, 29, (width - 29), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])}];
     
 	if (!highlighted) {
