@@ -42,7 +42,6 @@
 #import "LMXRespringController.h"
 #import "UIColor+CydiaColors.h"
 
-
 @interface Application () {
     _H<UIWindow> window_;
     _H<CydiaTabBarController> tabbar_;

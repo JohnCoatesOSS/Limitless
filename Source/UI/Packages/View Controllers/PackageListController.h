@@ -25,13 +25,13 @@
 }
 @property (nonatomic, strong) id previewingContext;
 
-- (id) initWithDatabase:(Database *)database title:(NSString *)title;
-- (void) setDelegate:(id)delegate;
-- (void) resetCursor;
-- (void) clearData;
+- (id)initWithDatabase:(Database *)database title:(NSString *)title;
+- (void)setDelegate:(id)delegate;
+- (void)resetCursor;
+- (void)clearData;
 
-- (NSArray *) sectionsForPackages:(NSMutableArray *)packages;
+- (NSArray *)sectionsForPackages:(NSMutableArray *)packages;
 
-- (void) didSelectPackage:(Package *)package;
+- (void)didSelectPackage:(Package *)package;
 
 @end

@@ -7,8 +7,8 @@ Pre-Depends: debianutils
 Version: 1:1.0~Beta1
 Architecture: iphoneos-arm
 Description: Fork of Cydia
-Maintainer: John Coates
-Author: Jay Freeman (saurik)
+Maintainer: Jailbreak Community <john@johncoates.me>
+Author: Jailbreak Community <john@johncoates.me>
 Section: Tweaks
 Icon: file:///Applications/Limitless.app/Icon-60.png
 Tag: purpose::uikit, role::enduser

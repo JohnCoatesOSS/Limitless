@@ -8,6 +8,7 @@
 #import "SectionCell.h"
 #import "iPhonePrivate.h"
 #import "DisplayHelpers.hpp"
+#import "UIColor+CydiaColors.h"
 
 @implementation SectionCell
 

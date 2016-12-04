@@ -11,6 +11,7 @@
 #import "Section.h"
 #import "CYPackageController.h"
 #import "PackageCell.h"
+#import "InstalledController.h"
 
 @implementation PackageListController
 
@@ -150,10 +151,16 @@
         
         Section *section([sections_ objectAtIndex:[path section]]);
         NSInteger row([path row]);
-        Package *package([packages_ objectAtIndex:([section row] + row)]);
+        Package *package;
+        if (InstalledController.isFiltered) {
+            package = [[database_ currentFavorites] objectAtIndex:([section row] + row)];
+        } else {
+            package = [packages_ objectAtIndex:([section row] + row)];
+        }
         return [[package retain] autorelease];
-    } }
-
+    }
+}
+    
 - (UITableViewCell *) tableView:(UITableView *)table cellForRowAtIndexPath:(NSIndexPath *)path {
     PackageCell *cell((PackageCell *) [table dequeueReusableCellWithIdentifier:@"Package"]);
     if (cell == nil)
@@ -161,6 +168,7 @@
     
     Package *package([database_ packageWithName:[[self packageAtIndexPath:path] id]]);
     [cell setPackage:package asSummary:[self isSummarized]];
+    
     return cell;
 }
 
@@ -179,6 +187,30 @@
     NSNumber *section = _sectionsForIndexTitles[index];
     
     return section.integerValue;
+}
+
+- (NSArray *)tableView:(UITableView *)tableView
+editActionsForRowAtIndexPath:(NSIndexPath *)path {
+    // FIXME: Favorites broken. Switching off for Beta 5
+    return @[];
+    
+    Package *package([self packageAtIndexPath:path]);
+    package = [database_ packageWithName:[package id]];
+    
+    _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
+    [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
+    favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    favoritesButton.backgroundColor = [UIColor systemDarkGreenColor];
+    UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        
+        [tableView setEditing:NO animated:YES];
+        [database_ addPackageToFavoritesList:package];
+        [list_ reloadData];
+        
+    }];
+    [addToFavoritesAction _setButton:favoritesButton];
+    addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
+    return @[ addToFavoritesAction ];
 }
 
 - (void) updateHeight {
@@ -241,7 +273,8 @@
         NSArray *packages([database_ packages]);
         
         return [NSMutableArray arrayWithArray:packages];
-    } }
+    }
+}
 
 - (void) _reloadData {
     if (reloading_ != 0) {

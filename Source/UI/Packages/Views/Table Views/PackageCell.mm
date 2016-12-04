@@ -93,7 +93,13 @@
                 placard = @"installing";
             }
         } else {
-            color = [UIColor clearColor];
+            if (package.isFavorited){
+                color = [UIColor cydia_favoritesColor];
+            } else if (UIColor.isDarkModeEnabled) {
+                color = [UIColor cydia_black];
+            } else {
+                color = [UIColor clearColor];
+            }
             
             if ([package installed] != nil)
                 placard = @"installed";

@@ -241,6 +241,7 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 
 @interface UIColor (Apple)
 + (UIColor *) pinStripeColor;
++ (UIColor *)systemDarkGreenColor;
 @end
 
 @interface UIControl (Apple)
@@ -288,6 +289,16 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 @interface UITableViewCell (Apple)
 - (float) selectionPercent;
 - (void) _updateHighlightColorsForView:(id)view highlighted:(BOOL)highlighted;
+@end
+
+@class UITableViewRowAction;
+@interface _UITableViewCellActionButton : UIButton
+- (void)setAction:(UITableViewRowAction *)arg1;
+@end
+
+@interface UITableViewRowAction (Apple)
+- (void)_setButton:(_UITableViewCellActionButton *)arg1;
+- (id)_button;
 @end
 
 @interface UITextField (Apple)

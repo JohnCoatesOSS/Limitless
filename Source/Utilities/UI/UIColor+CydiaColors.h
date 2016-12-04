@@ -29,4 +29,5 @@
 + (UIColor*) cydia_darkInstallingColor;
 + (UIColor*) cydia_darkRemovingColor;
 + (UIColor*) cydia_darkCommercialColor;
++ (UIColor*) cydia_favoritesColor;
 @end

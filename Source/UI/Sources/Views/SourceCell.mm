@@ -8,6 +8,7 @@
 #import "SourceCell.h"
 #import "Source.h"
 #import "DisplayHelpers.hpp"
+#import "UIColor+CydiaColors.h"
 
 @implementation SourceCell
 
