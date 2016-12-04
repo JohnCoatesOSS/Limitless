@@ -48,11 +48,12 @@ static BOOL _isFiltered = NO;
 
 - (void) useFilter:(UISegmentedControl *)segmented {
     NSInteger selected([segmented selectedSegmentIndex]);
-    if (selected == 3) {
-        [self setIsFiltered:YES];
-    } else {
-        [self setIsFiltered:NO];
-    }
+    // FIXME: Favorites broken. Switching off for Beta 5
+//    if (selected == 3) {
+//        [self setIsFiltered:YES];
+//    } else {
+//        [self setIsFiltered:NO];
+//    }
     if (selected == 2)
         return [self useRecent];
     bool simple(selected == 0);
@@ -110,7 +111,13 @@ static BOOL _isFiltered = NO;
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super initWithDatabase:database title:UCLocalize("INSTALLED")]) != nil) {
-        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:@[ UCLocalize("USER"), UCLocalize("EXPERT"), UCLocalize("RECENT"), UCLocalize("FAVORITES") ]] autorelease]);
+        UISegmentedControl *segmented([[[UISegmentedControl alloc] initWithItems:@[
+                                                                                   UCLocalize("USER"),
+                                                                                   UCLocalize("EXPERT"),
+                                                                                   UCLocalize("RECENT"),
+                                                                                   // FIXME: Favorites broken. Switching off for Beta 5
+                                                                                   //UCLocalize("FAVORITES")
+                                                                                    ]] autorelease]);
         [segmented setSelectedSegmentIndex:0];
         [[self navigationItem] setTitleView:segmented];
         

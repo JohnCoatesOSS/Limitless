@@ -189,7 +189,10 @@
     return section.integerValue;
 }
 
-- (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)path {
+- (NSArray *)tableView:(UITableView *)tableView
+editActionsForRowAtIndexPath:(NSIndexPath *)path {
+    // FIXME: Favorites broken. Switching off for Beta 5
+    return @[];
     
     Package *package([self packageAtIndexPath:path]);
     package = [database_ packageWithName:[package id]];
