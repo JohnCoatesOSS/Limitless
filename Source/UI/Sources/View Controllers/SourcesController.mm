@@ -148,7 +148,12 @@
 - (void)shareRepo:(Source *)source {
     NSString *repoUrl = source.rooturi;
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[ repoUrl ] applicationActivities:nil];
-    [self presentViewController:activityVC animated:YES completion:nil];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        [self presentViewController:activityVC animated:YES completion:nil];
+    } else {
+        UIPopoverController *popup = [[UIPopoverController alloc] initWithContentViewController:activityVC];
+        [popup presentPopoverFromRect:CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height/4, 0, 0)inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    }
 }
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
