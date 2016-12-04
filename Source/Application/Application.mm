@@ -97,6 +97,7 @@
     [self setUpWindow];
 	[self setUpViewControllers];
 	[self setUpNavigationControllerAndTabBar];
+    [self setUpDarkAppearance];
 	
 	// - Homescreen Shortcut Start
 	
@@ -1392,6 +1393,24 @@ NSString* repoURL(@"");
 		[sVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
 	}
 	
+}
+
+#pragma mark - Dark Mode
+
+- (void)setUpDarkAppearance {
+    if([UIColor isDarkModeEnabled]) {
+        // Table View Styles
+        [[UITableView appearance] setBackgroundColor:[UIColor cydia_darkTableViewBackground]];
+        [[UITableView appearance] setSeparatorColor:[UIColor cydia_darkTableViewSeperator]];
+        [[UITableViewCell appearance] setBackgroundColor:[UIColor cydia_darkTableViewCell]];
+        UIView *selectionView = [[[UIView alloc] init] autorelease];
+        [selectionView setBackgroundColor:[UIColor cydia_darkTableViewCellSelection]];
+        [[UITableViewCell appearance] setSelectedBackgroundView:selectionView];
+        
+        // Dark keyboard
+        [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+        [[UITextView appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+    }
 }
 
 @end

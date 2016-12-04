@@ -58,6 +58,30 @@
     return [UIColor colorWithRed:0.09 green:0.08 blue:0.09 alpha:1.0];
 }
 
++ (UIColor*) cydia_darkTableViewCell {
+    return [UIColor colorWithWhite:0.2 alpha:1.0];
+}
+
++ (UIColor*) cydia_darkTableViewBackground {
+    return [UIColor colorWithWhite:0.1 alpha:1.0];
+}
+
++ (UIColor*) cydia_darkTableViewSeperator {
+    return [UIColor colorWithWhite:0.3 alpha:1.0];
+}
+
++ (UIColor*) cydia_darkTableViewCellSelection {
+    return [UIColor colorWithWhite:0.5 alpha:1.0];
+}
+
++ (UIColor*) cydia_darkInstallingColor {
+    return [UIColor colorWithRed:0.09 green:0.23 blue:0.09 alpha:1];
+}
+
++ (UIColor*) cydia_darkRemovingColor {
+    return [UIColor colorWithRed:0.3 green:0.1 blue:0.1 alpha:1];
+}
+
 static BOOL _isDarkModeEnabled = NO;
 + (BOOL)isDarkModeEnabled {
     return _isDarkModeEnabled;

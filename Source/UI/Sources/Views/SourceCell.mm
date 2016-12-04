@@ -18,7 +18,7 @@
         
         content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
         [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
+        [content_ setBackgroundColor:[UIColor clearColor]];
         [content addSubview:content_];
         
         [content_ setDelegate:self];
@@ -128,16 +128,16 @@
         UISetColor([UIColor whiteColor].CGColor);
 	
     if (!highlighted)
-        UISetColor([UIColor blackColor].CGColor);
+        UISetColor(([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]).CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
-	[origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle}];
+    [origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName:  ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])}];
     
     if (!highlighted)
         UISetColor([UIColor cydia_grayColor].CGColor);
-	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : [UIColor blackColor])}];
+    [label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : ([UIColor isDarkModeEnabled] ? [UIColor cydia_grayColor] : [UIColor blackColor]))}];
 }
 
 - (void) setFetch:(NSNumber *)fetch {

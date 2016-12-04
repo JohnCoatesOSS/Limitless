@@ -24,7 +24,7 @@
         content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
         [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
         [content addSubview:content_];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
+        [content_ setBackgroundColor:[UIColor clearColor]];
         
         [content_ setDelegate:self];
     } return self;
@@ -98,12 +98,12 @@
         width -= 9 + [switch_ frame].size.width;
     
 	if (!highlighted) {
-        UISetColor([UIColor blackColor].CGColor);
+        UISetColor(([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]).CGColor);
 		
 		NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 		[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 		
-		[name_ drawInRect:CGRectMake(48, 12, width-58, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSForegroundColorAttributeName:[UIColor blackColor], NSParagraphStyleAttributeName: truncatingStyle}];
+		[name_ drawInRect:CGRectMake(48, 12, width-58, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSForegroundColorAttributeName:([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]), NSParagraphStyleAttributeName: truncatingStyle}];
 	} else {
 		
 		NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];

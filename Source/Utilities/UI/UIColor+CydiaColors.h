@@ -22,4 +22,10 @@
 + (UIColor*) cydia_removingColor;
 + (UIColor*) cydia_tintColor;
 + (UIColor*) cydia_black;
++ (UIColor*) cydia_darkTableViewCell;
++ (UIColor*) cydia_darkTableViewBackground;
++ (UIColor*) cydia_darkTableViewSeperator;
++ (UIColor*) cydia_darkTableViewCellSelection;
++ (UIColor*) cydia_darkInstallingColor;
++ (UIColor*) cydia_darkRemovingColor;
 @end
