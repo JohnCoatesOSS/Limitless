@@ -143,7 +143,7 @@
         [badge_ drawInRect:Retina(rect)];
     }
     
-    if (highlighted && kCFCoreFoundationVersionNumber < 800)
+    if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -192,7 +192,7 @@
         [badge_ drawInRect:Retina(rect)];
     }
     
-    if (highlighted && kCFCoreFoundationVersionNumber < 800)
+    if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
     
     if (!highlighted)

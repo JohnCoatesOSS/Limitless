@@ -96,7 +96,7 @@
     frame.origin.x = bounds.size.width - frame.size.width;
     frame.origin.y = Retina((bounds.size.height - frame.size.height) / 2);
     
-    if (kCFCoreFoundationVersionNumber < 800)
+    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         frame.origin.x -= 8;
     [indicator_ setFrame:frame];
 }
@@ -124,7 +124,7 @@
         [icon_ drawInRect:Retina(rect)];
     }
     
-    if (highlighted && kCFCoreFoundationVersionNumber < 800)
+    if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
 	
     if (!highlighted)

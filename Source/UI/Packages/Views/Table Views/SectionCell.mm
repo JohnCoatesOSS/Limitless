@@ -90,7 +90,7 @@
     
     [icon_ drawInRect:CGRectMake(7, 7, 32, 32)];
     
-    if (highlighted && kCFCoreFoundationVersionNumber < 800)
+    if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
     
     float width(rect.size.width);
