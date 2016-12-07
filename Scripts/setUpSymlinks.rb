@@ -54,7 +54,6 @@ def createSingleHeaderLinks(singleHeadersDirectory: nil, sdkFrameworksDirectory:
   end
 
   headers = {
-    NSTask: "Foundation.framework/Headers/NSTask.h"
   }
 
   headers.each_pair do |headerName, target|
