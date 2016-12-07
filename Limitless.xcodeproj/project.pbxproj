@@ -349,6 +349,8 @@
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
+		FADD1BC81DF7DA06009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
+		FADD1BC91DF7DA08009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE642981DF13EC200E975B8 /* featureCatalogMain.m */; };
 		FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6429B1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m */; };
 		FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6429E1DF13EC200E975B8 /* CatalogTableViewController.m */; };
@@ -2741,7 +2743,6 @@
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
 				FA23E2D11D776AC4001FBE4A /* NSUserDefaults+Hooks.mm in Sources */,
-				FADD1BC61DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */,
 				FA23E2D41D776BA6001FBE4A /* NSURLConnection+Hooks.mm in Sources */,
 				FA0311A81D1B2CBD008690CA /* stringWithUTF8Bytes.mm in Sources */,
@@ -2793,6 +2794,7 @@
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
 				FA6C86831D75797700FB99CF /* Package.mm in Sources */,
 				FA23E2C81D7754A0001FBE4A /* Display.mm in Sources */,
+				FADD1BC81DF7DA06009EA2C6 /* NSString+Paths.m in Sources */,
 				FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */,
 				FA0311A61D1B2CBD008690CA /* dispatchEvent.mm in Sources */,
@@ -2834,7 +2836,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */,
-				FADD1BC71DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FAE642B11DF1433100E975B8 /* LMXRespringViewController.m in Sources */,
 				FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */,
@@ -2848,6 +2849,7 @@
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
 				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
 				FAE642B51DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
+				FADD1BC91DF7DA08009EA2C6 /* NSString+Paths.m in Sources */,
 				FA5684B01DF6040F000A4EBD /* LMXAPTSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

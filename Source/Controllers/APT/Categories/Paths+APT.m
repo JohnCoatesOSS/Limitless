@@ -24,21 +24,13 @@
 }
 
 /// Dir::State::lists
-+ (NSString *)aptStateLists {
-    if ([Platform isSandboxed]) {
-        return [self.aptState subpath:@"lists/"];
-    }
-    
-    return @"/var/mobile/Library/Caches/com.saurik.Cydia/lists/";
++ (NSString *)aptStateLists {    
+    return [self.aptState subpath:@"lists/"];
 }
 
 /// Dir::State::lists + partial/
 + (NSString *)aptStateListsPartial {
-    if ([Platform isSandboxed]) {
-        return [self.aptStateLists subpath:@"partial/"];
-    }
-    
-    return @"/var/mobile/Library/Caches/com.saurik.Cydia/lists/partial/";
+    return [self.aptStateLists subpath:@"partial/"];
 }
 
 /// Dir::Cache
@@ -52,19 +44,11 @@
 
 // Dir::Cache::Archives
 + (NSString *)aptCacheArchives {
-    if ([Platform isSandboxed]) {
-        return [self.aptCache subpath:@"archives/"];
-    }
-    
-    return @"/var/cache/apt/archives/";
+    return [self.aptCache subpath:@"archives/"];
 }
 
 + (NSString *)aptCacheArchivesPartial {
-    if ([Platform isSandboxed]) {
-        return [self.aptCacheArchives subpath:@"partial/"];
-    }
-    
-    return @"/var/cache/apt/archives/partial/";
+    return [self.aptCacheArchives subpath:@"partial/"];
 }
 
 // Dir::Etc
@@ -78,29 +62,17 @@
 
 // Dir::Etc::sourceparts
 + (NSString *)aptEtcSourceParts {
-    if ([Platform isSandboxed]) {
-        return [self.aptEtc subpath:@"sources.list.d/"];
-    }
-    
-    return @"/etc/apt/sources.list.d/";
+    return [self.aptEtc subpath:@"sources.list.d/"];
 }
 
 // Dir::Etc::preferencesparts
 + (NSString *)aptEtcPreferencesParts {
-    if ([Platform isSandboxed]) {
-        return [self.aptEtc subpath:@"preferences.d/"];
-    }
-    
-    return @"/etc/apt/preferences.d/";
+    return [self.aptEtc subpath:@"preferences.d/"];
 }
 
 // Dir::Etc::TrustedParts
 + (NSString *)aptEtcTrustedParts {
-    if ([Platform isSandboxed]) {
-        return [self.aptEtc subpath:@"trusted.gpg.d/"];
-    }
-    
-    return @"/etc/apt/trusted.gpg.d/";
+    return [self.aptEtc subpath:@"trusted.gpg.d/"];
 }
 
 + (NSString *)dpkgStatus {

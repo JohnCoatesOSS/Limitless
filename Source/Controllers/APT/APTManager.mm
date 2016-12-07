@@ -89,6 +89,7 @@
     _config->Set("Acquire::http::MaxParallel", usermem >= 384 * 1024 * 1024 ? 16 : 3);
     self.configuration[@"Dir::Cache"] = Paths.aptCache;
     self.configuration[@"Dir::State"] = Paths.aptState;
+    self.configuration[@"Dir::State::Lists"] = Paths.aptStateLists;
     
     if ([Device isSimulator]) {
         NSString *logFile = [Paths cacheFile:@"apt.log"];
