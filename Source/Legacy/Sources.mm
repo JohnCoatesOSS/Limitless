@@ -30,9 +30,10 @@
 #import "GeneralGlobals.h"
 
 void CydiaWriteSources() {
-    const char *sourcesListPath = [Paths sourcesList].UTF8String;
-    unlink(sourcesListPath);
-    FILE *file(fopen(sourcesListPath, "w"));
+    NSString *sourcesListPath = [Paths.aptEtc subpath:@"sources.list"];
+    const char *sourcesListPathCString = sourcesListPath.UTF8String;
+    unlink(sourcesListPathCString);
+    FILE *file(fopen(sourcesListPathCString, "w"));
     _assert(file != NULL);
 
     fprintf(file, "deb http://apt.saurik.com/ ios/%.2f main\n", kCFCoreFoundationVersionNumber);
