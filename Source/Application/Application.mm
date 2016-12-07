@@ -41,6 +41,7 @@
 #import "ConfirmationController.h"
 #import "LMXRespringController.h"
 #import "UIColor+CydiaColors.h"
+#import "APTManager.h"
 
 @interface Application () {
     _H<UIWindow> window_;
@@ -676,7 +677,12 @@ errno == ENOTDIR \
     //  - We already auto-refreshed this launch.
     //  - Auto-refresh is disabled.
     //  - Cydia's server is not reachable
-    if (recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com")) {
+    BOOL skipRefresh = recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com");
+    
+    if ([APTManager debugMode]) {
+        skipRefresh = FALSE;
+    }
+    if (skipRefresh) {
         // If we are cancelling, we need to make sure it knows it's already loaded.
         loaded_ = true;
         

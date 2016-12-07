@@ -245,4 +245,29 @@
     return errors;
 }
 
+// MARK: - Debug
+
++ (BOOL)debugMode {
+    if ([Platform isRelease]) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
++ (void)clearAPTState {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error = nil;
+    NSString *aptDirectory = Paths.aptDirectory;
+    if (![fileManager fileExistsAtPath:aptDirectory]) {
+        return;
+    }
+    
+    NSLog(@"Clearing APT State");
+    [fileManager removeItemAtPath:aptDirectory
+                            error:&error];
+    if (error) {
+        NSLog(@"Error clearing APT State @ %@: %@", aptDirectory, error);
+    }
+}
+
 @end

@@ -19,4 +19,7 @@
 
 - (BOOL)performUpdate;
 
++ (BOOL)debugMode;
++ (void)clearAPTState;
+
 @end
