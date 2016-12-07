@@ -7,17 +7,17 @@
 
 @interface Paths : NSObject
 
++ (NSString *)sandboxDocumentsDirectory;
 + (NSString *)applicationLibraryDirectory;
 + (NSString *)varLibCydiaDirectory;
-+ (NSString *)etcAptDirectory;
-+ (NSString *)cacheState;
-+ (NSString *)savedState;
-+ (NSString *)sourcesList;
-+ (NSString *)cacheFile:(NSString *)filename;
-+ (NSString *)documentsFile:(NSString *)filename;
-+ (NSString *)dpkgStatus;
 
-+ (NSString *)cacheDirectory;
++ (NSString *)rootFile:(NSString *)filename;
++ (NSString *)documentsFile:(NSString *)filename;
++ (NSString *)cacheFile:(NSString *)filename;
 
 + (void)createDirectoryIfDoesntExist:(NSString *)directory;
+
 @end
+
+#import "Paths+APT.h"
+#import "NSString+Paths.h"
