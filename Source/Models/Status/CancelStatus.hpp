@@ -36,7 +36,7 @@ public:
         }
     }
     
-    _finline bool WasCancelled() const {
+    inline bool WasCancelled() const {
         return cancelled_;
     }
 };

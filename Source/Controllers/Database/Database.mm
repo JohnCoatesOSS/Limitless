@@ -710,9 +710,10 @@
     else {
         [self popErrorWithTitle:title forOperation:success];
         
+        NSString *cacheStatePath = [Paths.aptState subpath:@"CacheState.plist"];
         [[NSDictionary dictionaryWithObjectsAndKeys:
           [NSDate date], @"LastUpdate",
-          nil] writeToFile:[Paths cacheState] atomically:YES];
+          nil] writeToFile:cacheStatePath atomically:YES];
     }
     
     [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator)

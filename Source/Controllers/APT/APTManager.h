@@ -13,4 +13,10 @@
 + (instancetype)sharedInstance;
 - (void)setup;
 
+- (NSArray *)readSourcesWithError:(NSError **)error;
+
+// MARK: - Debug
+
+- (BOOL)performUpdate;
+
 @end

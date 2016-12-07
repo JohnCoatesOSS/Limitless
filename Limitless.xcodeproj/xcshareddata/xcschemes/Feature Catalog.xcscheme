@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FAE642941DF13EC200E975B8"
-               BuildableName = "Feature Catalog.app"
-               BlueprintName = "Feature Catalog"
+               BuildableName = "FeatureCatalog.app"
+               BlueprintName = "FeatureCatalog"
                ReferencedContainer = "container:Limitless.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FAE642941DF13EC200E975B8"
-            BuildableName = "Feature Catalog.app"
-            BlueprintName = "Feature Catalog"
+            BuildableName = "FeatureCatalog.app"
+            BlueprintName = "FeatureCatalog"
             ReferencedContainer = "container:Limitless.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -56,8 +56,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FAE642941DF13EC200E975B8"
-            BuildableName = "Feature Catalog.app"
-            BlueprintName = "Feature Catalog"
+            BuildableName = "FeatureCatalog.app"
+            BlueprintName = "FeatureCatalog"
             ReferencedContainer = "container:Limitless.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -75,8 +75,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FAE642941DF13EC200E975B8"
-            BuildableName = "Feature Catalog.app"
-            BlueprintName = "Feature Catalog"
+            BuildableName = "FeatureCatalog.app"
+            BlueprintName = "FeatureCatalog"
             ReferencedContainer = "container:Limitless.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

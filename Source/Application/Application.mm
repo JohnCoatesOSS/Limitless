@@ -212,11 +212,13 @@
 #pragma mark - State
 
 - (void) saveState {
+    NSString *savedStatePath = [Paths.aptState subpath:@"SavedState.plist"];
+    
     [[NSDictionary dictionaryWithObjectsAndKeys:
       @"InterfaceState", [tabbar_ navigationURLCollection],
       @"LastClosed", [NSDate date],
       @"InterfaceIndex", [NSNumber numberWithInt:[tabbar_ selectedIndex]],
-      nil] writeToFile:[Paths savedState] atomically:YES];
+      nil] writeToFile:savedStatePath atomically:YES];
     
     [self _saveConfig];
 }
@@ -515,7 +517,8 @@ errno == ENOTDIR \
     [self refreshIfPossible];
     [self disemulate];
     
-    NSDictionary *state([NSDictionary dictionaryWithContentsOfFile:[Paths savedState]]);
+    NSString *savedStatePath = [Paths.aptState subpath:@"SavedState.plist"];
+    NSDictionary *state = [NSDictionary dictionaryWithContentsOfFile:savedStatePath];
     
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
     NSArray *saved = [[[state objectForKey:@"InterfaceState"] mutableCopy] autorelease];
@@ -658,7 +661,8 @@ errno == ENOTDIR \
 - (void) _refreshIfPossible {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSDate *update([[NSDictionary dictionaryWithContentsOfFile:[Paths cacheState]] objectForKey:@"LastUpdate"]);
+    NSString *cacheStatePath = [Paths.aptState subpath:@"CacheState.plist"];
+    NSDate *update([[NSDictionary dictionaryWithContentsOfFile:cacheStatePath] objectForKey:@"LastUpdate"]);
     
     bool recently = false;
     if (update != nil) {

@@ -255,6 +255,45 @@
 		FA3D50DA1DED8C870046A0AC /* LMXLocalizedTableSections.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50D91DED8C870046A0AC /* LMXLocalizedTableSections.mm */; };
 		FA3D50DF1DED900E0046A0AC /* TestLocalizedTableSection.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50DE1DED900E0046A0AC /* TestLocalizedTableSection.mm */; };
 		FA3D50E41DED9D050046A0AC /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3D50E31DED9D050046A0AC /* libicucore.tbd */; };
+		FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
+		FA5684891DF5FA6F000A4EBD /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = FA06A3BE1DDEE98000AA9B02 /* Platform.m */; };
+		FA56848A1DF5FA74000A4EBD /* Device.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2CA1D776245001FBE4A /* Device.mm */; };
+		FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1247E61D778DB800C21DAC /* Paths.mm */; };
+		FA56848C1DF5FAA4000A4EBD /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38F1DDEAE3600AA9B02 /* libapt-inst.tbd */; };
+		FA56848D1DF5FAA4000A4EBD /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38D1DDEADFD00AA9B02 /* libapt-pkg.tbd */; };
+		FA56848F1DF5FB04000A4EBD /* libapt-inst.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACC1D78EFE600563529 /* libapt-inst.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684901DF5FB04000A4EBD /* libapt-pkg.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684921DF5FB35000A4EBD /* libapt-inst.dylib in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3AE1DDEE61100AA9B02 /* libapt-inst.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684931DF5FB35000A4EBD /* libapt-pkg.dylib in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3AF1DDEE61100AA9B02 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684941DF5FB35000A4EBD /* bzip2 in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3921DDEDFE200AA9B02 /* bzip2 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684951DF5FB35000A4EBD /* cdrom in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3931DDEDFE200AA9B02 /* cdrom */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684961DF5FB35000A4EBD /* copy in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3941DDEDFE200AA9B02 /* copy */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684971DF5FB35000A4EBD /* file in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3951DDEDFE200AA9B02 /* file */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684981DF5FB35000A4EBD /* ftp in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3961DDEDFE200AA9B02 /* ftp */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684991DF5FB35000A4EBD /* gpgv in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3971DDEDFE200AA9B02 /* gpgv */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA56849A1DF5FB35000A4EBD /* gzip in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3981DDEDFE200AA9B02 /* gzip */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA56849B1DF5FB35000A4EBD /* http in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A3991DDEDFE200AA9B02 /* http */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA56849C1DF5FB35000A4EBD /* https in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39A1DDEDFE200AA9B02 /* https */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA56849D1DF5FB35000A4EBD /* lzma in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39B1DDEDFE200AA9B02 /* lzma */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA56849E1DF5FB35000A4EBD /* rred in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39C1DDEDFE200AA9B02 /* rred */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA56849F1DF5FB35000A4EBD /* rsh in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39D1DDEDFE200AA9B02 /* rsh */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684A01DF5FB35000A4EBD /* ssh in Copy APT Methods for simulator */ = {isa = PBXBuildFile; fileRef = FA06A39E1DDEDFE200AA9B02 /* ssh */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		FA5684A21DF5FB57000A4EBD /* bigboss.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B51DDEE6B400AA9B02 /* bigboss.gpg */; };
+		FA5684A31DF5FB57000A4EBD /* modmyi.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B61DDEE6B400AA9B02 /* modmyi.gpg */; };
+		FA5684A41DF5FB57000A4EBD /* saurik.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B71DDEE6B400AA9B02 /* saurik.gpg */; };
+		FA5684A51DF5FB57000A4EBD /* zodttd.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B81DDEE6B400AA9B02 /* zodttd.gpg */; };
+		FA5684AA1DF6026C000A4EBD /* NSError+Limitless.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */; };
+		FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */; };
+		FA5684AF1DF6040F000A4EBD /* LMXAPTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */; };
+		FA5684B01DF6040F000A4EBD /* LMXAPTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */; };
+		FA5684B41DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B31DF60448000A4EBD /* LMXAPTSource+APTLib.mm */; };
+		FA5684B51DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B31DF60448000A4EBD /* LMXAPTSource+APTLib.mm */; };
+		FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B81DF72B3F000A4EBD /* Paths+APT.m */; };
+		FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B81DF72B3F000A4EBD /* Paths+APT.m */; };
+		FA5684BD1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */; };
+		FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */; };
+		FA5684C11DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; };
+		FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
 		FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C863E1D74AC6E00FB99CF /* DisplayHelpers.mm */; };
@@ -474,6 +513,57 @@
 				FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in Copy APT Dylibs */,
 			);
 			name = "Copy APT Dylibs";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA56848E1DF5FAE8000A4EBD /* Copy APT Dylibs */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 11;
+			files = (
+				FA56848F1DF5FB04000A4EBD /* libapt-inst.dylib in Copy APT Dylibs */,
+				FA5684901DF5FB04000A4EBD /* libapt-pkg.dylib in Copy APT Dylibs */,
+			);
+			name = "Copy APT Dylibs";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA5684911DF5FB14000A4EBD /* Copy APT Methods for simulator */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = methods;
+			dstSubfolderSpec = 7;
+			files = (
+				FA5684921DF5FB35000A4EBD /* libapt-inst.dylib in Copy APT Methods for simulator */,
+				FA5684931DF5FB35000A4EBD /* libapt-pkg.dylib in Copy APT Methods for simulator */,
+				FA5684941DF5FB35000A4EBD /* bzip2 in Copy APT Methods for simulator */,
+				FA5684951DF5FB35000A4EBD /* cdrom in Copy APT Methods for simulator */,
+				FA5684961DF5FB35000A4EBD /* copy in Copy APT Methods for simulator */,
+				FA5684971DF5FB35000A4EBD /* file in Copy APT Methods for simulator */,
+				FA5684981DF5FB35000A4EBD /* ftp in Copy APT Methods for simulator */,
+				FA5684991DF5FB35000A4EBD /* gpgv in Copy APT Methods for simulator */,
+				FA56849A1DF5FB35000A4EBD /* gzip in Copy APT Methods for simulator */,
+				FA56849B1DF5FB35000A4EBD /* http in Copy APT Methods for simulator */,
+				FA56849C1DF5FB35000A4EBD /* https in Copy APT Methods for simulator */,
+				FA56849D1DF5FB35000A4EBD /* lzma in Copy APT Methods for simulator */,
+				FA56849E1DF5FB35000A4EBD /* rred in Copy APT Methods for simulator */,
+				FA56849F1DF5FB35000A4EBD /* rsh in Copy APT Methods for simulator */,
+				FA5684A01DF5FB35000A4EBD /* ssh in Copy APT Methods for simulator */,
+			);
+			name = "Copy APT Methods for simulator";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA5684A11DF5FB43000A4EBD /* Copy APT trusted */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Trusted.gpg;
+			dstSubfolderSpec = 7;
+			files = (
+				FA5684A21DF5FB57000A4EBD /* bigboss.gpg in Copy APT trusted */,
+				FA5684A31DF5FB57000A4EBD /* modmyi.gpg in Copy APT trusted */,
+				FA5684A41DF5FB57000A4EBD /* saurik.gpg in Copy APT trusted */,
+				FA5684A51DF5FB57000A4EBD /* zodttd.gpg in Copy APT trusted */,
+			);
+			name = "Copy APT trusted";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -767,6 +857,19 @@
 		FA3D50D91DED8C870046A0AC /* LMXLocalizedTableSections.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LMXLocalizedTableSections.mm; sourceTree = "<group>"; };
 		FA3D50DE1DED900E0046A0AC /* TestLocalizedTableSection.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TestLocalizedTableSection.mm; sourceTree = "<group>"; };
 		FA3D50E31DED9D050046A0AC /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
+		FA5684A81DF6026C000A4EBD /* NSError+Limitless.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Limitless.h"; sourceTree = "<group>"; };
+		FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Limitless.m"; sourceTree = "<group>"; };
+		FA5684AD1DF6040F000A4EBD /* LMXAPTSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXAPTSource.h; sourceTree = "<group>"; };
+		FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXAPTSource.m; sourceTree = "<group>"; };
+		FA5684B21DF60448000A4EBD /* LMXAPTSource+APTLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LMXAPTSource+APTLib.h"; sourceTree = "<group>"; };
+		FA5684B31DF60448000A4EBD /* LMXAPTSource+APTLib.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "LMXAPTSource+APTLib.mm"; sourceTree = "<group>"; };
+		FA5684B71DF72B3F000A4EBD /* Paths+APT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Paths+APT.h"; sourceTree = "<group>"; };
+		FA5684B81DF72B3F000A4EBD /* Paths+APT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Paths+APT.m"; sourceTree = "<group>"; };
+		FA5684BB1DF7318F000A4EBD /* LMXAPTConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXAPTConfig.h; sourceTree = "<group>"; };
+		FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LMXAPTConfig.mm; sourceTree = "<group>"; };
+		FA5684BF1DF73BCA000A4EBD /* APTManager+Files.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "APTManager+Files.h"; sourceTree = "<group>"; };
+		FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "APTManager+Files.m"; sourceTree = "<group>"; };
+		FA5684C41DF7475E000A4EBD /* LMXAPTStatus.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LMXAPTStatus.hpp; sourceTree = "<group>"; };
 		FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIWebDocumentView+BugFixes.mm"; sourceTree = "<group>"; };
 		FA6C862E1D749D1D00FB99CF /* CyteKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CyteKit.h; sourceTree = "<group>"; };
 		FA6C862F1D749D4700FB99CF /* Apt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Apt.h; sourceTree = "<group>"; };
@@ -887,7 +990,9 @@
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
 		FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXLaunchProcess.m; sourceTree = "<group>"; };
-		FAE642951DF13EC200E975B8 /* Feature Catalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Feature Catalog.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FADD1BC41DF7B1D7009EA2C6 /* NSString+Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Paths.h"; sourceTree = "<group>"; };
+		FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Paths.m"; sourceTree = "<group>"; };
+		FAE642951DF13EC200E975B8 /* FeatureCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeatureCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE642981DF13EC200E975B8 /* featureCatalogMain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = featureCatalogMain.m; sourceTree = "<group>"; };
 		FAE6429A1DF13EC200E975B8 /* FeatureCatalogAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeatureCatalogAppDelegate.h; sourceTree = "<group>"; };
 		FAE6429B1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FeatureCatalogAppDelegate.m; sourceTree = "<group>"; };
@@ -947,6 +1052,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA56848C1DF5FAA4000A4EBD /* libapt-inst.tbd in Frameworks */,
+				FA56848D1DF5FAA4000A4EBD /* libapt-pkg.tbd in Frameworks */,
 				FAE642BC1DF151E600E975B8 /* SpringBoardServices.framework in Frameworks */,
 				FAE642C01DF153B900E975B8 /* FrontBoardServices.framework in Frameworks */,
 			);
@@ -1111,6 +1218,7 @@
 		FA1247E41D778CEE00C21DAC /* Paths */ = {
 			isa = PBXGroup;
 			children = (
+				FADD1BC31DF7B1BD009EA2C6 /* Categories */,
 				FA1247E51D778DB800C21DAC /* Paths.h */,
 				FA1247E61D778DB800C21DAC /* Paths.mm */,
 			);
@@ -1439,7 +1547,7 @@
 				FA28E70A1D1B21A5003D3724 /* Limitless.app */,
 				FA9010FB1DE12B1C00A607AC /* Tests.xctest */,
 				FA3A18331DEAB1F3000557AC /* runAsSuperuser.app */,
-				FAE642951DF13EC200E975B8 /* Feature Catalog.app */,
+				FAE642951DF13EC200E975B8 /* FeatureCatalog.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1489,9 +1597,52 @@
 			path = Localization;
 			sourceTree = "<group>";
 		};
+		FA5684A71DF60254000A4EBD /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				FA5684A81DF6026C000A4EBD /* NSError+Limitless.h */,
+				FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		FA5684AC1DF603F2000A4EBD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FA5684B11DF6041D000A4EBD /* Categories */,
+				FA5684AD1DF6040F000A4EBD /* LMXAPTSource.h */,
+				FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */,
+				FA5684BB1DF7318F000A4EBD /* LMXAPTConfig.h */,
+				FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */,
+				FA5684C41DF7475E000A4EBD /* LMXAPTStatus.hpp */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FA5684B11DF6041D000A4EBD /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				FA5684B21DF60448000A4EBD /* LMXAPTSource+APTLib.h */,
+				FA5684B31DF60448000A4EBD /* LMXAPTSource+APTLib.mm */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		FA5684B61DF72AF7000A4EBD /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				FA5684B71DF72B3F000A4EBD /* Paths+APT.h */,
+				FA5684B81DF72B3F000A4EBD /* Paths+APT.m */,
+				FA5684BF1DF73BCA000A4EBD /* APTManager+Files.h */,
+				FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
 		FA6C86291D749C5300FB99CF /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				FA5684A71DF60254000A4EBD /* Errors */,
 				FA6C86CE1D760C4A00FB99CF /* View Controllers */,
 				FA6C86A01D75965F00FB99CF /* Scripting */,
 				FA6C86991D7593E200FB99CF /* Networking */,
@@ -1997,6 +2148,8 @@
 		FA7DB8FF1DE0275000F874E6 /* APT */ = {
 			isa = PBXGroup;
 			children = (
+				FA5684B61DF72AF7000A4EBD /* Categories */,
+				FA5684AC1DF603F2000A4EBD /* Models */,
 				FA7DB9001DE0276D00F874E6 /* APTManager.h */,
 				FA7DB9011DE0276D00F874E6 /* APTManager.mm */,
 			);
@@ -2176,6 +2329,15 @@
 			path = Javascript;
 			sourceTree = "<group>";
 		};
+		FADD1BC31DF7B1BD009EA2C6 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				FADD1BC41DF7B1D7009EA2C6 /* NSString+Paths.h */,
+				FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
 		FAE642961DF13EC200E975B8 /* Feature Catalog */ = {
 			isa = PBXGroup;
 			children = (
@@ -2297,21 +2459,24 @@
 			productReference = FA9010FB1DE12B1C00A607AC /* Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		FAE642941DF13EC200E975B8 /* Feature Catalog */ = {
+		FAE642941DF13EC200E975B8 /* FeatureCatalog */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FAE642AB1DF13EC200E975B8 /* Build configuration list for PBXNativeTarget "Feature Catalog" */;
+			buildConfigurationList = FAE642AB1DF13EC200E975B8 /* Build configuration list for PBXNativeTarget "FeatureCatalog" */;
 			buildPhases = (
 				FAE642911DF13EC200E975B8 /* Sources */,
 				FAE642921DF13EC200E975B8 /* Frameworks */,
 				FAE642931DF13EC200E975B8 /* Resources */,
+				FA56848E1DF5FAE8000A4EBD /* Copy APT Dylibs */,
+				FA5684911DF5FB14000A4EBD /* Copy APT Methods for simulator */,
+				FA5684A11DF5FB43000A4EBD /* Copy APT trusted */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "Feature Catalog";
+			name = FeatureCatalog;
 			productName = "Feature Catalog";
-			productReference = FAE642951DF13EC200E975B8 /* Feature Catalog.app */;
+			productReference = FAE642951DF13EC200E975B8 /* FeatureCatalog.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2326,10 +2491,12 @@
 				TargetAttributes = {
 					FA28E7091D1B21A5003D3724 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = E6QK4MU6LM;
 						ProvisioningStyle = Automatic;
 					};
 					FA3A18321DEAB1F3000557AC = {
 						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = E6QK4MU6LM;
 						ProvisioningStyle = Automatic;
 					};
 					FA9010FA1DE12B1C00A607AC = {
@@ -2384,7 +2551,7 @@
 				FA9010FA1DE12B1C00A607AC /* Tests */,
 				FAA88F061DE7738100039F54 /* lint */,
 				FA3A18321DEAB1F3000557AC /* runAsSuperuser */,
-				FAE642941DF13EC200E975B8 /* Feature Catalog */,
+				FAE642941DF13EC200E975B8 /* FeatureCatalog */,
 			);
 		};
 /* End PBXProject section */
@@ -2553,6 +2720,7 @@
 				FAE642B41DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
 				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
 				FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */,
+				FA5684B41DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */,
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
 				FA6C86E41D7620A900FB99CF /* SearchController.mm in Sources */,
 				FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */,
@@ -2573,6 +2741,7 @@
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
 				FA23E2D11D776AC4001FBE4A /* NSUserDefaults+Hooks.mm in Sources */,
+				FADD1BC61DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */,
 				FA23E2D41D776BA6001FBE4A /* NSURLConnection+Hooks.mm in Sources */,
 				FA0311A81D1B2CBD008690CA /* stringWithUTF8Bytes.mm in Sources */,
@@ -2595,9 +2764,11 @@
 				FA6C86AE1D75EFF900FB99CF /* CydiaProgressData.mm in Sources */,
 				FA6C86741D7573D900FB99CF /* Source.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
+				FA5684AA1DF6026C000A4EBD /* NSError+Limitless.m in Sources */,
 				FA6C86BD1D76090800FB99CF /* FileTable.mm in Sources */,
 				FA6C864C1D74B26C00FB99CF /* SystemHelpers.mm in Sources */,
 				FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */,
+				FA5684AF1DF6040F000A4EBD /* LMXAPTSource.m in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA6C86971D75910E00FB99CF /* CydiaWebViewController.mm in Sources */,
 				FA3D50DA1DED8C870046A0AC /* LMXLocalizedTableSections.mm in Sources */,
@@ -2611,8 +2782,10 @@
 				FA06A3BF1DDEE98000AA9B02 /* Platform.m in Sources */,
 				FA6C865A1D74C0C400FB99CF /* GeneralHelpers.mm in Sources */,
 				FA6C864F1D74BCB300FB99CF /* UIGlobals.mm in Sources */,
+				FA5684BD1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */,
 				FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */,
 				FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */,
+				FA5684C11DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
 				FA6C86531D74BEC200FB99CF /* Networking.mm in Sources */,
 				FA6C86C61D760AC300FB99CF /* FilteredPackageListController.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,
@@ -2620,6 +2793,7 @@
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
 				FA6C86831D75797700FB99CF /* Package.mm in Sources */,
 				FA23E2C81D7754A0001FBE4A /* Display.mm in Sources */,
+				FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */,
 				FA0311A61D1B2CBD008690CA /* dispatchEvent.mm in Sources */,
 				FA0311A71D1B2CBD008690CA /* MFMailComposeViewController-MailToURL.mm in Sources */,
@@ -2659,11 +2833,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */,
+				FADD1BC71DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FAE642B11DF1433100E975B8 /* LMXRespringViewController.m in Sources */,
+				FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */,
+				FA5684891DF5FA6F000A4EBD /* Platform.m in Sources */,
+				FA56848A1DF5FA74000A4EBD /* Device.mm in Sources */,
+				FA5684B51DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */,
 				FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */,
+				FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */,
+				FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */,
+				FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */,
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
+				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
 				FAE642B51DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
+				FA5684B01DF6040F000A4EBD /* LMXAPTSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3081,6 +3266,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/External/usr/lib\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -3148,6 +3334,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_NO_PIE = NO;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/External/usr/lib\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = (
@@ -3189,7 +3376,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3216,7 +3402,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_NO_PIE = YES;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3313,7 +3498,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = "";
@@ -3325,7 +3509,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = "Tools/Feature Catalog/FeatureCatalogPrefix.pch";
 				INFOPLIST_FILE = "Tools/Feature Catalog/FeatureCatalogInfo.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_CFLAGS = (
 					"-idirafter",
 					"\"$(SRCROOT)/External/icu/icuSources/common\"",
@@ -3342,7 +3525,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = "";
@@ -3352,7 +3534,6 @@
 				);
 				GCC_PREFIX_HEADER = "Tools/Feature Catalog/FeatureCatalogPrefix.pch";
 				INFOPLIST_FILE = "Tools/Feature Catalog/FeatureCatalogInfo.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "oss.Limitless.Feature-Catalog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3407,7 +3588,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FAE642AB1DF13EC200E975B8 /* Build configuration list for PBXNativeTarget "Feature Catalog" */ = {
+		FAE642AB1DF13EC200E975B8 /* Build configuration list for PBXNativeTarget "FeatureCatalog" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FAE642A91DF13EC200E975B8 /* Debug */,
