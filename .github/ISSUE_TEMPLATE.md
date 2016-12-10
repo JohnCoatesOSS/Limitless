@@ -1,4 +1,4 @@
-(If you are making a feature request explain what it is, how it would work. If you have snippets of code or sketches/mockups please add them. Then delete the rest of the template.)<br>
+(If you are making a feature request explain what it is, how it would work, why do you think it'd be useful or improve the project or part of it. If you have snippets of code or sketches/mockups please attach them. When you are done, delete the rest of the template.)<br>
 (Thanks for reporting an issue! Please make sure you click the link above to view the issue guidelines, then fill out the blanks below.)
 
 What are the steps to reproduce this issue?
