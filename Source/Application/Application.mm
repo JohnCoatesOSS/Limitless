@@ -1158,7 +1158,19 @@ errno == ENOTDIR \
     
     if ([Device isPad])
         [confirm_ setModalPresentationStyle:UIModalPresentationFormSheet];
-    [tabbar_ presentViewController:confirm_ animated:YES completion:nil];
+    [tabbar_ presentViewController:confirm_ animated:YES completion:^{
+        // some actions needed after package confirmation page presentation triggered by swipe actions
+        if (![page->issues_ count]) {
+            if (FromSwipeAction_) {
+                if (DismissVCAsQueue_) {
+                    [page _doContinue];
+                }
+            }
+            else if (DismissVCAfterProgress_ && !Queuing_) {
+                [page confirmButtonClicked];
+            }
+        }
+    }];
     
     return true;
 }

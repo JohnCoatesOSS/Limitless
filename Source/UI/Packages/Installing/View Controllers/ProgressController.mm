@@ -64,6 +64,18 @@
     [super viewWillAppear:animated];
 }
 
+- (void) justClose
+{
+    UpdateExternalStatus(0);
+    [delegate_ returnToCydia];
+    //[[[self navigationController] parentOrPresentingViewController] dismissModalViewControllerAnimated:YES];
+}
+
+- (void) applyRightButton
+{
+    [[self navigationItem] setRightBarButtonItem:![[progress_ running] boolValue] ? [self rightButton] : nil];
+}
+
 - (void) close {
     UpdateExternalStatus(0);
     
@@ -120,7 +132,7 @@
                                                                      initWithTitle:UCLocalize("CLOSE")
                                                                      style:UIBarButtonItemStylePlain
                                                                      target:self
-                                                                     action:@selector(close)
+                                                                     action:@selector(justClose) // TODO: decide whether or not use the original -close method
                                                                      ] autorelease];
 }
 
@@ -207,6 +219,11 @@
     [self updateProgress];
     
     [self applyRightButton];
+    
+    // TODO: Let user specify when to auto-close installation page
+    if (Finish_ != 1 && Finish_ != 4) {
+        [self justClose];
+    }
 }
 
 - (void) addProgressEvent:(CydiaProgressEvent *)event {
