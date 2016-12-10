@@ -7,6 +7,17 @@
 
 #undef ABS
 
+#define APT_DEPRECATED __attribute__((deprecated("Use a wrapper instead of this APT class")))
+
+#define APT_SILENCE_DEPRECATIONS \
+_Pragma ("GCC diagnostic push") \
+_Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+
+#define APT_UNSILENCE_DEPRECATIONS \
+_Pragma ("GCC diagnostic pop")
+
+APT_SILENCE_DEPRECATIONS
+
 #include <apt-pkg/acquire.h>
 #include <apt-pkg/acquire-item.h>
 #include <apt-pkg/algorithms.h>
@@ -24,3 +35,9 @@
 #include <apt-pkg/sptr.h>
 #include <apt-pkg/strutl.h>
 #include <apt-pkg/tagfile.h>
+
+APT_UNSILENCE_DEPRECATIONS
+
+// MARK: - Wrappers
+
+#import "APTDependencyCachePolicy.h"

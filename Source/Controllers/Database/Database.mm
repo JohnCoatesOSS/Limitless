@@ -157,7 +157,6 @@
 
 - (id) init {
     if ((self = [super init]) != nil) {
-        policy_ = NULL;
         records_ = NULL;
         resolver_ = NULL;
         fetcher_ = NULL;
@@ -218,10 +217,6 @@
 
 - (pkgCacheFile &) cache {
     return cache_;
-}
-
-- (pkgDepCache::Policy *) policy {
-    return policy_;
 }
 
 - (pkgRecords *) records {
@@ -324,10 +319,8 @@
             delete records_;
         }
         records_ = NULL;
-        if (policy_) {
-            delete policy_;
-        }
-        policy_ = NULL;
+        
+        self.policy = nil;
         
         cache_.Close();
         
@@ -405,7 +398,7 @@
         
         now_ = [[NSDate date] timeIntervalSince1970];
         
-        policy_ = new pkgDepCache::Policy();
+        self.policy = [APTDependencyCachePolicy new];
         records_ = new pkgRecords(cache_);
         resolver_ = new pkgProblemResolver(cache_);
         fetcher_ = new pkgAcquire(status_);

@@ -154,9 +154,9 @@
     
     LMXAptStatus *status = new LMXAptStatus();
     pkgAcquire *fetcher = new pkgAcquire(status);
-    pkgDepCache::Policy *policy = new pkgDepCache::Policy();
+//    pkgDepCache::Policy *policy = new pkgDepCache::Policy();
     pkgRecords *records = new pkgRecords(cache);
-    pkgProblemResolver *resolver_ = new pkgProblemResolver(cache);
+//    pkgProblemResolver *resolver_ = new pkgProblemResolver(cache);
     
     pkgPackageManager *manager = _system->CreatePM(cache);
     

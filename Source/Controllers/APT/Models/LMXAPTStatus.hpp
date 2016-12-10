@@ -57,10 +57,10 @@ public:
     }
     
     virtual bool Pulse_(pkgAcquire *Owner) {
-        double percent(
-                       double(CurrentBytes + CurrentItems) /
-                       double(TotalBytes + TotalItems)
-                       );
+//        double percent(
+//                       double(CurrentBytes + CurrentItems) /
+//                       double(TotalBytes + TotalItems)
+//                       );
         
 //        [delegate_ performSelectorOnMainThread:@selector(setProgressStatus:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
 //                                                                                         [NSNumber numberWithDouble:percent], @"Percent",

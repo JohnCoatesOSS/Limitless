@@ -89,7 +89,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         
         pkgCacheFile &cache([database_ cache]);
         NSArray *packages([database_ packages]);
-        pkgDepCache::Policy *policy([database_ policy]);
+        APTDependencyCachePolicy *policy = database.policy;
         
         issues_ = [NSMutableArray arrayWithCapacity:4];
         
@@ -204,7 +204,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                 [removes addObject:name];
             }
             
-            substrate_ |= DepSubstrate(policy->GetCandidateVer(iterator));
+            substrate_ |= [policy packageDependsOnMobileSubstrate:iterator];
             substrate_ |= DepSubstrate(iterator.CurrentVer());
         }
         

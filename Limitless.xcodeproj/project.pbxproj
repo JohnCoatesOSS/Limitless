@@ -351,6 +351,8 @@
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
 		FADD1BC81DF7DA06009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FADD1BC91DF7DA08009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
+		FADD1BCD1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BCC1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FADD1BCE1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BCC1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm */; };
 		FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE642981DF13EC200E975B8 /* featureCatalogMain.m */; };
 		FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6429B1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m */; };
 		FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE6429E1DF13EC200E975B8 /* CatalogTableViewController.m */; };
@@ -994,6 +996,8 @@
 		FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXLaunchProcess.m; sourceTree = "<group>"; };
 		FADD1BC41DF7B1D7009EA2C6 /* NSString+Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Paths.h"; sourceTree = "<group>"; };
 		FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Paths.m"; sourceTree = "<group>"; };
+		FADD1BCB1DF8949C009EA2C6 /* APTDependencyCachePolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTDependencyCachePolicy.h; sourceTree = "<group>"; };
+		FADD1BCC1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTDependencyCachePolicy.mm; sourceTree = "<group>"; };
 		FAE642951DF13EC200E975B8 /* FeatureCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeatureCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE642981DF13EC200E975B8 /* featureCatalogMain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = featureCatalogMain.m; sourceTree = "<group>"; };
 		FAE6429A1DF13EC200E975B8 /* FeatureCatalogAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeatureCatalogAppDelegate.h; sourceTree = "<group>"; };
@@ -2150,6 +2154,7 @@
 		FA7DB8FF1DE0275000F874E6 /* APT */ = {
 			isa = PBXGroup;
 			children = (
+				FADD1BCA1DF8945C009EA2C6 /* Wrappers */,
 				FA5684B61DF72AF7000A4EBD /* Categories */,
 				FA5684AC1DF603F2000A4EBD /* Models */,
 				FA7DB9001DE0276D00F874E6 /* APTManager.h */,
@@ -2338,6 +2343,15 @@
 				FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */,
 			);
 			path = Categories;
+			sourceTree = "<group>";
+		};
+		FADD1BCA1DF8945C009EA2C6 /* Wrappers */ = {
+			isa = PBXGroup;
+			children = (
+				FADD1BCB1DF8949C009EA2C6 /* APTDependencyCachePolicy.h */,
+				FADD1BCC1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm */,
+			);
+			path = Wrappers;
 			sourceTree = "<group>";
 		};
 		FAE642961DF13EC200E975B8 /* Feature Catalog */ = {
@@ -2803,6 +2817,7 @@
 				FA23E2CB1D776245001FBE4A /* Device.mm in Sources */,
 				FA0311B61D1B2CDE008690CA /* SDURLCache.m in Sources */,
 				FA6C86B11D75F11100FB99CF /* ProgressController.mm in Sources */,
+				FADD1BCD1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm in Sources */,
 				FA6C867C1D7577AA00FB99CF /* CydiaClause.mm in Sources */,
 				FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */,
 				FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */,
@@ -2836,6 +2851,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */,
+				FADD1BCE1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm in Sources */,
 				FAE642B11DF1433100E975B8 /* LMXRespringViewController.m in Sources */,
 				FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */,

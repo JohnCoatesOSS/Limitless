@@ -331,7 +331,7 @@
     pkgCache::VerIterator version;
     
     _profile(Package$packageWithIterator$GetCandidateVer)
-    version = [database policy]->GetCandidateVer(iterator);
+    version = [database.policy versionIteratorForPackage:iterator];
     _end
     
     if (version.end())
