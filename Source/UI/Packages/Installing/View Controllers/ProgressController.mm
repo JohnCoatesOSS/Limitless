@@ -8,6 +8,7 @@
 #import "System.h"
 #import "ProgressController.h"
 #import "GeneralHelpers.h"
+#import "SwipeActionController.h"
 
 
 @implementation ProgressController
@@ -24,6 +25,20 @@
                             target:self
                             action:@selector(cancel)
                             ] autorelease] : nil;
+}
+
+- (UIBarButtonItem *) rightButton {
+    return [[progress_ running] boolValue] ? [super rightButton] : [[[UIBarButtonItem alloc]
+                                                                     initWithTitle:UCLocalize("CLOSE")
+                                                                     style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(closeWithoutAnyPostInstallActions) // TODO: decide whether or not use the original -close method
+                                                                     ] autorelease];
+}
+
+- (void) applyRightButton
+{
+    [[self navigationItem] setRightBarButtonItem:![[progress_ running] boolValue] ? [self rightButton] : nil];
 }
 
 - (void) updateCancel {
@@ -64,16 +79,12 @@
     [super viewWillAppear:animated];
 }
 
-- (void) justClose
+// The original -close method may respring or reboot device, but we don't want that - just close the progress window
+- (void) closeWithoutAnyPostInstallActions
 {
     UpdateExternalStatus(0);
     [delegate_ returnToCydia];
-    //[[[self navigationController] parentOrPresentingViewController] dismissModalViewControllerAnimated:YES];
-}
-
-- (void) applyRightButton
-{
-    [[self navigationItem] setRightBarButtonItem:![[progress_ running] boolValue] ? [self rightButton] : nil];
+    [super close];
 }
 
 - (void) close {
@@ -125,15 +136,6 @@
 - (void) setTitle:(NSString *)title {
     [progress_ setTitle:title];
     [self updateProgress];
-}
-
-- (UIBarButtonItem *) rightButton {
-    return [[progress_ running] boolValue] ? [super rightButton] : [[[UIBarButtonItem alloc]
-                                                                     initWithTitle:UCLocalize("CLOSE")
-                                                                     style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(justClose) // TODO: decide whether or not use the original -close method
-                                                                     ] autorelease];
 }
 
 - (void) invoke:(NSInvocation *)invocation withTitle:(NSString *)title {
@@ -221,8 +223,9 @@
     [self applyRightButton];
     
     // TODO: Let user specify when to auto-close installation page
-    if (Finish_ != 1 && Finish_ != 4) {
-        [self justClose];
+    if ([SwipeActionController shouldDismissAfterProgress] && Finish_ != 1 && Finish_ != 4) {
+        [SwipeActionController setDismissAfterProgress:false];
+        [self closeWithoutAnyPostInstallActions];
     }
 }
 

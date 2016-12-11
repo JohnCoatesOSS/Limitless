@@ -36,10 +36,3 @@ extern NSString *Elision_;
 extern NSString *Error_;
 extern NSString *Warning_;
 extern const NSString *UI_;
-
-// Swipe actions
-static bool DismissVCAfterProgress_;
-static bool DismissVCAsQueue_;
-static bool FromSwipeAction_;
-static bool ClickDowngrade_;
-static bool ClickBuy_;
