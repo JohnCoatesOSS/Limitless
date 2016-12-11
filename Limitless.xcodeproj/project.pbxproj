@@ -361,6 +361,7 @@
 		FAE642BC1DF151E600E975B8 /* SpringBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA03116E1D1B2B4D008690CA /* SpringBoardServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FAE642BF1DF153B900E975B8 /* FrontBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE642BE1DF153B900E975B8 /* FrontBoardServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FAE642C01DF153B900E975B8 /* FrontBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE642BE1DF153B900E975B8 /* FrontBoardServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FAE6AB591DFCD6F9006F0CAA /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2741,7 +2742,6 @@
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
 				FA23E2D11D776AC4001FBE4A /* NSUserDefaults+Hooks.mm in Sources */,
-				FADD1BC61DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */,
 				FA23E2D41D776BA6001FBE4A /* NSURLConnection+Hooks.mm in Sources */,
 				FA0311A81D1B2CBD008690CA /* stringWithUTF8Bytes.mm in Sources */,
@@ -2793,6 +2793,7 @@
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
 				FA6C86831D75797700FB99CF /* Package.mm in Sources */,
 				FA23E2C81D7754A0001FBE4A /* Display.mm in Sources */,
+				FAE6AB591DFCD6F9006F0CAA /* NSString+Paths.m in Sources */,
 				FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */,
 				FA0311A61D1B2CBD008690CA /* dispatchEvent.mm in Sources */,
@@ -2834,7 +2835,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */,
-				FADD1BC71DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FAE642B11DF1433100E975B8 /* LMXRespringViewController.m in Sources */,
 				FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */,
