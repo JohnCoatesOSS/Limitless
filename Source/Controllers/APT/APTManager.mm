@@ -88,6 +88,10 @@
     }
     _config->Set("Acquire::http::MaxParallel", usermem >= 384 * 1024 * 1024 ? 16 : 3);
     
+    self.configuration[@"Dir::State"] = Paths.aptState;
+    self.configuration[@"Dir::Cache"] = Paths.aptCache;
+    self.configuration[@"Dir::Etc::TrustedParts"] = @"trusted.gpg.d";
+    
     if ([Device isSimulator]) {
         NSString *logFile = [Paths cacheFile:@"apt.log"];
         _config->Set("Dir::Bin::dpkg", "/usr/local/bin/dpkg");
@@ -119,9 +123,6 @@
         [self switchOnDebugFlags];
         self.configuration[@"Dir"] = Paths.sandboxDocumentsDirectory;
         self.configuration[@"Dir::Etc"] = Paths.aptEtc;
-        self.configuration[@"Dir::Etc::TrustedParts"] = @"trusted.gpg.d";
-        self.configuration[@"Dir::State"] = Paths.aptState;
-        self.configuration[@"Dir::Cache"] = Paths.aptCache;
     }
 }
 
