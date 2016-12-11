@@ -165,7 +165,8 @@
         NSInteger row([path row]);
         Package *package;
         if (InstalledController.isFiltered) {
-            package = [[database_ currentFavorites] objectAtIndex:([section row] + row)];
+            NSString *packageId = [[database_ currentFavorites] objectAtIndex:([section row] + row)]; // package id which saved in userdefaults
+            package = [database_ packageWithName:packageId];
         } else {
             package = [packages_ objectAtIndex:([section row] + row)];
         }
