@@ -128,12 +128,13 @@
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
         // some actions needed after showing tweak page triggered by swipe actions
-        if ([SwipeActionController shouldAutoClickDowngrade]) {
+        SwipeActionController *SAC([SwipeActionController sharedInstance]);
+        if ([SAC autoClickDowngrade]) {
             [view _clickButtonWithName:@"DOWNGRADE"];
-            [SwipeActionController setAutoClickDowngrade:false];
-        } else if ([SwipeActionController shouldAutoClickBuy]) {
+            [SAC setAutoClickDowngrade:NO];
+        } else if ([SAC autoClickBuy]) {
             [view customButtonClicked];
-            [SwipeActionController setAutoClickBuy:false];
+            [SAC setAutoClickBuy:NO];
         }
     }];
     [[self navigationController] pushViewController:view animated:YES];
@@ -213,23 +214,24 @@ editActionsForRowAtIndexPath:(NSIndexPath *)path {
     BOOL upgradable = [package upgradableAndEssential:NO];
     BOOL isQueue = [package mode] != nil;
     bool commercial = [package isCommercial];
+    SwipeActionController *SAC([SwipeActionController sharedInstance]);
     if (installed) {
         // Uninstall action
-        UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"╳" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-            [SwipeActionController setFromSwipeAction:true];
-            [SwipeActionController setDismissAfterProgress:true]; // auto perform
+        UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:[SAC removeString] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+            [SAC setFromSwipeAction:YES];
+            [SAC setDismissAfterProgress:[SAC autoDismissWhenQueue]];
             [delegate removePackage:package];
         }];
         [actions addObject:deleteAction];
     }
-    NSString *installTitle = installed ? (upgradable ? @"↑" : @"↺") : (commercial ? @"💳" : @"↓");
-    if ((!installed || [Device isPad]) && !isQueue) {
+    NSString *installTitle = installed ? (upgradable ? [SAC upgradeString] : [SAC reinstallString]) : (commercial ? [SAC buyString] : [SAC installString]);
+    if ((!installed || [Device isPad] || [SAC shortLabel]) && !isQueue) {
         // Install or reinstall or upgrade action
         UITableViewRowAction *installAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:installTitle handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-            [SwipeActionController setFromSwipeAction:true];
-            [SwipeActionController setDismissAfterProgress:true /* auto perform */ && (!commercial || (commercial && installed))];
+            [SAC setFromSwipeAction:YES];
+            [SAC setDismissAfterProgress:[SAC autoPerform] && (!commercial || (commercial && installed))];
             if (commercial && !installed) {
-                [SwipeActionController setAutoClickBuy:true];
+                [SAC setAutoClickBuy:YES];
                 [self didSelectPackage:package];
             }
             else
@@ -240,11 +242,11 @@ editActionsForRowAtIndexPath:(NSIndexPath *)path {
     }
     if (installed && !isQueue) {
         // Queue reinstall action
-        NSString *queueReinstallTitle = [NSString stringWithFormat:@"%@\n%@", @"Q", installTitle];
+        NSString *queueReinstallTitle = [SAC queueString:installTitle];
         UITableViewRowAction *queueReinstallAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:queueReinstallTitle handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-            [SwipeActionController setDismissAfterProgress:false];
-            [SwipeActionController setDismissAsQueue:true]; // auto dismiss
-            [SwipeActionController setFromSwipeAction:true];
+            [SAC setDismissAfterProgress:NO];
+            [SAC setDismissAsQueue:[SAC autoDismissWhenQueue]];
+            [SAC setFromSwipeAction:YES];
             [delegate installPackage:package];
         }];
         queueReinstallAction.backgroundColor = [UIColor orangeColor];
@@ -253,20 +255,20 @@ editActionsForRowAtIndexPath:(NSIndexPath *)path {
     if (isQueue) {
         // Clear action
         UITableViewRowAction *clearAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"⌧" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-            [SwipeActionController setDismissAfterProgress:false];
-            [SwipeActionController setDismissAsQueue:Queuing_];
-            [SwipeActionController setFromSwipeAction:true];
+            [SAC setDismissAfterProgress:NO];
+            [SAC setDismissAsQueue:Queuing_];
+            [SAC setFromSwipeAction:YES];
             [delegate clearPackage:package];
         }];
         clearAction.backgroundColor = [UIColor grayColor];
         [actions addObject:clearAction];
     } else {
         // Queue install action
-        NSString *queueTitle = [NSString stringWithFormat:@"%@\n%@", @"Q", (installed ? @"╳" : installTitle)];
+        NSString *queueTitle = [SAC queueString:(installed ? [SAC removeString] : installTitle)];
         UITableViewRowAction *queueAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:queueTitle handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-            [SwipeActionController setDismissAfterProgress:false];
-            [SwipeActionController setDismissAsQueue:true]; // auto dismiss
-            [SwipeActionController setFromSwipeAction:true];
+            [SAC setDismissAfterProgress:NO];
+            [SAC setDismissAsQueue:[SAC autoDismissWhenQueue]];
+            [SAC setFromSwipeAction:YES];
             if (installed)
                 [delegate removePackage:package];
             else
@@ -279,11 +281,11 @@ editActionsForRowAtIndexPath:(NSIndexPath *)path {
         // Downgrade action
         NSArray *downgrades = [package downgrades];
         if (downgrades.count > 0)	{
-            UITableViewRowAction *downgradeAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"⇵" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-                [SwipeActionController setDismissAfterProgress:false];
-                [SwipeActionController setDismissAsQueue:false];
-                [SwipeActionController setAutoClickDowngrade:true];
-                [SwipeActionController setFromSwipeAction:true];
+            UITableViewRowAction *downgradeAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:[SAC downgradeString] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+                [SAC setDismissAfterProgress:NO];
+                [SAC setDismissAsQueue:NO];
+                [SAC setAutoClickDowngrade:YES];
+                [SAC setFromSwipeAction:YES];
                 [self didSelectPackage:package];
             }];
             downgradeAction.backgroundColor = [UIColor purpleColor];

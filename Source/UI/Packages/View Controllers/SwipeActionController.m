@@ -7,63 +7,83 @@
 //
 
 #import "SwipeActionController.h"
+#define UCLocalize(key) [[NSBundle mainBundle] localizedStringForKey:@ key value:nil table:nil]
 
 @implementation SwipeActionController
 
-static bool DismissAfterProgress_;
-static bool DismissAsQueue_;
-static bool FromSwipeAction_;
-static bool ClickDowngrade_;
-static bool ClickBuy_;
-
-+ (void) setDismissAfterProgress:(bool)dismiss
++ (instancetype) sharedInstance
 {
-    DismissAfterProgress_ = dismiss;
+	static dispatch_once_t p = 0;
+	__strong static SwipeActionController *controller = nil;
+	dispatch_once(&p, ^{
+		controller = [[self alloc] init];
+	});
+	return controller;
 }
 
-+ (bool) shouldDismissAfterProgress
+- (BOOL) shortLabel
 {
-    return DismissAfterProgress_;
+	return YES;
 }
 
-+ (void) setDismissAsQueue:(bool)dismiss
+- (BOOL) autoDismissWhenQueue
 {
-    DismissAsQueue_ = dismiss;
+	return YES;
 }
 
-+ (bool) shouldDismissAsQueue
+- (BOOL) autoPerform
 {
-    return DismissAsQueue_;
+	return YES;
 }
 
-+ (void) setFromSwipeAction:(bool)swipe
+- (NSString *) installString
 {
-    FromSwipeAction_ = swipe;
+	return [self shortLabel] ? @"↓" : UCLocalize("INSTALL");
 }
 
-+ (bool) fromSwipeAction
+- (NSString *) reinstallString
 {
-    return FromSwipeAction_;
+	return [self shortLabel] ? @"↺" : UCLocalize("REINSTALL");
 }
 
-+ (void) setAutoClickDowngrade:(bool)click
+- (NSString *) upgradeString
 {
-    ClickDowngrade_ = click;
+	return [self shortLabel] ? @"↑" : UCLocalize("UPGRADE");
 }
 
-+ (bool) shouldAutoClickDowngrade
+- (NSString *) removeString
 {
-    return ClickDowngrade_;
+	return [self shortLabel] ? @"╳" : UCLocalize("REMOVE");
 }
 
-+ (void) setAutoClickBuy:(bool)click
+- (NSString *) queueString
 {
-    ClickBuy_ = click;
+	return [self shortLabel] ? @"Q" : UCLocalize("QUEUE");
 }
 
-+ (bool)shouldAutoClickBuy
+- (NSString *) clearString
 {
-    return ClickBuy_;
+	return [self shortLabel] ? @"⌧" : UCLocalize("CLEAR");
+}
+
+- (NSString *) downgradeString
+{
+	return [self shortLabel] ? @"⇵" : UCLocalize("DOWNGRADE");
+}
+
+- (NSString *) buyString
+{
+	return @"💳";
+}
+
+- (NSString *) normalizedString:(NSString *)string
+{
+	return [string stringByReplacingOccurrencesOfString:@" " withString:@"\n"];
+}
+
+- (NSString *) queueString:(NSString *)action
+{
+	return [NSString stringWithFormat:@"%@\n%@", [self queueString], action];
 }
 
 @end

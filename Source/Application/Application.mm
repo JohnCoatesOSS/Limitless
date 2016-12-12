@@ -1163,22 +1163,23 @@ errno == ENOTDIR \
     
     if ([Device isPad])
         [confirm_ setModalPresentationStyle:UIModalPresentationFormSheet];
-    bool fromSwipe = [SwipeActionController fromSwipeAction];
-    bool dismissAsQueue = [SwipeActionController shouldDismissAsQueue];
+    SwipeActionController *SAC([SwipeActionController sharedInstance]);
+    bool fromSwipe = [SAC fromSwipeAction];
+    bool dismissAsQueue = [SAC dismissAsQueue];
     [tabbar_ presentViewController:confirm_ animated:YES completion:^{
         // some actions needed after package confirmation page presentation triggered by swipe actions
         if (![page->issues_ count]) {
             if (fromSwipe) {
                 if (dismissAsQueue) {
                     [page _doContinue];
-                    [SwipeActionController setDismissAsQueue:false];
+                    [SAC setDismissAsQueue:NO];
                 }
-                else if ([SwipeActionController shouldDismissAfterProgress] && !Queuing_) {
-                    [page confirmButtonClicked];
+                else if ([SAC dismissAfterProgress] && !Queuing_) {
+                    [page performSelector:@selector(confirmButtonClicked) withObject:nil afterDelay:0.2];
                 }
             }
         }
-        [SwipeActionController setFromSwipeAction:false];
+        [SAC setFromSwipeAction:NO];
     }];
     
     return true;

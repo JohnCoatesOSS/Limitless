@@ -141,7 +141,7 @@
 - (void) invoke:(NSInvocation *)invocation withTitle:(NSString *)title {
     UpdateExternalStatus(1);
     
-    [progress_ setRunning:true];
+    [progress_ setRunning:YES];
     [self setTitle:title];
     // implicit updateProgress
     
@@ -217,14 +217,14 @@
     
     UpdateExternalStatus(Finish_ == 0 ? 0 : 2);
     
-    [progress_ setRunning:false];
+    [progress_ setRunning:NO];
     [self updateProgress];
     
     [self applyRightButton];
     
     // TODO: Let user specify when to auto-close installation page
-    if ([SwipeActionController shouldDismissAfterProgress] && Finish_ != 1 && Finish_ != 4) {
-        [SwipeActionController setDismissAfterProgress:false];
+    if ([[SwipeActionController sharedInstance] dismissAfterProgress] && Finish_ != 1 && Finish_ != 4) {
+        [[SwipeActionController sharedInstance] setDismissAfterProgress:NO];
         [self closeWithoutAnyPostInstallActions];
     }
 }

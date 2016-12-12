@@ -9,14 +9,23 @@
 #import <Foundation/Foundation.h>
 
 @interface SwipeActionController : NSObject
-+ (void) setDismissAfterProgress:(bool)dismiss;
-+ (bool) shouldDismissAfterProgress;
-+ (void) setDismissAsQueue:(bool)dismiss;
-+ (bool) shouldDismissAsQueue;
-+ (void) setFromSwipeAction:(bool)swipe;
-+ (bool) fromSwipeAction;
-+ (void) setAutoClickDowngrade:(bool)click;
-+ (bool) shouldAutoClickDowngrade;
-+ (void) setAutoClickBuy:(bool)click;
-+ (bool) shouldAutoClickBuy;
++ (instancetype) sharedInstance;
+@property(assign) BOOL dismissAfterProgress;
+@property(assign) BOOL dismissAsQueue;
+@property(assign) BOOL fromSwipeAction;
+@property(assign) BOOL autoClickDowngrade;
+@property(assign) BOOL autoClickBuy;
+- (BOOL) shortLabel;
+- (BOOL) autoDismissWhenQueue;
+- (BOOL) autoPerform;
+- (NSString *) installString;
+- (NSString *) reinstallString;
+- (NSString *) upgradeString;
+- (NSString *) removeString;
+- (NSString *) queueString;
+- (NSString *) clearString;
+- (NSString *) downgradeString;
+- (NSString *) buyString;
+- (NSString *) normalizedString:(NSString *)string;
+- (NSString *) queueString:(NSString *)action;
 @end
