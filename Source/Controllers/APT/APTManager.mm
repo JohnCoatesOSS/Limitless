@@ -9,7 +9,7 @@
 #import "APTManager.h"
 #import "Apt.h"
 #import "Paths.h"
-#import "LMXAPTSource+APTLib.h"
+#import "APTSource+APTLib.h"
 #import "LMXAPTConfig.h"
 #import "APTManager+Files.h"
 #import "LMXAPTStatus.hpp"
@@ -104,22 +104,9 @@
     
     _config->Dump();
 }
-
-- (void)simulatorSetup {
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *methodsDirectory = [bundle pathForResource:@"methods" ofType:nil];
-    _config->Set("APT::Architecture", "iphoneos-arm");
-    _config->Set("Apt::System", "Debian dpkg interface");
-    _config->Set("Dir::State::status", [Paths dpkgStatus].UTF8String);
-    _config->Set("Dir::Bin::methods", methodsDirectory.UTF8String);
-    _config->Set("Dir::Bin::gpg", "/usr/local/bin/gpgv");
-    _config->Set("Dir::Bin::lzma", "/usr/local/bin/lzma");
-    _config->Set("Dir::Bin::bzip2", "/usr/bin/bzip2");
-}
-
 - (void)sandboxSetup {
     if ([Platform isSandboxed]) {
-        [self switchOnDebugFlags];
+//        [self switchOnDebugFlags];
         self.configuration[@"Dir"] = Paths.sandboxDocumentsDirectory;
         self.configuration[@"Dir::Etc"] = Paths.aptEtc;
         self.configuration[@"Dir::Etc::TrustedParts"] = @"trusted.gpg.d";
@@ -139,6 +126,29 @@
     _config->Set("Debug::pkgAcquire", "true");
     _config->Set("Debug::pkgInitConfig", "true");
     _config->Set("Debug::pkgAcquire::Worker", "true");
+}
+
+// MARK: - Simulator Setup
+
+- (void)simulatorSetup {
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *methodsDirectory = [bundle pathForResource:@"methods" ofType:nil];
+    _config->Set("APT::Architecture", "iphoneos-arm");
+    _config->Set("Apt::System", "Debian dpkg interface");
+    _config->Set("Dir::State::status", [Paths dpkgStatus].UTF8String);
+    _config->Set("Dir::Bin::methods", methodsDirectory.UTF8String);
+    _config->Set("Dir::Bin::gpg", "/usr/local/bin/gpgv");
+    _config->Set("Dir::Bin::lzma", "/usr/local/bin/lzma");
+    _config->Set("Dir::Bin::bzip2", "/usr/bin/bzip2");
+    
+    [self setUpEnviromentForLaunchingMethods];
+}
+
+- (void)setUpEnviromentForLaunchingMethods {
+    setenv("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin", true);
+    unsetenv("DYLD_ROOT_PATH");
+    unsetenv("DYLD_INSERT_LIBRARIES");
+    unsetenv("DYLD_LIBRARY_PATH");
 }
 
 // MARK: - Updating
@@ -219,7 +229,7 @@
     NSMutableArray *sources = [NSMutableArray new];
     pkgSourceList::const_iterator sourceMetaIndex = sourceList.begin();
     while (sourceMetaIndex != sourceList.end()) {
-        LMXAPTSource *aptSource = [[LMXAPTSource alloc] initWithMetaIndex:*sourceMetaIndex];
+        APTSource *aptSource = [[APTSource alloc] initWithMetaIndex:*sourceMetaIndex];
         [sources addObject:aptSource];
         sourceMetaIndex += 1;
     }

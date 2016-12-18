@@ -5,7 +5,7 @@
 //  Created on 12/5/16.
 //
 
-@interface LMXAPTSource : NSObject
+@interface APTSource : NSObject
 
 @property (retain, strong) NSString *name;
 

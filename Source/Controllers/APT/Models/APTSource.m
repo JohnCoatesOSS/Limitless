@@ -5,13 +5,13 @@
 //  Created on 12/5/16.
 //
 
-#import "LMXAPTSource.h"
+#import "APTSource.h"
 
-@interface LMXAPTSource ()
+@interface APTSource ()
 
 @end
 
-@implementation LMXAPTSource
+@implementation APTSource
 
 - (instancetype)init {
     self = [super init];

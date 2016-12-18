@@ -5,9 +5,10 @@
 //  Created on 12/5/16.
 //
 
-#import "LMXAPTSource+APTLib.h"
+#import "APTSource+APTLib.h"
+#import "APTErrorController.h"
 
-@implementation LMXAPTSource (APTLib)
+@implementation APTSource (APTLib)
 
 - (instancetype)initWithMetaIndex:(metaIndex *)metaIndex {
     self = [super init];
@@ -31,9 +32,13 @@
     string type = metaIndex->GetType();
     self.type = @(type.c_str());
     
+    NSLog(@"uri: %@, distribution: %@, type: %@", self.uri, self.distribution, self.type);
+    
     debReleaseIndex *releaseIndex = dynamic_cast<debReleaseIndex *>(metaIndex);
     if (releaseIndex) {
         [self hydrateWithReleaseIndex:releaseIndex];
+    } else {
+        NSLog(@"Couldn't cast to release index");
     }
     
     self.host = self.uri.host.lowercaseString;
@@ -55,7 +60,11 @@
     
     if (!fileOpened) {
         NSLog(@"Couldn't open release meta index at %s", releaseFile.c_str());
-        _error->Discard();
+        NSError *error = [APTErrorController popError];
+        if (error) {
+            NSLog(@"Meta index error: %@", error);
+        }
+        
         return;
     }
     

@@ -5,10 +5,10 @@
 //  Created on 12/5/16.
 //
 
-#import "LMXAptSource.h"
+#import "APTSource.h"
 #import "Apt.h"
 
-@interface LMXAPTSource (APTLib)
+@interface APTSource (APTLib)
 
 - (instancetype)initWithMetaIndex:(metaIndex *)metaIndex;
 

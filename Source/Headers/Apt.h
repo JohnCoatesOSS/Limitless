@@ -16,6 +16,7 @@ _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 #define APT_UNSILENCE_DEPRECATIONS \
 _Pragma ("GCC diagnostic pop")
 
+
 APT_SILENCE_DEPRECATIONS
 
 #include <apt-pkg/acquire.h>
@@ -41,3 +42,5 @@ APT_UNSILENCE_DEPRECATIONS
 // MARK: - Wrappers
 
 #import "APTDependencyCachePolicy.h"
+#import "APTError.h"
+#import "APTErrorController.h"
