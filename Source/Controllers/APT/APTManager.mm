@@ -177,10 +177,10 @@ static BOOL _debugMode = false;
     self.configuration[@"Dir::Bin::lzma"] = @"/usr/local/bin/lzma";
     self.configuration[@"Dir::Bin::bzip2"] = @"/usr/bin/bzip2";
 
-    [self setUpEnviromentForLaunchingMethods];
+    [self setUpSimulatorEnviromentForLaunchingMethods];
 }
 
-- (void)setUpEnviromentForLaunchingMethods {
+- (void)setUpSimulatorEnviromentForLaunchingMethods {
     setenv("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin", true);
     unsetenv("DYLD_ROOT_PATH");
     unsetenv("DYLD_INSERT_LIBRARIES");
