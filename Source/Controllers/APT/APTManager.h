@@ -10,16 +10,13 @@
 
 @interface APTManager : NSObject
 
+@property (class, nonatomic) BOOL debugMode;
+
 + (instancetype)sharedInstance;
 - (void)setup;
 
-- (NSArray *)readSourcesWithError:(NSError **)error;
-
 // MARK: - Debug
 
-- (BOOL)performUpdate;
-
-+ (BOOL)debugMode;
 + (void)clearAPTState;
 
 @end

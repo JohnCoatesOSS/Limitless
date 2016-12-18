@@ -38,7 +38,7 @@
         _configuration = [LMXAPTConfig new];
         [self setup];
     }
-    
+
     return self;
 }
 
@@ -49,19 +49,19 @@
         return;
     }
     self.hasBeenSetup = true;
-    
+
     [self ensureRequiredFilesExist];
-    
+
     pkgInitConfig(*_config);
-    
+
     if ([Device isSimulator]) {
         [self simulatorSetup];
     }
-    
+
     if ([Platform isSandboxed]) {
         [self sandboxSetup];
     }
-    
+
     [self initiateSystem];
 }
 
@@ -75,38 +75,50 @@
         error->PopMessage(errorMessage);
         std::cout << "Error: " << errorMessage << std::endl;
     }
-    
+
     const char *language = getenv("LANG");
     if (language != NULL) {
-        _config->Set("APT::Acquire::Translation", language);
+        self.configuration[@"APT::Acquire::Translation"] = @(language);
     }
-    
+
     int64_t usermem(0);
     size_t size = sizeof(usermem);
     if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1) {
         usermem = 0;
     }
-    _config->Set("Acquire::http::MaxParallel", usermem >= 384 * 1024 * 1024 ? 16 : 3);
+    
+    int maximumParallelHTTPProcesses;
+    if (usermem >= 384 * 1024 * 1024) {
+        maximumParallelHTTPProcesses = 16;
+    } else {
+        maximumParallelHTTPProcesses = 3;
+    }
+    
+    self.configuration[@"Acquire::http::MaxParallel"] = @(maximumParallelHTTPProcesses).stringValue;
     self.configuration[@"Dir::Cache"] = Paths.aptCache;
     self.configuration[@"Dir::State"] = Paths.aptState;
     self.configuration[@"Dir::State::Lists"] = Paths.aptStateLists;
-    
+
     if ([Device isSimulator]) {
         NSString *logFile = [Paths cacheFile:@"apt.log"];
-        _config->Set("Dir::Bin::dpkg", "/usr/local/bin/dpkg");
-        _config->Set("Dir::Log::Terminal", logFile.UTF8String);
+        self.configuration[@"Dir::Bin::dpkg"] = @"/usr/local/bin/dpkg";
+        self.configuration[@"Dir::Log::Terminal"] = logFile;
     } else {
-        _config->Set("Dir::Bin::dpkg", "/Applications/Limitless.app/runAsSuperuser");
-        std::string logs("/var/mobile/Library/Logs/Cydia");
-        mkdir(logs.c_str(), 0755);
-        _config->Set("Dir::Log::Terminal", logs + "/apt.log");
+        self.configuration[@"Dir::Bin::dpkg"] = @"/Applications/Limitless.app/runAsSuperuser";
+        NSString *logDirectory = @"/var/mobile/Library/Logs/Cydia";
+        mkdir(logDirectory.UTF8String, 0755);
+        NSString *logFile = [logDirectory stringByAppendingPathComponent:@"apt.log"];
+        self.configuration[@"Dir::Log::Terminal"] = logFile;
     }
-    
-    _config->Dump();
+
+    if (APTManager.debugMode) {
+        _config->Dump();
+    }
 }
 - (void)sandboxSetup {
     if ([Platform isSandboxed]) {
-//        [self switchOnDebugFlags];
+        _debugMode = TRUE;
+        [self updateDebugFlags];
         self.configuration[@"Dir"] = Paths.sandboxDocumentsDirectory;
         self.configuration[@"Dir::Etc"] = Paths.aptEtc;
         self.configuration[@"Dir::Etc::TrustedParts"] = @"trusted.gpg.d";
@@ -117,15 +129,39 @@
     _config->Set(key.UTF8String, directory.UTF8String);
 }
 
-- (void)switchOnDebugFlags {
-    _config->Set("Debug", "true");
-    _config->Set("Debug::Acquire", "true");
-    _config->Set("Debug::Acquire::gpgv", "true");
-    _config->Set("Debug::pkgPackageManager", "true");
-    _config->Set("Debug::GetListOfFilesInDir", "true");
-    _config->Set("Debug::pkgAcquire", "true");
-    _config->Set("Debug::pkgInitConfig", "true");
-    _config->Set("Debug::pkgAcquire::Worker", "true");
+
+// MARK: - Debug
+
+static BOOL _debugMode = false;
+
++ (BOOL)debugMode {
+    if ([Platform isRelease]) {
+        return FALSE;
+    }
+
+    return _debugMode;
+}
+
++ (void)setDebugMode:(BOOL)debugMode {
+    _debugMode = debugMode;
+    [[APTManager sharedInstance] updateDebugFlags];
+}
+
+- (void)updateDebugFlags {
+    NSString *debugMode;
+    if (APTManager.debugMode) {
+        debugMode = @"true";
+    } else {
+        debugMode = @"false";
+    }
+    self.configuration[@"Debug"] = debugMode;
+    self.configuration[@"Debug::Acquire"] = debugMode;
+    self.configuration[@"Debug::Acquire::gpgv"] = debugMode;
+    self.configuration[@"Debug::pkgPackageManager"] = debugMode;
+    self.configuration[@"Debug::GetListOfFilesInDir"] = debugMode;
+    self.configuration[@"Debug::pkgAcquire"] = debugMode;
+    self.configuration[@"Debug::pkgInitConfig"] = debugMode;
+    self.configuration[@"Debug::pkgAcquire::Worker"] = debugMode;
 }
 
 // MARK: - Simulator Setup
@@ -133,14 +169,14 @@
 - (void)simulatorSetup {
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *methodsDirectory = [bundle pathForResource:@"methods" ofType:nil];
-    _config->Set("APT::Architecture", "iphoneos-arm");
-    _config->Set("Apt::System", "Debian dpkg interface");
-    _config->Set("Dir::State::status", [Paths dpkgStatus].UTF8String);
-    _config->Set("Dir::Bin::methods", methodsDirectory.UTF8String);
-    _config->Set("Dir::Bin::gpg", "/usr/local/bin/gpgv");
-    _config->Set("Dir::Bin::lzma", "/usr/local/bin/lzma");
-    _config->Set("Dir::Bin::bzip2", "/usr/bin/bzip2");
-    
+    self.configuration[@"APT::Architecture"] = @"iphoneos-arm";
+    self.configuration[@"Apt::System"] = @"Debian dpkg interface";
+    self.configuration[@"Dir::State::status"] = [Paths dpkgStatus];
+    self.configuration[@"Dir::Bin::methods"] = methodsDirectory;
+    self.configuration[@"Dir::Bin::gpg"] = @"/usr/local/bin/gpgv";
+    self.configuration[@"Dir::Bin::lzma"] = @"/usr/local/bin/lzma";
+    self.configuration[@"Dir::Bin::bzip2"] = @"/usr/bin/bzip2";
+
     [self setUpEnviromentForLaunchingMethods];
 }
 
@@ -151,118 +187,7 @@
     unsetenv("DYLD_LIBRARY_PATH");
 }
 
-// MARK: - Updating
-
-- (BOOL)performUpdate {
-    OpProgress progress;
-    pkgCacheFile cache;
-    bool cacheOpened = cache.Open(progress, false);
-    if (!cacheOpened) {
-        NSLog(@"error opening cache: %@", self.popLatestErrors);
-        return FALSE;
-    }
-    
-    LMXAptStatus *status = new LMXAptStatus();
-    pkgAcquire *fetcher = new pkgAcquire(status);
-//    pkgDepCache::Policy *policy = new pkgDepCache::Policy();
-    pkgRecords *records = new pkgRecords(cache);
-//    pkgProblemResolver *resolver_ = new pkgProblemResolver(cache);
-    
-    pkgPackageManager *manager = _system->CreatePM(cache);
-    
-    pkgSourceList sourceList;
-    if (!sourceList.ReadMainList()) {
-        NSArray *latestErrors = self.popLatestErrors;
-        NSLog(@"error: %@", latestErrors);
-        return FALSE;
-    }
-    
-    manager->GetArchives(fetcher, &sourceList, records);
-    
-    bool updated = ListUpdate(*status, sourceList);
-    NSLog(@"updated: %d", updated);
-    
-    int PulseInterval = 500000;
-    if (fetcher->Run(PulseInterval) != pkgAcquire::Continue) {
-        
-        NSLog(@"fetcher errors: %@", [self popLatestErrors]);
-        return FALSE;
-    }
-    
-    bool failed = false;
-    for (pkgAcquire::ItemIterator item = fetcher->ItemsBegin(); item != fetcher->ItemsEnd(); item++) {
-        if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete)
-            continue;
-        if ((*item)->Status == pkgAcquire::Item::StatIdle)
-            continue;
-        
-        std::string uri = (*item)->DescURI();
-        std::string error = (*item)->ErrorText;
-        
-        NSLog(@"pAf:%s:%s\n", uri.c_str(), error.c_str());
-        failed = true;
-        
-        NSString *errorString = @(error.c_str());
-        NSLog(@"Acquire error: %@", errorString);
-        
-//        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:kCydiaProgressEventTypeError]);
-//        [delegate_ addProgressEventOnMainThread:event forTask:title];
-    }
-    
-    
-    return updated;
-}
-
-// MARK: - Properties
-
-- (NSArray *)readSourcesWithError:(NSError **)error {
-    pkgSourceList sourceList;
-    if (!sourceList.ReadMainList()) {
-        NSArray *latestErrors = self.popLatestErrors;
-        NSLog(@"encountered error reading sources list: %@", latestErrors);
-        
-        NSString *localizedError = [NSString stringWithFormat:@"APT Errors: %@", latestErrors];
-        *error = [NSError limitlessErrorWithMessage:localizedError];
-        return nil;
-    }
-    
-    NSMutableArray *sources = [NSMutableArray new];
-    pkgSourceList::const_iterator sourceMetaIndex = sourceList.begin();
-    while (sourceMetaIndex != sourceList.end()) {
-        APTSource *aptSource = [[APTSource alloc] initWithMetaIndex:*sourceMetaIndex];
-        [sources addObject:aptSource];
-        sourceMetaIndex += 1;
-    }
-    
-    return sources;
-}
-
-
-- (NSArray *)popLatestErrors {
-    NSMutableArray *errors = [NSMutableArray array];
-    
-    while (!_error->empty()) {
-        std::string message;
-        bool isFatal = _error->PopMessage(message);
-        if (isFatal) {
-//            [NSException raise:@"APTError"
-//                        format:@"Fatal APT error: %s", message.c_str()];
-        }
-        NSString *error = @(message.c_str());
-        [errors addObject:error];
-    }
-    
-    return errors;
-}
-
 // MARK: - Debug
-
-+ (BOOL)debugMode {
-    if ([Platform isRelease]) {
-        return FALSE;
-    }
-    return TRUE;
-}
 
 + (void)clearAPTState {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -271,7 +196,7 @@
     if (![fileManager fileExistsAtPath:aptDirectory]) {
         return;
     }
-    
+
     NSLog(@"Clearing APT State");
     [fileManager removeItemAtPath:aptDirectory
                             error:&error];
