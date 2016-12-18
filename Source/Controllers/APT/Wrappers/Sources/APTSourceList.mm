@@ -117,27 +117,31 @@
     
     LMXAptStatus *status = new LMXAptStatus();
     pkgAcquire *fetcher = new pkgAcquire(status);
-    //    pkgDepCache::Policy *policy = new pkgDepCache::Policy();
     pkgRecords *records = new pkgRecords(cache);
-    //    pkgProblemResolver *resolver_ = new pkgProblemResolver(cache);
     
     pkgPackageManager *manager = _system->CreatePM(cache);
+    
+    void (^deleteVariables)() = ^void() {
+        delete records;
+        delete fetcher;
+        delete status;
+    };
     
     pkgSourceList sourceList;
     if (!sourceList.ReadMainList()) {
         completion(FALSE, [APTErrorController popErrors]);
+        deleteVariables();
         return;
     }
     
     manager->GetArchives(fetcher, &sourceList, records);
-    
     bool updated = ListUpdate(*status, sourceList);
-    NSLog(@"updated: %d", updated);
     
     int PulseInterval = 500000;
     if (fetcher->Run(PulseInterval) != pkgAcquire::Continue) {
         NSLog(@"fetcher errors: %@", [APTErrorController popErrors]);
         completion(FALSE, [APTErrorController popErrors]);
+        deleteVariables();
         return;
     }
     
@@ -162,10 +166,13 @@
     
     if (failed) {
         [errors addObjectsFromArray:[APTErrorController popErrors]];
-        completion(TRUE, errors);
+        completion(FALSE, errors);
+        deleteVariables();
+        return;
     }
     
     completion(TRUE, [APTErrorController popErrors]);
+    deleteVariables();
     return;
 }
 
