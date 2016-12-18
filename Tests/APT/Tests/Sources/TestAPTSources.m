@@ -19,6 +19,7 @@
     [super setUp];
     APTManager *manager = [APTManager sharedInstance];
     [manager setup];
+    APTManager.debugMode = FALSE;
 }
 
 - (void)tearDown {
