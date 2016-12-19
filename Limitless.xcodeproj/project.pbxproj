@@ -360,6 +360,7 @@
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
+		FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */; };
 		FADD1BC81DF7DA06009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FADD1BC91DF7DA08009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FADD1BCD1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BCC1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -1023,6 +1024,8 @@
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
 		FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXLaunchProcess.m; sourceTree = "<group>"; };
+		FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile+Legacy.h"; sourceTree = "<group>"; };
+		FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "APTCacheFile+Legacy.mm"; sourceTree = "<group>"; };
 		FADD1BC41DF7B1D7009EA2C6 /* NSString+Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Paths.h"; sourceTree = "<group>"; };
 		FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Paths.m"; sourceTree = "<group>"; };
 		FADD1BCB1DF8949C009EA2C6 /* APTDependencyCachePolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTDependencyCachePolicy.h; sourceTree = "<group>"; };
@@ -2332,6 +2335,8 @@
 				FAA03F271E06B65000071CC7 /* APTCacheFile.h */,
 				FAA03F281E06B65000071CC7 /* APTCacheFile.mm */,
 				FAA03F2B1E07B8FC00071CC7 /* APTCacheFile-Private.h */,
+				FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */,
+				FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */,
 			);
 			path = Cache;
 			sourceTree = "<group>";
@@ -2910,6 +2915,7 @@
 				FA6C86861D758D4000FB99CF /* Section.mm in Sources */,
 				FA6C866E1D75722D00FB99CF /* CytoreHelpers.mm in Sources */,
 				FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */,
+				FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */,
 				FA6C86AE1D75EFF900FB99CF /* CydiaProgressData.mm in Sources */,
 				FA6C86741D7573D900FB99CF /* Source.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,

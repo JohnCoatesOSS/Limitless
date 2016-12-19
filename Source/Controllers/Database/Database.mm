@@ -15,7 +15,7 @@
 #import "CFArray+Sort.h"
 #import "Logging.hpp"
 #import "Paths.h"
-#import "APTCacheFile-Private.h"
+#import "APTCacheFile+Legacy.h"
 
 @implementation Database
 
