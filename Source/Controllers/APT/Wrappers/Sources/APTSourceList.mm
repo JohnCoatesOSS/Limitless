@@ -9,7 +9,9 @@
 #import "Apt.h"
 #import "APTSource+APTLib.h"
 #import "LMXAPTStatus.hpp"
+#import "APTCacheFile-Private.h"
 
+APT_SILENCE_DEPRECATIONS_BEGIN
 
 @interface APTSourceList ()
 
@@ -107,18 +109,17 @@
 }
 
 - (void)performUpdateWithCompletion:(SourcesUpdateCompletion)completion {
-    OpProgress progress;
-    pkgCacheFile cache;
-    bool cacheOpened = cache.Open(progress, false);
-    if (!cacheOpened) {
-        completion(FALSE, [APTErrorController popErrors]);
+    NSError *error = nil;
+    APTCacheFile *cacheFile = [[APTCacheFile alloc] initWithError:&error];
+    if (error) {
+        completion(FALSE, @[error]);
         return;
     }
     
     LMXAptStatus *status = new LMXAptStatus();
     pkgAcquire *fetcher = new pkgAcquire(status);
+    pkgCacheFile &cache = *cacheFile.cacheFile;
     pkgRecords *records = new pkgRecords(cache);
-    
     pkgPackageManager *manager = _system->CreatePM(cache);
     
     void (^deleteVariables)() = ^void() {
@@ -160,7 +161,7 @@
         NSLog(@"pAf:%s:%s\n", uri.c_str(), errorString.c_str());
         
         NSString *errorMessage = @(errorString.c_str());
-        APTError *error = [APTError unknownErrorWithMessage:errorMessage];
+        error = [APTError unknownErrorWithMessage:errorMessage];
         [errors addObject:error];
     }
     
@@ -187,3 +188,5 @@
 }
 
 @end
+
+APT_SILENCE_DEPRECATIONS_END

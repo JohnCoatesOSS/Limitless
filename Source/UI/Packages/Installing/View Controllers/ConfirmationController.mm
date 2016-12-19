@@ -10,6 +10,7 @@
 #import "Apt.h"
 #import "Package.h"
 #import "CydiaScript.h"
+#import "APTCacheFile-Private.h"
 
 bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     if (!iterator.end())
@@ -87,7 +88,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         
         bool remove(false);
         
-        pkgCacheFile &cache([database_ cache]);
+        APTCacheFile *cacheFile = database.cacheFile;
+        pkgCacheFile &cache = *cacheFile.cacheFile;
+//        pkgCacheFile &cache([database_ cache]);
         NSArray *packages([database_ packages]);
         APTDependencyCachePolicy *policy = database.policy;
         

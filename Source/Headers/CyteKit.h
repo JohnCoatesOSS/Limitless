@@ -8,7 +8,9 @@
 #include "CyteKit/UCPlatform.h"
 #include "CyteKit/Localize.h"
 #include "CyteKit/IndirectDelegate.h"
-#include "CyteKit/RegEx.hpp"
+#if !__has_feature(objc_arc)
+    #include "CyteKit/RegEx.hpp"
+#endif
 #include "CyteKit/TableViewCell.h"
 #include "CyteKit/TabBarController.h"
 #include "CyteKit/WebScriptObject-Cyte.h"

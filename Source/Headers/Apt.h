@@ -13,7 +13,7 @@
 _Pragma ("GCC diagnostic push") \
 _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 
-#define APT_UNSILENCE_DEPRECATIONS_END \
+#define APT_SILENCE_DEPRECATIONS_END \
 _Pragma ("GCC diagnostic pop")
 
 
@@ -37,7 +37,7 @@ APT_SILENCE_DEPRECATIONS_BEGIN
 #include <apt-pkg/strutl.h>
 #include <apt-pkg/tagfile.h>
 
-APT_UNSILENCE_DEPRECATIONS_END
+APT_SILENCE_DEPRECATIONS_END
 
 // MARK: - Wrappers
 

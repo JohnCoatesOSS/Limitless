@@ -15,6 +15,7 @@
 #import "CFArray+Sort.h"
 #import "Logging.hpp"
 #import "Paths.h"
+#import "APTCacheFile-Private.h"
 
 @implementation Database
 
@@ -146,14 +147,8 @@
 }
 
 - (Package *) packageWithName:(NSString *)name {
-    if (name == nil)
-        return nil;
-    @synchronized (self) {
-        if (static_cast<pkgDepCache *>(cache_) == NULL)
-            return nil;
-        pkgCache::PkgIterator iterator(cache_->FindPkg([name UTF8String]));
-        return iterator.end() ? nil : [Package packageWithIterator:iterator withZone:NULL inPool:NULL database:self];
-    } }
+    return [self.cacheFile packageWithName:name database:self];
+}
 
 - (id) init {
     if ((self = [super init]) != nil) {
@@ -213,10 +208,6 @@
          withObject:[NSNumber numberWithInt:fds[0]]
          ];
     } return self;
-}
-
-- (pkgCacheFile &) cache {
-    return cache_;
 }
 
 - (pkgRecords *) records {
@@ -321,8 +312,7 @@
         records_ = NULL;
         
         self.policy = nil;
-        
-        cache_.Close();
+        self.cacheFile = nil;
         
         pool_.~CYPool();
         new (&pool_) CYPool();
@@ -357,37 +347,34 @@
         _trace();
         OpProgress progress;
         bool opened;
+        NSError *error = nil;
     open:
         delock_ = GetStatusDate();
         _profile(reloadDataWithInvocation$pkgCacheFile)
-        opened = cache_.Open(progress, false);
+        
+        self.cacheFile = [[APTCacheFile alloc] initWithError:&error];
+        
         _end
-        if (!opened) {
-            // XXX: what if there are errors, but Open() == true? this should be merged with popError:
-            while (!_error->empty()) {
-                std::string error;
-                bool warning(!_error->PopMessage(error));
-                
-                lprintf("cache_.Open():[%s]\n", error.c_str());
-                
-                [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:(warning ? kCydiaProgressEventTypeWarning : kCydiaProgressEventTypeError)] forTask:title];
-                
-                SEL repair(NULL);
-                if (false);
-                else if (error == "dpkg was interrupted, you must manually run 'dpkg --configure -a' to correct the problem. ")
-                    repair = @selector(configure);
-                //else if (error == "The package lists or status file could not be parsed or opened.")
-                //    repair = @selector(update);
-                // else if (error == "Could not get lock /var/lib/dpkg/lock - open (35 Resource temporarily unavailable)")
-                // else if (error == "Could not open lock file /var/lib/dpkg/lock - open (13 Permission denied)")
-                // else if (error == "Malformed Status line")
-                // else if (error == "The list of sources could not be read.")
-                
-                if (repair != NULL) {
-                    _error->Discard();
-                    [delegate_ repairWithSelector:repair];
-                    goto open;
-                }
+        if (!self.cacheFile) {
+            NSLog(@"cacheFile open failed: %@", error);
+            NSString *errorType;
+            if (error.code == APTErrorWarning) {
+                errorType = kCydiaProgressEventTypeWarning;
+            } else {
+                errorType = kCydiaProgressEventTypeError;
+            }
+            CydiaProgressEvent *event = [CydiaProgressEvent eventWithMessage:error.localizedDescription
+                                          ofType:errorType];
+            
+            [delegate_ addProgressEventOnMainThread:event forTask:title];
+            
+            SEL repair = NULL;
+            if ([error.localizedDescription isEqualToString:@"dpkg was interrupted, you must manually run 'dpkg --configure -a' to correct the problem. "]) {
+                repair = @selector(configure);
+            }
+            if (repair != NULL) {
+                [delegate_ repairWithSelector:repair];
+                goto open;
             }
             
             return;
@@ -399,34 +386,37 @@
         now_ = [[NSDate date] timeIntervalSince1970];
         
         self.policy = [APTDependencyCachePolicy new];
-        records_ = new pkgRecords(cache_);
-        resolver_ = new pkgProblemResolver(cache_);
+        pkgCacheFile &cache = *self.cacheFile.cacheFile;
+        records_ = new pkgRecords(cache);
+        resolver_ = new pkgProblemResolver(cache);
         fetcher_ = new pkgAcquire(status_);
         lock_ = NULL;
         
-        if (cache_->DelCount() != 0 || cache_->InstCount() != 0) {
+        APTCacheFile *cacheFile = self.cacheFile;
+        
+        if (cacheFile.pendingDeletions != 0 || cacheFile.pendingInstalls != 0) {
             [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:UCLocalize("COUNTS_NONZERO_EX") ofType:kCydiaProgressEventTypeError] forTask:title];
             return;
         }
         
         _profile(reloadDataWithInvocation$pkgApplyStatus)
-        if ([self popErrorWithTitle:title forOperation:pkgApplyStatus(cache_)])
+        if ([self popErrorWithTitle:title forOperation:pkgApplyStatus(cache)])
             return;
         _end
         
-        if (cache_->BrokenCount() != 0) {
+        if (cacheFile.brokenPackages != 0) {
             _profile(pkgApplyStatus$pkgFixBroken)
-            if ([self popErrorWithTitle:title forOperation:pkgFixBroken(cache_)])
+            if ([self popErrorWithTitle:title forOperation:pkgFixBroken(cache)])
                 return;
             _end
             
-            if (cache_->BrokenCount() != 0) {
+            if (cacheFile.brokenPackages != 0) {
                 [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:UCLocalize("STILL_BROKEN_EX") ofType:kCydiaProgressEventTypeError] forTask:title];
                 return;
             }
             
             _profile(pkgApplyStatus$pkgMinimizeUpgrade)
-            if ([self popErrorWithTitle:title forOperation:pkgMinimizeUpgrade(cache_)])
+            if ([self popErrorWithTitle:title forOperation:pkgMinimizeUpgrade(cache)])
                 return;
             _end
         }
@@ -437,7 +427,7 @@
             for (std::vector<pkgIndexFile *>::const_iterator index = indices->begin(); index != indices->end(); ++index)
                 // XXX: this could be more intelligent
                 if (dynamic_cast<debPackagesIndex *>(*index) != NULL) {
-                    pkgCache::PkgFileIterator cached((*index)->FindInCache(cache_));
+                    pkgCache::PkgFileIterator cached((*index)->FindInCache(cache));
                     if (!cached.end())
                         sourceMap_[cached->ID] = object;
                 }
@@ -449,7 +439,7 @@
              packages_ = nil;*/
             
             _profile(reloadDataWithInvocation$packageWithIterator)
-            for (pkgCache::PkgIterator iterator = cache_->PkgBegin(); !iterator.end(); ++iterator)
+            for (pkgCache::PkgIterator iterator = cache->PkgBegin(); !iterator.end(); ++iterator)
                 if (Package *package = [Package packageWithIterator:iterator withZone:zone_ inPool:&pool_ database:self])
                     //packages.push_back(package);
                     CFArrayAppendValue(packages_, CFRetain(package));
@@ -505,13 +495,14 @@
 - (void) clear {
     @synchronized (self) {
         delete resolver_;
-        resolver_ = new pkgProblemResolver(cache_);
+        pkgCacheFile &cache = *self.cacheFile.cacheFile;
+        resolver_ = new pkgProblemResolver(cache);
         
-        for (pkgCache::PkgIterator iterator(cache_->PkgBegin()); !iterator.end(); ++iterator)
-            if (!cache_[iterator].Keep())
-                cache_->MarkKeep(iterator, false);
-            else if ((cache_[iterator].iFlags & pkgDepCache::ReInstall) != 0)
-                cache_->SetReInstall(iterator, false);
+        for (pkgCache::PkgIterator iterator(cache->PkgBegin()); !iterator.end(); ++iterator)
+            if (!cache[iterator].Keep())
+                cache->MarkKeep(iterator, false);
+            else if ((cache[iterator].iFlags & pkgDepCache::ReInstall) != 0)
+                cache->SetReInstall(iterator, false);
     } }
 
 - (void) configure {
@@ -539,7 +530,8 @@
         fetcher.Clean(_config->FindDir("Dir::Cache::Archives"));
         
         CydiaLogCleaner cleaner;
-        if ([self popErrorWithTitle:title forOperation:cleaner.Go(_config->FindDir("Dir::Cache::Archives") + "partial/", cache_)])
+        pkgCacheFile &cache = *self.cacheFile.cacheFile;
+        if ([self popErrorWithTitle:title forOperation:cleaner.Go(_config->FindDir("Dir::Cache::Archives") + "partial/", cache)])
             return false;
         
         return true;
@@ -548,7 +540,8 @@
 - (bool) prepare {
     fetcher_->Shutdown();
     
-    pkgRecords records(cache_);
+    pkgCacheFile &cache = *self.cacheFile.cacheFile;
+    pkgRecords records(cache);
     
     lock_ = new FileFd();
     lock_->Fd(GetLock(_config->FindDir("Dir::Cache::Archives") + "lock"));
@@ -562,7 +555,7 @@
     if ([self popErrorWithTitle:title forReadList:list])
         return false;
     
-    manager_ = (_system->CreatePM(cache_));
+    manager_ = (_system->CreatePM(cache));
     if ([self popErrorWithTitle:title forOperation:manager_->GetArchives(fetcher_, &list, &records)])
         return false;
     
@@ -672,7 +665,8 @@
 
 - (bool) upgrade {
     NSString *title(UCLocalize("UPGRADE"));
-    if ([self popErrorWithTitle:title forOperation:pkgDistUpgrade(cache_)])
+    pkgCacheFile &cache = *self.cacheFile.cacheFile;
+    if ([self popErrorWithTitle:title forOperation:pkgDistUpgrade(cache)])
         return false;
     return true;
 }

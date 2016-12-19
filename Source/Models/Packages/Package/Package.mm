@@ -11,6 +11,7 @@
 #import "Source.h"
 #import "Standard.h"
 #import "LMXLocalizedTableSections.h"
+#import "APTCacheFile-Private.h"
 
 #include <fstream>
 
@@ -550,7 +551,8 @@
 }
 
 - (BOOL) broken {
-    return [database_ cache][iterator_].InstBroken();
+    pkgCacheFile &cache = *database_.cacheFile.cacheFile;
+    return cache[iterator_].InstBroken();
 }
 
 - (BOOL) unfiltered {
@@ -603,7 +605,8 @@
         if ([database_ era] != era_ || iterator_.end())
             return NO;
         
-        pkgDepCache::StateCache &state([database_ cache][iterator_]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
+        pkgDepCache::StateCache &state = cache[iterator_];
         return state.Mode != pkgDepCache::ModeKeep;
     } }
 
@@ -612,7 +615,8 @@
         if ([database_ era] != era_ || iterator_.end())
             return nil;
         
-        pkgDepCache::StateCache &state([database_ cache][iterator_]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
+        pkgDepCache::StateCache &state = cache[iterator_];
         
         switch (state.Mode) {
             case pkgDepCache::ModeDelete:
@@ -1010,7 +1014,7 @@
         pkgProblemResolver *resolver = [database_ resolver];
         resolver->Clear(iterator_);
         
-        pkgCacheFile &cache([database_ cache]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetReInstall(iterator_, false);
         cache->MarkKeep(iterator_, false);
     } }
@@ -1024,7 +1028,7 @@
         resolver->Clear(iterator_);
         resolver->Protect(iterator_);
         
-        pkgCacheFile &cache([database_ cache]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetCandidateVersion(version_);
         cache->SetReInstall(iterator_, false);
         cache->MarkInstall(iterator_, false);
@@ -1048,7 +1052,7 @@
         resolver->Remove(iterator_);
         resolver->Protect(iterator_);
         
-        pkgCacheFile &cache([database_ cache]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetReInstall(iterator_, false);
         cache->MarkDelete(iterator_, true);
     } }

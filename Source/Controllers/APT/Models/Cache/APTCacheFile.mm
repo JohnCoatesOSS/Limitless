@@ -5,8 +5,11 @@
 //  Created on 12/18/16.
 //
 
-#import "APTCacheFile.h"
+#import "APTCacheFile-Private.h"
 #import "Apt.h"
+#import "Package.h"
+
+APT_SILENCE_DEPRECATIONS_BEGIN
 
 @interface APTCacheFile ()
 
@@ -111,4 +114,42 @@ static unsigned long APTPackageEnumerationStateFinished = ULONG_MAX;
     return bufferIndex;
 }
 
+- (Package *)packageWithName:(nonnull NSString *)name
+                    database:(nonnull Database *)database {
+    @synchronized (self) {
+        
+        pkgCacheFile &cache = *self.cacheFile;
+        if (static_cast<pkgDepCache *>(cache) == NULL)
+            return nil;
+        pkgCache::PkgIterator iterator = cache->FindPkg(name.UTF8String);
+        
+        if (iterator.end()) {
+            return nil;
+        }
+        
+        return [Package packageWithIterator:iterator
+                                   withZone:NULL
+                                     inPool:NULL
+                                   database:database];
+    };
+}
+
+// MARK: - Read Only Properties
+
+- (unsigned long)pendingDeletions {
+    return (*_cacheFile)->DelCount();
+}
+
+- (unsigned long)pendingInstalls {
+    return (*_cacheFile)->InstCount();
+}
+
+- (unsigned long)brokenPackages {
+    return (*_cacheFile)->BrokenCount();
+}
+
+
+
 @end
+
+APT_SILENCE_DEPRECATIONS_END

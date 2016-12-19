@@ -270,7 +270,7 @@ static inline CFComparisonResult StringNameCompare(CFStringRef lhn, CFStringRef 
     _end
     _end
 }
-
+#if !__has_feature(objc_arc)
 _finline CFComparisonResult StringNameCompare(NSString *lhn, NSString*rhn, size_t length) {
     return StringNameCompare((CFStringRef) lhn, (CFStringRef) rhn, length);
 }
@@ -280,6 +280,7 @@ static inline CFComparisonResult PackageNameCompare(Package *lhs, Package *rhs, 
     NSString *rhn(PackageName(rhs, @selector(cyname)));
     return StringNameCompare(lhn, rhn, lhn.size());
 }
+
 
 static inline CFComparisonResult PackageNameCompare_(Package **lhs, Package **rhs, void *arg) {
     return PackageNameCompare(*lhs, *rhs, arg);
@@ -292,3 +293,5 @@ std::binary_function<Package *, Package *, bool>
         return PackageNameCompare(lhs, rhs, NULL) == kCFCompareLessThan;
     }
 };
+
+#endif
