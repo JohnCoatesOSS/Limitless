@@ -12,6 +12,8 @@
 
 @end
 
+APT_SILENCE_DEPRECATIONS_BEGIN
+
 @implementation TestAPTVersionIterator
 
 - (void)setUp {
@@ -68,3 +70,5 @@
 }
 
 @end
+
+APT_SILENCE_DEPRECATIONS_END
