@@ -15,6 +15,9 @@
 @implementation TestAPTVersionIterator
 
 - (void)setUp {
+    APTManager *manager = [APTManager sharedInstance];
+    [manager setup];
+    APTManager.debugMode = FALSE;
     [super setUp];
 }
 
@@ -22,35 +25,46 @@
     [super tearDown];
 }
 
-- (void)testIterate {
-    //pkgCache::PkgIterator iterator([package iterator]);
-    //pkgCache::VerIterator ver(cache[iterator].InstVerIter(cache));
-    // for (pkgCache::PkgIterator iterator = cache_->PkgBegin(); !iterator.end(); ++iterator)
-    
-    pkgCacheFile cacheFile;
+- (void)testPackageEnumeration {
+    pkgCacheFile rawCacheFile;
     OpProgress progress;
-    bool opened = cacheFile.Open(progress, false);
-    NSLog(@"opened: %d", opened);
-    XCTAssertTrue(opened, "Couldn't open cache file!");
-    if (!opened) {   
+    bool opened = rawCacheFile.Open(progress, false);
+    XCTAssertTrue(opened, "Opened cache file");
+    if (!opened) {
         return;
     }
     
-    //cacheFile->
-    
-    pkgSourceList *list = new pkgSourceList();
-    list->ReadMainList();
-    for (pkgSourceList::const_iterator source = list->begin(); source != list->end(); ++source) {
-        NSLog(@"source!");
-    }
-    int packages = 0;
-    for (pkgCache::PkgIterator iterator = cacheFile->PkgBegin(); !iterator.end(); ++iterator) {
-        packages += 1;
-//        NSLog(@"package!");
+    int packageCount = 0;
+    pkgCache::PkgIterator iterator;
+    iterator = iterator = rawCacheFile->PkgBegin();
+    while(!iterator.end()) {
+        packageCount += 1;
+        iterator++;
     }
     
-    NSLog(@"packages: %d", packages);
-
+    pkgCache owner = *rawCacheFile;
+    long expectedPackages = owner.HeaderP->PackageCount;
+    
+    NSError *error = nil;
+    APTCacheFile *cacheFile = [[APTCacheFile alloc] initWithError:&error];
+    XCTAssertNotNil(cacheFile, "APTCacheFile initialized successfully");
+    XCTAssertNil(error, "APTCacheFile didn't return any errors");
+    
+    if (error) {
+        NSLog(@"error initing cache file: %@", error);
+        return;
+    }
+    
+    int enumeratedPackages = 0;
+    for (NSString *packageName in cacheFile) {
+        XCTAssertNotNil(packageName, "Valid package.");
+        enumeratedPackages += 1;
+    }
+    
+    XCTAssertEqual(packageCount, enumeratedPackages,
+                   "NSFastEnumeration enumerated through all packages");
+    XCTAssertEqual(enumeratedPackages, expectedPackages,
+                   "Expected packages has correct value");
 }
 
 @end

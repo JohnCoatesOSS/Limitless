@@ -57,58 +57,58 @@
     _packagesCount = @(packages);
     return _packagesCount;
 }
+typedef struct APTPackageEnumerationState {
+    pkgCache *owner;
+    pkgCache::Package *package;
+    long hashIndex;
+} APTPackageEnumerationState;
+static unsigned long APTPackageEnumerationStateFinished = ULONG_MAX;
 
-static int count = 0;
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                   objects:(id __unsafe_unretained _Nullable
                                            [_Nonnull])buffer
                                     count:(NSUInteger)len {
-    pkgCache::PkgIterator iterator;
+    if (state->state == APTPackageEnumerationStateFinished) {
+        return 0;
+    }
     
+    APTPackageEnumerationState *enumerationState = nil;
+    
+    pkgCache::PkgIterator iterator;
     if (state->state == 0) {
-        NSLog(@"state is 0!");
+        enumerationState = (APTPackageEnumerationState *)malloc(sizeof(APTPackageEnumerationState));
         iterator = (*_cacheFile)->PkgBegin();
     } else {
-        
-        const char *name = (const char *)state->state;
-        NSLog(@"package name: %s", name);
-        iterator = (*_cacheFile)->FindPkg(name);
-        // move to next
-        ++iterator;
-        free((void *)name);
+        enumerationState = (APTPackageEnumerationState *)state->state;
+        iterator = pkgCache::PkgIterator(enumerationState->owner,
+                                         enumerationState->package,
+                                         enumerationState->hashIndex);
     }
     
-    NSUInteger batchCount = 0;
-    const char *packageName = iterator.Name();
-    
-    NSMutableArray *retainDuringIteration = [NSMutableArray new];
-    while (!iterator.end() && batchCount < len) {
-        
-        count += 1;
-        packageName = iterator.Name();
-        NSString * __autoreleasing packageHolder = @(packageName);
-//        [retainDuringIteration addObject:package];
-        buffer[batchCount] = packageHolder;
-        ++iterator;
-        batchCount++;
+    NSUInteger bufferIndex = 0;
+    while (!iterator.end() && bufferIndex < len) {
+        NSString * __autoreleasing packageHolder = @(iterator.Name());
+        buffer[bufferIndex] = packageHolder;
+        iterator++;
+        bufferIndex++;
     }
-    
     
     if (iterator.end()) {
-        NSLog(@"iterator has ended!");
-    }
-    
-    self.retainDuringIteration = retainDuringIteration;
-    if (!iterator.end()) {
-        state->state = (unsigned long)strdup(packageName);
+        if (enumerationState != nil) {
+            free(enumerationState);
+        }
+        state->state = APTPackageEnumerationStateFinished;
     } else {
-        state->state = (unsigned long)packageName;
+        enumerationState->owner = iterator.getOwner();
+        enumerationState->package = iterator.getPackage();
+        enumerationState->hashIndex = iterator.getHashIndex();
+        
+        state->state = (unsigned long)enumerationState;
     }
-    
     state->itemsPtr = buffer;
     state->mutationsPtr = &state->extra[0];
     
-    return batchCount;
+    return bufferIndex;
 }
 
 @end

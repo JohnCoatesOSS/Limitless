@@ -44,3 +44,8 @@ APT_UNSILENCE_DEPRECATIONS
 #import "APTDependencyCachePolicy.h"
 #import "APTError.h"
 #import "APTErrorController.h"
+#import "APTCacheFile.h"
+
+// MARK: - Controllers
+
+#import "APTManager.h"
