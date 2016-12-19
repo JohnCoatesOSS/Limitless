@@ -355,6 +355,8 @@
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
+		FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA03F281E06B65000071CC7 /* APTCacheFile.mm */; };
+		FAA03F2A1E06B65000071CC7 /* APTCacheFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA03F281E06B65000071CC7 /* APTCacheFile.mm */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
@@ -1014,6 +1016,8 @@
 		FA9010FB1DE12B1C00A607AC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA9010FF1DE12B1C00A607AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
+		FAA03F271E06B65000071CC7 /* APTCacheFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTCacheFile.h; sourceTree = "<group>"; };
+		FAA03F281E06B65000071CC7 /* APTCacheFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTCacheFile.mm; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
@@ -1727,6 +1731,7 @@
 		FA5684AC1DF603F2000A4EBD /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FAA03F261E06B62800071CC7 /* Cache */,
 				FA5684B11DF6041D000A4EBD /* Categories */,
 				FA5684AD1DF6040F000A4EBD /* APTSource.h */,
 				FA5684AE1DF6040F000A4EBD /* APTSource.m */,
@@ -2206,7 +2211,6 @@
 		FA6D8CA41D746B7F00283EDB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				FA7DB8FF1DE0275000F874E6 /* APT */,
 				FA6C86F91D7626A300FB99CF /* Cache */,
 				FA6C86D51D761E1300FB99CF /* URL Handler */,
 				FA6C86621D74C48400FB99CF /* Database */,
@@ -2273,7 +2277,8 @@
 				FA7DB9001DE0276D00F874E6 /* APTManager.h */,
 				FA7DB9011DE0276D00F874E6 /* APTManager.mm */,
 			);
-			path = APT;
+			name = APT;
+			path = Controllers/APT;
 			sourceTree = "<group>";
 		};
 		FA9010FC1DE12B1C00A607AC /* Tests */ = {
@@ -2320,6 +2325,15 @@
 			path = Images/Purposes;
 			sourceTree = "<group>";
 		};
+		FAA03F261E06B62800071CC7 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				FAA03F271E06B65000071CC7 /* APTCacheFile.h */,
+				FAA03F281E06B65000071CC7 /* APTCacheFile.mm */,
+			);
+			path = Cache;
+			sourceTree = "<group>";
+		};
 		FAA811AB1D745FD100C674C9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -2330,6 +2344,7 @@
 				FA6C86401D74ADAD00FB99CF /* Globals */,
 				FA6C86291D749C5300FB99CF /* Categories */,
 				FAA811B31D74667B00C674C9 /* Headers */,
+				FA7DB8FF1DE0275000F874E6 /* APT */,
 				FA6D8CA41D746B7F00283EDB /* Controllers */,
 				FA6D8CA51D746BA000283EDB /* Models */,
 				FA6D8CA31D746B6B00283EDB /* UI */,
@@ -2892,6 +2907,7 @@
 				FA1EB0BD1E066CAB007C48A6 /* APTSourceList.mm in Sources */,
 				FA6C86861D758D4000FB99CF /* Section.mm in Sources */,
 				FA6C866E1D75722D00FB99CF /* CytoreHelpers.mm in Sources */,
+				FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */,
 				FA6C86AE1D75EFF900FB99CF /* CydiaProgressData.mm in Sources */,
 				FA6C86741D7573D900FB99CF /* Source.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
@@ -2975,6 +2991,7 @@
 				FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FA1EB0BE1E066CAB007C48A6 /* APTSourceList.mm in Sources */,
 				FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */,
+				FAA03F2A1E06B65000071CC7 /* APTCacheFile.mm in Sources */,
 				FA5684891DF5FA6F000A4EBD /* Platform.m in Sources */,
 				FA56848A1DF5FA74000A4EBD /* Device.mm in Sources */,
 				FA5684B51DF60448000A4EBD /* APTSource+APTLib.mm in Sources */,
