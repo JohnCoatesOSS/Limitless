@@ -162,6 +162,9 @@ static BOOL _debugMode = false;
     self.configuration[@"Debug::pkgAcquire"] = debugMode;
     self.configuration[@"Debug::pkgInitConfig"] = debugMode;
     self.configuration[@"Debug::pkgAcquire::Worker"] = debugMode;
+    self.configuration[@"Debug::pkgCacheGen"] = debugMode;
+    self.configuration[@"Debug::pkgDepCache::Marker"] = debugMode;
+    self.configuration[@"Debug::pkgDepCache::AutoInstall"] = debugMode;
 }
 
 // MARK: - Simulator Setup
