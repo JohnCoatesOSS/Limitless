@@ -16,6 +16,7 @@
 #import "Logging.hpp"
 #import "Paths.h"
 #import "APTCacheFile+Legacy.h"
+#import "APTDownloadScheduler-Private.h"
 
 @implementation Database
 
@@ -32,7 +33,9 @@
 }
 
 - (void) releasePackages {
-    CFArrayApplyFunction(packages_, CFRangeMake(0, CFArrayGetCount(packages_)), reinterpret_cast<CFArrayApplierFunction>(&CFRelease), NULL);
+    CFArrayApplyFunction(packages_,
+                         CFRangeMake(0, CFArrayGetCount(packages_)),
+                         reinterpret_cast<CFArrayApplierFunction>(&CFRelease), NULL);
     CFArrayRemoveAllValues(packages_);
 }
 
@@ -153,7 +156,6 @@
 - (id) init {
     if ((self = [super init]) != nil) {
         records_ = NULL;
-        fetcher_ = NULL;
         lock_ = NULL;
         status_ = new CydiaStatus();
         
@@ -211,10 +213,6 @@
 
 - (pkgRecords *) records {
     return records_;
-}
-
-- (pkgAcquire &) fetcher {
-    return *fetcher_;
 }
 
 - (pkgSourceList &) list {
@@ -283,7 +281,8 @@
         sourceMap_.clear();
         [sourceList_ removeAllObjects];
         
-        _error->Discard();
+        [APTErrorController popErrors];
+        
         if (list_) {
             delete list_;
         }
@@ -293,10 +292,7 @@
             delete lock_;
         }
         lock_ = NULL;
-        if (fetcher_) {
-            delete fetcher_;
-        }
-        fetcher_ = NULL;
+        self.downloadScheduler = nil;
         if (records_) {
             delete records_;
         }
@@ -380,7 +376,7 @@
         pkgCacheFile &cache = *self.cacheFile.cacheFile;
         records_ = new pkgRecords(cache);
         self.problemResolver = [[APTPackageProblemResolver alloc] initWithCacheFile:self.cacheFile];
-        fetcher_ = new pkgAcquire(status_);
+        self.downloadScheduler = [[APTDownloadScheduler alloc] initWithStatusDelegate:status_];
         lock_ = NULL;
         
         APTCacheFile *cacheFile = self.cacheFile;
@@ -517,8 +513,11 @@
         if ([self popErrorWithTitle:title])
             return false;
         
-        pkgAcquire fetcher;
-        fetcher.Clean(_config->FindDir("Dir::Cache::Archives"));
+        string archivesPath = _config->FindDir("Dir::Cache::Archives");
+        NSString *archivesDirectory = @(archivesPath.c_str());
+        
+        [self.downloadScheduler
+         eraseFilesNotInOperationInDirectory:archivesDirectory];
         
         CydiaLogCleaner cleaner;
         pkgCacheFile &cache = *self.cacheFile.cacheFile;
@@ -529,7 +528,7 @@
     } }
 
 - (bool) prepare {
-    fetcher_->Shutdown();
+    [self.downloadScheduler terminate];
     
     pkgCacheFile &cache = *self.cacheFile.cacheFile;
     pkgRecords records(cache);
@@ -547,7 +546,8 @@
         return false;
     
     manager_ = (_system->CreatePM(cache));
-    if ([self popErrorWithTitle:title forOperation:manager_->GetArchives(fetcher_, &list, &records)])
+    pkgAcquire *fetcher = self.downloadScheduler.scheduler;
+    if ([self popErrorWithTitle:title forOperation:manager_->GetArchives(fetcher, &list, &records)])
         return false;
     
     return true;
@@ -569,14 +569,17 @@
     
     [delegate_ performSelectorOnMainThread:@selector(retainNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
     
-    if (fetcher_->Run(PulseInterval_) != pkgAcquire::Continue) {
-        _trace();
+    APTDownloadSchedulerRunResult downloadResult = [self.downloadScheduler
+                                                    runWithDelegateInterval:PulseInterval_];
+    if (downloadResult != APTDownloadSchedulerRunResultSuccess) {
         [self popErrorWithTitle:title];
         return;
     }
     
     bool failed = false;
-    for (pkgAcquire::ItemIterator item = fetcher_->ItemsBegin(); item != fetcher_->ItemsEnd(); item++) {
+    pkgAcquire *fetcher = self.downloadScheduler.scheduler;
+    
+    for (pkgAcquire::ItemIterator item = fetcher->ItemsBegin(); item != fetcher->ItemsEnd(); item++) {
         if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete)
             continue;
         if ((*item)->Status == pkgAcquire::Item::StatIdle)

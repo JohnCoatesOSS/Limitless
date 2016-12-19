@@ -248,10 +248,10 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                     removes, @"removes",
                     nil];
         
-        sizes_ = [NSDictionary dictionaryWithObjectsAndKeys:
-                  [NSNumber numberWithInteger:[database_ fetcher].FetchNeeded()], @"downloading",
-                  [NSNumber numberWithInteger:[database_ fetcher].PartialPresent()], @"resuming",
-                  nil];
+        sizes_ = @{
+                  @"downloading": @(database_.downloadScheduler.bytesDownloading),
+                  @"resuming": @(database_.downloadScheduler.bytesDownloaded)
+                  };
         
         [self setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/#!/confirm/", UI_]]];
     } return self;

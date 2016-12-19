@@ -10,6 +10,7 @@
 #import "APTSource+APTLib.h"
 #import "LMXAPTStatus.hpp"
 #import "APTCacheFile-Private.h"
+#import "APTDownloadScheduler-Private.h"
 
 APT_SILENCE_DEPRECATIONS_BEGIN
 
@@ -117,14 +118,14 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     }
     
     LMXAptStatus *status = new LMXAptStatus();
-    pkgAcquire *fetcher = new pkgAcquire(status);
+    APTDownloadScheduler *downloadScheduler;
+    downloadScheduler = [[APTDownloadScheduler alloc] initWithStatusDelegate:status];
     pkgCacheFile &cache = *cacheFile.cacheFile;
     pkgRecords *records = new pkgRecords(cache);
     pkgPackageManager *manager = _system->CreatePM(cache);
     
     void (^deleteVariables)() = ^void() {
         delete records;
-        delete fetcher;
         delete status;
     };
     
@@ -135,11 +136,13 @@ APT_SILENCE_DEPRECATIONS_BEGIN
         return;
     }
     
-    manager->GetArchives(fetcher, &sourceList, records);
+    manager->GetArchives(downloadScheduler.scheduler, &sourceList, records);
     ListUpdate(*status, sourceList);
     
     int PulseInterval = 500000;
-    if (fetcher->Run(PulseInterval) != pkgAcquire::Continue) {
+    APTDownloadSchedulerRunResult downloadResult;
+    downloadResult = [downloadScheduler runWithDelegateInterval:PulseInterval];
+    if (downloadResult != APTDownloadSchedulerRunResultSuccess) {
         NSLog(@"fetcher errors: %@", [APTErrorController popErrors]);
         completion(FALSE, [APTErrorController popErrors]);
         deleteVariables();
@@ -148,6 +151,7 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     
     bool failed = false;
     NSMutableArray *errors = [NSMutableArray new];
+    pkgAcquire *fetcher = downloadScheduler.scheduler;
     for (pkgAcquire::ItemIterator item = fetcher->ItemsBegin(); item != fetcher->ItemsEnd(); item++) {
         if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete)
             continue;
