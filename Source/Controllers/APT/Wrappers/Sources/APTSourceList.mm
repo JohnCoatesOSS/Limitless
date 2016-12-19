@@ -135,7 +135,7 @@
     }
     
     manager->GetArchives(fetcher, &sourceList, records);
-    bool updated = ListUpdate(*status, sourceList);
+    ListUpdate(*status, sourceList);
     
     int PulseInterval = 500000;
     if (fetcher->Run(PulseInterval) != pkgAcquire::Continue) {
