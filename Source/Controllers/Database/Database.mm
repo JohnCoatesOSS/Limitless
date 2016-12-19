@@ -153,7 +153,6 @@
 - (id) init {
     if ((self = [super init]) != nil) {
         records_ = NULL;
-        resolver_ = NULL;
         fetcher_ = NULL;
         lock_ = NULL;
         status_ = new CydiaStatus();
@@ -212,10 +211,6 @@
 
 - (pkgRecords *) records {
     return records_;
-}
-
-- (pkgProblemResolver *) resolver {
-    return resolver_;
 }
 
 - (pkgAcquire &) fetcher {
@@ -302,15 +297,12 @@
             delete fetcher_;
         }
         fetcher_ = NULL;
-        if (resolver_) {
-            delete resolver_;
-        }
-        resolver_ = NULL;
         if (records_) {
             delete records_;
         }
         records_ = NULL;
         
+        self.problemResolver = nil;
         self.policy = nil;
         self.cacheFile = nil;
         
@@ -346,7 +338,6 @@
         
         _trace();
         OpProgress progress;
-        bool opened;
         NSError *error = nil;
     open:
         delock_ = GetStatusDate();
@@ -388,7 +379,7 @@
         self.policy = [APTDependencyCachePolicy new];
         pkgCacheFile &cache = *self.cacheFile.cacheFile;
         records_ = new pkgRecords(cache);
-        resolver_ = new pkgProblemResolver(cache);
+        self.problemResolver = [[APTPackageProblemResolver alloc] initWithCacheFile:self.cacheFile];
         fetcher_ = new pkgAcquire(status_);
         lock_ = NULL;
         
@@ -494,9 +485,9 @@
 
 - (void) clear {
     @synchronized (self) {
-        delete resolver_;
+        self.problemResolver = nil;
         pkgCacheFile &cache = *self.cacheFile.cacheFile;
-        resolver_ = new pkgProblemResolver(cache);
+        self.problemResolver = [[APTPackageProblemResolver alloc] initWithCacheFile:self.cacheFile];
         
         for (pkgCache::PkgIterator iterator(cache->PkgBegin()); !iterator.end(); ++iterator)
             if (!cache[iterator].Keep())

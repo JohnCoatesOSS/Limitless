@@ -1144,11 +1144,11 @@ errno == ENOTDIR \
 
 
 - (void) resolve {
-    pkgProblemResolver *resolver = [database_ resolver];
-    
-    resolver->InstallProtect();
-    if (!resolver->Resolve(true))
-        _error->Discard();
+    APTPackageProblemResolver *problemResolver = database_.problemResolver;
+    [problemResolver installProtectedPackages];
+    if (![problemResolver resolveAndFixBroken:TRUE]) {
+        NSLog(@"Error: Failed to resolve: %@", [APTErrorController popErrors]);
+    }
 }
 
 - (bool) perform {

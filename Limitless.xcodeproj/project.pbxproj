@@ -360,7 +360,11 @@
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
+		FAD638991E07F667001E18DA /* APTPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638981E07F667001E18DA /* APTPackage.mm */; };
+		FAD6389A1E07F667001E18DA /* APTPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638981E07F667001E18DA /* APTPackage.mm */; };
 		FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */; };
+		FAD7CDE61E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD7CDE71E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; };
 		FADD1BC81DF7DA06009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FADD1BC91DF7DA08009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FADD1BCD1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BCC1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -1024,8 +1028,13 @@
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
 		FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXLaunchProcess.m; sourceTree = "<group>"; };
+		FAD638971E07F667001E18DA /* APTPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackage.h; sourceTree = "<group>"; };
+		FAD638981E07F667001E18DA /* APTPackage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackage.mm; sourceTree = "<group>"; };
+		FAD6389B1E07F7CD001E18DA /* APTPackage-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTPackage-Private.h"; sourceTree = "<group>"; };
 		FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile+Legacy.h"; sourceTree = "<group>"; };
 		FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "APTCacheFile+Legacy.mm"; sourceTree = "<group>"; };
+		FAD7CDE41E07F0AB00444344 /* APTPackageProblemResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackageProblemResolver.h; sourceTree = "<group>"; };
+		FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackageProblemResolver.mm; sourceTree = "<group>"; };
 		FADD1BC41DF7B1D7009EA2C6 /* NSString+Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Paths.h"; sourceTree = "<group>"; };
 		FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Paths.m"; sourceTree = "<group>"; };
 		FADD1BCB1DF8949C009EA2C6 /* APTDependencyCachePolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTDependencyCachePolicy.h; sourceTree = "<group>"; };
@@ -1286,6 +1295,7 @@
 		FA1EB0B21E0635EB007C48A6 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FAD7CDE21E07F07100444344 /* Packages */,
 				FA1EB0C41E067BEE007C48A6 /* Sources */,
 				FA1EB0B61E063787007C48A6 /* TestAPTVersionIterator.mm */,
 			);
@@ -1735,6 +1745,7 @@
 		FA5684AC1DF603F2000A4EBD /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FAD7CDE31E07F08F00444344 /* Packages */,
 				FAA03F261E06B62800071CC7 /* Cache */,
 				FA5684B11DF6041D000A4EBD /* Categories */,
 				FA5684AD1DF6040F000A4EBD /* APTSource.h */,
@@ -2472,6 +2483,25 @@
 			path = Javascript;
 			sourceTree = "<group>";
 		};
+		FAD7CDE21E07F07100444344 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		FAD7CDE31E07F08F00444344 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				FAD7CDE41E07F0AB00444344 /* APTPackageProblemResolver.h */,
+				FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */,
+				FAD638971E07F667001E18DA /* APTPackage.h */,
+				FAD6389B1E07F7CD001E18DA /* APTPackage-Private.h */,
+				FAD638981E07F667001E18DA /* APTPackage.mm */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
 		FADD1BC31DF7B1BD009EA2C6 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -2930,6 +2960,7 @@
 				FA6C86DE1D761F3600FB99CF /* SectionsController.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA6C86EA1D7621CC00FB99CF /* InstalledController.mm in Sources */,
+				FAD638991E07F667001E18DA /* APTPackage.mm in Sources */,
 				FA6C86E71D76216300FB99CF /* PackageSettingsController.mm in Sources */,
 				FA6C86E11D76200200FB99CF /* ChangesController.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
@@ -2943,6 +2974,7 @@
 				FA5684C11DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
 				FA6C86531D74BEC200FB99CF /* Networking.mm in Sources */,
 				FA6C86C61D760AC300FB99CF /* FilteredPackageListController.mm in Sources */,
+				FAD7CDE61E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,
 				FA23E2C51D775070001FBE4A /* Startup.mm in Sources */,
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
@@ -2996,6 +3028,7 @@
 				FADD1BCE1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm in Sources */,
 				FAE642B11DF1433100E975B8 /* LMXRespringViewController.m in Sources */,
 				FA1EB0CF1E068278007C48A6 /* APTErrorController.mm in Sources */,
+				FAD7CDE71E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */,
 				FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FA1EB0BE1E066CAB007C48A6 /* APTSourceList.mm in Sources */,
 				FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */,
@@ -3009,6 +3042,7 @@
 				FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */,
 				FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */,
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
+				FAD6389A1E07F667001E18DA /* APTPackage.mm in Sources */,
 				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
 				FAE642B51DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
 				FADD1BC91DF7DA08009EA2C6 /* NSString+Paths.m in Sources */,

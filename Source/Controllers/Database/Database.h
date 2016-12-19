@@ -27,9 +27,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
     unsigned era_;
     _H<NSDate> delock_;
     
-//    pkgCacheFile cache_;
     pkgRecords *records_;
-    pkgProblemResolver *resolver_;
     pkgAcquire *fetcher_;
     FileFd *lock_;
     SPtr<pkgPackageManager> manager_;
@@ -66,9 +64,9 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 //- (pkgCacheFile &) cache;
 @property (retain, strong) APTCacheFile *cacheFile;
 @property (retain, strong) APTDependencyCachePolicy *policy;
+@property (retain, strong) APTPackageProblemResolver *problemResolver;
 
 - (pkgRecords *) records;
-- (pkgProblemResolver *) resolver;
 - (pkgAcquire &) fetcher;
 - (pkgSourceList &) list;
 - (NSArray *) packages;

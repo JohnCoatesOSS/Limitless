@@ -45,6 +45,8 @@ APT_SILENCE_DEPRECATIONS_END
 #import "APTError.h"
 #import "APTErrorController.h"
 #import "APTCacheFile.h"
+#import "APTPackageProblemResolver.h"
+#import "APTPackage.h"
 
 // MARK: - Controllers
 

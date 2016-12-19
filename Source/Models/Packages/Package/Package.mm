@@ -12,10 +12,171 @@
 #import "Standard.h"
 #import "LMXLocalizedTableSections.h"
 #import "APTCacheFile-Private.h"
+#import "APTPackage-Private.h"
 
 #include <fstream>
 
 @implementation Package
+
+- (Package *) initWithVersion:(pkgCache::VerIterator)version
+                     withZone:(NSZone *)zone
+                       inPool:(CYPool *)pool
+                     database:(Database *)database {
+    if ((self = [super init]) != nil) {
+        _profile(Package$initWithVersion)
+        if (pool == NULL)
+            pool_ = new CYPool();
+        else {
+            pool_ = pool;
+            pooled_ = true;
+        }
+        
+        _package = [[APTPackage alloc] initWithVersionIterator:version];
+        
+        database_ = database;
+        era_ = [database era];
+        
+        version_ = version;
+        
+        pkgCache::PkgIterator iterator(version.ParentPkg());
+        iterator_ = iterator;
+        
+        _profile(Package$initWithVersion$Version)
+        file_ = version_.FileList();
+        _end
+        
+        _profile(Package$initWithVersion$Cache)
+        name_.set(NULL, iterator.Display());
+        
+        latest_.set(NULL, StripVersion_(version_.VerStr()));
+        
+        pkgCache::VerIterator current(iterator.CurrentVer());
+        if (!current.end())
+            installed_.set(NULL, StripVersion_(current.VerStr()));
+        _end
+        
+        [LMXLocalizedTableSections transliterate:name_ pool:pool_ output:&transform_];
+        
+        _profile(Package$initWithVersion$Tags)
+        pkgCache::TagIterator tag(iterator.TagList());
+        if (!tag.end()) {
+            tags_ = [NSMutableArray arrayWithCapacity:8];
+            
+            goto tag; for (; !tag.end(); ++tag) tag: {
+                const char *name(tag.Name());
+                NSString *string((NSString *) CYStringCreate(name));
+                if (string == nil)
+                    continue;
+                
+                [tags_ addObject:[string autorelease]];
+                
+                if (role_ == 0 && strncmp(name, "role::", 6) == 0 /*&& strcmp(name, "role::leaper") != 0*/) {
+                    if (strcmp(name + 6, "enduser") == 0)
+                        role_ = 1;
+                    else if (strcmp(name + 6, "hacker") == 0)
+                        role_ = 2;
+                    else if (strcmp(name + 6, "developer") == 0)
+                        role_ = 3;
+                    else if (strcmp(name + 6, "cydia") == 0)
+                        role_ = 7;
+                    else
+                        role_ = 4;
+                }
+                
+                if (strncmp(name, "cydia::", 7) == 0) {
+                    if (strcmp(name + 7, "essential") == 0)
+                        essential_ = true;
+                    else if (strcmp(name + 7, "obsolete") == 0)
+                        obsolete_ = true;
+                }
+            }
+        }
+        _end
+        
+        _profile(Package$initWithVersion$Metadata)
+        const char *mixed(iterator.Name());
+        size_t size(strlen(mixed));
+        static const size_t prefix(sizeof("/var/lib/dpkg/info/") - 1);
+        char lower[prefix + size + 5 + 1];
+        
+        for (size_t i(0); i != size; ++i)
+            lower[prefix + i] = mixed[i] | 0x20;
+        
+        if (!installed_.empty()) {
+            memcpy(lower, "/var/lib/dpkg/info/", prefix);
+            memcpy(lower + prefix + size, ".list", 6);
+            struct stat info;
+            if (stat(lower, &info) != -1)
+                upgraded_ = info.st_birthtime;
+        }
+        
+        PackageValue *metadata(PackageFind(lower + prefix, size));
+        metadata_ = metadata;
+        
+        id_.set(NULL, metadata->name_, size);
+        
+        const char *latest(version_.VerStr());
+        size_t length(strlen(latest));
+        
+        uint16_t vhash(hashlittle(latest, length));
+        
+        size_t capped(std::min<size_t>(8, length));
+        latest = latest + length - capped;
+        
+        if (metadata->first_ == 0)
+            metadata->first_ = now_;
+        
+        if (metadata->vhash_ != vhash || strncmp(metadata->version_, latest, sizeof(metadata->version_)) != 0) {
+            strncpy(metadata->version_, latest, sizeof(metadata->version_));
+            metadata->vhash_ = vhash;
+            metadata->last_ = now_;
+        } else if (metadata->last_ == 0)
+            metadata->last_ = metadata->first_;
+        _end
+        
+        _profile(Package$initWithVersion$Section)
+        section_ = version_.Section();
+        _end
+        
+        _profile(Package$initWithVersion$Flags)
+        essential_ |= ((iterator->Flags & pkgCache::Flag::Essential) == 0 ? NO : YES);
+        ignored_ = iterator->SelectedState == pkgCache::State::Hold;
+        _end
+        _end } return self;
+}
+
++ (Package *) packageWithIterator:(pkgCache::PkgIterator)iterator withZone:(NSZone *)zone inPool:(CYPool *)pool database:(Database *)database {
+    pkgCache::VerIterator version;
+    
+    _profile(Package$packageWithIterator$GetCandidateVer)
+    version = [database.policy versionIteratorForPackage:iterator];
+    _end
+    
+    if (version.end())
+        return nil;
+    
+    Package *package;
+    
+    _profile(Package$packageWithIterator$Allocate)
+    package = [Package allocWithZone:zone];
+    _end
+    
+    _profile(Package$packageWithIterator$Initialize)
+    package = [package
+               initWithVersion:version
+               withZone:zone
+               inPool:pool
+               database:database
+               ];
+    _end
+    
+    _profile(Package$packageWithIterator$Autorelease)
+    package = [package autorelease];
+    _end
+    
+    return package;
+}
+
 
 - (NSString *) description {
     return [NSString stringWithFormat:@"<Package:%@>", static_cast<NSString *>(name_)];
@@ -206,159 +367,6 @@
         _end
     } }
 
-- (Package *) initWithVersion:(pkgCache::VerIterator)version withZone:(NSZone *)zone inPool:(CYPool *)pool database:(Database *)database {
-    if ((self = [super init]) != nil) {
-        _profile(Package$initWithVersion)
-        if (pool == NULL)
-            pool_ = new CYPool();
-        else {
-            pool_ = pool;
-            pooled_ = true;
-        }
-        
-        database_ = database;
-        era_ = [database era];
-        
-        version_ = version;
-        
-        pkgCache::PkgIterator iterator(version.ParentPkg());
-        iterator_ = iterator;
-        
-        _profile(Package$initWithVersion$Version)
-        file_ = version_.FileList();
-        _end
-        
-        _profile(Package$initWithVersion$Cache)
-        name_.set(NULL, iterator.Display());
-        
-        latest_.set(NULL, StripVersion_(version_.VerStr()));
-        
-        pkgCache::VerIterator current(iterator.CurrentVer());
-        if (!current.end())
-            installed_.set(NULL, StripVersion_(current.VerStr()));
-        _end
-        
-        [LMXLocalizedTableSections transliterate:name_ pool:pool_ output:&transform_];
-        
-        _profile(Package$initWithVersion$Tags)
-        pkgCache::TagIterator tag(iterator.TagList());
-        if (!tag.end()) {
-            tags_ = [NSMutableArray arrayWithCapacity:8];
-            
-            goto tag; for (; !tag.end(); ++tag) tag: {
-                const char *name(tag.Name());
-                NSString *string((NSString *) CYStringCreate(name));
-                if (string == nil)
-                    continue;
-                
-                [tags_ addObject:[string autorelease]];
-                
-                if (role_ == 0 && strncmp(name, "role::", 6) == 0 /*&& strcmp(name, "role::leaper") != 0*/) {
-                    if (strcmp(name + 6, "enduser") == 0)
-                        role_ = 1;
-                    else if (strcmp(name + 6, "hacker") == 0)
-                        role_ = 2;
-                    else if (strcmp(name + 6, "developer") == 0)
-                        role_ = 3;
-                    else if (strcmp(name + 6, "cydia") == 0)
-                        role_ = 7;
-                    else
-                        role_ = 4;
-                }
-                
-                if (strncmp(name, "cydia::", 7) == 0) {
-                    if (strcmp(name + 7, "essential") == 0)
-                        essential_ = true;
-                    else if (strcmp(name + 7, "obsolete") == 0)
-                        obsolete_ = true;
-                }
-            }
-        }
-        _end
-        
-        _profile(Package$initWithVersion$Metadata)
-        const char *mixed(iterator.Name());
-        size_t size(strlen(mixed));
-        static const size_t prefix(sizeof("/var/lib/dpkg/info/") - 1);
-        char lower[prefix + size + 5 + 1];
-        
-        for (size_t i(0); i != size; ++i)
-            lower[prefix + i] = mixed[i] | 0x20;
-        
-        if (!installed_.empty()) {
-            memcpy(lower, "/var/lib/dpkg/info/", prefix);
-            memcpy(lower + prefix + size, ".list", 6);
-            struct stat info;
-            if (stat(lower, &info) != -1)
-                upgraded_ = info.st_birthtime;
-        }
-        
-        PackageValue *metadata(PackageFind(lower + prefix, size));
-        metadata_ = metadata;
-        
-        id_.set(NULL, metadata->name_, size);
-        
-        const char *latest(version_.VerStr());
-        size_t length(strlen(latest));
-        
-        uint16_t vhash(hashlittle(latest, length));
-        
-        size_t capped(std::min<size_t>(8, length));
-        latest = latest + length - capped;
-        
-        if (metadata->first_ == 0)
-            metadata->first_ = now_;
-        
-        if (metadata->vhash_ != vhash || strncmp(metadata->version_, latest, sizeof(metadata->version_)) != 0) {
-            strncpy(metadata->version_, latest, sizeof(metadata->version_));
-            metadata->vhash_ = vhash;
-            metadata->last_ = now_;
-        } else if (metadata->last_ == 0)
-            metadata->last_ = metadata->first_;
-        _end
-        
-        _profile(Package$initWithVersion$Section)
-        section_ = version_.Section();
-        _end
-        
-        _profile(Package$initWithVersion$Flags)
-        essential_ |= ((iterator->Flags & pkgCache::Flag::Essential) == 0 ? NO : YES);
-        ignored_ = iterator->SelectedState == pkgCache::State::Hold;
-        _end
-        _end } return self;
-}
-
-+ (Package *) packageWithIterator:(pkgCache::PkgIterator)iterator withZone:(NSZone *)zone inPool:(CYPool *)pool database:(Database *)database {
-    pkgCache::VerIterator version;
-    
-    _profile(Package$packageWithIterator$GetCandidateVer)
-    version = [database.policy versionIteratorForPackage:iterator];
-    _end
-    
-    if (version.end())
-        return nil;
-    
-    Package *package;
-    
-    _profile(Package$packageWithIterator$Allocate)
-    package = [Package allocWithZone:zone];
-    _end
-    
-    _profile(Package$packageWithIterator$Initialize)
-    package = [package
-               initWithVersion:version
-               withZone:zone
-               inPool:pool
-               database:database
-               ];
-    _end
-    
-    _profile(Package$packageWithIterator$Autorelease)
-    package = [package autorelease];
-    _end
-    
-    return package;
-}
 
 - (pkgCache::PkgIterator) iterator {
     return iterator_;
@@ -1011,8 +1019,8 @@
         if ([database_ era] != era_ || file_.end())
             return;
         
-        pkgProblemResolver *resolver = [database_ resolver];
-        resolver->Clear(iterator_);
+        APTPackageProblemResolver *problemResolver = database_.problemResolver;
+        [problemResolver clearPackage:self.package];
         
         pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetReInstall(iterator_, false);
@@ -1024,9 +1032,9 @@
         if ([database_ era] != era_ || file_.end())
             return;
         
-        pkgProblemResolver *resolver = [database_ resolver];
-        resolver->Clear(iterator_);
-        resolver->Protect(iterator_);
+        APTPackageProblemResolver *problemResolver = database_.problemResolver;
+        [problemResolver clearPackage:self.package];
+        [problemResolver protectPackage:self.package];
         
         pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetCandidateVersion(version_);
@@ -1047,10 +1055,10 @@
         if ([database_ era] != era_ || file_.end())
             return;
         
-        pkgProblemResolver *resolver = [database_ resolver];
-        resolver->Clear(iterator_);
-        resolver->Remove(iterator_);
-        resolver->Protect(iterator_);
+        APTPackageProblemResolver *problemResolver = database_.problemResolver;
+        [problemResolver clearPackage:self.package];
+        [problemResolver removePackage:self.package];
+        [problemResolver protectPackage:self.package];
         
         pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetReInstall(iterator_, false);
