@@ -82,9 +82,9 @@
 		FA1EB0BD1E066CAB007C48A6 /* APTSourceList.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0BC1E066CAB007C48A6 /* APTSourceList.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA1EB0BE1E066CAB007C48A6 /* APTSourceList.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0BC1E066CAB007C48A6 /* APTSourceList.mm */; };
 		FA1EB0C61E067C0A007C48A6 /* TestAPTSources.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0C51E067C0A007C48A6 /* TestAPTSources.m */; };
-		FA1EB0CE1E068278007C48A6 /* APTErrorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0CD1E068278007C48A6 /* APTErrorController.mm */; };
+		FA1EB0CE1E068278007C48A6 /* APTErrorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0CD1E068278007C48A6 /* APTErrorController.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA1EB0CF1E068278007C48A6 /* APTErrorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0CD1E068278007C48A6 /* APTErrorController.mm */; };
-		FA1EB0D81E068657007C48A6 /* APTError.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0D71E068657007C48A6 /* APTError.m */; };
+		FA1EB0D81E068657007C48A6 /* APTError.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0D71E068657007C48A6 /* APTError.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA1EB0D91E068657007C48A6 /* APTError.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0D71E068657007C48A6 /* APTError.m */; };
 		FA1FE8C31D79D56D00CF5AAD /* error.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C21D79D56D00CF5AAD /* error.html */; };
 		FA1FE9201D79D58000CF5AAD /* localize.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C41D79D57F00CF5AAD /* localize.js */; };
@@ -293,15 +293,15 @@
 		FA5684A51DF5FB57000A4EBD /* zodttd.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B81DDEE6B400AA9B02 /* zodttd.gpg */; };
 		FA5684AA1DF6026C000A4EBD /* NSError+Limitless.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */; };
 		FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */; };
-		FA5684AF1DF6040F000A4EBD /* APTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684AE1DF6040F000A4EBD /* APTSource.m */; };
+		FA5684AF1DF6040F000A4EBD /* APTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684AE1DF6040F000A4EBD /* APTSource.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA5684B01DF6040F000A4EBD /* APTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684AE1DF6040F000A4EBD /* APTSource.m */; };
-		FA5684B41DF60448000A4EBD /* APTSource+APTLib.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B31DF60448000A4EBD /* APTSource+APTLib.mm */; };
+		FA5684B41DF60448000A4EBD /* APTSource+APTLib.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B31DF60448000A4EBD /* APTSource+APTLib.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA5684B51DF60448000A4EBD /* APTSource+APTLib.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B31DF60448000A4EBD /* APTSource+APTLib.mm */; };
 		FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B81DF72B3F000A4EBD /* Paths+APT.m */; };
 		FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B81DF72B3F000A4EBD /* Paths+APT.m */; };
 		FA5684BD1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */; };
 		FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */; };
-		FA5684C11DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; };
+		FA5684C11DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
@@ -353,9 +353,9 @@
 		FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86F71D7625E700FB99CF /* StashController.mm */; };
 		FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
-		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
+		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
-		FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA03F281E06B65000071CC7 /* APTCacheFile.mm */; };
+		FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA03F281E06B65000071CC7 /* APTCacheFile.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FAA03F2A1E06B65000071CC7 /* APTCacheFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA03F281E06B65000071CC7 /* APTCacheFile.mm */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
@@ -1018,6 +1018,7 @@
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
 		FAA03F271E06B65000071CC7 /* APTCacheFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTCacheFile.h; sourceTree = "<group>"; };
 		FAA03F281E06B65000071CC7 /* APTCacheFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTCacheFile.mm; sourceTree = "<group>"; };
+		FAA03F2B1E07B8FC00071CC7 /* APTCacheFile-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile-Private.h"; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
@@ -2330,6 +2331,7 @@
 			children = (
 				FAA03F271E06B65000071CC7 /* APTCacheFile.h */,
 				FAA03F281E06B65000071CC7 /* APTCacheFile.mm */,
+				FAA03F2B1E07B8FC00071CC7 /* APTCacheFile-Private.h */,
 			);
 			path = Cache;
 			sourceTree = "<group>";
