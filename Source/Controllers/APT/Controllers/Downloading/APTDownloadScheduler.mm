@@ -7,6 +7,7 @@
 
 #import "Apt.h"
 #import "APTDownloadScheduler-Private.h"
+#import "APTDownloadItem-Private.h"
 
 @interface APTDownloadScheduler ()
 
@@ -34,20 +35,20 @@
 
 // MARK: - Run
 
-- (APTDownloadSchedulerRunResult)run {
+- (APTDownloadResult)run {
     return [self runWithDelegateInterval:500000];
 }
 
-- (APTDownloadSchedulerRunResult)runWithDelegateInterval:(int)delegateInterval {
+- (APTDownloadResult)runWithDelegateInterval:(int)delegateInterval {
     pkgAcquire::RunResult result = self.scheduler->Run(delegateInterval);
     
     switch (result) {
         case pkgAcquire::RunResult::Continue:
-            return APTDownloadSchedulerRunResultSuccess;
+            return APTDownloadResultSuccess;
         case pkgAcquire::RunResult::Failed:
-            return APTDownloadSchedulerRunResultFailed;
+            return APTDownloadResultFailed;
         case pkgAcquire::RunResult::Cancelled:
-            return APTDownloadSchedulerRunResultCancelled;
+            return APTDownloadResultCancelled;
     }
 }
 
@@ -66,6 +67,21 @@
 
 - (void)terminate {
     self.scheduler->Shutdown();
+}
+
+// MARK: - Items
+
+- (NSArray<APTDownloadItem *> *)items {
+    NSMutableArray *items = [NSMutableArray new];
+    pkgAcquire *scheduler = self.scheduler;
+    pkgAcquire::ItemIterator itemIterator = scheduler->ItemsBegin();
+    while (itemIterator != scheduler->ItemsEnd()) {
+        pkgAcquire::Item *rawItem = *itemIterator;
+        APTDownloadItem *item = [[APTDownloadItem alloc] initWithItem:rawItem];
+        [items addObject:item];
+        itemIterator++;
+    }
+    return items;
 }
 
 @end

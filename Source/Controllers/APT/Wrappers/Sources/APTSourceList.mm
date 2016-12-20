@@ -143,9 +143,9 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     ListUpdate(*status, list);
     
     int PulseInterval = 500000;
-    APTDownloadSchedulerRunResult downloadResult;
+    APTDownloadResult downloadResult;
     downloadResult = [downloadScheduler runWithDelegateInterval:PulseInterval];
-    if (downloadResult != APTDownloadSchedulerRunResultSuccess) {
+    if (downloadResult != APTDownloadResultSuccess) {
         NSLog(@"fetcher errors: %@", [APTErrorController popErrors]);
         completion(FALSE, [APTErrorController popErrors]);
         deleteVariables();

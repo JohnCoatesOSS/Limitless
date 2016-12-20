@@ -366,6 +366,8 @@
 		FAD638A51E08CFE7001E18DA /* APTRecords.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A31E08CFE7001E18DA /* APTRecords.mm */; };
 		FAD638AA1E0905D7001E18DA /* APTPackageManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A91E0905D7001E18DA /* APTPackageManager.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FAD638AB1E0905D7001E18DA /* APTPackageManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A91E0905D7001E18DA /* APTPackageManager.mm */; };
+		FAD638B41E091F3A001E18DA /* APTDownloadItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */; };
+		FAD638B51E091F3A001E18DA /* APTDownloadItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */; };
 		FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FAD7CDE61E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FAD7CDE71E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; };
@@ -1043,6 +1045,9 @@
 		FAD638A91E0905D7001E18DA /* APTPackageManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackageManager.mm; sourceTree = "<group>"; };
 		FAD638AF1E09128B001E18DA /* APTSource-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTSource-Private.h"; sourceTree = "<group>"; };
 		FAD638B01E0914CD001E18DA /* APTSourceList-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTSourceList-Private.h"; sourceTree = "<group>"; };
+		FAD638B21E091F3A001E18DA /* APTDownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTDownloadItem.h; sourceTree = "<group>"; };
+		FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTDownloadItem.mm; sourceTree = "<group>"; };
+		FAD638B61E0920FA001E18DA /* APTDownloadItem-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTDownloadItem-Private.h"; sourceTree = "<group>"; };
 		FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile+Legacy.h"; sourceTree = "<group>"; };
 		FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "APTCacheFile+Legacy.mm"; sourceTree = "<group>"; };
 		FAD7CDE41E07F0AB00444344 /* APTPackageProblemResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackageProblemResolver.h; sourceTree = "<group>"; };
@@ -2487,6 +2492,7 @@
 		FAD6389C1E07FEBF001E18DA /* Downloading */ = {
 			isa = PBXGroup;
 			children = (
+				FAD638B11E091F1E001E18DA /* Models */,
 				FAD6389D1E07FFAB001E18DA /* APTDownloadScheduler.h */,
 				FAD638A11E07FFFD001E18DA /* APTDownloadScheduler-Private.h */,
 				FAD6389E1E07FFAB001E18DA /* APTDownloadScheduler.mm */,
@@ -2520,6 +2526,16 @@
 				FA5684AD1DF6040F000A4EBD /* APTSource.h */,
 				FAD638AF1E09128B001E18DA /* APTSource-Private.h */,
 				FA5684AE1DF6040F000A4EBD /* APTSource.mm */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FAD638B11E091F1E001E18DA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638B21E091F3A001E18DA /* APTDownloadItem.h */,
+				FAD638B61E0920FA001E18DA /* APTDownloadItem-Private.h */,
+				FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2989,6 +3005,7 @@
 				FA6C86861D758D4000FB99CF /* Section.mm in Sources */,
 				FA6C866E1D75722D00FB99CF /* CytoreHelpers.mm in Sources */,
 				FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */,
+				FAD638B41E091F3A001E18DA /* APTDownloadItem.mm in Sources */,
 				FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */,
 				FA6C86AE1D75EFF900FB99CF /* CydiaProgressData.mm in Sources */,
 				FA6C86741D7573D900FB99CF /* Source.mm in Sources */,
@@ -3082,6 +3099,7 @@
 				FAA03F2A1E06B65000071CC7 /* APTCacheFile.mm in Sources */,
 				FA5684891DF5FA6F000A4EBD /* Platform.m in Sources */,
 				FA56848A1DF5FA74000A4EBD /* Device.mm in Sources */,
+				FAD638B51E091F3A001E18DA /* APTDownloadItem.mm in Sources */,
 				FAD638AB1E0905D7001E18DA /* APTPackageManager.mm in Sources */,
 				FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */,
 				FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */,

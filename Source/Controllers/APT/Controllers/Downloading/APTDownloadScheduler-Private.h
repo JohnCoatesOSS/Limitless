@@ -16,8 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithStatusDelegate:(pkgAcquireStatus *)statusDelegate;
 
-- (APTDownloadSchedulerRunResult)run;
-- (APTDownloadSchedulerRunResult)runWithDelegateInterval:(int)delegateInterval;
+- (APTDownloadResult)run;
+- (APTDownloadResult)runWithDelegateInterval:(int)delegateInterval;
 
 - (BOOL)eraseFilesNotInOperationInDirectory:(NSString *)directoryPath;
 

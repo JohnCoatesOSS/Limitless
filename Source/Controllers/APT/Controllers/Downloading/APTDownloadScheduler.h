@@ -5,17 +5,21 @@
 //  Created on 12/19/16.
 //
 
-typedef NS_ENUM(NSUInteger, APTDownloadSchedulerRunResult) {
-    APTDownloadSchedulerRunResultSuccess,
-    APTDownloadSchedulerRunResultFailed,
-    APTDownloadSchedulerRunResultCancelled,
+typedef NS_ENUM(NSUInteger, APTDownloadResult) {
+    APTDownloadResultSuccess,
+    APTDownloadResultFailed,
+    APTDownloadResultCancelled,
 };
+
+@class APTDownloadItem;
 
 @interface APTDownloadScheduler : NSObject
 
-- (APTDownloadSchedulerRunResult)run;
+- (APTDownloadResult)run;
 
 - (NSUInteger)bytesDownloading;
 - (NSUInteger)bytesDownloaded;
+
+@property (readonly, nonatomic) NSArray<APTDownloadItem *> *items;
 
 @end

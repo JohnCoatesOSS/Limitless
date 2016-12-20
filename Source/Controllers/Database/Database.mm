@@ -553,35 +553,42 @@
         }
     }
     
-    [delegate_ performSelectorOnMainThread:@selector(retainNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
+    [delegate_ performSelectorOnMainThread:@selector(retainNetworkActivityIndicator)
+                                withObject:nil waitUntilDone:YES];
     
-    APTDownloadSchedulerRunResult downloadResult = [self.downloadScheduler
+    APTDownloadResult downloadResult = [self.downloadScheduler
                                                     runWithDelegateInterval:PulseInterval_];
-    if (downloadResult != APTDownloadSchedulerRunResultSuccess) {
+    if (downloadResult != APTDownloadResultSuccess) {
         [self popErrorWithTitle:title];
         return;
     }
     
-    bool failed = false;
-    pkgAcquire *fetcher = self.downloadScheduler.scheduler;
+    BOOL failed = FALSE;
     
-    for (pkgAcquire::ItemIterator item = fetcher->ItemsBegin(); item != fetcher->ItemsEnd(); item++) {
-        if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete)
+    // Report any errors
+    for (APTDownloadItem *item in self.downloadScheduler.items) {
+        APTDownloadState state = item.state;
+        if (state == APTDownloadStateDone && item.finished) {
             continue;
-        if ((*item)->Status == pkgAcquire::Item::StatIdle)
+        }
+        else if (state == APTDownloadStateIdle) {
             continue;
+        }
         
-        std::string uri = (*item)->DescURI();
-        std::string error = (*item)->ErrorText;
+        NSURL *url = item.url;
+        NSString *errorMessage = item.errorMessage;
         
-        lprintf("pAf:%s:%s\n", uri.c_str(), error.c_str());
-        failed = true;
+        NSLog(@"Downloading item %@ encountered error: %@", url, errorMessage);
+        failed = TRUE;
         
-        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:kCydiaProgressEventTypeError]);
+        CydiaProgressEvent *event;
+        event = [CydiaProgressEvent eventWithMessage:errorMessage
+                                              ofType:kCydiaProgressEventTypeError];
         [delegate_ addProgressEventOnMainThread:event forTask:title];
     }
-    
-    [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
+        
+    [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator)
+                                withObject:nil waitUntilDone:YES];
     
     if (failed) {
         _trace();
