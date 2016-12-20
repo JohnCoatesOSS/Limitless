@@ -18,7 +18,6 @@
 #import "APTCacheFile+Legacy.h"
 #import "APTDownloadScheduler-Private.h"
 #import "APTRecords-Private.h"
-#import "APTPackageManager-Private.h"
 #import "APTSource-Private.h"
 #import "APTSourceList-Private.h"
 

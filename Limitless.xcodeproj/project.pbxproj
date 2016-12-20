@@ -1041,7 +1041,6 @@
 		FAD638A61E0900EF001E18DA /* APTRecords-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTRecords-Private.h"; sourceTree = "<group>"; };
 		FAD638A81E0905D7001E18DA /* APTPackageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackageManager.h; sourceTree = "<group>"; };
 		FAD638A91E0905D7001E18DA /* APTPackageManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackageManager.mm; sourceTree = "<group>"; };
-		FAD638AC1E0908FC001E18DA /* APTPackageManager-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTPackageManager-Private.h"; sourceTree = "<group>"; };
 		FAD638AF1E09128B001E18DA /* APTSource-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTSource-Private.h"; sourceTree = "<group>"; };
 		FAD638B01E0914CD001E18DA /* APTSourceList-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTSourceList-Private.h"; sourceTree = "<group>"; };
 		FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile+Legacy.h"; sourceTree = "<group>"; };
@@ -2500,7 +2499,6 @@
 			children = (
 				FAD638A81E0905D7001E18DA /* APTPackageManager.h */,
 				FAD638A91E0905D7001E18DA /* APTPackageManager.mm */,
-				FAD638AC1E0908FC001E18DA /* APTPackageManager-Private.h */,
 			);
 			path = Packages;
 			sourceTree = "<group>";

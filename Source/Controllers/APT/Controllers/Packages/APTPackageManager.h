@@ -11,12 +11,16 @@ typedef NS_ENUM(NSUInteger, APTInstallResult) {
     APTInstallResultIncomplete,
 };
 
-@class APTCacheFile;
+@class APTCacheFile, APTSourceList, APTRecords, APTDownloadScheduler;
 
 @interface APTPackageManager : NSObject
 
 - (instancetype)initWithCacheFile:(APTCacheFile *)cacheFile;
 
 - (APTInstallResult)performInstallationWithOutputToFileDescriptor:(int)fileDescriptor;
+
+- (BOOL)queueArchivesForDownloadWithScheduler:(APTDownloadScheduler *)downloadScheduler
+                                   sourceList:(APTSourceList *)sourceList
+                               packageRecords:(APTRecords *)records;
 
 @end

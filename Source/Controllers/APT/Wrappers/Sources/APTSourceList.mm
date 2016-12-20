@@ -12,7 +12,6 @@
 #import "APTCacheFile-Private.h"
 #import "APTDownloadScheduler-Private.h"
 #import "APTRecords-Private.h"
-#import "APTPackageManager-Private.h"
 
 APT_SILENCE_DEPRECATIONS_BEGIN
 

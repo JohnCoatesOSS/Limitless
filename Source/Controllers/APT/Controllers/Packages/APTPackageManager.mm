@@ -6,11 +6,12 @@
 //
 
 #import "Apt.h"
-#import "APTPackageManager-Private.h"
 #import "APTCacheFile-Private.h"
 #import "APTDownloadScheduler-Private.h"
 #import "APTRecords-Private.h"
 #import "APTSourceList-Private.h"
+
+APT_SILENCE_DEPRECATIONS_BEGIN
 
 @interface APTPackageManager ()
 
@@ -62,3 +63,5 @@
 }
 
 @end
+
+APT_SILENCE_DEPRECATIONS_END
