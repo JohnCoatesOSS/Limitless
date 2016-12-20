@@ -18,6 +18,7 @@
 #import "APTCacheFile+Legacy.h"
 #import "APTDownloadScheduler-Private.h"
 #import "APTRecords-Private.h"
+#import "APTPackageManager-Private.h"
 
 @implementation Database
 
@@ -283,7 +284,7 @@
             delete list_;
         }
         list_ = NULL;
-        manager_ = NULL;
+        self.packageManager = nil;
         if (lock_) {
             delete lock_;
         }
@@ -537,9 +538,12 @@
     if ([self popErrorWithTitle:title forReadList:list])
         return false;
     
-    manager_ = (_system->CreatePM(cache));
-    pkgAcquire *fetcher = self.downloadScheduler.scheduler;
-    if ([self popErrorWithTitle:title forOperation:manager_->GetArchives(fetcher, &list, packageRecords.records)])
+    self.packageManager = [[APTPackageManager alloc] initWithCacheFile:self.cacheFile];
+    
+    BOOL queuedSuccessfully = [self.packageManager queueArchivesForDownloadWithScheduler:self.downloadScheduler
+                                                                              sourceList:&list
+                                                                          packageRecords:packageRecords];
+    if ([self popErrorWithTitle:title forOperation:queuedSuccessfully])
         return false;
     
     return true;
@@ -604,7 +608,7 @@
     
     delock_ = nil;
     
-    pkgPackageManager::OrderResult result(manager_->DoInstall(statusfd_));
+    APTInstallResult result = [self.packageManager performInstallationWithOutputToFileDescriptor:statusfd_];
     
     NSString *oextended(@"/var/lib/apt/extended_states");
     NSString *nextended(Cache("extended_states"));
@@ -623,12 +627,12 @@
     if ([self popErrorWithTitle:title])
         return;
     
-    if (result == pkgPackageManager::Failed) {
+    if (result == APTInstallResultFailed) {
         _trace();
         return;
     }
     
-    if (result != pkgPackageManager::Completed) {
+    if (result != APTInstallResultCompleted) {
         _trace();
         return;
     }

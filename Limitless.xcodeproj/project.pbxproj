@@ -366,6 +366,8 @@
 		FAD638A01E07FFAB001E18DA /* APTDownloadScheduler.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD6389E1E07FFAB001E18DA /* APTDownloadScheduler.mm */; };
 		FAD638A41E08CFE7001E18DA /* APTRecords.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A31E08CFE7001E18DA /* APTRecords.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FAD638A51E08CFE7001E18DA /* APTRecords.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A31E08CFE7001E18DA /* APTRecords.mm */; };
+		FAD638AA1E0905D7001E18DA /* APTPackageManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A91E0905D7001E18DA /* APTPackageManager.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD638AB1E0905D7001E18DA /* APTPackageManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A91E0905D7001E18DA /* APTPackageManager.mm */; };
 		FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FAD7CDE61E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FAD7CDE71E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; };
@@ -1041,6 +1043,9 @@
 		FAD638A21E08CFE7001E18DA /* APTRecords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTRecords.h; sourceTree = "<group>"; };
 		FAD638A31E08CFE7001E18DA /* APTRecords.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTRecords.mm; sourceTree = "<group>"; };
 		FAD638A61E0900EF001E18DA /* APTRecords-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTRecords-Private.h"; sourceTree = "<group>"; };
+		FAD638A81E0905D7001E18DA /* APTPackageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackageManager.h; sourceTree = "<group>"; };
+		FAD638A91E0905D7001E18DA /* APTPackageManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackageManager.mm; sourceTree = "<group>"; };
+		FAD638AC1E0908FC001E18DA /* APTPackageManager-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTPackageManager-Private.h"; sourceTree = "<group>"; };
 		FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile+Legacy.h"; sourceTree = "<group>"; };
 		FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "APTCacheFile+Legacy.mm"; sourceTree = "<group>"; };
 		FAD7CDE41E07F0AB00444344 /* APTPackageProblemResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackageProblemResolver.h; sourceTree = "<group>"; };
@@ -1347,6 +1352,7 @@
 		FA1EB0C71E06824F007C48A6 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FAD638A71E0905C0001E18DA /* Packages */,
 				FAD6389C1E07FEBF001E18DA /* Downloading */,
 				FA1EB0D11E068338007C48A6 /* Error Handling */,
 			);
@@ -2504,6 +2510,16 @@
 			path = Downloading;
 			sourceTree = "<group>";
 		};
+		FAD638A71E0905C0001E18DA /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638A81E0905D7001E18DA /* APTPackageManager.h */,
+				FAD638A91E0905D7001E18DA /* APTPackageManager.mm */,
+				FAD638AC1E0908FC001E18DA /* APTPackageManager-Private.h */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
 		FAD7CDE21E07F07100444344 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -3009,6 +3025,7 @@
 				FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */,
 				FAD6389F1E07FFAB001E18DA /* APTDownloadScheduler.mm in Sources */,
 				FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */,
+				FAD638AA1E0905D7001E18DA /* APTPackageManager.mm in Sources */,
 				FA0311A61D1B2CBD008690CA /* dispatchEvent.mm in Sources */,
 				FA0311A71D1B2CBD008690CA /* MFMailComposeViewController-MailToURL.mm in Sources */,
 				FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */,
@@ -3062,6 +3079,7 @@
 				FAA03F2A1E06B65000071CC7 /* APTCacheFile.mm in Sources */,
 				FA5684891DF5FA6F000A4EBD /* Platform.m in Sources */,
 				FA56848A1DF5FA74000A4EBD /* Device.mm in Sources */,
+				FAD638AB1E0905D7001E18DA /* APTPackageManager.mm in Sources */,
 				FA5684B51DF60448000A4EBD /* APTSource+APTLib.mm in Sources */,
 				FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */,
 				FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */,
