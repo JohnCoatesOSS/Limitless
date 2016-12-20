@@ -1,5 +1,5 @@
 //
-//  LMXAPTSource.m
+//  APTSource.m
 //  Limitless
 //
 //  Created on 12/5/16.
@@ -103,7 +103,7 @@
     
     self.icon = [self urlFromTagSection:&section tag:@"default-icon"];
     self.depiction = [self urlFromTagSection:&section tag:@"depiction"];
-    self.descriptionURL = [self urlFromTagSection:&section tag:@"description"];
+    self.shortDescription = [self stringFromTagSection:&section tag:@"description"];
     self.name = [self stringFromTagSection:&section tag:@"label"];
     self.origin = [self urlFromTagSection:&section tag:@"origin"];
     self.support = [self stringFromTagSection:&section tag:@"support"];

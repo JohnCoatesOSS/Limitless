@@ -14,7 +14,7 @@
 @property (retain, strong) NSURL *icon;
 @property (retain, strong) NSURL *origin;
 @property (retain, strong) NSURL *depiction;
-@property (retain, strong) NSURL *descriptionURL;
+@property (retain, strong) NSString *shortDescription;
 @property (retain, strong) NSString *support;
 @property (retain, strong) NSString *version;
 @property (retain, strong) NSString *type;

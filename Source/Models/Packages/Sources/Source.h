@@ -9,34 +9,25 @@
 #import "Database.h"
 
 @interface Source : NSObject {
-    unsigned era_;
-    Database *database_;
-    metaIndex *index_;
-    
-    CYString depiction_;
-    CYString description_;
-    CYString label_;
-    CYString origin_;
-    CYString support_;
-    
-    CYString uri_;
-    CYString distribution_;
-    CYString type_;
-    CYString base_;
-    CYString version_;
-    
-    _H<NSString> host_;
-    _H<NSString> authority_;
-    
-    CYString defaultIcon_;
     
     _H<NSMutableDictionary> record_;
-    BOOL trusted_;
     
     std::set<std::string> fetches_;
     std::set<std::string> files_;
     _transient NSObject<SourceDelegate> *delegate_;
 }
+
+@property (readonly) metaIndex *metaIndex;
+@property (readonly) BOOL trusted;
+@property (readonly, nonatomic) NSString *rootURI;
+@property (readonly) NSString *distribution;
+@property (readonly) NSString *type;
+@property (readonly) NSString *host;
+@property (readonly) NSString *name;
+@property (readonly) NSString *label;
+@property (readonly) NSString *origin;
+@property (readonly) NSString *version;
+@property (readonly) NSString *defaultIcon;
 
 - (Source *) initWithMetaIndex:(metaIndex *)index
                    forDatabase:(Database *)database
@@ -49,22 +40,8 @@
 
 - (metaIndex *) metaIndex;
 - (NSDictionary *) record;
-- (BOOL) trusted;
-
-- (NSString *) rooturi;
-- (NSString *) distribution;
-- (NSString *) type;
 
 - (NSString *) key;
-- (NSString *) host;
-
-- (NSString *) name;
-- (NSString *) shortDescription;
-- (NSString *) label;
-- (NSString *) origin;
-- (NSString *) version;
-
-- (NSString *) defaultIcon;
 - (NSURL *) iconURL;
 
 - (void) setFetch:(bool)fetch forURI:(const char *)uri;

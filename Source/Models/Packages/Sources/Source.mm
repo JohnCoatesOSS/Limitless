@@ -8,69 +8,62 @@
 #import "Source.h"
 #import "Profiling.hpp"
 #import "NSString+Cydia.hpp"
+#import "APTSource-Private.h"
+
+@interface Source ()
+
+@property APTSource *modernSource;
+@property metaIndex *metaIndex;
+@property Database *database;
+@property int databaseEra;
+@property BOOL trusted;
+@property NSString *distribution;
+@property NSString *depiction;
+@property NSString *shortDescription;
+@property (nonatomic) NSString *label;
+@property NSString *origin;
+@property NSString *support;
+@property NSString *version;
+@property NSString *defaultIcon;
+@property NSString *authority;
+@property NSString *host;
+@property NSString *type;
+@property NSString *base;
+
+@property (retain, strong) NSString *uri;
+
+@end
 
 @implementation Source
 
-+ (NSString *) webScriptNameForSelector:(SEL)selector {
-    if (false);
-    else if (selector == @selector(addSection:))
-        return @"addSection";
-    else if (selector == @selector(getField:))
-        return @"getField";
-    else if (selector == @selector(removeSection:))
-        return @"removeSection";
-    else if (selector == @selector(remove))
-        return @"remove";
-    else
-        return nil;
+// MARK: - Init
+
+- (Source *)initWithMetaIndex:(metaIndex *)index
+                   forDatabase:(Database *)database
+                        inPool:(CYPool *)pool {
+    if ((self = [super init]) != nil) {
+        _modernSource = [[APTSource alloc] initWithMetaIndex:index];
+        _databaseEra = [database era];
+        _database = database;
+        _metaIndex = index;
+        
+        _profile(Source$initWithMetaIndex$setMetaIndex)
+        [self setMetaIndex:index inPool:pool];
+        _end
+    } return self;
 }
 
-+ (BOOL) isSelectorExcludedFromWebScript:(SEL)selector {
-    return [self webScriptNameForSelector:selector] == nil;
-}
-
-+ (NSArray *) _attributeKeys {
-    return [NSArray arrayWithObjects:
-            @"baseuri",
-            @"distribution",
-            @"host",
-            @"key",
-            @"iconuri",
-            @"label",
-            @"name",
-            @"origin",
-            @"rooturi",
-            @"sections",
-            @"shortDescription",
-            @"trusted",
-            @"type",
-            @"version",
-            nil];
-}
-
-- (NSArray *) attributeKeys {
-    return [[self class] _attributeKeys];
-}
-
-+ (BOOL) isKeyExcludedFromWebScript:(const char *)name {
-    return ![[self _attributeKeys] containsObject:[NSString stringWithUTF8String:name]] && [super isKeyExcludedFromWebScript:name];
-}
-
-- (metaIndex *) metaIndex {
-    return index_;
-}
-
-- (void) setMetaIndex:(metaIndex *)index inPool:(CYPool *)pool {
-    trusted_ = index->IsTrusted();
-    
-    uri_.set(pool, index->GetURI());
-    distribution_.set(pool, index->GetDist());
-    type_.set(pool, index->GetType());
+- (void) setMetaIndex:(metaIndex *)index
+               inPool:(CYPool *)pool {
+    APTSource *modernSource = self.modernSource;
+    self.trusted = modernSource.isTrusted;
+    self.uri = modernSource.uri.absoluteString;
+    self.distribution = modernSource.distribution;
+    self.type = modernSource.type;
     
     debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(index));
     if (dindex != NULL) {
-        std::string file(dindex->MetaIndexURI(""));
-        base_.set(pool, file);
+        self.base = modernSource.releaseBaseURL.absoluteString;
         
         pkgAcquire acquire;
         _profile(Source$setMetaIndex$GetIndexes)
@@ -89,71 +82,27 @@
         }
         _end
         
-        FileFd fd;
-        if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly))
-            _error->Discard();
-        else {
-            pkgTagFile tags(&fd);
-            
-            pkgTagSection section;
-            tags.Step(section);
-            
-            struct {
-                const char *name_;
-                CYString *value_;
-            } names[] = {
-                {"default-icon", &defaultIcon_},
-                {"depiction", &depiction_},
-                {"description", &description_},
-                {"label", &label_},
-                {"origin", &origin_},
-                {"support", &support_},
-                {"version", &version_},
-            };
-            
-            for (size_t i(0); i != sizeof(names) / sizeof(names[0]); ++i) {
-                const char *start, *end;
-                
-                if (section.Find(names[i].name_, start, end)) {
-                    CYString &value(*names[i].value_);
-                    value.set(pool, start, end - start);
-                }
-            }
-        }
+        self.depiction = modernSource.depiction.absoluteString;
+        self.defaultIcon = modernSource.icon.absoluteString;
+        self.shortDescription = modernSource.shortDescription;
+        self.label = modernSource.name;
+        self.origin = modernSource.origin.absoluteString;
+        self.support = modernSource.support;
+        self.version = modernSource.version;
     }
     
     record_ = [Sources_ objectForKey:[self key]];
     
-    NSURL *url([NSURL URLWithString:uri_]);
-    
-    host_ = [url host];
-    if (host_ != nil)
-        host_ = [host_ lowercaseString];
-    
-    if (host_ != nil)
-        authority_ = host_;
-    else
-        authority_ = [url path];
-}
-
-- (Source *) initWithMetaIndex:(metaIndex *)index forDatabase:(Database *)database inPool:(CYPool *)pool {
-    if ((self = [super init]) != nil) {
-        era_ = [database era];
-        database_ = database;
-        index_ = index;
-        
-        _profile(Source$initWithMetaIndex$setMetaIndex)
-        [self setMetaIndex:index inPool:pool];
-        _end
-    } return self;
+    self.authority = modernSource.authority;
+    self.host = modernSource.host;
 }
 
 - (NSString *) getField:(NSString *)name {
-    @synchronized (database_) {
-        if ([database_ era] != era_ || index_ == NULL)
+    @synchronized (self.database) {
+        if ([self.database era] != self.databaseEra || self.metaIndex == NULL)
             return nil;
         
-        debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(index_));
+        debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(self.metaIndex));
         if (dindex == NULL)
             return nil;
         
@@ -193,11 +142,20 @@
 }
 
 - (NSString *) depictionForPackage:(NSString *)package {
-    return depiction_.empty() ? nil : [static_cast<id>(depiction_) stringByReplacingOccurrencesOfString:@"*" withString:package];
+    if (!self.depiction || self.depiction.length == 0) {
+        return nil;
+    }
+    return [self.depiction stringByReplacingOccurrencesOfString:@"*"
+                                                withString:package];
 }
 
 - (NSString *) supportForPackage:(NSString *)package {
-    return support_.empty() ? nil : [static_cast<id>(support_) stringByReplacingOccurrencesOfString:@"*" withString:package];
+    if (!self.support || self.support.length == 0) {
+        return nil;
+    }
+    
+    return [self.support stringByReplacingOccurrencesOfString:@"*"
+                                                     withString:package];
 }
 
 - (NSArray *) sections {
@@ -253,29 +211,17 @@
     return record_;
 }
 
-- (BOOL) trusted {
-    return trusted_;
-}
-
-- (NSString *) rooturi {
-    return uri_;
-}
-
-- (NSString *) distribution {
-    return distribution_;
-}
-
-- (NSString *) type {
-    return type_;
+- (NSString *)rootURI {
+    return self.uri;
 }
 
 - (NSString *) baseuri {
-    return base_.empty() ? nil : (id) base_;
+    return self.base;
 }
 
 - (NSString *) iconuri {
-    if (NSString *base = [self baseuri])
-        return [base stringByAppendingString:@"CydiaIcon.png"];
+    if (NSString *base = self.base)
+        return [base stringByAppendingPathComponent:@"CydiaIcon.png"];
     
     return nil;
 }
@@ -287,36 +233,27 @@
 }
 
 - (NSString *) key {
-    return [NSString stringWithFormat:@"%@:%@:%@", (NSString *) type_, (NSString *) uri_, (NSString *) distribution_];
+    return [NSString stringWithFormat:@"%@:%@:%@",
+            self.type, self.uri, self.distribution];
 }
 
-- (NSString *) host {
-    return host_;
-}
 
 - (NSString *) name {
-    return origin_.empty() ? (id) authority_ : origin_;
-}
-
-- (NSString *) shortDescription {
-    return description_;
+    if (!self.origin || self.origin.length == 0) {
+        return self.authority;
+    }
+    
+    return self.origin;
 }
 
 - (NSString *) label {
-    return label_.empty() ? (id) authority_ : label_;
+    if (!_label || _label.length == 0) {
+        return self.authority;
+    } else {
+        return _label;
+    }
 }
 
-- (NSString *) origin {
-    return origin_;
-}
-
-- (NSString *) version {
-    return version_;
-}
-
-- (NSString *) defaultIcon {
-    return defaultIcon_;
-}
 
 - (void) setDelegate:(NSObject<SourceDelegate> *)delegate {
     delegate_ = delegate;
@@ -341,6 +278,53 @@
 - (void) resetFetch {
     fetches_.clear();
     [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
+}
+
+// MARK: - Exposing To Javascript
+
++ (NSString *) webScriptNameForSelector:(SEL)selector {
+    if (false);
+    else if (selector == @selector(addSection:))
+        return @"addSection";
+    else if (selector == @selector(getField:))
+        return @"getField";
+    else if (selector == @selector(removeSection:))
+        return @"removeSection";
+    else if (selector == @selector(remove))
+        return @"remove";
+    else
+        return nil;
+}
+
++ (BOOL) isSelectorExcludedFromWebScript:(SEL)selector {
+    return [self webScriptNameForSelector:selector] == nil;
+}
+
++ (NSArray *) _attributeKeys {
+    return [NSArray arrayWithObjects:
+            @"baseuri",
+            @"distribution",
+            @"host",
+            @"key",
+            @"iconuri",
+            @"label",
+            @"name",
+            @"origin",
+            @"rooturi",
+            @"sections",
+            @"shortDescription",
+            @"trusted",
+            @"type",
+            @"version",
+            nil];
+}
+
+- (NSArray *) attributeKeys {
+    return [[self class] _attributeKeys];
+}
+
++ (BOOL) isKeyExcludedFromWebScript:(const char *)name {
+    return ![[self _attributeKeys] containsObject:[NSString stringWithUTF8String:name]] && [super isKeyExcludedFromWebScript:name];
 }
 
 @end

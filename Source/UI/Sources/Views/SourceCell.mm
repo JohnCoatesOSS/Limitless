@@ -74,7 +74,7 @@
     icon_ = [UIImage imageNamed:@"unknown.png"];
     
     origin_ = [source name];
-    label_ = [source rooturi];
+    label_ = source.rootURI;
     
     [content_ setNeedsDisplay];
     

@@ -122,14 +122,14 @@
         UIApplicationShortcutItem *secondShortcut([UIApplication sharedApplication].shortcutItems[1]);
         
         UIAlertAction *firstPlaceAction([UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Slot 1 \"%@\"", firstShortcut.localizedTitle] style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){
-            UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo1" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rooturi}];
+            UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo1" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rootURI}];
             NSMutableArray *newShortcuts = [NSMutableArray arrayWithArray:[UIApplication sharedApplication].shortcutItems];
             newShortcuts[0] = newShortcut;
             [UIApplication sharedApplication].shortcutItems = newShortcuts;
         }]);
         
         UIAlertAction *secondPlaceAction([UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Slot 2 \"%@\"", secondShortcut.localizedTitle] style:UIAlertActionStyleDefault handler:^(UIAlertAction*action){
-            UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo2" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rooturi}];
+            UIMutableApplicationShortcutItem* newShortcut = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo2" localizedTitle:currentSource.name localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": currentSource.rootURI}];
             NSMutableArray *newShortcuts = [NSMutableArray arrayWithArray:[UIApplication sharedApplication].shortcutItems];
             newShortcuts[1] = newShortcut;
             [UIApplication sharedApplication].shortcutItems = newShortcuts;
@@ -146,7 +146,7 @@
 }
 
 - (void)shareRepo:(Source *)source {
-    NSString *repoUrl = source.rooturi;
+    NSString *repoUrl = source.rootURI;
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[ repoUrl ] applicationActivities:nil];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self presentViewController:activityVC animated:YES completion:nil];
@@ -555,7 +555,7 @@
     
     for (int i = 0; i < [sources_ count]; i++) {
         Source *currentSource = [sources_ objectAtIndex:i];
-        if ([[currentSource rooturi] isEqualToString:sourceURL]) {
+        if ([currentSource.rootURI isEqualToString:sourceURL]) {
             [list_ selectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1] animated:false scrollPosition:UITableViewScrollPositionNone];
             [[list_ delegate] tableView:list_ didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
             return;

@@ -64,10 +64,6 @@ while (false)
 
 #define _transient
 
-#define _label__(x) _label ## x
-#define _label_(y) _label__(y)
-#define _label _label_(__LINE__)
-
 #define _packed \
     __attribute__((__packed__))
 #define _finline \
