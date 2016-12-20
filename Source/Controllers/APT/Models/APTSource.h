@@ -25,6 +25,6 @@
 @property (retain, strong) NSString *distribution;
 
 @property (retain, strong) NSURL *releaseBaseURL;
-@property (retain, strong) NSArray<NSString *> *files;
+@property (retain, strong) NSArray<NSURL *> *associatedURLs;
 
 @end

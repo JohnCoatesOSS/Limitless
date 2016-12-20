@@ -29,6 +29,7 @@
 @property NSString *host;
 @property NSString *type;
 @property NSString *base;
+@property (retain, strong) NSArray<NSURL *> *associatedURLs;
 
 @property (retain, strong) NSString *uri;
 
@@ -60,36 +61,16 @@
     self.uri = modernSource.uri.absoluteString;
     self.distribution = modernSource.distribution;
     self.type = modernSource.type;
+    self.base = modernSource.releaseBaseURL.absoluteString;
+    self.associatedURLs = modernSource.associatedURLs;
     
-    debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(index));
-    if (dindex != NULL) {
-        self.base = modernSource.releaseBaseURL.absoluteString;
-        
-        pkgAcquire acquire;
-        _profile(Source$setMetaIndex$GetIndexes)
-        dindex->GetIndexes(&acquire, true);
-        _end
-        _profile(Source$setMetaIndex$DescURI)
-        for (pkgAcquire::ItemIterator item(acquire.ItemsBegin()); item != acquire.ItemsEnd(); item++) {
-            std::string file((*item)->DescURI());
-            files_.insert(file);
-            if (file.length() < sizeof("Packages.bz2") || file.substr(file.length() - sizeof("Packages.bz2")) != "/Packages.bz2")
-                continue;
-            file = file.substr(0, file.length() - 4);
-            files_.insert(file);
-            files_.insert(file + ".gz");
-            files_.insert(file + "Index");
-        }
-        _end
-        
-        self.depiction = modernSource.depiction.absoluteString;
-        self.defaultIcon = modernSource.icon.absoluteString;
-        self.shortDescription = modernSource.shortDescription;
-        self.label = modernSource.name;
-        self.origin = modernSource.origin.absoluteString;
-        self.support = modernSource.support;
-        self.version = modernSource.version;
-    }
+    self.depiction = modernSource.depiction.absoluteString;
+    self.defaultIcon = modernSource.icon.absoluteString;
+    self.shortDescription = modernSource.shortDescription;
+    self.label = modernSource.name;
+    self.origin = modernSource.origin.absoluteString;
+    self.support = modernSource.support;
+    self.version = modernSource.version;
     
     record_ = [Sources_ objectForKey:[self key]];
     
@@ -264,15 +245,19 @@
 }
 
 - (void) setFetch:(bool)fetch forURI:(const char *)uri {
+    NSURL *url = [NSURL URLWithString:@(uri)];
+    BOOL isAssociatedURL = [self.associatedURLs containsObject:url];
     if (!fetch) {
         if (fetches_.erase(uri) == 0)
             return;
-    } else if (files_.find(uri) == files_.end())
+    } else if (!isAssociatedURL)
         return;
     else if (!fetches_.insert(uri).second)
         return;
     
-    [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:[self fetch]] waitUntilDone:NO];
+    [delegate_ performSelectorOnMainThread:@selector(setFetch:)
+                                withObject:@([self fetch])
+                             waitUntilDone:NO];
 }
 
 - (void) resetFetch {

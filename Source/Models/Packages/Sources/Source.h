@@ -28,6 +28,7 @@
 @property (readonly) NSString *origin;
 @property (readonly) NSString *version;
 @property (readonly) NSString *defaultIcon;
+@property (readonly) NSArray<NSURL *> *associatedURLs;
 
 - (Source *) initWithMetaIndex:(metaIndex *)index
                    forDatabase:(Database *)database

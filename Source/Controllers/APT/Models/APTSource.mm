@@ -81,7 +81,7 @@
 - (void)hydrateWithReleaseIndex:(nonnull debReleaseIndex *)releaseIndex {
     string baseURI = releaseIndex->MetaIndexURI("");
     self.releaseBaseURL = [NSURL URLWithString:@(baseURI.c_str())];
-    self.files = [self filesAssociatedWithReleaseIndex:releaseIndex];
+    self.associatedURLs = [self urlsAssociatedWithReleaseIndex:releaseIndex];
     
     FileFd fileDescriptor;
     string releaseFile = releaseIndex->MetaIndexFile("Release");
@@ -133,29 +133,30 @@
     }
 }
 
-- (NSArray *)filesAssociatedWithReleaseIndex:(nonnull debReleaseIndex*)releaseIndex {
+- (NSArray *)urlsAssociatedWithReleaseIndex:(nonnull debReleaseIndex*)releaseIndex {
     pkgAcquire acquire;
     bool getAllIndexes = true;
     releaseIndex->GetIndexes(&acquire, getAllIndexes);
     
     pkgAcquire::ItemIterator itemIndex = acquire.ItemsBegin();
-    NSMutableArray *files = [NSMutableArray new];
+    NSMutableArray *urls = [NSMutableArray new];
     
     for (;itemIndex != acquire.ItemsEnd(); itemIndex += 1) {
         pkgAcquire::Item *item = *itemIndex;
         string descriptionURIString = item->DescURI();
         NSString *descriptionURI = @(descriptionURIString.c_str());
-        [files addObject:descriptionURI];
-        if (![descriptionURI hasSuffix:@"/Packages.bz2"]) {
+        NSURL *url = [NSURL URLWithString:descriptionURI];
+        [urls addObject:url];
+        
+        if (![url.lastPathComponent isEqualToString:@"Packages.bz2"]) {
             continue;
         }
-        
-        NSString *noExtension = [descriptionURI stringByDeletingPathExtension];
-        [files addObject:noExtension];
-        [files addObject:[noExtension stringByAppendingPathExtension:@"gz"]];
-        [files addObject:[noExtension stringByAppendingString:@"Index"]];
+        NSURL *baseURL = [url URLByDeletingLastPathComponent];
+        [urls addObject:[baseURL URLByAppendingPathComponent:@"Packages"]];
+        [urls addObject:[baseURL URLByAppendingPathComponent:@"Packages.gz"]];
+        [urls addObject:[baseURL URLByAppendingPathComponent:@"PackagesIndex"]];
     }
-    return files;
+    return urls;
 }
 
 
