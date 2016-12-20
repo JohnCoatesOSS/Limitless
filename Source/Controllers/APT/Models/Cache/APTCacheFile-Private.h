@@ -2,8 +2,8 @@
 //  APTCacheFile-Private.h
 //  Limitless
 //
-//  Created by John Coates on 12/18/16.
-//  Copyright © 2016 Limitless. All rights reserved.
+//  Created on 12/18/16.
+//  
 //
 
 #import "Apt.h"
