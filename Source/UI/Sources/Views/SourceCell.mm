@@ -67,9 +67,9 @@
 
 - (void) setSource:(Source *)source {
     source_ = source;
-    [source_ setDelegate:self];
+    source.delegate = self;
     
-    [self setFetch:[NSNumber numberWithBool:[source_ fetch]]];
+    [self setFetch:@([source_ fetch])];
     
     icon_ = [UIImage imageNamed:@"unknown.png"];
     

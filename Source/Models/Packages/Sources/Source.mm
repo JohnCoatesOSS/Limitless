@@ -29,9 +29,10 @@
 @property NSString *host;
 @property NSString *type;
 @property NSString *base;
-@property (retain, strong) NSArray<NSURL *> *associatedURLs;
-
+@property (retain, strong) NSMutableDictionary *record;
 @property (retain, strong) NSString *uri;
+@property (retain, strong) NSArray<NSURL *> *associatedURLs;
+@property NSSet<NSURL *> *urlsPendingFetch;
 
 @end
 
@@ -47,12 +48,13 @@
         _databaseEra = [database era];
         _database = database;
         _metaIndex = index;
+        _urlsPendingFetch = [NSSet set];
         
-        _profile(Source$initWithMetaIndex$setMetaIndex)
         [self setMetaIndex:index inPool:pool];
-        _end
     } return self;
 }
+
+// MARK: - Setup
 
 - (void) setMetaIndex:(metaIndex *)index
                inPool:(CYPool *)pool {
@@ -72,20 +74,25 @@
     self.support = modernSource.support;
     self.version = modernSource.version;
     
-    record_ = [Sources_ objectForKey:[self key]];
+    self.record = [Sources_ objectForKey:self.key];
     
     self.authority = modernSource.authority;
     self.host = modernSource.host;
 }
 
-- (NSString *) getField:(NSString *)name {
+// MARK: - Accessing Fields
+
+- (NSString *)getField:(NSString *)name {
     @synchronized (self.database) {
-        if ([self.database era] != self.databaseEra || self.metaIndex == NULL)
+        BOOL sameDatabaseVersion = [self.database era] == self.databaseEra;
+        if (!sameDatabaseVersion || self.metaIndex == NULL) {
             return nil;
+        }
         
         debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(self.metaIndex));
-        if (dindex == NULL)
+        if (dindex == NULL) {
             return nil;
+        }
         
         FileFd fd;
         if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly)) {
@@ -99,30 +106,16 @@
         tags.Step(section);
         
         const char *start, *end;
-        if (!section.Find([name UTF8String], start, end))
+        if (!section.Find([name UTF8String], start, end)) {
             return (NSString *) [NSNull null];
-        
-        return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
-    } }
-
-- (NSComparisonResult) compareByName:(Source *)source {
-    NSString *lhs = [self name];
-    NSString *rhs = [source name];
-    
-    if ([lhs length] != 0 && [rhs length] != 0) {
-        unichar lhc = [lhs characterAtIndex:0];
-        unichar rhc = [rhs characterAtIndex:0];
-        
-        if (isalpha(lhc) && !isalpha(rhc))
-            return NSOrderedAscending;
-        else if (!isalpha(lhc) && isalpha(rhc))
-            return NSOrderedDescending;
+        }
+        return [NSString stringWithUTF8Bytes:start length:end - start];
     }
-    
-    return [lhs compare:rhs options:LaxCompareOptions_];
 }
 
-- (NSString *) depictionForPackage:(NSString *)package {
+// MARK: - Relative URLs
+
+- (NSString *)depictionForPackage:(NSString *)package {
     if (!self.depiction || self.depiction.length == 0) {
         return nil;
     }
@@ -130,7 +123,7 @@
                                                 withString:package];
 }
 
-- (NSString *) supportForPackage:(NSString *)package {
+- (NSString *)supportForPackage:(NSString *)package {
     if (!self.support || self.support.length == 0) {
         return nil;
     }
@@ -139,152 +132,178 @@
                                                      withString:package];
 }
 
-- (NSArray *) sections {
-    return record_ == nil ? (id) [NSNull null] : [record_ objectForKey:@"Sections"] ?: [NSArray array];
+// MARK: - Deletion
+
+- (void)_remove {
+    [Sources_ removeObjectForKey:self.key];
 }
 
-- (void) _addSection:(NSString *)section {
-    if (record_ == nil)
-        return;
-    else if (NSMutableArray *sections = [record_ objectForKey:@"Sections"]) {
-        if (![sections containsObject:section])
-            [sections addObject:section];
-    } else
-        [record_ setObject:[NSMutableArray arrayWithObject:section] forKey:@"Sections"];
-}
-
-- (bool) addSection:(NSString *)section {
-    if (record_ == nil)
-        return false;
-    
-    [self performSelectorOnMainThread:@selector(_addSection:) withObject:section waitUntilDone:NO];
-    return true;
-}
-
-- (void) _removeSection:(NSString *)section {
-    if (record_ == nil)
-        return;
-    
-    if (NSMutableArray *sections = [record_ objectForKey:@"Sections"])
-        if ([sections containsObject:section])
-            [sections removeObject:section];
-}
-
-- (bool) removeSection:(NSString *)section {
-    if (record_ == nil)
-        return false;
-    
-    [self performSelectorOnMainThread:@selector(_removeSection:) withObject:section waitUntilDone:NO];
-    return true;
-}
-
-- (void) _remove {
-    [Sources_ removeObjectForKey:[self key]];
-}
-
-- (bool) remove {
-    bool value(record_ != nil);
-    [self performSelectorOnMainThread:@selector(_remove) withObject:nil waitUntilDone:NO];
+- (BOOL)remove {
+    BOOL value = self.record != nil;
+    [self performSelectorOnMainThread:@selector(_remove)
+                           withObject:nil waitUntilDone:NO];
     return value;
 }
 
-- (NSDictionary *) record {
-    return record_;
-}
+// MARK: - Property Accessors
 
 - (NSString *)rootURI {
     return self.uri;
 }
 
-- (NSString *) baseuri {
-    return self.base;
-}
-
-- (NSString *) iconuri {
-    if (NSString *base = self.base)
-        return [base stringByAppendingPathComponent:@"CydiaIcon.png"];
-    
-    return nil;
-}
-
-- (NSURL *) iconURL {
+- (NSURL *)iconURL {
     if (NSString *uri = [self iconuri])
         return [NSURL URLWithString:uri];
     return nil;
 }
 
-- (NSString *) key {
+- (NSString *)key {
     return [NSString stringWithFormat:@"%@:%@:%@",
             self.type, self.uri, self.distribution];
 }
 
-
-- (NSString *) name {
-    if (!self.origin || self.origin.length == 0) {
+- (NSString *)name {
+    if (self.origin.length == 0) {
         return self.authority;
     }
     
     return self.origin;
 }
 
-- (NSString *) label {
-    if (!_label || _label.length == 0) {
+- (NSString *)label {
+    if (_label.length == 0) {
         return self.authority;
     } else {
         return _label;
     }
 }
 
-- (void) setDelegate:(NSObject<SourceDelegate> *)delegate {
-    delegate_ = delegate;
+// MARK: - Fetching
+
+- (BOOL)fetch {
+    return self.urlsPendingFetch.count > 0;
 }
 
-- (bool) fetch {
-    return !fetches_.empty();
-}
-
-- (void) setFetch:(bool)fetch forURI:(const char *)uri {
+- (void)setFetch:(BOOL)shouldAddToPending forURI:(const char *)uri {
     NSURL *url = [NSURL URLWithString:@(uri)];
     BOOL isAssociatedURL = [self.associatedURLs containsObject:url];
-    if (!fetch) {
-        if (fetches_.erase(uri) == 0)
+    if (!shouldAddToPending) {
+        BOOL containsURL = [self.urlsPendingFetch containsObject:url];
+        if (!containsURL) {
             return;
-    } else if (!isAssociatedURL)
+        }
+        
+        NSMutableSet *mutableURLs = self.urlsPendingFetch.mutableCopy;
+        [mutableURLs removeObject:url];
+        self.urlsPendingFetch = mutableURLs;
+    } else if (!isAssociatedURL) {
         return;
-    else if (!fetches_.insert(uri).second)
-        return;
+    } else if (shouldAddToPending) {
+        if ([self.urlsPendingFetch containsObject:url]) {
+            return;
+        }
+        
+        NSMutableSet *mutableURLs = self.urlsPendingFetch.mutableCopy;
+        [mutableURLs addObject:url];
+        self.urlsPendingFetch = mutableURLs;
+    }
     
-    [delegate_ performSelectorOnMainThread:@selector(setFetch:)
+    [self.delegate performSelectorOnMainThread:@selector(setFetch:)
                                 withObject:@([self fetch])
                              waitUntilDone:NO];
 }
 
-- (void) resetFetch {
-    fetches_.clear();
-    [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
+- (void)resetFetch {
+    self.urlsPendingFetch = [NSSet set];
+    [self.delegate performSelectorOnMainThread:@selector(setFetch:)
+                                    withObject:@(FALSE) waitUntilDone:NO];
+}
+
+// MARK: - Sections
+
+- (NSArray *)sections {
+    if (!self.record) {
+        return (id) [NSNull null];
+    }
+    
+    NSArray *sections = self.record[@"Sections"];
+    if (!sections) {
+        return @[];
+    }
+    
+    return sections;
+}
+
+- (void)_addSection:(NSString *)section {
+    if (!self.record) {
+        return;
+    }
+    
+    NSMutableArray *sections = self.record[@"Sections"];
+    if (sections) {
+        if (![sections containsObject:section]) {
+            [sections addObject:section];
+        }
+    } else {
+        self.record[@"Sections"] = @[section].mutableCopy;
+    }
+    
+}
+
+- (BOOL)addSection:(NSString *)section {
+    if (!self.record) {
+        return FALSE;
+    }
+    
+    [self performSelectorOnMainThread:@selector(_addSection:)
+                           withObject:section waitUntilDone:NO];
+    return FALSE;
+}
+
+- (void)_removeSection:(NSString *)section {
+    if (!self.record) {
+        return;
+    }
+    
+    NSMutableArray *sections = self.record[@"Sections"];
+    if (sections) {
+        if ([sections containsObject:section]) {
+            [sections removeObject:section];
+        }
+    }
+}
+
+- (BOOL)removeSection:(NSString *)section {
+    if (!self.record) {
+        return FALSE;
+    }
+    
+    [self performSelectorOnMainThread:@selector(_removeSection:)
+                           withObject:section waitUntilDone:NO];
+    return true;
 }
 
 // MARK: - Exposing To Javascript
 
-+ (NSString *) webScriptNameForSelector:(SEL)selector {
-    if (false);
-    else if (selector == @selector(addSection:))
++ (NSString *)webScriptNameForSelector:(SEL)selector {
+    if (selector == @selector(addSection:)) {
         return @"addSection";
-    else if (selector == @selector(getField:))
+    } else if (selector == @selector(getField:)) {
         return @"getField";
-    else if (selector == @selector(removeSection:))
+    } else if (selector == @selector(removeSection:)) {
         return @"removeSection";
-    else if (selector == @selector(remove))
+    } else if (selector == @selector(remove)) {
         return @"remove";
-    else
+    } else {
         return nil;
+    }
 }
 
-+ (BOOL) isSelectorExcludedFromWebScript:(SEL)selector {
++ (BOOL)isSelectorExcludedFromWebScript:(SEL)selector {
     return [self webScriptNameForSelector:selector] == nil;
 }
 
-+ (NSArray *) _attributeKeys {
++ (NSArray *)_attributeKeys {
     return [NSArray arrayWithObjects:
             @"baseuri",
             @"distribution",
@@ -303,12 +322,50 @@
             nil];
 }
 
-- (NSArray *) attributeKeys {
+- (NSArray *)attributeKeys {
     return [[self class] _attributeKeys];
 }
 
-+ (BOOL) isKeyExcludedFromWebScript:(const char *)name {
-    return ![[self _attributeKeys] containsObject:[NSString stringWithUTF8String:name]] && [super isKeyExcludedFromWebScript:name];
++ (BOOL)isKeyExcludedFromWebScript:(const char *)keyCString {
+    NSString *key = @(keyCString);
+    NSArray *attributeKeys = [self _attributeKeys];
+    BOOL keyContainedInAttributes = [attributeKeys containsObject:key];
+    BOOL superAllowsKey = [super isKeyExcludedFromWebScript:keyCString];
+    
+    return !keyContainedInAttributes && !superAllowsKey;
+}
+
+// MARK: - Javascript Only Properties
+
+- (NSString *)baseuri {
+    return self.base;
+}
+
+- (NSString *)iconuri {
+    if (NSString *base = self.base) {
+        return [base stringByAppendingPathComponent:@"CydiaIcon.png"];
+    }
+    
+    return nil;
+}
+
+// MARK: - Comparisons
+
+- (NSComparisonResult)compareByName:(Source *)source {
+    NSString *lhs = self.name;
+    NSString *rhs = source.name;
+    
+    if (lhs.length != 0 && rhs.length != 0) {
+        unichar lhc = [lhs characterAtIndex:0];
+        unichar rhc = [rhs characterAtIndex:0];
+        
+        if (isalpha(lhc) && !isalpha(rhc))
+            return NSOrderedAscending;
+        else if (!isalpha(lhc) && isalpha(rhc))
+            return NSOrderedDescending;
+    }
+    
+    return [lhs compare:rhs options:LaxCompareOptions_];
 }
 
 @end

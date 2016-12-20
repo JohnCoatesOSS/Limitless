@@ -1334,13 +1334,6 @@
 			path = "\U0010Environment";
 			sourceTree = "<group>";
 		};
-		FA1EB0BA1E066C74007C48A6 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
 		FA1EB0C41E067BEE007C48A6 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -2574,7 +2567,6 @@
 		FADD1BCA1DF8945C009EA2C6 /* Wrappers */ = {
 			isa = PBXGroup;
 			children = (
-				FA1EB0BA1E066C74007C48A6 /* Sources */,
 				FADD1BCB1DF8949C009EA2C6 /* APTDependencyCachePolicy.h */,
 				FADD1BCC1DF8949C009EA2C6 /* APTDependencyCachePolicy.mm */,
 			);

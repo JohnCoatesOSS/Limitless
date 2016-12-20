@@ -388,7 +388,7 @@
         }
         
         for (Source *object in (id) sourceList_) {
-            metaIndex *source([object metaIndex]);
+            metaIndex *source = object.metaIndex;
             std::vector<pkgIndexFile *> *indices = source->GetIndexFiles();
             for (std::vector<pkgIndexFile *>::const_iterator index = indices->begin(); index != indices->end(); ++index)
                 // XXX: this could be more intelligent
