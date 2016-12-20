@@ -50,6 +50,8 @@ APT_SILENCE_DEPRECATIONS_END
 #import "APTDownloadScheduler.h"
 #import "APTRecords.h"
 #import "APTPackageManager.h"
+#import "APTSource.h"
+#import "APTSourceList.h"
 
 // MARK: - Controllers
 

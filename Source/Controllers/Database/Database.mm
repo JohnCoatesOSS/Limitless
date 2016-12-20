@@ -19,6 +19,7 @@
 #import "APTDownloadScheduler-Private.h"
 #import "APTRecords-Private.h"
 #import "APTPackageManager-Private.h"
+#import "APTSource-Private.h"
 
 @implementation Database
 
@@ -212,10 +213,6 @@
     } return self;
 }
 
-- (pkgSourceList &) list {
-    return *list_;
-}
-
 - (NSArray *) packages {
     return (NSArray *) packages_;
 }
@@ -280,10 +277,7 @@
         
         [APTErrorController popErrors];
         
-        if (list_) {
-            delete list_;
-        }
-        list_ = NULL;
+        self.sourceListController = nil;
         self.packageManager = nil;
         if (lock_) {
             delete lock_;
@@ -310,20 +304,18 @@
         
         NSString *title(UCLocalize("DATABASE"));
         
-        list_ = new pkgSourceList();
-        _profile(reloadDataWithInvocation$ReadMainList)
-        if ([self popErrorWithTitle:title forReadList:*list_])
+        self.sourceListController = [[APTSourceList alloc] initWithMainList];
+        if (!self.sourceListController) {
+            [self popErrorWithTitle:title];
             return;
-        _end
-        
-        
-        
-        _profile(reloadDataWithInvocation$Source$initWithMetaIndex)
-        for (pkgSourceList::const_iterator source = list_->begin(); source != list_->end(); ++source) {
-            Source *object([[[Source alloc] initWithMetaIndex:*source forDatabase:self inPool:&pool_] autorelease]);
-            [sourceList_ addObject:object];
         }
-        _end
+        
+        for (APTSource *source in self.sourceListController.sources) {
+            Source *legacySource = [[Source alloc] initWithMetaIndex:source.metaIndex
+                                                        forDatabase:self
+                                                             inPool:&pool_];
+            [sourceList_ addObject:[legacySource autorelease]];
+        }
         
         _trace();
         OpProgress progress;
@@ -523,7 +515,6 @@
 - (bool) prepare {
     [self.downloadScheduler terminate];
     
-    pkgCacheFile &cache = *self.cacheFile.cacheFile;
     APTRecords *packageRecords = [[APTRecords alloc] initWithCacheFile:self.cacheFile];
     
     lock_ = new FileFd();
@@ -534,14 +525,16 @@
     if ([self popErrorWithTitle:title])
         return false;
     
-    pkgSourceList list;
-    if ([self popErrorWithTitle:title forReadList:list])
+    APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+    if (!sourceList) {
+        [self popErrorWithTitle:title];
         return false;
+    }
     
     self.packageManager = [[APTPackageManager alloc] initWithCacheFile:self.cacheFile];
     
     BOOL queuedSuccessfully = [self.packageManager queueArchivesForDownloadWithScheduler:self.downloadScheduler
-                                                                              sourceList:&list
+                                                                              sourceList:sourceList
                                                                           packageRecords:packageRecords];
     if ([self popErrorWithTitle:title forOperation:queuedSuccessfully])
         return false;
@@ -637,16 +630,21 @@
         return;
     }
     
-    NSMutableArray *after = [NSMutableArray arrayWithCapacity:16]; {
-        pkgSourceList list;
-        if ([self popErrorWithTitle:title forReadList:list])
-            return;
-        for (pkgSourceList::const_iterator source = list.begin(); source != list.end(); ++source)
-            [after addObject:[NSString stringWithUTF8String:(*source)->GetURI().c_str()]];
+    NSMutableArray *after = [NSMutableArray arrayWithCapacity:16];
+    APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+    if (!sourceList) {
+        [self popErrorWithTitle:title];
+        return;
     }
     
-    if (![before isEqualToArray:after])
+    for (APTSource *source in sourceList.sources) {
+        [after addObject:source.uri.absoluteString];
+    }
+    
+    BOOL sourceListHasChanged = ![before isEqualToArray:after];
+    if (sourceListHasChanged) {
         [self update];
+    }
 }
 
 - (bool) delocked {

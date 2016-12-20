@@ -11,7 +11,7 @@
 @interface APTPackageManager (Private)
 
 - (BOOL)queueArchivesForDownloadWithScheduler:(APTDownloadScheduler *)downloadScheduler
-                                   sourceList:(pkgSourceList *)sourceList
+                                   sourceList:(APTSourceList *)sourceList
                                packageRecords:(APTRecords *)records;
 
 @end

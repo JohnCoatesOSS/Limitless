@@ -1,24 +1,53 @@
 //
-//  LMXAPTSource+APTLib
+//  LMXAPTSource.m
 //  Limitless
 //
 //  Created on 12/5/16.
 //
 
-#import "APTSource+APTLib.h"
-#import "APTErrorController.h"
+#import "Apt.h"
+#import "APTSource-Private.h"
 
-@implementation APTSource (APTLib)
+@interface APTSource ()
 
-- (instancetype)initWithMetaIndex:(metaIndex *)metaIndex {
+@property metaIndex *metaIndex;
+
+@end
+
+@implementation APTSource
+
+- (instancetype)init {
     self = [super init];
 
     if (self) {
-        [self hydrateWithMetaIndex:metaIndex];
+
     }
 
     return self;
 }
+
+- (instancetype)initWithMetaIndex:(metaIndex *)metaIndex {
+    self = [super init];
+    
+    if (self) {
+        _metaIndex = metaIndex;
+        [self hydrateWithMetaIndex:metaIndex];
+    }
+    
+    return self;
+}
+
+// MARK: - Debugging
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@ %@ %@>",
+            NSStringFromClass([self class]),
+            self.name,
+            self.origin
+            ];
+}
+
+// MARK- Private
 
 - (void)hydrateWithMetaIndex:(nonnull metaIndex *)metaIndex {
     self.isTrusted = metaIndex->IsTrusted();
@@ -128,5 +157,6 @@
     }
     return files;
 }
+
 
 @end

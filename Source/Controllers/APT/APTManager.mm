@@ -9,7 +9,7 @@
 #import "APTManager.h"
 #import "Apt.h"
 #import "Paths.h"
-#import "APTSource+APTLib.h"
+#import "APTSource-Private.h"
 #import "LMXAPTConfig.h"
 #import "APTManager+Files.h"
 #import "LMXAPTStatus.hpp"

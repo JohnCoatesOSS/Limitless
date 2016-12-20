@@ -5,9 +5,9 @@
 //  Created on 12/17/16.
 //
 
-#import "APTSourceList.h"
 #import "Apt.h"
-#import "APTSource+APTLib.h"
+#import "APTSourceList-Private.h"
+#import "APTSource-Private.h"
 #import "LMXAPTStatus.hpp"
 #import "APTCacheFile-Private.h"
 #import "APTDownloadScheduler-Private.h"
@@ -104,6 +104,7 @@ APT_SILENCE_DEPRECATIONS_BEGIN
 - (void)performUpdateInBackground {
     [self performUpdateInBackgroundWithCompletion:nil];
 }
+
 - (void)performUpdateInBackgroundWithCompletion:(SourcesUpdateCompletion)completion {
     dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
     dispatch_async(backgroundQueue, ^{
@@ -129,17 +130,19 @@ APT_SILENCE_DEPRECATIONS_BEGIN
         delete status;
     };
     
-    pkgSourceList sourceList;
-    if (!sourceList.ReadMainList()) {
+    
+    APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+    if (!sourceList) {
         completion(FALSE, [APTErrorController popErrors]);
         deleteVariables();
         return;
     }
     
     [packageManager queueArchivesForDownloadWithScheduler:downloadScheduler
-                                               sourceList:&sourceList
+                                               sourceList:sourceList
                                            packageRecords:records];
-    ListUpdate(*status, sourceList);
+    pkgSourceList &list = *sourceList.list;
+    ListUpdate(*status, list);
     
     int PulseInterval = 500000;
     APTDownloadSchedulerRunResult downloadResult;

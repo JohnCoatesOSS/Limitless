@@ -10,6 +10,7 @@
 #import "APTCacheFile-Private.h"
 #import "APTDownloadScheduler-Private.h"
 #import "APTRecords-Private.h"
+#import "APTSourceList-Private.h"
 
 @interface APTPackageManager ()
 
@@ -39,10 +40,10 @@
 // MARK: - Private Methods
 
 - (BOOL)queueArchivesForDownloadWithScheduler:(APTDownloadScheduler *)downloadScheduler
-                                   sourceList:(pkgSourceList *)sourceList
+                                   sourceList:(APTSourceList *)sourceList
                                packageRecords:(APTRecords *)records {
     return _packageManager->GetArchives(downloadScheduler.scheduler,
-                                        sourceList, records.records);
+                                        sourceList.list, records.records);
     
 }
 

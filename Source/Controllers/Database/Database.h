@@ -28,7 +28,6 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
     _H<NSDate> delock_;
     
     FileFd *lock_;
-    pkgSourceList *list_;
     
     SourceMap sourceMap_;
     _H<NSMutableArray> sourceList_;
@@ -64,8 +63,8 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 @property (retain, strong) APTRecords *packageRecords;
 @property (retain, strong) APTDownloadScheduler *downloadScheduler;
 @property (retain, strong) APTPackageManager *packageManager;
+@property (retain, strong) APTSourceList *sourceListController;
 
-- (pkgSourceList &) list;
 - (NSArray *) packages;
 - (NSArray *) sources;
 - (Source *) sourceWithKey:(NSString *)key;

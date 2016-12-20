@@ -22,4 +22,5 @@ typedef void (^SourcesUpdateCompletion)(BOOL success, NSArray<NSError *> *errors
 - (void)performUpdateInBackgroundWithCompletion:(nullable SourcesUpdateCompletion)completion;
 
 @end
+
 NS_ASSUME_NONNULL_END
