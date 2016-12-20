@@ -20,6 +20,7 @@
 #import "APTRecords-Private.h"
 #import "APTPackageManager-Private.h"
 #import "APTSource-Private.h"
+#import "APTSourceList-Private.h"
 
 @implementation Database
 
@@ -258,12 +259,6 @@
 
 - (bool) popErrorWithTitle:(NSString *)title forOperation:(bool)success {
     return [self popErrorWithTitle:title] || !success;
-}
-
-- (bool) popErrorWithTitle:(NSString *)title forReadList:(pkgSourceList &)list {
-    if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
-        return true;
-    return false;
 }
 
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
@@ -549,11 +544,14 @@
     NSString *title(UCLocalize("PERFORM_SELECTIONS"));
     
     NSMutableArray *before = [NSMutableArray arrayWithCapacity:16]; {
-        pkgSourceList list;
-        if ([self popErrorWithTitle:title forReadList:list])
+        APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+        if (!sourceList) {
+            [self popErrorWithTitle:title];
             return;
-        for (pkgSourceList::const_iterator source = list.begin(); source != list.end(); ++source)
-            [before addObject:[NSString stringWithUTF8String:(*source)->GetURI().c_str()]];
+        }
+        for (APTSource *source in sourceList.sources) {
+            [before addObject:source.uri.absoluteString];
+        }
     }
     
     [delegate_ performSelectorOnMainThread:@selector(retainNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
@@ -666,9 +664,11 @@
 - (void) updateWithStatus:(CancelStatus &)status {
     NSString *title(UCLocalize("REFRESHING_DATA"));
     
-    pkgSourceList list;
-    if ([self popErrorWithTitle:title forReadList:list])
+    APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+    if (!sourceList) {
+        [self popErrorWithTitle:title];
         return;
+    }
     
     FileFd lock;
     lock.Fd(GetLock(_config->FindDir("Dir::State::Lists") + "lock"));
@@ -679,7 +679,7 @@
      performSelectorOnMainThread:@selector(retainNetworkActivityIndicator)
      withObject:nil waitUntilDone:YES];    
     
-    bool success(ListUpdate(status, list, PulseInterval_));
+    BOOL success = [sourceList updateWithStatusDelegate:status];
     if (status.WasCancelled())
         _error->Discard();
     else {

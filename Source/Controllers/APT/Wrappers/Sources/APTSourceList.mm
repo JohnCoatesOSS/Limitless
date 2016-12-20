@@ -83,7 +83,6 @@ APT_SILENCE_DEPRECATIONS_BEGIN
         return _sources;
     }
     
-    
     NSMutableArray *sources = [NSMutableArray new];
     pkgSourceList *list = self.list;
     pkgSourceList::const_iterator currentSource = list->begin();
@@ -184,6 +183,12 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     completion(TRUE, [APTErrorController popErrors]);
     deleteVariables();
     return;
+}
+
+- (BOOL)updateWithStatusDelegate:(pkgAcquireStatus &)progress {
+    int PulseInterval = 500000;
+    pkgSourceList &list = *self.list;
+    return ListUpdate(progress, list, PulseInterval);
 }
 
 
