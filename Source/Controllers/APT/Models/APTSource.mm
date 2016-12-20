@@ -125,10 +125,8 @@
                                tag:(NSString *)tag {
     string tagValue = section->FindS(tag.UTF8String);
     if (tagValue.empty()) {
-        NSLog(@"No tag for %@", tag);
         return nil;
     } else {
-        NSLog(@"tag for section %@: %s",tag, tagValue.c_str());
         return @(tagValue.c_str());
     }
 }

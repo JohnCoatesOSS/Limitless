@@ -235,7 +235,6 @@
     }
 }
 
-
 - (void) setDelegate:(NSObject<SourceDelegate> *)delegate {
     delegate_ = delegate;
 }

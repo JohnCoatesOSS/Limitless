@@ -23,12 +23,13 @@
 @property (readonly) NSString *distribution;
 @property (readonly) NSString *type;
 @property (readonly) NSString *host;
-@property (readonly) NSString *name;
-@property (readonly) NSString *label;
+@property (readonly, nonatomic) NSString *name;
+@property (readonly, nonatomic) NSString *label;
 @property (readonly) NSString *origin;
 @property (readonly) NSString *version;
 @property (readonly) NSString *defaultIcon;
 @property (readonly) NSArray<NSURL *> *associatedURLs;
+@property (readonly, nonatomic) NSURL *iconURL;
 
 - (Source *) initWithMetaIndex:(metaIndex *)index
                    forDatabase:(Database *)database
@@ -39,11 +40,9 @@
 - (NSString *) depictionForPackage:(NSString *)package;
 - (NSString *) supportForPackage:(NSString *)package;
 
-- (metaIndex *) metaIndex;
 - (NSDictionary *) record;
 
 - (NSString *) key;
-- (NSURL *) iconURL;
 
 - (void) setFetch:(bool)fetch forURI:(const char *)uri;
 - (void) resetFetch;
