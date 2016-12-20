@@ -13,6 +13,7 @@
 #import "LMXLocalizedTableSections.h"
 #import "APTCacheFile-Private.h"
 #import "APTPackage-Private.h"
+#import "APTRecords-Private.h"
 
 #include <fstream>
 
@@ -274,10 +275,9 @@
         if ([database_ era] != era_ || file_.end())
             return nil;
         
-        pkgRecords::Parser &parser([database_ records]->Lookup(file_));
-        
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         const char *start, *end;
-        if (!parser.Find([name UTF8String], start, end))
+        if (!parser->Find([name UTF8String], start, end))
             return (NSString *) [NSNull null];
         
         return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
@@ -288,10 +288,10 @@
         if ([database_ era] != era_ || file_.end())
             return nil;
         
-        pkgRecords::Parser &parser([database_ records]->Lookup(file_));
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         
         const char *start, *end;
-        parser.GetRec(start, end);
+        parser->GetRec(start, end);
         
         return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
     } }
@@ -310,7 +310,7 @@
         pkgRecords::Parser *parser;
         
         _profile(Package$parse$Lookup)
-        parser = &[database_ records]->Lookup(file_);
+        parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         _end
         
         CYString bugs;
@@ -431,7 +431,7 @@
         if ([database_ era] != era_ || file_.end())
             return nil;
         
-        pkgRecords::Parser *parser = &[database_ records]->Lookup(file_);
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         const std::string &maintainer(parser->Maintainer());
         return maintainer.empty() ? nil : [MIMEAddress addressWithString:[NSString stringWithUTF8String:maintainer.c_str()]];
     } }
@@ -453,7 +453,7 @@
         if ([database_ era] != era_ || file_.end())
             return nil;
         
-        pkgRecords::Parser *parser = &[database_ records]->Lookup(file_);
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         NSString *description([NSString stringWithUTF8String:parser->LongDesc().c_str()]);
         
         NSArray *lines = [description componentsSeparatedByString:@"\n"];
@@ -475,10 +475,10 @@
         return static_cast<NSString *>(parsed_->tagline_);
     
     @synchronized (database_) {
-        pkgRecords::Parser &parser([database_ records]->Lookup(file_));
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         
         const char *start, *end;
-        if (!parser.ShortDesc(start, end))
+        if (!parser->ShortDesc(start, end))
             return nil;
         
         if (end - start > 200)

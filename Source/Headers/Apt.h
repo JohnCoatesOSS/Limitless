@@ -48,6 +48,7 @@ APT_SILENCE_DEPRECATIONS_END
 #import "APTPackageProblemResolver.h"
 #import "APTPackage.h"
 #import "APTDownloadScheduler.h"
+#import "APTRecords.h"
 
 // MARK: - Controllers
 

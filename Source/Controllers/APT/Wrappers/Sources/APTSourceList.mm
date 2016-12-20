@@ -11,6 +11,7 @@
 #import "LMXAPTStatus.hpp"
 #import "APTCacheFile-Private.h"
 #import "APTDownloadScheduler-Private.h"
+#import "APTRecords-Private.h"
 
 APT_SILENCE_DEPRECATIONS_BEGIN
 
@@ -121,11 +122,10 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     APTDownloadScheduler *downloadScheduler;
     downloadScheduler = [[APTDownloadScheduler alloc] initWithStatusDelegate:status];
     pkgCacheFile &cache = *cacheFile.cacheFile;
-    pkgRecords *records = new pkgRecords(cache);
+    APTRecords *records = [[APTRecords alloc] initWithCacheFile:cacheFile];
     pkgPackageManager *manager = _system->CreatePM(cache);
     
     void (^deleteVariables)() = ^void() {
-        delete records;
         delete status;
     };
     
@@ -136,7 +136,8 @@ APT_SILENCE_DEPRECATIONS_BEGIN
         return;
     }
     
-    manager->GetArchives(downloadScheduler.scheduler, &sourceList, records);
+    manager->GetArchives(downloadScheduler.scheduler,
+                         &sourceList, records.records);
     ListUpdate(*status, sourceList);
     
     int PulseInterval = 500000;

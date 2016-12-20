@@ -17,6 +17,7 @@
 #import "Paths.h"
 #import "APTCacheFile+Legacy.h"
 #import "APTDownloadScheduler-Private.h"
+#import "APTRecords-Private.h"
 
 @implementation Database
 
@@ -155,7 +156,6 @@
 
 - (id) init {
     if ((self = [super init]) != nil) {
-        records_ = NULL;
         lock_ = NULL;
         status_ = new CydiaStatus();
         
@@ -209,10 +209,6 @@
          withObject:[NSNumber numberWithInt:fds[0]]
          ];
     } return self;
-}
-
-- (pkgRecords *) records {
-    return records_;
 }
 
 - (pkgSourceList &) list {
@@ -293,11 +289,7 @@
         }
         lock_ = NULL;
         self.downloadScheduler = nil;
-        if (records_) {
-            delete records_;
-        }
-        records_ = NULL;
-        
+        self.packageRecords = nil;
         self.problemResolver = nil;
         self.policy = nil;
         self.cacheFile = nil;
@@ -374,7 +366,7 @@
         
         self.policy = [APTDependencyCachePolicy new];
         pkgCacheFile &cache = *self.cacheFile.cacheFile;
-        records_ = new pkgRecords(cache);
+        self.packageRecords = [[APTRecords alloc] initWithCacheFile:self.cacheFile];
         self.problemResolver = [[APTPackageProblemResolver alloc] initWithCacheFile:self.cacheFile];
         self.downloadScheduler = [[APTDownloadScheduler alloc] initWithStatusDelegate:status_];
         lock_ = NULL;
@@ -531,7 +523,7 @@
     [self.downloadScheduler terminate];
     
     pkgCacheFile &cache = *self.cacheFile.cacheFile;
-    pkgRecords records(cache);
+    APTRecords *packageRecords = [[APTRecords alloc] initWithCacheFile:self.cacheFile];
     
     lock_ = new FileFd();
     lock_->Fd(GetLock(_config->FindDir("Dir::Cache::Archives") + "lock"));
@@ -547,7 +539,7 @@
     
     manager_ = (_system->CreatePM(cache));
     pkgAcquire *fetcher = self.downloadScheduler.scheduler;
-    if ([self popErrorWithTitle:title forOperation:manager_->GetArchives(fetcher, &list, &records)])
+    if ([self popErrorWithTitle:title forOperation:manager_->GetArchives(fetcher, &list, packageRecords.records)])
         return false;
     
     return true;
