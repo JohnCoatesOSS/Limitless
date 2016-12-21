@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UIViewController
+@interface LMXSettingsViewController : UIViewController
 <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *table;

@@ -21,7 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		33109EAD1DF64BA300066548 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33109EAC1DF64BA200066548 /* SettingsViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		33109EAD1DF64BA300066548 /* LMXSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33109EAC1DF64BA200066548 /* LMXSettingsViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		33922C561DFD132B00E9B088 /* DefaultPageOptionsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 33922C551DFD132B00E9B088 /* DefaultPageOptionsList.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		BC2569201DF00B4D000EA2C3 /* UIColor+CydiaColors.m in Sources */ = {isa = PBXBuildFile; fileRef = BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */; };
 		FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */; };
@@ -352,7 +352,7 @@
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
 		FA7057D31E0A3B3400EB7DF3 /* FeatureCatalogSection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057D21E0A3B3400EB7DF3 /* FeatureCatalogSection.m */; };
 		FA7057D61E0A3B3E00EB7DF3 /* FeatureCatalogItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057D51E0A3B3E00EB7DF3 /* FeatureCatalogItem.m */; };
-		FA7057D71E0A409A00EB7DF3 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33109EAC1DF64BA200066548 /* SettingsViewController.m */; };
+		FA7057D71E0A409A00EB7DF3 /* LMXSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33109EAC1DF64BA200066548 /* LMXSettingsViewController.m */; };
 		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
@@ -583,8 +583,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		33109EA91DF64A8C00066548 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		33109EAC1DF64BA200066548 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		33109EA91DF64A8C00066548 /* LMXSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LMXSettingsViewController.h; path = "../View Controllers/LMXSettingsViewController.h"; sourceTree = "<group>"; };
+		33109EAC1DF64BA200066548 /* LMXSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LMXSettingsViewController.m; path = "../View Controllers/LMXSettingsViewController.m"; sourceTree = "<group>"; };
 		33922C541DFD130000E9B088 /* DefaultPageOptionsList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultPageOptionsList.h; sourceTree = "<group>"; };
 		33922C551DFD132B00E9B088 /* DefaultPageOptionsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultPageOptionsList.m; sourceTree = "<group>"; };
 		BC25691E1DF00B4D000EA2C3 /* UIColor+CydiaColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+CydiaColors.h"; sourceTree = "<group>"; };
@@ -2006,6 +2006,7 @@
 		FA6C86C71D760B3600FB99CF /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				FA7057D81E0A497400EB7DF3 /* Settings */,
 				FA6C86C81D760B4600FB99CF /* View Controllers */,
 			);
 			path = Home;
@@ -2016,8 +2017,6 @@
 			children = (
 				FA6C86C91D760B6600FB99CF /* HomeController.h */,
 				FA6C86CA1D760B6600FB99CF /* HomeController.mm */,
-				33109EA91DF64A8C00066548 /* SettingsViewController.h */,
-				33109EAC1DF64BA200066548 /* SettingsViewController.m */,
 				33922C541DFD130000E9B088 /* DefaultPageOptionsList.h */,
 				33922C551DFD132B00E9B088 /* DefaultPageOptionsList.m */,
 			);
@@ -2200,6 +2199,15 @@
 				FA7057D51E0A3B3E00EB7DF3 /* FeatureCatalogItem.m */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		FA7057D81E0A497400EB7DF3 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				33109EA91DF64A8C00066548 /* LMXSettingsViewController.h */,
+				33109EAC1DF64BA200066548 /* LMXSettingsViewController.m */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		FA7DB8FF1DE0275000F874E6 /* APT */ = {
@@ -2785,7 +2793,7 @@
 				FA23E2C11D774FEA001FBE4A /* Application.mm in Sources */,
 				FA6C86D11D760C9200FB99CF /* UINavigationController+Cydia.mm in Sources */,
 				FA23E2DE1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm in Sources */,
-				33109EAD1DF64BA300066548 /* SettingsViewController.m in Sources */,
+				33109EAD1DF64BA300066548 /* LMXSettingsViewController.m in Sources */,
 				FA0311BF1D1B2CFD008690CA /* LoadingView.mm in Sources */,
 				FA6C86CB1D760B6600FB99CF /* HomeController.mm in Sources */,
 				FA6C86DB1D761EE400FB99CF /* SectionController.mm in Sources */,
@@ -2916,7 +2924,7 @@
 				FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */,
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
 				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
-				FA7057D71E0A409A00EB7DF3 /* SettingsViewController.m in Sources */,
+				FA7057D71E0A409A00EB7DF3 /* LMXSettingsViewController.m in Sources */,
 				FAE642B51DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
 				FA5684B01DF6040F000A4EBD /* LMXAPTSource.m in Sources */,
 			);

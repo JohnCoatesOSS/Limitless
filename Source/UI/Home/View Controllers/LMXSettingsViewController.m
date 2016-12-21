@@ -6,9 +6,9 @@
 //  Copyright © 2016 Limitless. All rights reserved.
 //
 
-#import "SettingsViewController.h"
+#import "LMXSettingsViewController.h"
 
-@implementation SettingsViewController
+@implementation LMXSettingsViewController
 
 // MARK: - View Lifecycle
 
