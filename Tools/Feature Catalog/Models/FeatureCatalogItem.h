@@ -15,4 +15,5 @@ typedef UIViewController *(^CreationBlock)();
 - (instancetype)initWithName:(NSString *)name
                creationBlock:(CreationBlock)creationBlock;
 - (instancetype)initWithName:(NSString *)name;
+
 @end

@@ -353,6 +353,12 @@
 		FA7057D31E0A3B3400EB7DF3 /* FeatureCatalogSection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057D21E0A3B3400EB7DF3 /* FeatureCatalogSection.m */; };
 		FA7057D61E0A3B3E00EB7DF3 /* FeatureCatalogItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057D51E0A3B3E00EB7DF3 /* FeatureCatalogItem.m */; };
 		FA7057D71E0A409A00EB7DF3 /* LMXSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33109EAC1DF64BA200066548 /* LMXSettingsViewController.m */; };
+		FA7057DC1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057DB1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m */; };
+		FA7057DD1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057DB1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m */; };
+		FA7057E11E0A4E6800EB7DF3 /* LMXSettingsSection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057E01E0A4E6800EB7DF3 /* LMXSettingsSection.m */; };
+		FA7057E21E0A4E6800EB7DF3 /* LMXSettingsSection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057E01E0A4E6800EB7DF3 /* LMXSettingsSection.m */; };
+		FA7057E51E0A4E7100EB7DF3 /* LMXSettingsItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057E41E0A4E7100EB7DF3 /* LMXSettingsItem.m */; };
+		FA7057E61E0A4E7100EB7DF3 /* LMXSettingsItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057E41E0A4E7100EB7DF3 /* LMXSettingsItem.m */; };
 		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
@@ -1007,6 +1013,12 @@
 		FA7057D21E0A3B3400EB7DF3 /* FeatureCatalogSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureCatalogSection.m; sourceTree = "<group>"; };
 		FA7057D41E0A3B3E00EB7DF3 /* FeatureCatalogItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureCatalogItem.h; sourceTree = "<group>"; };
 		FA7057D51E0A3B3E00EB7DF3 /* FeatureCatalogItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureCatalogItem.m; sourceTree = "<group>"; };
+		FA7057DA1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSettingsTableViewCell.h; sourceTree = "<group>"; };
+		FA7057DB1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSettingsTableViewCell.m; sourceTree = "<group>"; };
+		FA7057DF1E0A4E6800EB7DF3 /* LMXSettingsSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSettingsSection.h; sourceTree = "<group>"; };
+		FA7057E01E0A4E6800EB7DF3 /* LMXSettingsSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSettingsSection.m; sourceTree = "<group>"; };
+		FA7057E31E0A4E7100EB7DF3 /* LMXSettingsItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSettingsItem.h; sourceTree = "<group>"; };
+		FA7057E41E0A4E7100EB7DF3 /* LMXSettingsItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSettingsItem.m; sourceTree = "<group>"; };
 		FA7DB9001DE0276D00F874E6 /* APTManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTManager.h; sourceTree = "<group>"; };
 		FA7DB9011DE0276D00F874E6 /* APTManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTManager.mm; sourceTree = "<group>"; };
 		FA9010FB1DE12B1C00A607AC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2204,10 +2216,32 @@
 		FA7057D81E0A497400EB7DF3 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				FA7057DE1E0A4E4F00EB7DF3 /* Models */,
+				FA7057D91E0A49D400EB7DF3 /* Views */,
 				33109EA91DF64A8C00066548 /* LMXSettingsViewController.h */,
 				33109EAC1DF64BA200066548 /* LMXSettingsViewController.m */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		FA7057D91E0A49D400EB7DF3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FA7057DA1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.h */,
+				FA7057DB1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA7057DE1E0A4E4F00EB7DF3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FA7057DF1E0A4E6800EB7DF3 /* LMXSettingsSection.h */,
+				FA7057E01E0A4E6800EB7DF3 /* LMXSettingsSection.m */,
+				FA7057E31E0A4E7100EB7DF3 /* LMXSettingsItem.h */,
+				FA7057E41E0A4E7100EB7DF3 /* LMXSettingsItem.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		FA7DB8FF1DE0275000F874E6 /* APT */ = {
@@ -2802,6 +2836,7 @@
 				FA01D2211D1B22B100B49E70 /* Sources.mm in Sources */,
 				FA6C86D41D760CC600FB99CF /* CydiaTabBarController.mm in Sources */,
 				FA6C86781D75756800FB99CF /* CydiaOperation.mm in Sources */,
+				FA7057E11E0A4E6800EB7DF3 /* LMXSettingsSection.m in Sources */,
 				FA6C86A31D75967800FB99CF /* CydiaScript.mm in Sources */,
 				FA1247E71D778DB800C21DAC /* Paths.mm in Sources */,
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
@@ -2833,6 +2868,7 @@
 				FA6C86741D7573D900FB99CF /* Source.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
 				FA5684AA1DF6026C000A4EBD /* NSError+Limitless.m in Sources */,
+				FA7057E51E0A4E7100EB7DF3 /* LMXSettingsItem.m in Sources */,
 				FA6C86BD1D76090800FB99CF /* FileTable.mm in Sources */,
 				FA6C864C1D74B26C00FB99CF /* SystemHelpers.mm in Sources */,
 				FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */,
@@ -2844,6 +2880,7 @@
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA6C86EA1D7621CC00FB99CF /* InstalledController.mm in Sources */,
 				33922C561DFD132B00E9B088 /* DefaultPageOptionsList.m in Sources */,
+				FA7057DC1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m in Sources */,
 				FA6C86E71D76216300FB99CF /* PackageSettingsController.mm in Sources */,
 				FA6C86E11D76200200FB99CF /* ChangesController.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
@@ -2906,6 +2943,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA1CAD741DF5CFF400B7766C /* LMXSourceCell.m in Sources */,
+				FA7057DD1E0A4BA600EB7DF3 /* LMXSettingsTableViewCell.m in Sources */,
 				FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */,
 				FADD1BC71DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FAE642B11DF1433100E975B8 /* LMXRespringViewController.m in Sources */,
@@ -2918,10 +2956,12 @@
 				FA7057D61E0A3B3E00EB7DF3 /* FeatureCatalogItem.m in Sources */,
 				FA7057D31E0A3B3400EB7DF3 /* FeatureCatalogSection.m in Sources */,
 				FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */,
+				FA7057E21E0A4E6800EB7DF3 /* LMXSettingsSection.m in Sources */,
 				FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */,
 				FA1CAD791DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */,
 				FABC25FF1DF4CEC50033F1E2 /* LMXSourcesViewController.m in Sources */,
 				FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */,
+				FA7057E61E0A4E7100EB7DF3 /* LMXSettingsItem.m in Sources */,
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
 				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
 				FA7057D71E0A409A00EB7DF3 /* LMXSettingsViewController.m in Sources */,
