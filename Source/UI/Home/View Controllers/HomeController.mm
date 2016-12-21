@@ -8,6 +8,7 @@
 #import "HomeController.h"
 #import "UIGlobals.h"
 #import "DisplayHelpers.hpp"
+#import "SettingsViewController.h"
 
 @implementation HomeController
 
@@ -61,12 +62,26 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [alert show];
 }
 
+- (void)done {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)settingsButtonClicked {
+    SettingsViewController *controller = [[[SettingsViewController alloc] init] autorelease];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+    controller.navigationItem.rightBarButtonItem = doneButton;
+    [navigationController.navigationItem setTitle:@"Settings"];
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
+
+
 - (UIBarButtonItem *) leftButton {
     return [[[UIBarButtonItem alloc]
-             initWithTitle:UCLocalize("ABOUT")
+             initWithTitle:UCLocalize("SETTINGS")
              style:UIBarButtonItemStylePlain
              target:self
-             action:@selector(aboutButtonClicked)
+             action:@selector(settingsButtonClicked)
              ] autorelease];
 }
 
