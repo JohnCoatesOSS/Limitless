@@ -2,8 +2,7 @@
 //  SettingsController.h
 //  Limitless
 //
-//  Created by Shade Zepheri on 12/5/16.
-//  Copyright © 2016 Limitless. All rights reserved.
+//  Created on 12/5/16.
 //
 
 #import <UIKit/UIKit.h>
