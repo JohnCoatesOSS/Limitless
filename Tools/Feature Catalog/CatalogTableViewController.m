@@ -7,18 +7,33 @@
 #import "CatalogTableViewController.h"
 #import "LMXRespringViewController.h"
 #import "LMXSourcesViewController.h"
+#import "FeatureCatalogSection.h"
+#import "FeatureCatalogItem.h"
+#import "SettingsViewController.h"
 
 @interface CatalogTableViewController ()
 
 @property NSString *cellIdentifier;
 @property NSArray<NSString *> *features;
+@property (nonatomic) NSArray<FeatureCatalogSection *> *sections;
+
 @property BOOL hasAppeared;
 @end
 
-static NSString * const kFeatureRespring = @"Respring Screen";
-static NSString * const kFeatureSources = @"Sources Screen";
-
 @implementation CatalogTableViewController
+
+// MARK: - Init
+
+- (instancetype)init {
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    
+    if (self) {
+        
+    }
+    
+    return self;
+}
+
 
 // MARK: - View Lifecycle
 
@@ -29,11 +44,6 @@ static NSString * const kFeatureSources = @"Sources Screen";
     self.cellIdentifier = @"cellIdentifier";
     [self.tableView registerClass:[UITableViewCell class]
            forCellReuseIdentifier:self.cellIdentifier];
-    
-    self.features = @[
-                      kFeatureRespring,
-                      kFeatureSources
-                      ];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -43,9 +53,9 @@ static NSString * const kFeatureSources = @"Sources Screen";
     }
     self.hasAppeared = true;
     
-    NSString *savedFeature = [self savedFeatureSelection];
-    if (savedFeature) {
-        [self selectedFeature:savedFeature];
+    FeatureCatalogItem *savedSelection = [self savedSelection];
+    if (savedSelection) {
+        [self selectedItem:savedSelection];
     }
 }
 
@@ -56,54 +66,128 @@ static NSString * const kFeatureSources = @"Sources Screen";
 
 // MARK: - Table View Data Source
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.sections.count;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-    return self.features.count;
+    return self.sections[section].items.count;
+}
+
+- (NSString *)tableView:(UITableView *)tableView
+titleForHeaderInSection:(NSInteger)section {
+    return self.sections[section].title;
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier
                                                             forIndexPath:indexPath];
-    cell.textLabel.text = self.features[indexPath.row];
+    FeatureCatalogItem *item;
+    item = self.sections[indexPath.section].items[indexPath.row];
+    cell.textLabel.text = item.name;
     return cell;
 }
 
 // MARK: - Table View Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *feature = self.features[indexPath.row];
-    [self saveFeatureSelection:feature];
-    [self selectedFeature:feature];
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    FeatureCatalogItem *item;
+    item = self.sections[indexPath.section].items[indexPath.row];
+    
+    [self saveSelection:item];
+    [self selectedItem:item];
 }
 
-// MARK: - Feature Selection
+// MARK: - Item Selection
 
-- (void)selectedFeature:(nonnull NSString *)feature {
-    UIViewController *viewController;
-    if ([feature isEqualToString:kFeatureRespring]) {
-        viewController = [LMXRespringViewController new];
-    }
-    else if ([feature isEqualToString:kFeatureSources]) {
-        viewController = [LMXSourcesViewController new];
-    }
+- (void)selectedItem:(nonnull FeatureCatalogItem *)item {
     
+    UIViewController *viewController = item.creationBlock();
     [self.navigationController pushViewController:viewController
                                          animated:TRUE];
 }
 
-// MARK: - Saving/Loading State
+// MARK: - Save / Load Selection
 
-static NSString *kSavedSettingFeature = @"selectedFeature";
+static NSString *kSavedSettingItem = @"selectedItem";
 
-- (void)saveFeatureSelection:(nonnull NSString *)feature {
+- (void)saveSelection:(nonnull FeatureCatalogItem *)item {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:feature forKey:kSavedSettingFeature];
+    [userDefaults setObject:item.name forKey:kSavedSettingItem];
     [userDefaults synchronize];
 }
 
-- (nullable NSString *)savedFeatureSelection {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kSavedSettingFeature];
+- (FeatureCatalogItem *)savedSelection {
+    NSString *savedItemName;
+    savedItemName = [[NSUserDefaults standardUserDefaults] objectForKey:kSavedSettingItem];
+    if (!savedItemName) {
+        return nil;
+    }
+    
+    for (FeatureCatalogSection *section in self.sections) {
+        for (FeatureCatalogItem *item in section.items) {
+            if ([item.name isEqualToString:savedItemName]) {
+                return item;
+            }
+        }
+    }
+    
+    return nil;
+}
+
+// MARK: - Items
+
+- (NSArray<FeatureCatalogSection *> *)sections {
+    if (_sections) {
+        return _sections;
+    }
+    
+    _sections = @[
+                  [self home],
+                  [self tabs],
+                  [self utilities],
+                  ];
+    return _sections;
+}
+
+// MARK: - Sections
+
+- (FeatureCatalogSection *)home {
+    FeatureCatalogSection *section = [[FeatureCatalogSection alloc] initWithTitle:@"Home"];
+    
+    section.items = @[
+                      [[FeatureCatalogItem alloc] initWithName:@"Settings" creationBlock:^UIViewController *{
+                          return [SettingsViewController new]; }]
+                      ];
+    
+    return section;
+}
+
+
+- (FeatureCatalogSection *)utilities {
+    FeatureCatalogSection *section = [[FeatureCatalogSection alloc] initWithTitle:@"Utilities"];
+    
+    section.items = @[
+                      [[FeatureCatalogItem alloc] initWithName:@"Respring Screen" creationBlock:^UIViewController *{
+                          return [LMXRespringViewController new]; }]
+                      ];
+    
+    return section;
+}
+
+- (FeatureCatalogSection *)tabs {
+    FeatureCatalogSection *section = [[FeatureCatalogSection alloc] initWithTitle:@"Tabs"];
+    
+    section.items = @[
+                      [[FeatureCatalogItem alloc] initWithName:@"Sources" creationBlock:^UIViewController *{
+                          return [LMXSourcesViewController new]; }]
+                      ];
+    
+    return section;
 }
 
 @end

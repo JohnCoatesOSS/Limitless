@@ -350,6 +350,9 @@
 		FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86F71D7625E700FB99CF /* StashController.mm */; };
 		FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
+		FA7057D31E0A3B3400EB7DF3 /* FeatureCatalogSection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057D21E0A3B3400EB7DF3 /* FeatureCatalogSection.m */; };
+		FA7057D61E0A3B3E00EB7DF3 /* FeatureCatalogItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057D51E0A3B3E00EB7DF3 /* FeatureCatalogItem.m */; };
+		FA7057D71E0A409A00EB7DF3 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 33109EAC1DF64BA200066548 /* SettingsViewController.m */; };
 		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
@@ -1000,6 +1003,10 @@
 		FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CYURLCache.mm; sourceTree = "<group>"; };
 		FA6D8CAC1D74812500283EDB /* Profiling.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Profiling.hpp; sourceTree = "<group>"; };
 		FA6D8CAD1D74812500283EDB /* Profiling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Profiling.mm; sourceTree = "<group>"; };
+		FA7057D11E0A3B3400EB7DF3 /* FeatureCatalogSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureCatalogSection.h; sourceTree = "<group>"; };
+		FA7057D21E0A3B3400EB7DF3 /* FeatureCatalogSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureCatalogSection.m; sourceTree = "<group>"; };
+		FA7057D41E0A3B3E00EB7DF3 /* FeatureCatalogItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeatureCatalogItem.h; sourceTree = "<group>"; };
+		FA7057D51E0A3B3E00EB7DF3 /* FeatureCatalogItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeatureCatalogItem.m; sourceTree = "<group>"; };
 		FA7DB9001DE0276D00F874E6 /* APTManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTManager.h; sourceTree = "<group>"; };
 		FA7DB9011DE0276D00F874E6 /* APTManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTManager.mm; sourceTree = "<group>"; };
 		FA9010FB1DE12B1C00A607AC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2184,6 +2191,17 @@
 			path = Debugging;
 			sourceTree = "<group>";
 		};
+		FA7057D01E0A3A7000EB7DF3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FA7057D11E0A3B3400EB7DF3 /* FeatureCatalogSection.h */,
+				FA7057D21E0A3B3400EB7DF3 /* FeatureCatalogSection.m */,
+				FA7057D41E0A3B3E00EB7DF3 /* FeatureCatalogItem.h */,
+				FA7057D51E0A3B3E00EB7DF3 /* FeatureCatalogItem.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		FA7DB8FF1DE0275000F874E6 /* APT */ = {
 			isa = PBXGroup;
 			children = (
@@ -2380,6 +2398,7 @@
 		FAE642961DF13EC200E975B8 /* Feature Catalog */ = {
 			isa = PBXGroup;
 			children = (
+				FA7057D01E0A3A7000EB7DF3 /* Models */,
 				FAE6429A1DF13EC200E975B8 /* FeatureCatalogAppDelegate.h */,
 				FAE6429B1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m */,
 				FAE6429D1DF13EC200E975B8 /* CatalogTableViewController.h */,
@@ -2888,6 +2907,8 @@
 				FA56848A1DF5FA74000A4EBD /* Device.mm in Sources */,
 				FA5684B51DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */,
 				FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */,
+				FA7057D61E0A3B3E00EB7DF3 /* FeatureCatalogItem.m in Sources */,
+				FA7057D31E0A3B3400EB7DF3 /* FeatureCatalogSection.m in Sources */,
 				FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */,
 				FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */,
 				FA1CAD791DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */,
@@ -2895,6 +2916,7 @@
 				FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */,
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
 				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
+				FA7057D71E0A409A00EB7DF3 /* SettingsViewController.m in Sources */,
 				FAE642B51DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
 				FA5684B01DF6040F000A4EBD /* LMXAPTSource.m in Sources */,
 			);
