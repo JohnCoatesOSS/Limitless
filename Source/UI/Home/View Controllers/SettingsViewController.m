@@ -10,59 +10,7 @@
 
 @implementation SettingsViewController
 
-- (NSURL *) navigationURL {
-    return [NSURL URLWithString:@"cydia://settings"];
-}
-
-// Order matters folks
-
-- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
-}
-
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case 0: return 3;
-        case 1: return 1;
-        case 2: return 2;
-    };
-    return 1;
-}
-
-- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (section == 1) {
-        return @"Refresh Settings";
-    } else {
-        return nil;
-    }
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch (indexPath.section) {
-        case 0:
-        switch (indexPath.row) {
-            case 0: return _defaultPageCell;
-            case 1: return _rotationCell;
-            case 2: return _nightModeCell;
-        }
-        case 1:
-        switch (indexPath.row) {
-            case 0: return _autoRefreshCell;
-        }
-        case 2:
-        switch (indexPath.row) {
-            case 0: return _timeoutCell;
-            case 1: return _customTimeoutCell;
-        }
-    }
-    return nil;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0 && indexPath.row == 0) {
-        NSLog(@"Default Page was clicked");
-    }
-}
+// MARK: - View Lifecycle
 
 - (void)loadView {
     [super loadView];
@@ -91,7 +39,7 @@
     [[_rotationCell textLabel] setText:@"Enable Rotation"];
     [_rotationCell setAccessoryView:_rotationSwitch];
     [_rotationCell setSelectionStyle:UITableViewCellSelectionStyleNone];
-
+    
     _nightModeSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 50, 20)];
     [_nightModeSwitch setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
     _nightModeSwitch.onTintColor = [UIColor purpleColor];
@@ -143,6 +91,71 @@
     [_autoRefreshSwitch setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"autoRefreshEnabled"]];
     [_timeoutSwitch setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"customTimeoutEnabled"]];
 }
+
+// MARK: - Table Data Source
+
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
+    return 3;
+}
+
+- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    switch (section) {
+        case 0:
+            return 3;
+        case 1:
+            return 1;
+        case 2:
+            return 2;
+    };
+    return 1;
+}
+
+- (NSString *) tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 1) {
+        return @"Refresh Settings";
+    } else {
+        return nil;
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0: return _defaultPageCell;
+                case 1: return _rotationCell;
+                case 2: return _nightModeCell;
+            }
+        case 1:
+            switch (indexPath.row) {
+                case 0: return _autoRefreshCell;
+            }
+        case 2:
+            switch (indexPath.row) {
+                case 0: return _timeoutCell;
+                case 1: return _customTimeoutCell;
+            }
+    }
+    return nil;
+}
+
+// MARK: - Table Delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0 && indexPath.row == 0) {
+        NSLog(@"Default Page was clicked");
+    }
+}
+
+
+
+// MARK: - Navigation
+
+- (NSURL *) navigationURL {
+    return [NSURL URLWithString:@"cydia://settings"];
+}
+
+// MARK: - Settings Events
 
 - (void)setNightMode:(id)control {
     BOOL value = [control isOn];

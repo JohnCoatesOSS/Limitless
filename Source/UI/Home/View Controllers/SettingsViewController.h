@@ -10,6 +10,7 @@
 
 @interface SettingsViewController : UIViewController
 <UITableViewDataSource, UITableViewDelegate>
+
 @property (nonatomic, strong) UITableView *table;
 
 @property (nonatomic) NSInteger *page;
