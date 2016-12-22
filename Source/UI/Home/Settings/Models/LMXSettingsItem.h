@@ -7,7 +7,7 @@
     
 typedef NS_ENUM(NSUInteger, LMXSetting) {
     LMXSettingToggle,
-    LMXSettingNumericValue
+    LMXSettingUnsignedIntValue
 };
 
 @interface LMXSettingsItem : NSObject

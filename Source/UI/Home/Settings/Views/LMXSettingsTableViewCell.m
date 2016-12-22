@@ -75,7 +75,7 @@
             self.accessoryView = self.cellSwitch;
             [self updateSwitchToCurrentSettingsValue];
             break;
-        case LMXSettingNumericValue:
+        case LMXSettingUnsignedIntValue:
             self.accessoryView = self.cellInput;
             [self updateInputToCurrentSettingsValue];
             break;
@@ -84,7 +84,7 @@
 
 - (void)updateSwitchToCurrentSettingsValue {
     NSString *settingKey = self.item.key;
-    BOOL isOn = [[NSUserDefaults standardUserDefaults] boolForKey:settingKey];
+    BOOL isOn = [NSUserDefaults.standardUserDefaults boolForKey:settingKey];
     [self.cellSwitch setOn:isOn animated:FALSE];
 }
 
@@ -99,7 +99,7 @@
     id currentValue = [[NSUserDefaults standardUserDefaults] objectForKey:settingKey];
     
     if ([currentValue respondsToSelector:@selector(description)]) {
-        self.cellInput.text = [defaultValue description];
+        self.cellInput.text = [currentValue description];
     }
 }
 
@@ -116,12 +116,58 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range
 replacementString:(NSString *)string {
+    NSCharacterSet *allowedCharacters;
+    switch (self.item.type) {
+        case LMXSettingUnsignedIntValue:
+            allowedCharacters = [NSCharacterSet decimalDigitCharacterSet];
+            break;
+            
+        case LMXSettingToggle:
+            [NSException raise:@"Invalid Item Setting"
+                        format:@"Text field is being used for cell that is not set to a text input type."];
+            break;
+    }
+    
+    if (allowedCharacters) {
+        NSCharacterSet *bannedCharacters = allowedCharacters.invertedSet;
+        NSRange rangeOfBannedCharacters = [string rangeOfCharacterFromSet:bannedCharacters];
+        if (rangeOfBannedCharacters.location != NSNotFound) {
+            return FALSE;
+        }
+    }
+    
     return TRUE;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+    [self saveValueFromTextField:textField];
     return TRUE;
+}
+
+// MARK: - Save Text
+
+- (void)saveValueFromTextField:(UITextField *)textField {
+    NSString *settingKey = self.item.key;
+    NSString *rawValue = textField.text;
+    
+    NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
+    
+    if (rawValue.length == 0) {
+        [userDefaults removeObjectForKey:settingKey];
+        return;
+    }
+    
+    switch (self.item.type) {
+        case LMXSettingToggle:
+            [NSException raise:@"Invalid Option" format:@"Can't save toggle setting from a text field."];
+            break;
+        case LMXSettingUnsignedIntValue:
+            [userDefaults setInteger:rawValue.integerValue
+                              forKey:settingKey];
+            break;
+            
+    }
 }
 
 @end

@@ -146,7 +146,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     LMXSettingsItem *timeoutInSeconds;
     timeoutInSeconds = [[LMXSettingsItem alloc] initWithKey:@"customTimeoutSeconds"
                                                        name:@"Time in Seconds"
-                                                       type:LMXSettingNumericValue];
+                                                       type:LMXSettingUnsignedIntValue];
     timeoutInSeconds.defaultValue = @(25);
     
     section.items = @[
