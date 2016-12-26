@@ -8,7 +8,7 @@
 #import "HomeController.h"
 #import "UIGlobals.h"
 #import "DisplayHelpers.hpp"
-#import "LMXSettingsViewController.h"
+#import "SettingsViewController.h"
 
 @implementation HomeController
 
@@ -67,7 +67,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void)settingsButtonClicked {
-    LMXSettingsViewController *controller = [[[LMXSettingsViewController alloc] init] autorelease];
+    SettingsViewController *controller = [[[SettingsViewController alloc] init] autorelease];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
     controller.navigationItem.rightBarButtonItem = doneButton;

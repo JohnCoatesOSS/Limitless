@@ -7,6 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LMXSettingsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface SettingsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end

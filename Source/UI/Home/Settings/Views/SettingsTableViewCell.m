@@ -1,21 +1,21 @@
 //
-//  LMXSettingTableViewCell.m
+//  SettingTableViewCell.m
 //  Limitless
 //
 //  Created on 12/20/16.
 //
 
-#import "LMXSettingsTableViewCell.h"
-#import "LMXSettingsItem.h"
+#import "SettingsTableViewCell.h"
+#import "SettingsItem.h"
 
-@interface LMXSettingsTableViewCell ()
+@interface SettingsTableViewCell ()
 
 @property (nonatomic) UISwitch *cellSwitch;
 @property (nonatomic) UITextField *cellInput;
 
 @end
 
-@implementation LMXSettingsTableViewCell
+@implementation SettingsTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style
               reuseIdentifier:(NSString *)reuseIdentifier {
@@ -66,16 +66,16 @@
 
 // MARK: - Updating
 
-- (void)setItem:(LMXSettingsItem *)item {
+- (void)setItem:(SettingsItem *)item {
     _item = item;
     self.textLabel.text = item.name;
     
     switch (item.type) {
-        case LMXSettingToggle:
+        case SettingToggle:
             self.accessoryView = self.cellSwitch;
             [self updateSwitchToCurrentSettingsValue];
             break;
-        case LMXSettingUnsignedIntValue:
+        case SettingUnsignedIntValue:
             self.accessoryView = self.cellInput;
             [self updateInputToCurrentSettingsValue];
             break;
@@ -96,7 +96,7 @@
     }
     
     NSString *settingsKey = self.item.key;
-    id currentValue = [LMXSettingsController userDefinedObjectForKey:settingsKey];
+    id currentValue = [SettingsController userDefinedObjectForKey:settingsKey];
     if ([currentValue respondsToSelector:@selector(description)]) {
         self.cellInput.text = [currentValue description];
     }
@@ -106,7 +106,7 @@
 
 - (void)switchToggled:(UISwitch *)sender {
     NSString *settingKey = self.item.key;
-    [LMXSettingsController setValueForKey:settingKey
+    [SettingsController setValueForKey:settingKey
                                withObject:@(sender.isOn)];
 }
 
@@ -116,11 +116,11 @@
 replacementString:(NSString *)string {
     NSCharacterSet *allowedCharacters;
     switch (self.item.type) {
-        case LMXSettingUnsignedIntValue:
+        case SettingUnsignedIntValue:
             allowedCharacters = NSCharacterSet.decimalDigitCharacterSet;
             break;
             
-        case LMXSettingToggle:
+        case SettingToggle:
             [NSException raise:@"Invalid Item Setting"
                         format:@"Text field is being used for cell that is not set to a text input type."];
             break;
@@ -150,16 +150,16 @@ replacementString:(NSString *)string {
     NSString *rawValue = textField.text;
     
     if (rawValue.length == 0) {
-        [LMXSettingsController setValueForKey:settingKey withObject:nil];
+        [SettingsController setValueForKey:settingKey withObject:nil];
         return;
     }
     
     switch (self.item.type) {
-        case LMXSettingToggle:
+        case SettingToggle:
             [NSException raise:@"Invalid Option" format:@"Can't save toggle setting from a text field."];
             break;
-        case LMXSettingUnsignedIntValue:
-            [LMXSettingsController setValueForKey:settingKey
+        case SettingUnsignedIntValue:
+            [SettingsController setValueForKey:settingKey
                                        withObject:@(rawValue.integerValue)];
             
             break;

@@ -9,7 +9,7 @@
 #import "LMXSourcesViewController.h"
 #import "FeatureCatalogSection.h"
 #import "FeatureCatalogItem.h"
-#import "LMXSettingsViewController.h"
+#import "SettingsViewController.h"
 
 @interface CatalogTableViewController ()
 
@@ -161,7 +161,7 @@ static NSString *kSavedSettingItem = @"selectedItem";
     
     section.items = @[
                       [[FeatureCatalogItem alloc] initWithName:@"Settings" creationBlock:^UIViewController *{
-                          return [LMXSettingsViewController new]; }]
+                          return [SettingsViewController new]; }]
                       ];
     
     return section;

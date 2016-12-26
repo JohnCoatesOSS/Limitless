@@ -1,12 +1,12 @@
 //
-//  LMXSettingsController.m
+//  SettingsController.m
 //  Limitless
 //
 //  Created by John Coates on 12/22/16.
 //  Copyright © 2016 Limitless. All rights reserved.
 //
 
-#import "LMXSettingsController.h"
+#import "SettingsController.h"
 
 NSNotificationName const LMXNotificationSettingsChanged = @"LMXNotificationSettingsChanged";
 
@@ -17,13 +17,13 @@ NSString * const kSettingAutoRefreshOnLaunch = @"kSettingAutoRefreshOnLaunch";
 NSString * const kSettingCustomRefreshTimeoutEnabled = @"kSettingCustomRefreshTimeoutEnabled";
 NSString * const kSettingRefreshTimeoutInSeconds = @"kSettingRefreshTimeoutInSeconds";
 
-@interface LMXSettingsController ()
+@interface SettingsController ()
 
 @property (class, readonly) NSUserDefaults *userDefaults;
 
 @end
 
-@implementation LMXSettingsController
+@implementation SettingsController
 
 // MARK: - Internal
 
@@ -38,7 +38,7 @@ NSString * const kSettingRefreshTimeoutInSeconds = @"kSettingRefreshTimeoutInSec
 
 + (instancetype)keyed {
     static dispatch_once_t onceToken;
-    static LMXSettingsController *keyed;
+    static SettingsController *keyed;
     dispatch_once(&onceToken, ^{
         keyed = [self new];
     });

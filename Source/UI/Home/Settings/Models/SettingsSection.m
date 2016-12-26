@@ -1,17 +1,17 @@
 //
-//  LMXSettingsSection.m
+//  SettingsSection.m
 //  Limitless
 //
 //  Created on 12/20/16.
 //
 
-#import "LMXSettingsSection.h"
+#import "SettingsSection.h"
 
-@interface LMXSettingsSection ()
+@interface SettingsSection ()
 
 @end
 
-@implementation LMXSettingsSection
+@implementation SettingsSection
 
 - (instancetype)initWithTitle:(NSString *)title {
     self = [super init];

@@ -5,21 +5,21 @@
 //  Created on 12/5/16.
 //
 
-#import "LMXSettingsViewController.h"
-#import "LMXSettingsTableViewCell.h"
-#import "LMXSettingsSection.h"
-#import "LMXSettingsItem.h"
+#import "SettingsViewController.h"
+#import "SettingsTableViewCell.h"
+#import "SettingsSection.h"
+#import "SettingsItem.h"
 
-static NSString * const kCellIdentifier = @"LMXSettingCell";
+static NSString * const kCellIdentifier = @"SettingCell";
 
-@interface LMXSettingsViewController ()
+@interface SettingsViewController ()
 
 @property UITableView *tableView;
-@property (nonatomic) NSArray<LMXSettingsSection *> *sections;
+@property (nonatomic) NSArray<SettingsSection *> *sections;
 
 @end
 
-@implementation LMXSettingsViewController
+@implementation SettingsViewController
 
 // MARK: - Init
 
@@ -66,7 +66,7 @@ static NSString * const kCellIdentifier = @"LMXSettingCell";
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.tableView registerClass:LMXSettingsTableViewCell.class
+    [self.tableView registerClass:SettingsTableViewCell.class
            forCellReuseIdentifier:kCellIdentifier];
     [self.view addSubview:self.tableView];
 }
@@ -88,11 +88,11 @@ static NSString * const kCellIdentifier = @"LMXSettingCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    LMXSettingsTableViewCell *cell;
+    SettingsTableViewCell *cell;
     cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier
                                            forIndexPath:indexPath];
     
-    LMXSettingsItem *item = self.sections[indexPath.section].items[indexPath.row];
+    SettingsItem *item = self.sections[indexPath.section].items[indexPath.row];
     cell.item = item;
     
     return cell;
@@ -112,7 +112,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 // MARK: - Sections
 
-- (NSArray<LMXSettingsSection *> *)sections {
+- (NSArray<SettingsSection *> *)sections {
     if (_sections) {
         return _sections;
     }
@@ -125,34 +125,34 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return _sections;
 }
 
-- (LMXSettingsSection *)theme {
-    LMXSettingsSection *section = [[LMXSettingsSection alloc] initWithTitle:@"Theme"];
+- (SettingsSection *)theme {
+    SettingsSection *section = [[SettingsSection alloc] initWithTitle:@"Theme"];
     
     section.items = @[
-                      [[LMXSettingsItem alloc] initWithKey:kSettingDarkModeEnabled
+                      [[SettingsItem alloc] initWithKey:kSettingDarkModeEnabled
                                                       name:@"Dark Mode"
-                                                      type:LMXSettingToggle],
-                      [[LMXSettingsItem alloc] initWithKey:kSettingRotationEnabled
+                                                      type:SettingToggle],
+                      [[SettingsItem alloc] initWithKey:kSettingRotationEnabled
                                                       name:@"Enable Rotation"
-                                                      type:LMXSettingToggle]
+                                                      type:SettingToggle]
                       ];
     
     return section;
 }
 
-- (LMXSettingsSection *)refresh {
-    LMXSettingsSection *section = [[LMXSettingsSection alloc] initWithTitle:@"Refresh Settings"];
+- (SettingsSection *)refresh {
+    SettingsSection *section = [[SettingsSection alloc] initWithTitle:@"Refresh Settings"];
     
     section.items = @[
-                      [[LMXSettingsItem alloc] initWithKey:kSettingAutoRefreshOnLaunch
+                      [[SettingsItem alloc] initWithKey:kSettingAutoRefreshOnLaunch
                                                       name:@"Auto Refresh on Launch"
-                                                      type:LMXSettingToggle],
-                      [[LMXSettingsItem alloc] initWithKey:kSettingCustomRefreshTimeoutEnabled
+                                                      type:SettingToggle],
+                      [[SettingsItem alloc] initWithKey:kSettingCustomRefreshTimeoutEnabled
                                                       name:@"Custom Timeout"
-                                                      type:LMXSettingToggle],
-                      [[LMXSettingsItem alloc] initWithKey:kSettingRefreshTimeoutInSeconds
+                                                      type:SettingToggle],
+                      [[SettingsItem alloc] initWithKey:kSettingRefreshTimeoutInSeconds
                                                       name:@"Time in Seconds"
-                                                      type:LMXSettingUnsignedIntValue]
+                                                      type:SettingUnsignedIntValue]
                       ];
     return section;
 }

@@ -1,24 +1,24 @@
 //
-//  LMXSettingsItem.m
+//  SettingsItem.m
 //  Limitless
 //
 //  Created on 12/20/16.
 //
 
-#import "LMXSettingsItem.h"
+#import "SettingsItem.h"
 
-@interface LMXSettingsItem ()
+@interface SettingsItem ()
 
 @property (readwrite, nonatomic, strong) id defaultValue;
 @property (readwrite, nonatomic, strong) id currentValue;
 
 @end
 
-@implementation LMXSettingsItem
+@implementation SettingsItem
 
 - (instancetype)initWithKey:(NSString *)key
                        name:(NSString *)name
-                       type:(LMXSetting)type {
+                       type:(Setting)type {
     self = [super init];
 
     if (self) {
@@ -38,13 +38,13 @@
     if (_defaultValue) {
         return _defaultValue;
     }
-    _defaultValue = [LMXSettingsController defaultValueForKey:self.key];
+    _defaultValue = [SettingsController defaultValueForKey:self.key];
     
     return _defaultValue;
 }
 
 - (id)currentValue {
-    return [LMXSettingsController objectForKey:self.key];
+    return [SettingsController objectForKey:self.key];
 }
 
 @end

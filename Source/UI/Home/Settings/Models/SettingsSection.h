@@ -1,18 +1,18 @@
 //
-//  LMXSettingsSection.h
+//  SettingsSection.h
 //  Limitless
 //
 //  Created on 12/20/16.
 //
 
-@class LMXSettingsItem;
+@class SettingsItem;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LMXSettingsSection : NSObject
+@interface SettingsSection : NSObject
 
 @property (nullable, readonly) NSString *title;
-@property (strong, retain) NSArray <LMXSettingsItem *> *items;
+@property (strong, retain) NSArray <SettingsItem *> *items;
 
 - (instancetype)initWithTitle:(NSString *)title;
 

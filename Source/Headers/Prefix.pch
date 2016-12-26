@@ -10,7 +10,7 @@
 #import "Device.h"
 #import "Platform.h"
 #import "NSError+Limitless.h"
-#import "LMXSettingsController.h"
+#import "SettingsController.h"
 #endif
 
 #ifndef _assert

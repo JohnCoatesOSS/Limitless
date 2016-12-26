@@ -1,5 +1,5 @@
 //
-//  LMXSettingsController.h
+//  SettingsController.h
 //  Limitless
 //
 //  Created by John Coates on 12/22/16.
@@ -20,12 +20,12 @@ extern NSString * const kSettingAutoRefreshOnLaunch;
 extern NSString * const kSettingCustomRefreshTimeoutEnabled;
 extern NSString * const kSettingRefreshTimeoutInSeconds;
 
-@interface LMXSettingsController : NSObject
+@interface SettingsController : NSObject
 
 // MARK: - Convenience Properties
 
 /// Exposes object for use with keyed subscripting.
-@property (class, readonly) LMXSettingsController *keyed;
+@property (class, readonly) SettingsController *keyed;
 
 @property (class, getter=isDarkModeEnabled) BOOL darkModeEnabled;
 @property (class, getter=isRotationEnabled) BOOL rotationEnabled;
