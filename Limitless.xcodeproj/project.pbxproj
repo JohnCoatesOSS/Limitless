@@ -361,6 +361,8 @@
 		FA7057E61E0A4E7100EB7DF3 /* LMXSettingsItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7057E41E0A4E7100EB7DF3 /* LMXSettingsItem.m */; };
 		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
+		FA97CFFA1E0BEB950074CB7D /* LMXSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA97CFF91E0BEB950074CB7D /* LMXSettingsController.m */; };
+		FA97CFFB1E0BEB950074CB7D /* LMXSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA97CFF91E0BEB950074CB7D /* LMXSettingsController.m */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FABC25FD1DF4CC9F0033F1E2 /* LMXSourcesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC25FC1DF4CC9F0033F1E2 /* LMXSourcesViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FABC25FF1DF4CEC50033F1E2 /* LMXSourcesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC25FC1DF4CC9F0033F1E2 /* LMXSourcesViewController.m */; };
@@ -1024,6 +1026,8 @@
 		FA9010FB1DE12B1C00A607AC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA9010FF1DE12B1C00A607AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
+		FA97CFF81E0BEB950074CB7D /* LMXSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSettingsController.h; sourceTree = "<group>"; };
+		FA97CFF91E0BEB950074CB7D /* LMXSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSettingsController.m; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FABC25FB1DF4CC9F0033F1E2 /* LMXSourcesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSourcesViewController.h; sourceTree = "<group>"; };
@@ -2220,6 +2224,8 @@
 				FA7057D91E0A49D400EB7DF3 /* Views */,
 				33109EA91DF64A8C00066548 /* LMXSettingsViewController.h */,
 				33109EAC1DF64BA200066548 /* LMXSettingsViewController.m */,
+				FA97CFF81E0BEB950074CB7D /* LMXSettingsController.h */,
+				FA97CFF91E0BEB950074CB7D /* LMXSettingsController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2884,6 +2890,7 @@
 				FA6C86E71D76216300FB99CF /* PackageSettingsController.mm in Sources */,
 				FA6C86E11D76200200FB99CF /* ChangesController.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
+				FA97CFFA1E0BEB950074CB7D /* LMXSettingsController.m in Sources */,
 				FA6C86B61D75F26C00FB99CF /* PackageCell.mm in Sources */,
 				FA06A3BF1DDEE98000AA9B02 /* Platform.m in Sources */,
 				FA6C865A1D74C0C400FB99CF /* GeneralHelpers.mm in Sources */,
@@ -2954,6 +2961,7 @@
 				FA5684B51DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */,
 				FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */,
 				FA7057D61E0A3B3E00EB7DF3 /* FeatureCatalogItem.m in Sources */,
+				FA97CFFB1E0BEB950074CB7D /* LMXSettingsController.m in Sources */,
 				FA7057D31E0A3B3400EB7DF3 /* FeatureCatalogSection.m in Sources */,
 				FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */,
 				FA7057E21E0A4E6800EB7DF3 /* LMXSettingsSection.m in Sources */,

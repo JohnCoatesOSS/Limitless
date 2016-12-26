@@ -16,7 +16,8 @@ typedef NS_ENUM(NSUInteger, LMXSetting) {
 @property (readonly) NSString *name;
 @property (readonly) LMXSetting type;
 
-@property (strong, retain) id defaultValue;
+@property (readonly, nonatomic) id defaultValue;
+@property (readonly, nonatomic) id currentValue;
 
 - (instancetype)initWithKey:(NSString *)key
                        name:(NSString *)name

@@ -9,6 +9,9 @@
 
 @interface LMXSettingsItem ()
 
+@property (readwrite, nonatomic, strong) id defaultValue;
+@property (readwrite, nonatomic, strong) id currentValue;
+
 @end
 
 @implementation LMXSettingsItem
@@ -29,6 +32,19 @@
 
 - (void)updateToReflectNewProperties {
     
+}
+
+- (id)defaultValue {
+    if (_defaultValue) {
+        return _defaultValue;
+    }
+    _defaultValue = [LMXSettingsController defaultValueForKey:self.key];
+    
+    return _defaultValue;
+}
+
+- (id)currentValue {
+    return [LMXSettingsController objectForKey:self.key];
 }
 
 @end

@@ -95,9 +95,8 @@
         self.cellInput.placeholder = [defaultValue description];
     }
     
-    NSString *settingKey = self.item.key;
-    id currentValue = [[NSUserDefaults standardUserDefaults] objectForKey:settingKey];
-    
+    NSString *settingsKey = self.item.key;
+    id currentValue = [LMXSettingsController userDefinedObjectForKey:settingsKey];
     if ([currentValue respondsToSelector:@selector(description)]) {
         self.cellInput.text = [currentValue description];
     }
@@ -107,9 +106,8 @@
 
 - (void)switchToggled:(UISwitch *)sender {
     NSString *settingKey = self.item.key;
-    
-    [[NSUserDefaults standardUserDefaults] setBool:sender.isOn
-                                            forKey:settingKey];
+    [LMXSettingsController setValueForKey:settingKey
+                               withObject:@(sender.isOn)];
 }
 
 // MARK: - Input Delegate
@@ -119,7 +117,7 @@ replacementString:(NSString *)string {
     NSCharacterSet *allowedCharacters;
     switch (self.item.type) {
         case LMXSettingUnsignedIntValue:
-            allowedCharacters = [NSCharacterSet decimalDigitCharacterSet];
+            allowedCharacters = NSCharacterSet.decimalDigitCharacterSet;
             break;
             
         case LMXSettingToggle:
@@ -151,10 +149,8 @@ replacementString:(NSString *)string {
     NSString *settingKey = self.item.key;
     NSString *rawValue = textField.text;
     
-    NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
-    
     if (rawValue.length == 0) {
-        [userDefaults removeObjectForKey:settingKey];
+        [LMXSettingsController setValueForKey:settingKey withObject:nil];
         return;
     }
     
@@ -163,8 +159,9 @@ replacementString:(NSString *)string {
             [NSException raise:@"Invalid Option" format:@"Can't save toggle setting from a text field."];
             break;
         case LMXSettingUnsignedIntValue:
-            [userDefaults setInteger:rawValue.integerValue
-                              forKey:settingKey];
+            [LMXSettingsController setValueForKey:settingKey
+                                       withObject:@(rawValue.integerValue)];
+            
             break;
             
     }

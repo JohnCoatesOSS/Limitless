@@ -129,10 +129,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     LMXSettingsSection *section = [[LMXSettingsSection alloc] initWithTitle:@"Theme"];
     
     section.items = @[
-                      [[LMXSettingsItem alloc] initWithKey:@"enableDarkMode"
+                      [[LMXSettingsItem alloc] initWithKey:kSettingDarkModeEnabled
                                                       name:@"Dark Mode"
                                                       type:LMXSettingToggle],
-                      [[LMXSettingsItem alloc] initWithKey:@"enableRotation"
+                      [[LMXSettingsItem alloc] initWithKey:kSettingRotationEnabled
                                                       name:@"Enable Rotation"
                                                       type:LMXSettingToggle]
                       ];
@@ -143,20 +143,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (LMXSettingsSection *)refresh {
     LMXSettingsSection *section = [[LMXSettingsSection alloc] initWithTitle:@"Refresh Settings"];
     
-    LMXSettingsItem *timeoutInSeconds;
-    timeoutInSeconds = [[LMXSettingsItem alloc] initWithKey:@"customTimeoutSeconds"
-                                                       name:@"Time in Seconds"
-                                                       type:LMXSettingUnsignedIntValue];
-    timeoutInSeconds.defaultValue = @(25);
-    
     section.items = @[
-                      [[LMXSettingsItem alloc] initWithKey:@"enableDarkMode"
-                                                      name:@"Auto Refresh at Launch"
+                      [[LMXSettingsItem alloc] initWithKey:kSettingAutoRefreshOnLaunch
+                                                      name:@"Auto Refresh on Launch"
                                                       type:LMXSettingToggle],
-                      [[LMXSettingsItem alloc] initWithKey:@"enableCustomTimeout"
+                      [[LMXSettingsItem alloc] initWithKey:kSettingCustomRefreshTimeoutEnabled
                                                       name:@"Custom Timeout"
                                                       type:LMXSettingToggle],
-                      timeoutInSeconds
+                      [[LMXSettingsItem alloc] initWithKey:kSettingRefreshTimeoutInSeconds
+                                                      name:@"Time in Seconds"
+                                                      type:LMXSettingUnsignedIntValue]
                       ];
     return section;
 }
