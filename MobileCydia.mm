@@ -2769,7 +2769,10 @@ struct PackageNameOrdering :
 }
 
 - (NSString *) longSection {
-    return LocalizeSection([self section]);
+    if (NSString *section = [self section])
+        return LocalizeSection(section);
+    else
+        return nil;
 }
 
 - (NSString *) shortSection {
