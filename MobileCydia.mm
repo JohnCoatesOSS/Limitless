@@ -238,6 +238,16 @@ union SplitHash {
 };
 // }}}
 
+@implementation NSDictionary (Cydia)
+- (id) invokeUndefinedMethodFromWebScript:(NSString *)name withArguments:(NSArray *)arguments {
+    if (false);
+    else if ([name isEqualToString:@"get"])
+        return [self objectForKey:[arguments objectAtIndex:0]];
+    else if ([name isEqualToString:@"keys"])
+        return [self allKeys];
+    return nil;
+} @end
+
 static NSString *Colon_;
 NSString *Elision_;
 static NSString *Error_;
@@ -4364,6 +4374,7 @@ static _H<NSMutableSet> Diversions_;
     return [NSArray arrayWithObjects:
         @"bbsnum",
         @"build",
+        @"cells",
         @"coreFoundationVersionNumber",
         @"device",
         @"ecid",
@@ -4414,6 +4425,29 @@ static _H<NSMutableSet> Diversions_;
 
 - (NSString *) idiom {
     return (id) Idiom_ ?: [NSNull null];
+}
+
+- (NSArray *) cells {
+    auto *$_CTServerConnectionCreate(reinterpret_cast<id (*)(void *, void *, void *)>(dlsym(RTLD_DEFAULT, "_CTServerConnectionCreate")));
+    if ($_CTServerConnectionCreate == NULL)
+        return nil;
+
+    struct CTResult { int flag; int error; };
+    auto *$_CTServerConnectionCellMonitorCopyCellInfo(reinterpret_cast<CTResult (*)(CFTypeRef, void *, CFArrayRef *)>(dlsym(RTLD_DEFAULT, "_CTServerConnectionCellMonitorCopyCellInfo")));
+    if ($_CTServerConnectionCellMonitorCopyCellInfo == NULL)
+        return nil;
+
+    _H<const void> connection($_CTServerConnectionCreate(NULL, NULL, NULL), true);
+    if (connection == nil)
+        return nil;
+
+    int count(0);
+    CFArrayRef cells(NULL);
+    auto result($_CTServerConnectionCellMonitorCopyCellInfo(connection, &count, &cells));
+    if (result.flag != 0)
+        return nil;
+
+    return [(NSArray *) cells autorelease];
 }
 
 - (NSString *) mcc {
