@@ -14,16 +14,18 @@
 #ifndef NETRC_H
 #define NETRC_H
 
+#include <string>
+
+#include <apt-pkg/macros.h>
+
+#ifndef APT_8_CLEANER_HEADERS
 #include <apt-pkg/strutl.h>
+#endif
 
 #define DOT_CHAR "."
 #define DIR_CHAR "/"
 
-// Assume: password[0]=0, host[0] != 0.
-// If login[0] = 0, search for login and password within a machine section
-// in the netrc.
-// If login[0] != 0, search for password within machine and login.
-int parsenetrc (const char *host, char *login, char *password, const char *filename);
+class URI;
 
-void maybe_add_auth (URI &Uri, string NetRCFile);
+void maybe_add_auth (URI &Uri, std::string NetRCFile);
 #endif

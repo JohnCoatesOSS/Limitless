@@ -21,6 +21,10 @@ static _finline CFStringRef CYStringCreate(const char *data) {
     return CYStringCreate(data, strlen(data));
 }
 
+static _finline CFStringRef CYStringCreate(const std::string &data) {
+    return CYStringCreate(data.data(), data.size());
+}
+
 class CYString {
 private:
     char *data_;

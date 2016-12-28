@@ -1,6 +1,5 @@
 // -*- mode: cpp; mode: fold -*-
 // Description								/*{{{*/
-// $Id: policy.h,v 1.4 2001/05/07 04:24:08 jgg Exp $
 /* ######################################################################
 
    Package Version Policy implementation
@@ -33,12 +32,17 @@
 #ifndef PKGLIB_POLICY_H
 #define PKGLIB_POLICY_H
 
-
 #include <apt-pkg/depcache.h>
+#include <apt-pkg/pkgcache.h>
+#include <apt-pkg/cacheiterators.h>
 #include <apt-pkg/versionmatch.h>
-#include <vector>
 
+#include <vector>
+#include <string>
+
+#ifndef APT_8_CLEANER_HEADERS
 using std::vector;
+#endif
 
 class pkgPolicy : public pkgDepCache::Policy
 {
@@ -47,43 +51,47 @@ class pkgPolicy : public pkgDepCache::Policy
    struct Pin
    {
       pkgVersionMatch::MatchType Type;
-      string Data;
+      std::string Data;
       signed short Priority;
       Pin() : Type(pkgVersionMatch::None), Priority(0) {};
    };
 
    struct PkgPin : Pin
    {
-      string Pkg;
+      std::string Pkg;
+      explicit PkgPin(std::string const &Pkg) : Pin(), Pkg(Pkg) {};
    };
    
    Pin *Pins;
+   Pin *VerPins;
    signed short *PFPriority;
-   vector<Pin> Defaults;
-   vector<PkgPin> Unmatched;
+   std::vector<Pin> Defaults;
+   std::vector<PkgPin> Unmatched;
    pkgCache *Cache;
    bool StatusOverride;
    
    public:
 
    // Things for manipulating pins
-   void CreatePin(pkgVersionMatch::MatchType Type,string Pkg,
-		  string Data,signed short Priority);
-   inline signed short GetPriority(pkgCache::PkgFileIterator const &File) 
-       {return PFPriority[File->ID];};
-   signed short GetPriority(pkgCache::PkgIterator const &Pkg);
-   pkgCache::VerIterator GetMatch(pkgCache::PkgIterator Pkg);
+   void CreatePin(pkgVersionMatch::MatchType Type,std::string Pkg,
+		  std::string Data,signed short Priority);
+   pkgCache::VerIterator GetMatch(pkgCache::PkgIterator const &Pkg);
 
    // Things for the cache interface.
-   virtual pkgCache::VerIterator GetCandidateVer(pkgCache::PkgIterator Pkg);
-   virtual bool IsImportantDep(pkgCache::DepIterator Dep) {return pkgDepCache::Policy::IsImportantDep(Dep);};
+   virtual pkgCache::VerIterator GetCandidateVer(pkgCache::PkgIterator const &Pkg) APT_OVERRIDE;
+   virtual signed short GetPriority(pkgCache::PkgIterator const &Pkg) APT_OVERRIDE;
+   virtual signed short GetPriority(pkgCache::VerIterator const &Ver, bool ConsiderFiles = true) APT_OVERRIDE;
+   virtual signed short GetPriority(pkgCache::PkgFileIterator const &File) APT_OVERRIDE;
+
    bool InitDefaults();
    
-   pkgPolicy(pkgCache *Owner);
-   virtual ~pkgPolicy() {delete [] PFPriority; delete [] Pins;};
+   explicit pkgPolicy(pkgCache *Owner);
+   virtual ~pkgPolicy();
+   private:
+   void * const d;
 };
 
-bool ReadPinFile(pkgPolicy &Plcy,string File = "");
-bool ReadPinDir(pkgPolicy &Plcy,string Dir = "");
+bool ReadPinFile(pkgPolicy &Plcy, std::string File = "");
+bool ReadPinDir(pkgPolicy &Plcy, std::string Dir = "");
 
 #endif

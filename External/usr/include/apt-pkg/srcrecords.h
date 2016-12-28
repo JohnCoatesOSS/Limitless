@@ -1,6 +1,5 @@
 // -*- mode: cpp; mode: fold -*-
 // Description								/*{{{*/
-// $Id: srcrecords.h,v 1.8.2.1 2003/12/26 16:27:34 mdz Exp $
 /* ######################################################################
    
    Source Package Records - Allows access to source package records
@@ -13,12 +12,16 @@
 #ifndef PKGLIB_SRCRECORDS_H
 #define PKGLIB_SRCRECORDS_H
 
+#include <apt-pkg/macros.h>
+#include <apt-pkg/hashes.h>
 
 #include <string>
-#include <vector>    
+#include <vector>
 
+#ifndef APT_8_CLEANER_HEADERS
 using std::string;
 using std::vector;
+#endif
 
 class pkgSourceList;
 class pkgIndexFile;
@@ -26,18 +29,26 @@ class pkgSrcRecords
 {
    public:
 
+APT_IGNORE_DEPRECATED_PUSH
    // Describes a single file
    struct File
    {
-      string MD5Hash;
-      unsigned long Size;
-      string Path;
-      string Type;
+      APT_DEPRECATED_MSG("Use Hashes member instead of hardcoded hash algorithm") std::string MD5Hash;
+      APT_DEPRECATED_MSG("Use FileSize member instead") unsigned long Size;
+      std::string Path;
+      std::string Type;
    };
-   
+   struct File2 : public File
+   {
+      unsigned long long FileSize;
+      HashStringList Hashes;
+   };
+APT_IGNORE_DEPRECATED_POP
+
    // Abstract parser for each source record
    class Parser
    {
+      void * const d;
       protected:
       
       const pkgIndexFile *iIndex;
@@ -45,12 +56,13 @@ class pkgSrcRecords
       public:
 
       enum BuildDep {BuildDepend=0x0,BuildDependIndep=0x1,
-	             BuildConflict=0x2,BuildConflictIndep=0x3};
+	             BuildConflict=0x2,BuildConflictIndep=0x3,
+	             BuildDependArch=0x4,BuildConflictArch=0x5};
 
       struct BuildDepRec 
       {
-         string Package;
-	 string Version;
+	 std::string Package;
+	 std::string Version;
 	 unsigned int Op;
 	 unsigned char Type;
       };
@@ -59,41 +71,50 @@ class pkgSrcRecords
       
       virtual bool Restart() = 0;
       virtual bool Step() = 0;
-      virtual bool Jump(unsigned long Off) = 0;
+      virtual bool Jump(unsigned long const &Off) = 0;
       virtual unsigned long Offset() = 0;
-      virtual string AsStr() = 0;
+      virtual std::string AsStr() = 0;
       
-      virtual string Package() const = 0;
-      virtual string Version() const = 0;
-      virtual string Maintainer() const = 0;
-      virtual string Section() const = 0;
+      virtual std::string Package() const = 0;
+      virtual std::string Version() const = 0;
+      virtual std::string Maintainer() const = 0;
+      virtual std::string Section() const = 0;
       virtual const char **Binaries() = 0;   // Ownership does not transfer
 
-      virtual bool BuildDepends(vector<BuildDepRec> &BuildDeps, bool ArchOnly) = 0;
-      static const char *BuildDepType(unsigned char Type);
+      //FIXME: Add a parameter to specify which architecture to use for [wildcard] matching
+      virtual bool BuildDepends(std::vector<BuildDepRec> &BuildDeps, bool const &ArchOnly, bool const &StripMultiArch = true) = 0;
+      static const char *BuildDepType(unsigned char const &Type) APT_PURE;
 
-      virtual bool Files(vector<pkgSrcRecords::File> &F) = 0;
-      
-      Parser(const pkgIndexFile *Index) : iIndex(Index) {};
-      virtual ~Parser() {};
+      virtual bool Files(std::vector<pkgSrcRecords::File> &F) = 0;
+      bool Files2(std::vector<pkgSrcRecords::File2> &F);
+
+      explicit Parser(const pkgIndexFile *Index);
+      virtual ~Parser();
    };
    
    private:
+   /** \brief dpointer placeholder (for later in case we need it) */
+   void * const d;
    
    // The list of files and the current parser pointer
-   vector<Parser*> Files;
-   vector<Parser *>::iterator Current;
+   std::vector<Parser*> Files;
+   std::vector<Parser *>::iterator Current;
    
    public:
 
    // Reset the search
    bool Restart();
 
-   // Locate a package by name
-   Parser *Find(const char *Package,bool SrcOnly = false);
-   
-   pkgSrcRecords(pkgSourceList &List);
-   ~pkgSrcRecords();
+   // Step to the next SourcePackage and return pointer to the 
+   // next SourceRecord. The pointer is owned by libapt.
+   const Parser* Step();
+
+   // Locate a package by name and return pointer to the Parser.
+   // The pointer is owned by libapt.
+   Parser* Find(const char *Package,bool const &SrcOnly = false);
+
+   explicit pkgSrcRecords(pkgSourceList &List);
+   virtual ~pkgSrcRecords();
 };
 
 #endif

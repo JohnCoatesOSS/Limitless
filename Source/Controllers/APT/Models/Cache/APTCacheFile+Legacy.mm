@@ -17,7 +17,7 @@
         pkgCacheFile &cache = *self.cacheFile;
         if (static_cast<pkgDepCache *>(cache) == NULL)
             return nil;
-        pkgCache::PkgIterator iterator = cache->FindPkg(name.UTF8String);
+        pkgCache::PkgIterator iterator = cache->FindPkg(name.UTF8String, "any");
         
         if (iterator.end()) {
             return nil;

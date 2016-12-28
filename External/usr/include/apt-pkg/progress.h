@@ -7,7 +7,7 @@
    
    This class allows lengthy operations to communicate their progress 
    to the GUI. The progress model is simple and is not designed to handle
-   the complex case of the multi-activity aquire class.
+   the complex case of the multi-activity acquire class.
    
    The model is based on the concept of an overall operation consisting
    of a series of small sub operations. Each sub operation has it's own
@@ -24,27 +24,30 @@
 
 #include <string>
 #include <sys/time.h>
+#include <apt-pkg/macros.h>
 
+#ifndef APT_8_CLEANER_HEADERS
 using std::string;
+#endif
 
 class Configuration;
 class OpProgress
 {
-   unsigned long Current;
-   unsigned long Total;
-   unsigned long Size;
-   unsigned long SubTotal;
+   unsigned long long Current;
+   unsigned long long Total;
+   unsigned long long Size;
+   unsigned long long SubTotal;
    float LastPercent;
    
    // Change reduction code
    struct timeval LastTime;
-   string LastOp;
-   string LastSubOp;
+   std::string LastOp;
+   std::string LastSubOp;
    
    protected:
    
-   string Op;
-   string SubOp;
+   std::string Op;
+   std::string SubOp;
    float Percent;
    
    bool MajorChange;
@@ -54,11 +57,10 @@ class OpProgress
    
    public:
    
-   void Progress(unsigned long Current);
-   void SubProgress(unsigned long SubTotal);
-   void SubProgress(unsigned long SubTotal,const string &Op);
-   void OverallProgress(unsigned long Current,unsigned long Total,
-			unsigned long Size,const string &Op);
+   void Progress(unsigned long long Current);
+   void SubProgress(unsigned long long SubTotal, const std::string &Op = "", float const Percent = -1);
+   void OverallProgress(unsigned long long Current,unsigned long long Total,
+			unsigned long long Size,const std::string &Op);
    virtual void Done() {};
    
    OpProgress();
@@ -68,17 +70,17 @@ class OpProgress
 class OpTextProgress : public OpProgress
 {
    protected:
-   
-   string OldOp;
+
+   std::string OldOp;
    bool NoUpdate;
    bool NoDisplay;
    unsigned long LastLen;
-   virtual void Update();
+   virtual void Update() APT_OVERRIDE;
    void Write(const char *S);
    
    public:
 
-   virtual void Done();
+   virtual void Done() APT_OVERRIDE;
    
    OpTextProgress(bool NoUpdate = false) : NoUpdate(NoUpdate), 
                 NoDisplay(false), LastLen(0) {};

@@ -1,6 +1,7 @@
 Package: limitless
 Name: Limitless
-Depends: apt7-lib, apt7-key, darwintools, debianutils, org.thebigboss.repo.icons, sed, shell-cmds, system-cmds, uikittools (>= 1.1.4), firmware (>= 9.0)
+Depends: apt7-lib, apt7-key, darwintools, debianutils, org.thebigboss.repo.icons, sed, shell-cmds, system-cmds, uikittools (>= 1.1.4), firmware (>= 9.0), dpkg (>= 1.18)
+Pre-Depends: debianutils, dpkg (>= 1.14.25-8)
 Conflicts:
 Replaces:
 Pre-Depends: debianutils

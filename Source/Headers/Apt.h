@@ -7,7 +7,7 @@
 
 #undef ABS
 
-#define APT_DEPRECATED __attribute__((deprecated("Use a wrapper instead of this APT class")))
+#define LMX_APT_DEPRECATED __attribute__((deprecated("Use a wrapper instead of this APT class")))
 
 #define APT_SILENCE_DEPRECATIONS_BEGIN \
 _Pragma ("GCC diagnostic push") \

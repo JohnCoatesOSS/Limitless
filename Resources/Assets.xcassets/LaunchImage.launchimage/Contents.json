@@ -1,11 +1,13 @@
 {
   "images" : [
     {
-      "orientation" : "portrait",
-      "idiom" : "ipad",
-      "filename" : "iOS7-Default-Portrait.png",
       "extent" : "full-screen",
-      "scale" : "1x"
+      "idiom" : "iphone",
+      "subtype" : "2436h",
+      "filename" : "iPhone X@3x.png",
+      "minimum-system-version" : "11.0",
+      "orientation" : "portrait",
+      "scale" : "3x"
     },
     {
       "extent" : "full-screen",
@@ -74,6 +76,13 @@
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
       "scale" : "2x"
+    },
+    {
+      "orientation" : "portrait",
+      "idiom" : "ipad",
+      "filename" : "iOS7-Default-Portrait.png",
+      "extent" : "full-screen",
+      "scale" : "1x"
     }
   ],
   "info" : {

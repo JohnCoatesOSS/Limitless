@@ -15,45 +15,81 @@
 #define PKGLIB_DEBRECORDS_H
 
 #include <apt-pkg/pkgrecords.h>
-#include <apt-pkg/indexfile.h>
 #include <apt-pkg/tagfile.h>
+#include <apt-pkg/fileutl.h>
+#include <apt-pkg/pkgcache.h>
 
-class debRecordParser : public pkgRecords::Parser
+#include <string>
+
+#ifndef APT_8_CLEANER_HEADERS
+#include <apt-pkg/indexfile.h>
+#endif
+
+class APT_HIDDEN debRecordParserBase : public pkgRecords::Parser
 {
-   FileFd File;
-   pkgTagFile Tags;
+   void * const d;
+ protected:
    pkgTagSection Section;
-   
-   protected:
-   
-   virtual bool Jump(pkgCache::VerFileIterator const &Ver);
-   virtual bool Jump(pkgCache::DescFileIterator const &Desc);
-   
-   public:
 
+ public:
    // These refer to the archive file for the Version
-   virtual string FileName();
-   virtual string MD5Hash();
-   virtual string SHA1Hash();
-   virtual string SHA256Hash();
-   virtual string SourcePkg();
-   virtual string SourceVer();
-   
-   virtual bool ShortDesc(const char *&Start,const char *&End);
-   virtual bool LongDesc(const char *&Start,const char *&End);
+   virtual std::string FileName() APT_OVERRIDE;
+   virtual std::string SourcePkg() APT_OVERRIDE;
+   virtual std::string SourceVer() APT_OVERRIDE;
+
+   virtual HashStringList Hashes() const APT_OVERRIDE;
 
    // These are some general stats about the package
-   virtual string Maintainer();
-   virtual string ShortDesc();
-   virtual string LongDesc();
-   virtual string Name();
-   virtual string Display();
-   virtual string Homepage();
+   virtual std::string Maintainer() APT_OVERRIDE;
+   virtual std::string ShortDesc(std::string const &lang) APT_OVERRIDE;
+   virtual std::string LongDesc(std::string const &lang) APT_OVERRIDE;
+   virtual std::string Name() APT_OVERRIDE;
+   virtual std::string Display() APT_OVERRIDE;
+   virtual std::string Homepage() APT_OVERRIDE;
 
-   virtual void GetRec(const char *&Start,const char *&Stop);
-   virtual bool Find(const char *Tag,const char *&Start, const char *&End);
-   
-   debRecordParser(string FileName,pkgCache &Cache);
+   // An arbitrary custom field
+   virtual std::string RecordField(const char *fieldName) APT_OVERRIDE;
+
+   virtual void GetRec(const char *&Start,const char *&Stop) APT_OVERRIDE;
+   virtual bool Find(const char *Tag,const char *&Start, const char *&End) APT_OVERRIDE;
+
+   debRecordParserBase();
+   virtual ~debRecordParserBase();
+};
+
+class APT_HIDDEN debRecordParser : public debRecordParserBase
+{
+   void * const d;
+ protected:
+   FileFd File;
+   pkgTagFile Tags;
+
+   virtual bool Jump(pkgCache::VerFileIterator const &Ver) APT_OVERRIDE;
+   virtual bool Jump(pkgCache::DescFileIterator const &Desc) APT_OVERRIDE;
+
+ public:
+   debRecordParser(std::string FileName,pkgCache &Cache);
+   virtual ~debRecordParser();
+};
+
+// custom record parser that reads deb files directly
+class APT_HIDDEN debDebFileRecordParser : public debRecordParserBase
+{
+   void * const d;
+   std::string debFileName;
+   std::string controlContent;
+
+   APT_HIDDEN bool LoadContent();
+ protected:
+   // single file files, so no jumping whatsoever
+   bool Jump(pkgCache::VerFileIterator const &) APT_OVERRIDE;
+   bool Jump(pkgCache::DescFileIterator const &) APT_OVERRIDE;
+
+ public:
+   virtual std::string FileName() APT_OVERRIDE;
+
+   debDebFileRecordParser(std::string FileName);
+   virtual ~debDebFileRecordParser();
 };
 
 #endif

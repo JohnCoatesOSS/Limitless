@@ -1,6 +1,5 @@
 // -*- mode: cpp; mode: fold -*-
 // Description								/*{{{*/
-// $Id: cacheiterators.h,v 1.18.2.1 2004/05/08 22:44:27 mdz Exp $
 /* ######################################################################
    
    Cache Iterators - Iterators for navigating the cache structure
@@ -30,73 +29,165 @@
 									/*}}}*/
 #ifndef PKGLIB_CACHEITERATORS_H
 #define PKGLIB_CACHEITERATORS_H
+#include<apt-pkg/pkgcache.h>
+#include<apt-pkg/macros.h>
 
+#include<iterator>
+#include <iosfwd>
+#include <string>
+#ifdef APT_PKG_EXPOSE_STRING_VIEW
+#include <apt-pkg/string_view.h>
+#endif
 
+#include<string.h>
+
+// abstract Iterator template						/*{{{*/
+/* This template provides the very basic iterator methods we
+   need to have for doing some walk-over-the-cache magic */
+template<typename Str, typename Itr> class pkgCache::Iterator :
+			public std::iterator<std::forward_iterator_tag, Str> {
+	/** \brief Returns the Pointer for this struct in the owner
+	 *  The implementation of this method should be pretty short
+	 *  as it will only return the Pointer into the mmap stored
+	 *  in the owner but the name of this pointer is different for
+	 *  each structure and we want to abstract here at least for the
+	 *  basic methods from the actual structure.
+	 *  \return Pointer to the first structure of this type
+	 */
+	Str* OwnerPointer() const { return static_cast<Itr const*>(this)->OwnerPointer(); }
+
+	protected:
+	Str *volatile S;
+	pkgCache *Owner;
+
+	public:
+	// Iteration
+	inline bool end() const {return Owner == 0 || S == OwnerPointer();}
+
+	// Comparison
+	inline bool operator ==(const Itr &B) const {return S == B.S;}
+	inline bool operator !=(const Itr &B) const {return S != B.S;}
+
+	// Accessors
+	inline Str *operator ->() {return S;}
+	inline Str const *operator ->() const {return S;}
+	inline operator Str *() {return S == OwnerPointer() ? 0 : S;}
+	inline operator Str const *() const {return S == OwnerPointer() ? 0 : S;}
+	inline Str &operator *() {return *S;}
+	inline Str const &operator *() const {return *S;}
+	inline pkgCache *Cache() const {return Owner;}
+
+	// Mixed stuff
+	inline bool IsGood() const { return S && Owner && ! end();}
+	inline unsigned long Index() const {return S - OwnerPointer();}
+
+	void ReMap(void const * const oldMap, void const * const newMap) {
+		if (Owner == 0 || S == 0)
+			return;
+		S += (Str const * const)(newMap) - (Str const * const)(oldMap);
+	}
+
+	// Constructors - look out for the variable assigning
+	inline Iterator() : S(0), Owner(0) {}
+	inline Iterator(pkgCache &Owner,Str *T = 0) : S(T), Owner(&Owner) {}
+};
+									/*}}}*/
+// Group Iterator							/*{{{*/
+/* Packages with the same name are collected in a Group so someone only
+   interest in package names can iterate easily over the names, so the
+   different architectures can be treated as of the "same" package
+   (apt internally treat them as totally different packages) */
+class pkgCache::GrpIterator: public Iterator<Group, GrpIterator> {
+	long HashIndex;
+
+	public:
+	inline Group* OwnerPointer() const {
+		return (Owner != 0) ? Owner->GrpP : 0;
+	}
+
+	// This constructor is the 'begin' constructor, never use it.
+	explicit inline GrpIterator(pkgCache &Owner) : Iterator<Group, GrpIterator>(Owner), HashIndex(-1) {
+		S = OwnerPointer();
+		operator++();
+	}
+
+	GrpIterator& operator++();
+	inline GrpIterator operator++(int) { GrpIterator const tmp(*this); operator++(); return tmp; }
+
+	inline const char *Name() const {return S->Name == 0?0:Owner->StrP + S->Name;}
+	inline PkgIterator PackageList() const;
+	PkgIterator FindPkg(std::string Arch = "any") const;
+#ifdef APT_PKG_EXPOSE_STRING_VIEW
+	APT_HIDDEN PkgIterator FindPkg(APT::StringView Arch = APT::StringView("any", 3)) const;
+	APT_HIDDEN PkgIterator FindPkg(const char *Arch) const;
+#endif
+	/** \brief find the package with the "best" architecture
+
+	    The best architecture is either the "native" or the first
+	    in the list of Architectures which is not an end-Pointer
+
+	    \param PreferNonVirtual tries to respond with a non-virtual package
+		   and only if this fails returns the best virtual package */
+	PkgIterator FindPreferredPkg(bool const &PreferNonVirtual = true) const;
+	PkgIterator NextPkg(PkgIterator const &Pkg) const;
+
+	// Constructors
+	inline GrpIterator(pkgCache &Owner, Group *Trg) : Iterator<Group, GrpIterator>(Owner, Trg), HashIndex(0) {
+		if (S == 0)
+			S = OwnerPointer();
+	}
+	inline GrpIterator() : Iterator<Group, GrpIterator>(), HashIndex(0) {}
+
+};
+									/*}}}*/
 // Package Iterator							/*{{{*/
-class pkgCache::PkgIterator
-{
-   friend class pkgCache;
-   Package *Pkg;
-   pkgCache *Owner;
-   long HashIndex;
+class pkgCache::PkgIterator: public Iterator<Package, PkgIterator> {
+	long HashIndex;
 
-   protected:
-   
-   // This constructor is the 'begin' constructor, never use it.
-   inline PkgIterator(pkgCache &Owner) : Owner(&Owner), HashIndex(-1)
-   {
-      Pkg = Owner.PkgP;
-      operator ++(0);
-   };
-   
-   public:
+	public:
+	inline Package* OwnerPointer() const {
+		return (Owner != 0) ? Owner->PkgP : 0;
+	}
 
-   enum OkState {NeedsNothing,NeedsUnpack,NeedsConfigure};
-      
-   // Iteration
-   void operator ++(int);
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 || Pkg == Owner->PkgP?true:false;};
+	// This constructor is the 'begin' constructor, never use it.
+	explicit inline PkgIterator(pkgCache &Owner) : Iterator<Package, PkgIterator>(Owner), HashIndex(-1) {
+		S = OwnerPointer();
+		operator++();
+	}
 
-   // Comparison
-   inline bool operator ==(const PkgIterator &B) const {return Pkg == B.Pkg;};
-   inline bool operator !=(const PkgIterator &B) const {return Pkg != B.Pkg;};
-			   
-   // Accessors
-   inline Package *operator ->() {return Pkg;};
-   inline Package const *operator ->() const {return Pkg;};
-   inline Package const &operator *() const {return *Pkg;};
-   inline operator Package *() {return Pkg == Owner->PkgP?0:Pkg;};
-   inline operator Package const *() const {return Pkg == Owner->PkgP?0:Pkg;};
-   inline pkgCache *Cache() {return Owner;};
-   
-   inline const char *Name() const {return Pkg->Name == 0?0:Owner->StrP + Pkg->Name;};
-   inline const char *Display() const {return Pkg->Display == 0?0:Owner->StrP + Pkg->Display;};
-   inline const char *Section() const {return Pkg->Section == 0?0:Owner->StrP + Pkg->Section;};
-   inline bool Purge() const {return Pkg->CurrentState == pkgCache::State::Purge ||
-	 (Pkg->CurrentVer == 0 && Pkg->CurrentState == pkgCache::State::NotInstalled);};
-   inline VerIterator VersionList() const;
-   inline VerIterator CurrentVer() const;
-   inline DepIterator RevDependsList() const;
-   inline PrvIterator ProvidesList() const;
-   inline TagIterator TagList() const;
-   inline unsigned long Index() const {return Pkg - Owner->PkgP;};
-   OkState State() const;
+	PkgIterator& operator++();
+	inline PkgIterator operator++(int) { PkgIterator const tmp(*this); operator++(); return tmp; }
 
-   //Nice printable representation
-   friend std::ostream& operator<<(std::ostream& out, pkgCache::PkgIterator Pkg);
+	enum OkState {NeedsNothing,NeedsUnpack,NeedsConfigure};
 
-   const char *CandVersion() const;
-   const char *CurVersion() const;
+	// Accessors
+	inline const char *Name() const { return Group().Name(); }
+	// Versions have sections - and packages can have different versions with different sections
+	// so this interface is broken by design. Run as fast as you can to Version.Section().
+	APT_DEPRECATED_MSG("Use the .Section method of VerIterator instead") inline const char *Section() const;
+	inline bool Purge() const {return S->CurrentState == pkgCache::State::Purge ||
+		(S->CurrentVer == 0 && S->CurrentState == pkgCache::State::NotInstalled);}
+	inline const char *Arch() const {return S->Arch == 0?0:Owner->StrP + S->Arch;}
+	inline APT_PURE GrpIterator Group() const { return GrpIterator(*Owner, Owner->GrpP + S->Group);}
 
-   // Constructors
-   inline PkgIterator(pkgCache &Owner,Package *Trg) : Pkg(Trg), Owner(&Owner),
-          HashIndex(0) 
-   { 
-      if (Pkg == 0)
-	 Pkg = Owner.PkgP;
-   };
-   inline PkgIterator() : Pkg(0), Owner(0), HashIndex(0) {};
+	inline VerIterator VersionList() const APT_PURE;
+	inline VerIterator CurrentVer() const APT_PURE;
+	inline DepIterator RevDependsList() const APT_PURE;
+	inline PrvIterator ProvidesList() const APT_PURE;
+	OkState State() const APT_PURE;
+	APT_DEPRECATED_MSG("This method does not respect apt_preferences! Use pkgDepCache::GetCandidateVersion(Pkg)") const char *CandVersion() const APT_PURE;
+	const char *CurVersion() const APT_PURE;
+
+	//Nice printable representation
+	APT_DEPRECATED_MSG("Use APT::PrettyPkg instead") friend std::ostream& operator <<(std::ostream& out, PkgIterator i);
+	std::string FullName(bool const &Pretty = false) const;
+
+	// Constructors
+	inline PkgIterator(pkgCache &Owner,Package *Trg) : Iterator<Package, PkgIterator>(Owner, Trg), HashIndex(0) {
+		if (S == 0)
+			S = OwnerPointer();
+	}
+	inline PkgIterator() : Iterator<Package, PkgIterator>(), HashIndex(0) {}
     
     // MARK: - Limitless
     
@@ -105,408 +196,383 @@ class pkgCache::PkgIterator
     }
     
     inline Package *getPackage() {
-        return Pkg;
+        return S;
     }
     
     inline pkgCache *getOwner() {
         return Owner;
     }
     
-    inline PkgIterator(pkgCache *Owner, Package *package, long hashIndex) : Pkg(package), Owner(Owner), HashIndex(hashIndex) {
-        if (package == 0) {
-            Pkg = Owner->PkgP;
+    inline PkgIterator(pkgCache &Owner, Package *package, long hashIndex) : Iterator<Package, PkgIterator>(Owner, package), HashIndex(hashIndex) {
+        if (S == 0) {
+            S = OwnerPointer();
         }
     };
 };
 									/*}}}*/
 // Version Iterator							/*{{{*/
-class pkgCache::VerIterator
-{
-   Version *Ver;
-   pkgCache *Owner;
+class pkgCache::VerIterator : public Iterator<Version, VerIterator> {
+	public:
+	inline Version* OwnerPointer() const {
+		return (Owner != 0) ? Owner->VerP : 0;
+	}
 
-   void _dummy();
-   
-   public:
+	// Iteration
+	inline VerIterator& operator++() {if (S != Owner->VerP) S = Owner->VerP + S->NextVer; return *this;}
+	inline VerIterator operator++(int) { VerIterator const tmp(*this); operator++(); return tmp; }
 
-   // Iteration
-   void operator ++(int) {if (Ver != Owner->VerP) Ver = Owner->VerP + Ver->NextVer;};
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 || (Ver == Owner->VerP?true:false);};
-   inline void operator =(const VerIterator &B) {Ver = B.Ver; Owner = B.Owner;};
-   
-   // Comparison
-   inline bool operator ==(const VerIterator &B) const {return Ver == B.Ver;};
-   inline bool operator !=(const VerIterator &B) const {return Ver != B.Ver;};
-   int CompareVer(const VerIterator &B) const;
+	// Comparison
+	int CompareVer(const VerIterator &B) const;
+	/** \brief compares two version and returns if they are similar
 
-   // Testing
-   inline bool IsGood() const { return Ver && Owner && ! end();};
+	    This method should be used to identify if two pseudo versions are
+	    referring to the same "real" version */
+	inline bool SimilarVer(const VerIterator &B) const {
+		return (B.end() == false && S->Hash == B->Hash && strcmp(VerStr(), B.VerStr()) == 0);
+	}
 
-   // Accessors
-   inline Version *operator ->() {return Ver;};
-   inline Version const *operator ->() const {return Ver;};
-   inline Version &operator *() {return *Ver;};
-   inline Version const &operator *() const {return *Ver;};
-   inline operator Version *() {return Ver == Owner->VerP?0:Ver;};
-   inline operator Version const *() const {return Ver == Owner->VerP?0:Ver;};
-   inline pkgCache *Cache() {return Owner;};
-      
-   inline const char *VerStr() const {return Ver->VerStr == 0?0:Owner->StrP + Ver->VerStr;};
-   inline const char *Display() const {return Ver->Display == 0?0:Owner->StrP + Ver->Display;};
-   inline const char *Section() const {return Ver->Section == 0?0:Owner->StrP + Ver->Section;};
-   inline const char *Arch() const {return Ver->Arch == 0?0:Owner->StrP + Ver->Arch;};
-   inline PkgIterator ParentPkg() const {return PkgIterator(*Owner,Owner->PkgP + Ver->ParentPkg);};
-   inline DescIterator DescriptionList() const;
-   DescIterator TranslatedDescription() const;
-   inline DepIterator DependsList() const;
-   inline PrvIterator ProvidesList() const;
-   inline VerFileIterator FileList() const;
-   inline unsigned long Index() const {return Ver - Owner->VerP;};
-   bool Downloadable() const;
-   inline const char *PriorityType() {return Owner->Priority(Ver->Priority);};
-   string RelStr();
-   
-   bool Automatic() const;
-   VerFileIterator NewestFile() const;
+	// Accessors
+	inline const char *VerStr() const {return S->VerStr == 0?0:Owner->StrP + S->VerStr;}
+	inline const char *Section() const {return S->Section == 0?0:Owner->StrP + S->Section;}
+	inline const char *Display() const {return S->Display == 0?0:Owner->StrP + S->Display;}
+	/** \brief source package name this version comes from
+	   Always contains the name, even if it is the same as the binary name */
+	inline const char *SourcePkgName() const {return Owner->StrP + S->SourcePkgName;}
+	/** \brief source version this version comes from
+	   Always contains the version string, even if it is the same as the binary version */
+	inline const char *SourceVerStr() const {return Owner->StrP + S->SourceVerStr;}
+	inline const char *Arch() const {
+		if ((S->MultiArch & pkgCache::Version::All) == pkgCache::Version::All)
+			return "all";
+		return S->ParentPkg == 0?0:Owner->StrP + ParentPkg()->Arch;
+	}
+	inline PkgIterator ParentPkg() const {return PkgIterator(*Owner,Owner->PkgP + S->ParentPkg);}
 
-   inline VerIterator() : Ver(0), Owner(0) {};   
-   inline VerIterator(pkgCache &Owner,Version *Trg = 0) : Ver(Trg), 
-              Owner(&Owner) 
-   { 
-      if (Ver == 0)
-	 Ver = Owner.VerP;
-   };
+	inline DescIterator DescriptionList() const;
+	DescIterator TranslatedDescription() const;
+	inline DepIterator DependsList() const;
+	inline PrvIterator ProvidesList() const;
+	inline TagIterator TagList() const;
+	inline VerFileIterator FileList() const;
+	bool Downloadable() const;
+	inline const char *PriorityType() const {return Owner->Priority(S->Priority);}
+	const char *MultiArchType() const APT_PURE;
+	std::string RelStr() const;
+
+	bool Automatic() const;
+	VerFileIterator NewestFile() const;
+
+	inline VerIterator(pkgCache &Owner,Version *Trg = 0) : Iterator<Version, VerIterator>(Owner, Trg) {
+		if (S == 0)
+			S = OwnerPointer();
+	}
+	inline VerIterator() : Iterator<Version, VerIterator>() {}
 };
 									/*}}}*/
 // Tag Iterator								/*{{{*/
-class pkgCache::TagIterator
-{
-   Tag *Tg;
-   pkgCache *Owner;
-   
-   void _dummy();
-   
-   public:
+class pkgCache::TagIterator : public Iterator<Tag, TagIterator> {
+	public:
+	inline Tag* OwnerPointer() const {
+		return (Owner != 0) ? Owner->TagP : 0;
+	}
 
    // Iteration
-   void operator ++(int) {if (Tg != Owner->TagP) Tg = Owner->TagP + Tg->NextTag;};
+   void operator ++(int) {if (S != Owner->TagP) S = Owner->TagP + S->NextTag;};
    inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Tg == Owner->TagP?true:false;};
-   inline void operator =(const TagIterator &B) {Tg = B.Tg; Owner = B.Owner;};
-   
-   // Comparison
-   inline bool operator ==(const TagIterator &B) const {return Tg == B.Tg;};
-   inline bool operator !=(const TagIterator &B) const {return Tg != B.Tg;};
-   int CompareTag(const TagIterator &B) const;
-   
-   // Accessors
-   inline Tag *operator ->() {return Tg;};
-   inline Tag const *operator ->() const {return Tg;};
-   inline Tag &operator *() {return *Tg;};
-   inline Tag const &operator *() const {return *Tg;};
-   inline operator Tag *() {return Tg == Owner->TagP?0:Tg;};
-   inline operator Tag const *() const {return Tg == Owner->TagP?0:Tg;};
-   inline pkgCache *Cache() {return Owner;};
-      
-   inline const char *Name() const {return Owner->StrP + Tg->Name;};
-   inline unsigned long Index() const {return Tg - Owner->TagP;};
 
-   inline TagIterator() : Tg(0), Owner(0) {};   
-   inline TagIterator(pkgCache &Owner,Tag *Trg = 0) : Tg(Trg), 
-              Owner(&Owner) 
-   { 
-      if (Tg == 0)
-	 Tg = Owner.TagP;
-   };
+   // Comparison
+   inline bool operator ==(const TagIterator &B) const {return S == B.S;};
+   inline bool operator !=(const TagIterator &B) const {return S != B.S;};
+   int CompareTag(const TagIterator &B) const;
+
+   // Accessors
+   inline const char *Name() const {return Owner->StrP + S->Name;};
+   inline unsigned long Index() const {return S - Owner->TagP;};
+
+	inline TagIterator(pkgCache &Owner,Tag *Trg = 0) : Iterator<Tag, TagIterator>(Owner, Trg) {
+		if (S == 0)
+			S = OwnerPointer();
+	}
+	inline TagIterator() : Iterator<Tag, TagIterator>() {}
 };
 									/*}}}*/
 // Description Iterator							/*{{{*/
-class pkgCache::DescIterator
-{
-   Description *Desc;
-   pkgCache *Owner;
-   
-   void _dummy();
-   
-   public:
+class pkgCache::DescIterator : public Iterator<Description, DescIterator> {
+	public:
+	inline Description* OwnerPointer() const {
+		return (Owner != 0) ? Owner->DescP : 0;
+	}
 
-   // Iteration
-   void operator ++(int) {if (Desc != Owner->DescP) Desc = Owner->DescP + Desc->NextDesc;};
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 || Desc == Owner->DescP?true:false;};
-   inline void operator =(const DescIterator &B) {Desc = B.Desc; Owner = B.Owner;};
-   
-   // Comparison
-   inline bool operator ==(const DescIterator &B) const {return Desc == B.Desc;};
-   inline bool operator !=(const DescIterator &B) const {return Desc != B.Desc;};
-   int CompareDesc(const DescIterator &B) const;
-   
-   // Accessors
-   inline Description *operator ->() {return Desc;};
-   inline Description const *operator ->() const {return Desc;};
-   inline Description &operator *() {return *Desc;};
-   inline Description const &operator *() const {return *Desc;};
-   inline operator Description *() {return Desc == Owner->DescP?0:Desc;};
-   inline operator Description const *() const {return Desc == Owner->DescP?0:Desc;};
-   inline pkgCache *Cache() {return Owner;};
-      
-   inline const char *LanguageCode() const {return Owner->StrP + Desc->language_code;};
-   inline const char *md5() const {return Owner->StrP + Desc->md5sum;};
-   inline DescFileIterator FileList() const;
-   inline unsigned long Index() const {return Desc - Owner->DescP;};
+	// Iteration
+	inline DescIterator& operator++() {if (S != Owner->DescP) S = Owner->DescP + S->NextDesc; return *this;}
+	inline DescIterator operator++(int) { DescIterator const tmp(*this); operator++(); return tmp; }
 
-   inline DescIterator() : Desc(0), Owner(0) {};   
-   inline DescIterator(pkgCache &Owner,Description *Trg = 0) : Desc(Trg), 
-              Owner(&Owner) 
-   { 
-      if (Desc == 0)
-	 Desc = Owner.DescP;
-   };
+	// Comparison
+	int CompareDesc(const DescIterator &B) const;
+
+	// Accessors
+	inline const char *LanguageCode() const {return Owner->StrP + S->language_code;}
+	inline const char *md5() const {return Owner->StrP + S->md5sum;}
+	inline DescFileIterator FileList() const;
+
+	inline DescIterator() : Iterator<Description, DescIterator>() {}
+	inline DescIterator(pkgCache &Owner,Description *Trg = 0) : Iterator<Description, DescIterator>(Owner, Trg) {
+		if (S == 0)
+			S = Owner.DescP;
+	}
 };
 									/*}}}*/
 // Dependency iterator							/*{{{*/
-class pkgCache::DepIterator
-{
-   Dependency *Dep;
-   enum {DepVer, DepRev} Type;
-   pkgCache *Owner;
-   
-   void _dummy();
-   
-   public:
+class pkgCache::DepIterator : public Iterator<Dependency, DepIterator> {
+	enum {DepVer, DepRev} Type;
+	DependencyData * S2;
 
-   // Iteration
-   void operator ++(int) {if (Dep != Owner->DepP) Dep = Owner->DepP +
-	(Type == DepVer?Dep->NextDepends:Dep->NextRevDepends);};
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 || Dep == Owner->DepP?true:false;};
-   
-   // Comparison
-   inline bool operator ==(const DepIterator &B) const {return Dep == B.Dep;};
-   inline bool operator !=(const DepIterator &B) const {return Dep != B.Dep;};
+	public:
+	inline Dependency* OwnerPointer() const {
+		return (Owner != 0) ? Owner->DepP : 0;
+	}
 
-   // Accessors
-   inline Dependency *operator ->() {return Dep;};
-   inline Dependency const *operator ->() const {return Dep;};
-   inline Dependency &operator *() {return *Dep;};
-   inline Dependency const &operator *() const {return *Dep;};
-   inline operator Dependency *() {return Dep == Owner->DepP?0:Dep;};
-   inline operator Dependency const *() const {return Dep == Owner->DepP?0:Dep;};
-   inline pkgCache *Cache() {return Owner;};
-   
-   inline const char *TargetVer() const {return Dep->Version == 0?0:Owner->StrP + Dep->Version;};
-   inline PkgIterator TargetPkg() {return PkgIterator(*Owner,Owner->PkgP + Dep->Package);};
-   inline PkgIterator SmartTargetPkg() {PkgIterator R(*Owner,0);SmartTargetPkg(R);return R;};
-   inline VerIterator ParentVer() {return VerIterator(*Owner,Owner->VerP + Dep->ParentVer);};
-   inline PkgIterator ParentPkg() {return PkgIterator(*Owner,Owner->PkgP + Owner->VerP[Dep->ParentVer].ParentPkg);};
-   inline bool Reverse() {return Type == DepRev;};
-   inline unsigned long Index() const {return Dep - Owner->DepP;};
-   bool IsCritical();
-   void GlobOr(DepIterator &Start,DepIterator &End);
-   Version **AllTargets();   
-   bool SmartTargetPkg(PkgIterator &Result);
-   inline const char *CompType() {return Owner->CompType(Dep->CompareOp);};
-   inline const char *DepType() {return Owner->DepType(Dep->Type);};
-   
-   inline DepIterator(pkgCache &Owner,Dependency *Trg,Version * = 0) :
-          Dep(Trg), Type(DepVer), Owner(&Owner) 
-   {
-      if (Dep == 0)
-	 Dep = Owner.DepP;
-   };
-   inline DepIterator(pkgCache &Owner,Dependency *Trg,Package *) :
-          Dep(Trg), Type(DepRev), Owner(&Owner)
-   {
-      if (Dep == 0)
-	 Dep = Owner.DepP;
-   };
-   inline DepIterator() : Dep(0), Type(DepVer), Owner(0) {};
+	// Iteration
+	DepIterator& operator++();
+	inline DepIterator operator++(int) { DepIterator const tmp(*this); operator++(); return tmp; }
+
+	// Accessors
+	inline const char *TargetVer() const {return S2->Version == 0?0:Owner->StrP + S2->Version;}
+	inline PkgIterator TargetPkg() const {return PkgIterator(*Owner,Owner->PkgP + S2->Package);}
+	inline PkgIterator SmartTargetPkg() const {PkgIterator R(*Owner,0);SmartTargetPkg(R);return R;}
+	inline VerIterator ParentVer() const {return VerIterator(*Owner,Owner->VerP + S->ParentVer);}
+	inline PkgIterator ParentPkg() const {return PkgIterator(*Owner,Owner->PkgP + Owner->VerP[S->ParentVer].ParentPkg);}
+	inline bool Reverse() const {return Type == DepRev;}
+	bool IsCritical() const APT_PURE;
+	bool IsNegative() const APT_PURE;
+	bool IsIgnorable(PrvIterator const &Prv) const APT_PURE;
+	bool IsIgnorable(PkgIterator const &Pkg) const APT_PURE;
+	/* MultiArch can be translated to SingleArch for an resolver and we did so,
+	   by adding dependencies to help the resolver understand the problem, but
+	   sometimes it is needed to identify these to ignore them… */
+	inline bool IsMultiArchImplicit() const APT_PURE {
+		return (S2->CompareOp & pkgCache::Dep::MultiArchImplicit) == pkgCache::Dep::MultiArchImplicit;
+	}
+	/* This covers additionally negative dependencies, which aren't arch-specific,
+	   but change architecture nonetheless as a Conflicts: foo does applies for all archs */
+	bool IsImplicit() const APT_PURE;
+
+	bool IsSatisfied(VerIterator const &Ver) const APT_PURE;
+	bool IsSatisfied(PrvIterator const &Prv) const APT_PURE;
+	void GlobOr(DepIterator &Start,DepIterator &End);
+	Version **AllTargets() const;
+	bool SmartTargetPkg(PkgIterator &Result) const;
+	inline const char *CompType() const {return Owner->CompType(S2->CompareOp);}
+	inline const char *DepType() const {return Owner->DepType(S2->Type);}
+
+	// overrides because we are special
+	struct DependencyProxy
+	{
+	   map_stringitem_t &Version;
+	   map_pointer_t &Package;
+	   map_id_t &ID;
+	   unsigned char &Type;
+	   unsigned char &CompareOp;
+	   map_pointer_t &ParentVer;
+	   map_pointer_t &DependencyData;
+	   map_pointer_t &NextRevDepends;
+	   map_pointer_t &NextDepends;
+	   map_pointer_t &NextData;
+	   DependencyProxy const * operator->() const { return this; }
+	   DependencyProxy * operator->() { return this; }
+	};
+	inline DependencyProxy operator->() const {return (DependencyProxy) { S2->Version, S2->Package, S->ID, S2->Type, S2->CompareOp, S->ParentVer, S->DependencyData, S->NextRevDepends, S->NextDepends, S2->NextData };}
+	inline DependencyProxy operator->() {return (DependencyProxy) { S2->Version, S2->Package, S->ID, S2->Type, S2->CompareOp, S->ParentVer, S->DependencyData, S->NextRevDepends, S->NextDepends, S2->NextData };}
+	void ReMap(void const * const oldMap, void const * const newMap)
+	{
+		Iterator<Dependency, DepIterator>::ReMap(oldMap, newMap);
+		if (Owner == 0 || S == 0 || S2 == 0)
+			return;
+		S2 += (DependencyData const * const)(newMap) - (DependencyData const * const)(oldMap);
+	}
+
+	//Nice printable representation
+	APT_DEPRECATED_MSG("Use APT::PrettyDep instead") friend std::ostream& operator <<(std::ostream& out, DepIterator D);
+
+	inline DepIterator(pkgCache &Owner, Dependency *Trg, Version* = 0) :
+		Iterator<Dependency, DepIterator>(Owner, Trg), Type(DepVer), S2(Trg == 0 ? Owner.DepDataP : (Owner.DepDataP + Trg->DependencyData)) {
+		if (S == 0)
+			S = Owner.DepP;
+	}
+	inline DepIterator(pkgCache &Owner, Dependency *Trg, Package*) :
+		Iterator<Dependency, DepIterator>(Owner, Trg), Type(DepRev), S2(Trg == 0 ? Owner.DepDataP : (Owner.DepDataP + Trg->DependencyData)) {
+		if (S == 0)
+			S = Owner.DepP;
+	}
+	inline DepIterator() : Iterator<Dependency, DepIterator>(), Type(DepVer), S2(0) {}
 };
 									/*}}}*/
 // Provides iterator							/*{{{*/
-class pkgCache::PrvIterator
-{
-   Provides *Prv;
-   enum {PrvVer, PrvPkg} Type;
-   pkgCache *Owner;
-   
-   void _dummy();
-   
-   public:
+class pkgCache::PrvIterator : public Iterator<Provides, PrvIterator> {
+	enum {PrvVer, PrvPkg} Type;
 
-   // Iteration
-   void operator ++(int) {if (Prv != Owner->ProvideP) Prv = Owner->ProvideP +
-	(Type == PrvVer?Prv->NextPkgProv:Prv->NextProvides);};
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 || Prv == Owner->ProvideP?true:false;};
-   
-   // Comparison
-   inline bool operator ==(const PrvIterator &B) const {return Prv == B.Prv;};
-   inline bool operator !=(const PrvIterator &B) const {return Prv != B.Prv;};
+	public:
+	inline Provides* OwnerPointer() const {
+		return (Owner != 0) ? Owner->ProvideP : 0;
+	}
 
-   // Accessors
-   inline Provides *operator ->() {return Prv;};
-   inline Provides const *operator ->() const {return Prv;};
-   inline Provides &operator *() {return *Prv;};
-   inline Provides const &operator *() const {return *Prv;};
-   inline operator Provides *() {return Prv == Owner->ProvideP?0:Prv;};
-   inline operator Provides const *() const {return Prv == Owner->ProvideP?0:Prv;};
-   inline pkgCache *Cache() {return Owner;};
+	// Iteration
+	inline PrvIterator& operator ++() {if (S != Owner->ProvideP) S = Owner->ProvideP +
+	   (Type == PrvVer?S->NextPkgProv:S->NextProvides); return *this;}
+	inline PrvIterator operator++(int) { PrvIterator const tmp(*this); operator++(); return tmp; }
 
-   inline const char *Name() const {return Owner->StrP + Owner->PkgP[Prv->ParentPkg].Name;};
-   inline const char *ProvideVersion() const {return Prv->ProvideVersion == 0?0:Owner->StrP + Prv->ProvideVersion;};
-   inline PkgIterator ParentPkg() {return PkgIterator(*Owner,Owner->PkgP + Prv->ParentPkg);};
-   inline VerIterator OwnerVer() {return VerIterator(*Owner,Owner->VerP + Prv->Version);};
-   inline PkgIterator OwnerPkg() {return PkgIterator(*Owner,Owner->PkgP + Owner->VerP[Prv->Version].ParentPkg);};
-   inline unsigned long Index() const {return Prv - Owner->ProvideP;};
+	// Accessors
+	inline const char *Name() const {return ParentPkg().Name();}
+	inline const char *ProvideVersion() const {return S->ProvideVersion == 0?0:Owner->StrP + S->ProvideVersion;}
+	inline PkgIterator ParentPkg() const {return PkgIterator(*Owner,Owner->PkgP + S->ParentPkg);}
+	inline VerIterator OwnerVer() const {return VerIterator(*Owner,Owner->VerP + S->Version);}
+	inline PkgIterator OwnerPkg() const {return PkgIterator(*Owner,Owner->PkgP + Owner->VerP[S->Version].ParentPkg);}
 
-   inline PrvIterator() : Prv(0), Type(PrvVer), Owner(0)  {};
+	/* MultiArch can be translated to SingleArch for an resolver and we did so,
+	   by adding provides to help the resolver understand the problem, but
+	   sometimes it is needed to identify these to ignore them… */
+	bool IsMultiArchImplicit() const APT_PURE
+	{ return (S->Flags & pkgCache::Flag::MultiArchImplicit) == pkgCache::Flag::MultiArchImplicit; }
 
-   inline PrvIterator(pkgCache &Owner,Provides *Trg,Version *) :
-          Prv(Trg), Type(PrvVer), Owner(&Owner) 
-   {
-      if (Prv == 0)
-	 Prv = Owner.ProvideP;
-   };
-   inline PrvIterator(pkgCache &Owner,Provides *Trg,Package *) : 
-          Prv(Trg), Type(PrvPkg), Owner(&Owner)
-   {
-      if (Prv == 0)
-	 Prv = Owner.ProvideP;
-   };
+
+	inline PrvIterator() : Iterator<Provides, PrvIterator>(), Type(PrvVer) {}
+	inline PrvIterator(pkgCache &Owner, Provides *Trg, Version*) :
+		Iterator<Provides, PrvIterator>(Owner, Trg), Type(PrvVer) {
+		if (S == 0)
+			S = Owner.ProvideP;
+	}
+	inline PrvIterator(pkgCache &Owner, Provides *Trg, Package*) :
+		Iterator<Provides, PrvIterator>(Owner, Trg), Type(PrvPkg) {
+		if (S == 0)
+			S = Owner.ProvideP;
+	}
+};
+									/*}}}*/
+// Release file								/*{{{*/
+class pkgCache::RlsFileIterator : public Iterator<ReleaseFile, RlsFileIterator> {
+	public:
+	inline ReleaseFile* OwnerPointer() const {
+		return (Owner != 0) ? Owner->RlsFileP : 0;
+	}
+
+	// Iteration
+	inline RlsFileIterator& operator++() {if (S != Owner->RlsFileP) S = Owner->RlsFileP + S->NextFile;return *this;}
+	inline RlsFileIterator operator++(int) { RlsFileIterator const tmp(*this); operator++(); return tmp; }
+
+	// Accessors
+	inline const char *FileName() const {return S->FileName == 0?0:Owner->StrP + S->FileName;}
+	inline const char *Archive() const {return S->Archive == 0?0:Owner->StrP + S->Archive;}
+	inline const char *Version() const {return S->Version == 0?0:Owner->StrP + S->Version;}
+	inline const char *Origin() const {return S->Origin == 0?0:Owner->StrP + S->Origin;}
+	inline const char *Codename() const {return S->Codename ==0?0:Owner->StrP + S->Codename;}
+	inline const char *Label() const {return S->Label == 0?0:Owner->StrP + S->Label;}
+	inline const char *Site() const {return S->Site == 0?0:Owner->StrP + S->Site;}
+	inline bool Flagged(pkgCache::Flag::ReleaseFileFlags const flag) const {return (S->Flags & flag) == flag; }
+
+	bool IsOk();
+	std::string RelStr();
+
+	// Constructors
+	inline RlsFileIterator() : Iterator<ReleaseFile, RlsFileIterator>() {}
+	explicit inline RlsFileIterator(pkgCache &Owner) : Iterator<ReleaseFile, RlsFileIterator>(Owner, Owner.RlsFileP) {}
+	inline RlsFileIterator(pkgCache &Owner,ReleaseFile *Trg) : Iterator<ReleaseFile, RlsFileIterator>(Owner, Trg) {}
 };
 									/*}}}*/
 // Package file								/*{{{*/
-class pkgCache::PkgFileIterator
-{
-   pkgCache *Owner;
-   PackageFile *File;
+class pkgCache::PkgFileIterator : public Iterator<PackageFile, PkgFileIterator> {
+	public:
+	inline PackageFile* OwnerPointer() const {
+		return (Owner != 0) ? Owner->PkgFileP : 0;
+	}
 
-   public:
+	// Iteration
+	inline PkgFileIterator& operator++() {if (S != Owner->PkgFileP) S = Owner->PkgFileP + S->NextFile; return *this;}
+	inline PkgFileIterator operator++(int) { PkgFileIterator const tmp(*this); operator++(); return tmp; }
 
-   // Iteration
-   void operator ++(int) {if (File!= Owner->PkgFileP) File = Owner->PkgFileP + File->NextFile;};
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 || File == Owner->PkgFileP?true:false;};
+	// Accessors
+	inline const char *FileName() const {return S->FileName == 0?0:Owner->StrP + S->FileName;}
+	inline pkgCache::RlsFileIterator ReleaseFile() const {return RlsFileIterator(*Owner, Owner->RlsFileP + S->Release);}
+	inline const char *Archive() const {return S->Release == 0 ? Component() : ReleaseFile().Archive();}
+	inline const char *Version() const {return S->Release == 0 ? NULL : ReleaseFile().Version();}
+	inline const char *Origin() const {return S->Release == 0 ? NULL : ReleaseFile().Origin();}
+	inline const char *Codename() const {return S->Release == 0 ? NULL : ReleaseFile().Codename();}
+	inline const char *Label() const {return S->Release == 0 ? NULL : ReleaseFile().Label();}
+	inline const char *Site() const {return S->Release == 0 ? NULL : ReleaseFile().Site();}
+	inline bool Flagged(pkgCache::Flag::ReleaseFileFlags const flag) const {return S->Release== 0 ? false : ReleaseFile().Flagged(flag);}
+	inline bool Flagged(pkgCache::Flag::PkgFFlags const flag) const {return (S->Flags & flag) == flag;}
+	inline const char *Component() const {return S->Component == 0?0:Owner->StrP + S->Component;}
+	inline const char *Architecture() const {return S->Architecture == 0?0:Owner->StrP + S->Architecture;}
+	inline const char *IndexType() const {return S->IndexType == 0?0:Owner->StrP + S->IndexType;}
 
-   // Comparison
-   inline bool operator ==(const PkgFileIterator &B) const {return File == B.File;};
-   inline bool operator !=(const PkgFileIterator &B) const {return File != B.File;};
-			   
-   // Accessors
-   inline PackageFile *operator ->() {return File;};
-   inline PackageFile const *operator ->() const {return File;};
-   inline PackageFile const &operator *() const {return *File;};
-   inline operator PackageFile *() {return File == Owner->PkgFileP?0:File;};
-   inline operator PackageFile const *() const {return File == Owner->PkgFileP?0:File;};
-   inline pkgCache *Cache() {return Owner;};
+	bool IsOk();
+	std::string RelStr();
 
-   inline const char *FileName() const {return File->FileName == 0?0:Owner->StrP + File->FileName;};
-   inline const char *Archive() const {return File->Archive == 0?0:Owner->StrP + File->Archive;};
-   inline const char *Component() const {return File->Component == 0?0:Owner->StrP + File->Component;};
-   inline const char *Version() const {return File->Version == 0?0:Owner->StrP + File->Version;};
-   inline const char *Origin() const {return File->Origin == 0?0:Owner->StrP + File->Origin;};
-   inline const char *Label() const {return File->Label == 0?0:Owner->StrP + File->Label;};
-   inline const char *Site() const {return File->Site == 0?0:Owner->StrP + File->Site;};
-   inline const char *Architecture() const {return File->Architecture == 0?0:Owner->StrP + File->Architecture;};
-   inline const char *IndexType() const {return File->IndexType == 0?0:Owner->StrP + File->IndexType;};
-
-   inline unsigned long Index() const {return File - Owner->PkgFileP;};
-
-   bool IsOk();
-   string RelStr();
-   
-   // Constructors
-   inline PkgFileIterator() : Owner(0), File(0) {};
-   inline PkgFileIterator(pkgCache &Owner) : Owner(&Owner), File(Owner.PkgFileP) {};
-   inline PkgFileIterator(pkgCache &Owner,PackageFile *Trg) : Owner(&Owner), File(Trg) {};
+	// Constructors
+	inline PkgFileIterator() : Iterator<PackageFile, PkgFileIterator>() {}
+	explicit inline PkgFileIterator(pkgCache &Owner) : Iterator<PackageFile, PkgFileIterator>(Owner, Owner.PkgFileP) {}
+	inline PkgFileIterator(pkgCache &Owner,PackageFile *Trg) : Iterator<PackageFile, PkgFileIterator>(Owner, Trg) {}
 };
 									/*}}}*/
 // Version File								/*{{{*/
-class pkgCache::VerFileIterator
-{
-   pkgCache *Owner;
-   VerFile *FileP;
+class pkgCache::VerFileIterator : public pkgCache::Iterator<VerFile, VerFileIterator> {
+	public:
+	inline VerFile* OwnerPointer() const {
+		return (Owner != 0) ? Owner->VerFileP : 0;
+	}
 
-   public:
+	// Iteration
+	inline VerFileIterator& operator++() {if (S != Owner->VerFileP) S = Owner->VerFileP + S->NextFile; return *this;}
+	inline VerFileIterator operator++(int) { VerFileIterator const tmp(*this); operator++(); return tmp; }
 
-   // Iteration
-   void operator ++(int) {if (FileP != Owner->VerFileP) FileP = Owner->VerFileP + FileP->NextFile;};
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 || FileP == Owner->VerFileP?true:false;};
+	// Accessors
+	inline PkgFileIterator File() const {return PkgFileIterator(*Owner,S->File + Owner->PkgFileP);}
 
-   // Comparison
-   inline bool operator ==(const VerFileIterator &B) const {return FileP == B.FileP;};
-   inline bool operator !=(const VerFileIterator &B) const {return FileP != B.FileP;};
-			   
-   // Accessors
-   inline VerFile *operator ->() {return FileP;};
-   inline VerFile const *operator ->() const {return FileP;};
-   inline VerFile const &operator *() const {return *FileP;};
-   inline operator VerFile *() {return FileP == Owner->VerFileP?0:FileP;};
-   inline operator VerFile const *() const {return FileP == Owner->VerFileP?0:FileP;};
-   inline pkgCache *Cache() {return Owner;};
-  
-   inline PkgFileIterator File() const {return PkgFileIterator(*Owner,FileP->File + Owner->PkgFileP);};
-   inline unsigned long Index() const {return FileP - Owner->VerFileP;};
-      
-   inline VerFileIterator() : Owner(0), FileP(0) {};
-   inline VerFileIterator(pkgCache &Owner,VerFile *Trg) : Owner(&Owner), FileP(Trg) {};
+	inline VerFileIterator() : Iterator<VerFile, VerFileIterator>() {}
+	inline VerFileIterator(pkgCache &Owner,VerFile *Trg) : Iterator<VerFile, VerFileIterator>(Owner, Trg) {}
 };
 									/*}}}*/
 // Description File							/*{{{*/
-class pkgCache::DescFileIterator
-{
-   pkgCache *Owner;
-   DescFile *FileP;
+class pkgCache::DescFileIterator : public Iterator<DescFile, DescFileIterator> {
+	public:
+	inline DescFile* OwnerPointer() const {
+		return (Owner != 0) ? Owner->DescFileP : 0;
+	}
 
-   public:
+	// Iteration
+	inline DescFileIterator& operator++() {if (S != Owner->DescFileP) S = Owner->DescFileP + S->NextFile; return *this;}
+	inline DescFileIterator operator++(int) { DescFileIterator const tmp(*this); operator++(); return tmp; }
 
-   // Iteration
-   void operator ++(int) {if (FileP != Owner->DescFileP) FileP = Owner->DescFileP + FileP->NextFile;};
-   inline void operator ++() {operator ++(0);};
-   inline bool end() const {return Owner == 0 ||  FileP == Owner->DescFileP?true:false;};
+	// Accessors
+	inline PkgFileIterator File() const {return PkgFileIterator(*Owner,S->File + Owner->PkgFileP);}
 
-   // Comparison
-   inline bool operator ==(const DescFileIterator &B) const {return FileP == B.FileP;};
-   inline bool operator !=(const DescFileIterator &B) const {return FileP != B.FileP;};
-			   
-   // Accessors
-   inline DescFile *operator ->() {return FileP;};
-   inline DescFile const *operator ->() const {return FileP;};
-   inline DescFile const &operator *() const {return *FileP;};
-   inline operator DescFile *() {return FileP == Owner->DescFileP?0:FileP;};
-   inline operator DescFile const *() const {return FileP == Owner->DescFileP?0:FileP;};
-   inline pkgCache *Cache() {return Owner;};
-  
-   inline PkgFileIterator File() const {return PkgFileIterator(*Owner,FileP->File + Owner->PkgFileP);};
-   inline unsigned long Index() const {return FileP - Owner->DescFileP;};
-      
-   inline DescFileIterator() : Owner(0), FileP(0) {};
-   inline DescFileIterator(pkgCache &Owner,DescFile *Trg) : Owner(&Owner), FileP(Trg) {};
+	inline DescFileIterator() : Iterator<DescFile, DescFileIterator>() {}
+	inline DescFileIterator(pkgCache &Owner,DescFile *Trg) : Iterator<DescFile, DescFileIterator>(Owner, Trg) {}
 };
 									/*}}}*/
-// Inlined Begin functions cant be in the class because of order problems /*{{{*/
+// Inlined Begin functions can't be in the class because of order problems /*{{{*/
+inline pkgCache::PkgIterator pkgCache::GrpIterator::PackageList() const
+       {return PkgIterator(*Owner,Owner->PkgP + S->FirstPackage);}
 inline pkgCache::VerIterator pkgCache::PkgIterator::VersionList() const
-       {return VerIterator(*Owner,Owner->VerP + Pkg->VersionList);};
+       {return VerIterator(*Owner,Owner->VerP + S->VersionList);}
 inline pkgCache::VerIterator pkgCache::PkgIterator::CurrentVer() const
-       {return VerIterator(*Owner,Owner->VerP + Pkg->CurrentVer);};
+       {return VerIterator(*Owner,Owner->VerP + S->CurrentVer);}
 inline pkgCache::DepIterator pkgCache::PkgIterator::RevDependsList() const
-       {return DepIterator(*Owner,Owner->DepP + Pkg->RevDepends,Pkg);};
+       {return DepIterator(*Owner,Owner->DepP + S->RevDepends,S);}
 inline pkgCache::PrvIterator pkgCache::PkgIterator::ProvidesList() const
-       {return PrvIterator(*Owner,Owner->ProvideP + Pkg->ProvidesList,Pkg);};
-inline pkgCache::TagIterator pkgCache::PkgIterator::TagList() const
-       {return TagIterator(*Owner,Owner->TagP + Pkg->TagList);};
+       {return PrvIterator(*Owner,Owner->ProvideP + S->ProvidesList,S);}
 inline pkgCache::DescIterator pkgCache::VerIterator::DescriptionList() const
-       {return DescIterator(*Owner,Owner->DescP + Ver->DescriptionList);};
+       {return DescIterator(*Owner,Owner->DescP + S->DescriptionList);}
 inline pkgCache::PrvIterator pkgCache::VerIterator::ProvidesList() const
-       {return PrvIterator(*Owner,Owner->ProvideP + Ver->ProvidesList,Ver);};
+       {return PrvIterator(*Owner,Owner->ProvideP + S->ProvidesList,S);}
+inline pkgCache::TagIterator pkgCache::VerIterator::TagList() const
+       {return TagIterator(*Owner,Owner->TagP + S->TagList);};
 inline pkgCache::DepIterator pkgCache::VerIterator::DependsList() const
-       {return DepIterator(*Owner,Owner->DepP + Ver->DependsList,Ver);};
+       {return DepIterator(*Owner,Owner->DepP + S->DependsList,S);}
 inline pkgCache::VerFileIterator pkgCache::VerIterator::FileList() const
-       {return VerFileIterator(*Owner,Owner->VerFileP + Ver->FileList);};
+       {return VerFileIterator(*Owner,Owner->VerFileP + S->FileList);}
 inline pkgCache::DescFileIterator pkgCache::DescIterator::FileList() const
-       {return DescFileIterator(*Owner,Owner->DescFileP + Desc->FileList);};
+       {return DescFileIterator(*Owner,Owner->DescFileP + S->FileList);}
+APT_DEPRECATED_MSG("Use the .Section method of VerIterator instead") inline const char * pkgCache::PkgIterator::Section() const
+       {return S->VersionList == 0 ? 0 : VersionList().Section();}
 									/*}}}*/
 #endif

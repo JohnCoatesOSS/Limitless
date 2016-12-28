@@ -31,6 +31,7 @@
 
 + (NSArray *) _attributeKeys {
     return [NSArray arrayWithObjects:
+            @"bittage",
             @"bbsnum",
             @"build",
             @"coreFoundationVersionNumber",
@@ -59,6 +60,14 @@
 
 - (NSString *) version {
     return Cydia_;
+}
+
+- (unsigned)bittage {
+    #if defined(__arm64__) || defined(__x86_64__)
+        return 64;
+    #elif defined(__arm__) || defined(__i386__)
+        return 32;
+    #endif
 }
 
 - (NSString *) build {

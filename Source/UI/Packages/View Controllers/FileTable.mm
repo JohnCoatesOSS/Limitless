@@ -94,7 +94,7 @@
                 NSString *directory = [stack lastObject];
                 [stack addObject:[file stringByAppendingString:@"/"]];
                 [files_ replaceObjectAtIndex:i withObject:[NSString stringWithFormat:@"%*s%@",
-                                                           ([stack count] - 2) * 3, "",
+                                                           int(([stack count] - 2) * 3), "",
                                                            [file substringFromIndex:[directory length]]
                                                            ]];
             }

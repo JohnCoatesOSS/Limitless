@@ -1,45 +1,73 @@
-// ijones, walters
 #ifndef PKGLIB_DEBMETAINDEX_H
 #define PKGLIB_DEBMETAINDEX_H
 
 #include <apt-pkg/metaindex.h>
+#include <apt-pkg/macros.h>
+
+#include <map>
+#include <string>
+#include <vector>
+
+#ifndef APT_8_CLEANER_HEADERS
 #include <apt-pkg/sourcelist.h>
+#endif
+#ifndef APT_10_CLEANER_HEADERS
+#include <apt-pkg/init.h>
+#endif
 
-class debReleaseIndex : public metaIndex {
+class pkgAcquire;
+class pkgIndexFile;
+class IndexTarget;
+class pkgCacheGenerator;
+class OpProgress;
+class debReleaseIndexPrivate;
+
+class APT_HIDDEN debReleaseIndex : public metaIndex
+{
+   debReleaseIndexPrivate * const d;
+
+   APT_HIDDEN bool parseSumData(const char *&Start, const char *End, std::string &Name,
+		     std::string &Hash, unsigned long long &Size);
    public:
 
-   class debSectionEntry
-   {
-      public:
-      debSectionEntry (string Section, bool IsSrc);
-      bool IsSrc;
-      string Section;
-   };
+   APT_HIDDEN std::string MetaIndexInfo(const char *Type) const;
+   APT_HIDDEN std::string MetaIndexFile(const char *Types) const;
+   APT_HIDDEN std::string MetaIndexURI(const char *Type) const;
 
-   private:
-   vector <const debSectionEntry *> SectionEntries;
+   debReleaseIndex(std::string const &URI, std::string const &Dist, std::map<std::string,std::string> const &Options = std::map<std::string,std::string>());
+   debReleaseIndex(std::string const &URI, std::string const &Dist, bool const Trusted, std::map<std::string,std::string> const &Options = std::map<std::string,std::string>());
+   virtual ~debReleaseIndex();
 
-   public:
+   virtual std::string ArchiveURI(std::string const &File) const APT_OVERRIDE {return URI + File;};
+   virtual bool GetIndexes(pkgAcquire *Owner, bool const &GetAll=false) APT_OVERRIDE;
+   virtual std::vector<IndexTarget> GetIndexTargets() const APT_OVERRIDE;
 
-   debReleaseIndex(string URI, string Dist);
-   ~debReleaseIndex();
+   virtual std::string Describe() const APT_OVERRIDE;
+   virtual pkgCache::RlsFileIterator FindInCache(pkgCache &Cache, bool const ModifyCheck) const APT_OVERRIDE;
+   virtual bool Merge(pkgCacheGenerator &Gen,OpProgress *Prog) const APT_OVERRIDE;
 
-   virtual string ArchiveURI(string File) const {return URI + File;};
-   virtual bool GetIndexes(pkgAcquire *Owner, bool GetAll=false) const;
-   vector <struct IndexTarget *>* ComputeIndexTargets() const;
-   string Info(const char *Type, const string Section) const;
-   string MetaIndexInfo(const char *Type) const;
-   string MetaIndexFile(const char *Types) const;
-   string MetaIndexURI(const char *Type) const;
-   string IndexURI(const char *Type, const string Section) const;
-   string IndexURISuffix(const char *Type, const string Section) const;
-   string SourceIndexURI(const char *Type, const string Section) const;
-   string SourceIndexURISuffix(const char *Type, const string Section) const;
-   virtual vector <pkgIndexFile *> *GetIndexFiles();
+   virtual bool Load(std::string const &Filename, std::string * const ErrorText) APT_OVERRIDE;
+   virtual metaIndex * UnloadedClone() const APT_OVERRIDE;
 
-   virtual bool IsTrusted() const;
+   virtual std::vector <pkgIndexFile *> *GetIndexFiles() APT_OVERRIDE;
 
-   void PushSectionEntry(const debSectionEntry *Entry);
+   bool SetTrusted(TriState const Trusted);
+   bool SetCheckValidUntil(TriState const Trusted);
+   bool SetValidUntilMin(time_t const Valid);
+   bool SetValidUntilMax(time_t const Valid);
+   bool SetSignedBy(std::string const &SignedBy);
+   std::map<std::string, std::string> GetReleaseOptions();
+
+   virtual bool IsTrusted() const APT_OVERRIDE;
+   bool IsArchitectureSupported(std::string const &arch) const;
+   bool IsArchitectureAllSupportedFor(IndexTarget const &target) const;
+
+   void AddComponent(std::string const &sourcesEntry,
+	 bool const isSrc, std::string const &Name,
+	 std::vector<std::string> const &Targets,
+	 std::vector<std::string> const &Architectures,
+	 std::vector<std::string> Languages,
+	 bool const usePDiffs, std::string const &useByHash);
 };
 
 #endif

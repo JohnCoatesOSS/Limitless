@@ -76,11 +76,13 @@
         std::cout << "Error: " << errorMessage << std::endl;
     }
     
-    const char *language = getenv("LANG");
-    if (language != NULL) {
-        self.configuration[@"APT::Acquire::Translation"] = @(language);
-    }
-
+    self.configuration[@"APT::Acquire::Translation"] = @"environment";
+    self.configuration[@"Acquire::AllowInsecureRepositories"] = @"true";
+    self.configuration[@"Acquire::Check-Valid-Until"] = @"false";
+    self.configuration[@"pkgCacheGen::ForceEssential"] = @"";
+    // TODO: what is store and how should we include it?
+    // self.configuration[@"Dir::Bin::Methods::store"] = @"/Applications/Limitless.app/store";
+    
     int64_t usermem(0);
     size_t size = sizeof(usermem);
     if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1) {
@@ -108,7 +110,7 @@
         NSString *logDirectory = @"/var/mobile/Library/Logs/Cydia";
         mkdir(logDirectory.UTF8String, 0755);
         NSString *logFile = [logDirectory stringByAppendingPathComponent:@"apt.log"];
-        self.configuration[@"Dir::Log::Terminal"] = logFile;
+        self.configuration[@"Dir::Log"] = logFile;
     }
 
     if (APTManager.debugMode) {

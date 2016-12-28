@@ -11,46 +11,59 @@
 #ifndef PKGLIB_DEBSRCRECORDS_H
 #define PKGLIB_DEBSRCRECORDS_H
 
-
 #include <apt-pkg/srcrecords.h>
 #include <apt-pkg/tagfile.h>
 #include <apt-pkg/fileutl.h>
 
-class debSrcRecordParser : public pkgSrcRecords::Parser
+#include <stddef.h>
+#include <string>
+#include <vector>
+
+class pkgIndexFile;
+
+class APT_HIDDEN debSrcRecordParser : public pkgSrcRecords::Parser
 {
+   /** \brief dpointer placeholder (for later in case we need it) */
+   void * const d;
+
+ protected:
    FileFd Fd;
    pkgTagFile Tags;
    pkgTagSection Sect;
-   char *StaticBinList[400];
+   std::vector<const char*> StaticBinList;
    unsigned long iOffset;
    char *Buffer;
-   unsigned int BufSize;
    
    public:
 
-   virtual bool Restart() {return Tags.Jump(Sect,0);};
-   virtual bool Step() {iOffset = Tags.Offset(); return Tags.Step(Sect);};
-   virtual bool Jump(unsigned long Off) {iOffset = Off; return Tags.Jump(Sect,Off);};
+   virtual bool Restart() APT_OVERRIDE {return Jump(0);};
+   virtual bool Step() APT_OVERRIDE {iOffset = Tags.Offset(); return Tags.Step(Sect);};
+   virtual bool Jump(unsigned long const &Off) APT_OVERRIDE {iOffset = Off; return Tags.Jump(Sect,Off);};
 
-   virtual string Package() const {return Sect.FindS("Package");};
-   virtual string Version() const {return Sect.FindS("Version");};
-   virtual string Maintainer() const {return Sect.FindS("Maintainer");};
-   virtual string Section() const {return Sect.FindS("Section");};
-   virtual const char **Binaries();
-   virtual bool BuildDepends(vector<BuildDepRec> &BuildDeps, bool ArchOnly);
-   virtual unsigned long Offset() {return iOffset;};
-   virtual string AsStr() 
+   virtual std::string Package() const APT_OVERRIDE;
+   virtual std::string Version() const APT_OVERRIDE {return Sect.FindS("Version");};
+   virtual std::string Maintainer() const APT_OVERRIDE {return Sect.FindS("Maintainer");};
+   virtual std::string Section() const APT_OVERRIDE {return Sect.FindS("Section");};
+   virtual const char **Binaries() APT_OVERRIDE;
+   virtual bool BuildDepends(std::vector<BuildDepRec> &BuildDeps, bool const &ArchOnly, bool const &StripMultiArch = true) APT_OVERRIDE;
+   virtual unsigned long Offset() APT_OVERRIDE {return iOffset;};
+   virtual std::string AsStr() APT_OVERRIDE 
    {
       const char *Start=0,*Stop=0;
       Sect.GetSection(Start,Stop);
-      return string(Start,Stop);
+      return std::string(Start,Stop);
    };
-   virtual bool Files(vector<pkgSrcRecords::File> &F);
+   virtual bool Files(std::vector<pkgSrcRecords::File> &F) APT_OVERRIDE;
+   bool Files2(std::vector<pkgSrcRecords::File2> &F);
 
-   debSrcRecordParser(string File,pkgIndexFile const *Index) 
-      : Parser(Index), Fd(File,FileFd::ReadOnly), Tags(&Fd,102400), 
-        Buffer(0), BufSize(0) {}
-   ~debSrcRecordParser();
+   debSrcRecordParser(std::string const &File,pkgIndexFile const *Index);
+   virtual ~debSrcRecordParser();
+};
+
+class APT_HIDDEN debDscRecordParser : public debSrcRecordParser
+{
+ public:
+   debDscRecordParser(std::string const &DscFile, pkgIndexFile const *Index);
 };
 
 #endif

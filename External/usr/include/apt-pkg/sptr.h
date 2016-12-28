@@ -20,9 +20,10 @@
 									/*}}}*/
 #ifndef SMART_POINTER_H
 #define SMART_POINTER_H
+#include <apt-pkg/macros.h>
 
 template <class T>
-class SPtr
+class APT_DEPRECATED_MSG("use std::unique_ptr instead") SPtr
 {
    public:
    T *Ptr;
@@ -43,7 +44,7 @@ class SPtr
 };
 
 template <class T>
-class SPtrArray
+class APT_DEPRECATED_MSG("use std::unique_ptr instead") SPtrArray
 {
    public:
    T *Ptr;
@@ -60,7 +61,15 @@ class SPtrArray
    
    inline SPtrArray(T *Ptr) : Ptr(Ptr) {};
    inline SPtrArray() : Ptr(0) {};
+#if __GNUC__ >= 4
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wunsafe-loop-optimizations"
+	// gcc warns about this, but we can do nothing here…
+#endif
    inline ~SPtrArray() {delete [] Ptr;};
+#if __GNUC__ >= 4
+	#pragma GCC diagnostic pop
+#endif
 };
 
 #endif

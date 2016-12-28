@@ -17,9 +17,11 @@
 #ifndef PKGLIB_PKGRECORDS_H
 #define PKGLIB_PKGRECORDS_H
 
-
 #include <apt-pkg/pkgcache.h>
-#include <apt-pkg/fileutl.h>
+#include <apt-pkg/hashes.h>
+#include <apt-pkg/macros.h>
+
+#include <string>
 #include <vector>
 
 class pkgRecords							/*{{{*/
@@ -28,19 +30,20 @@ class pkgRecords							/*{{{*/
    class Parser;
    
    private:
+   /** \brief dpointer placeholder (for later in case we need it) */
+   void * const d;
    
    pkgCache &Cache;
    std::vector<Parser *>Files;
 
-   public:
-
+    public:
    // Lookup function
    Parser &Lookup(pkgCache::VerFileIterator const &Ver);
    Parser &Lookup(pkgCache::DescFileIterator const &Desc);
 
    // Construct destruct
-   pkgRecords(pkgCache &Cache);
-   ~pkgRecords();
+   explicit pkgRecords(pkgCache &Cache);
+   virtual ~pkgRecords();
 };
 									/*}}}*/
 class pkgRecords::Parser						/*{{{*/
@@ -54,28 +57,64 @@ class pkgRecords::Parser						/*{{{*/
    friend class pkgRecords;
    
    // These refer to the archive file for the Version
-   virtual string FileName() {return string();};
-   virtual string MD5Hash() {return string();};
-   virtual string SHA1Hash() {return string();};
-   virtual string SHA256Hash() {return string();};
-   virtual string SourcePkg() {return string();};
-   virtual string SourceVer() {return string();};
+   virtual std::string FileName() {return std::string();};
+   virtual std::string SourcePkg() {return std::string();};
+   virtual std::string SourceVer() {return std::string();};
 
-   virtual bool ShortDesc(const char *&Start,const char *&End) {return false;}
-   virtual bool LongDesc(const char *&Start,const char *&End) {return false;}
+   /** return all known hashes in this record.
+    *
+    * For authentication proposes packages come with hashsums which
+    * this method is supposed to parse and return so that clients can
+    * choose the hash to be used.
+    */
+   virtual HashStringList Hashes() const { return HashStringList(); };
+   APT_DEPRECATED_MSG("Use .Hashes instead of a hardcoded hash algorithm") std::string MD5Hash() const { return GetHashFromHashes("MD5Sum"); };
+   APT_DEPRECATED_MSG("Use .Hashes instead of a hardcoded hash algorithm") std::string SHA1Hash() const { return GetHashFromHashes("SHA1"); };
+   APT_DEPRECATED_MSG("Use .Hashes instead of a hardcoded hash algorithm") std::string SHA256Hash() const { return GetHashFromHashes("SHA256"); };
+   APT_DEPRECATED_MSG("Use .Hashes instead of a hardcoded hash algorithm") std::string SHA512Hash() const { return GetHashFromHashes("SHA512"); };
 
    // These are some general stats about the package
-   virtual string Maintainer() {return string();};
-   virtual string ShortDesc() {return string();};
-   virtual string LongDesc() {return string();};
-   virtual string Name() {return string();};
-   virtual string Homepage() {return string();}
-   
+   virtual std::string Maintainer() {return std::string();};
+   /** return short description in language from record.
+    *
+    * @see #LongDesc
+    */
+   virtual std::string ShortDesc(std::string const &/*lang*/) {return std::string();};
+   /** return long description in language from record.
+    *
+    * If \b lang is empty the "best" available language will be
+    * returned as determined by the APT::Languages configuration.
+    * If a (requested) language can't be found in this record an empty
+    * string will be returned.
+    */
+   virtual std::string LongDesc(std::string const &/*lang*/) {return std::string();};
+   std::string ShortDesc() {return ShortDesc("");};
+   std::string LongDesc() {return LongDesc("");};
+
+   virtual std::string Name() {return std::string();};
+   virtual std::string Display() {return std::string();}
+   virtual std::string Homepage() {return std::string();}
+
+   // An arbitrary custom field
+   virtual std::string RecordField(const char * /*fieldName*/) { return std::string();};
+
    // The record in binary form
    virtual void GetRec(const char *&Start,const char *&Stop) {Start = Stop = 0;};
+
+   // Locate a tag
    virtual bool Find(const char *Tag,const char *&Start, const char *&End) {Start = End = 0; return false;};
-   
-   virtual ~Parser() {};
+
+   Parser();
+   virtual ~Parser();
+
+   private:
+   void * const d;
+   APT_HIDDEN std::string GetHashFromHashes(char const * const type) const
+   {
+      HashStringList const hashes = Hashes();
+      HashString const * const hs = hashes.find(type);
+      return hs != NULL ? hs->HashValue() : "";
+   };
 };
 									/*}}}*/
 #endif

@@ -82,7 +82,7 @@ static unsigned long APTPackageEnumerationStateFinished = ULONG_MAX;
         iterator = (*_cacheFile)->PkgBegin();
     } else {
         enumerationState = (APTPackageEnumerationState *)state->state;
-        iterator = pkgCache::PkgIterator(enumerationState->owner,
+        iterator = pkgCache::PkgIterator(*enumerationState->owner,
                                          enumerationState->package,
                                          enumerationState->hashIndex);
     }

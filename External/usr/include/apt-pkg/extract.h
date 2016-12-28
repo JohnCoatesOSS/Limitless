@@ -17,11 +17,12 @@
 #ifndef PKGLIB_EXTRACT_H
 #define PKGLIB_EXTRACT_H
 
-
-
 #include <apt-pkg/dirstream.h>
 #include <apt-pkg/filelist.h>
 #include <apt-pkg/pkgcache.h>
+#include <apt-pkg/cacheiterators.h>
+
+#include <string>
 
 class pkgExtract : public pkgDirStream
 {
@@ -33,13 +34,13 @@ class pkgExtract : public pkgDirStream
    
    bool HandleOverwrites(pkgFLCache::NodeIterator Nde,
 			 bool DiverCheck = false);
-   bool CheckDirReplace(string Dir,unsigned int Depth = 0);
+   bool CheckDirReplace(std::string Dir,unsigned int Depth = 0);
    
    public:
    
-   virtual bool DoItem(Item &Itm,int &Fd);
-   virtual bool Fail(Item &Itm,int Fd);
-   virtual bool FinishedFile(Item &Itm,int Fd);
+   virtual bool DoItem(Item &Itm,int &Fd) APT_OVERRIDE;
+   virtual bool Fail(Item &Itm,int Fd) APT_OVERRIDE;
+   virtual bool FinishedFile(Item &Itm,int Fd) APT_OVERRIDE;
 
    bool Finished();
    bool Aborted();

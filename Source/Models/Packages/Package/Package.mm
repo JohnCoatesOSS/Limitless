@@ -47,7 +47,7 @@
         _end
         
         _profile(Package$initWithVersion$Cache)
-        name_.set(NULL, iterator.Display());
+        name_.set(NULL, version.Display());
         
         latest_.set(NULL, StripVersion_(version_.VerStr()));
         
@@ -59,7 +59,8 @@
         [LMXLocalizedTableSections transliterate:name_ pool:pool_ output:&transform_];
         
         _profile(Package$initWithVersion$Tags)
-        pkgCache::TagIterator tag(iterator.TagList());
+        
+        pkgCache::TagIterator tag(version.TagList());
         if (!tag.end()) {
             tags_ = [NSMutableArray arrayWithCapacity:8];
             
@@ -345,15 +346,7 @@
         _end
         
         _profile(Package$parse$Tagline)
-        const char *start, *end;
-        if (parser->ShortDesc(start, end)) {
-            const char *stop(reinterpret_cast<const char *>(memchr(start, '\n', end - start)));
-            if (stop == NULL)
-                stop = end;
-            while (stop != start && stop[-1] == '\r')
-                --stop;
-            parsed->tagline_.set(pool_, start, stop - start);
-        }
+        parsed->tagline_.set(pool_, parser->ShortDesc());
         _end
         
         _profile(Package$parse$Retain)
@@ -477,22 +470,17 @@
     @synchronized (database_) {
         pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         
-        const char *start, *end;
-        if (!parser->ShortDesc(start, end))
+        std::string value(parser->ShortDesc());
+        
+        if (value.empty()) {
             return nil;
+        }
         
-        if (end - start > 200)
-            end = start + 200;
+        if (value.size() > 200) {
+            value.resize(200);
+        }
         
-        /*
-         if (const char *stop = reinterpret_cast<const char *>(memchr(start, '\n', end - start)))
-         end = stop;
-         
-         while (end != start && end[-1] == '\r')
-         --end;
-         */
-        
-        return [(id) CYStringCreate(start, end - start) autorelease];
+        return [(id) CYStringCreate(value) autorelease];
     } }
 
 - (unichar) index {

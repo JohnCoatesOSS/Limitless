@@ -1,6 +1,5 @@
 // -*- mode: cpp; mode: fold -*-
 // Description								/*{{{*/
-// $Id: acquire-worker.h,v 1.12 2001/02/20 07:03:17 jgg Exp $
 /* ######################################################################
 
    Acquire Worker - Worker process manager
@@ -20,7 +19,11 @@
 #define PKGLIB_ACQUIRE_WORKER_H
 
 #include <apt-pkg/acquire.h>
+#include <apt-pkg/weakptr.h>
 
+#include <sys/types.h>
+#include <string>
+#include <vector>
 
 /** \brief A fetch subprocess.
  *
@@ -41,8 +44,11 @@
  *
  *  \sa pkgAcqMethod, pkgAcquire::Item, pkgAcquire
  */
-class pkgAcquire::Worker
+class pkgAcquire::Worker : public WeakPointable
 {
+   /** \brief dpointer placeholder (for later in case we need it) */
+   void * const d;
+  
    friend class pkgAcquire;
    
    protected:
@@ -75,7 +81,7 @@ class pkgAcquire::Worker
     *
     *  \todo Doesn't this duplicate Config->Access?
     */
-   string Access;
+   std::string Access;
 
    /** \brief The PID of the subprocess. */
    pid_t Process;
@@ -93,6 +99,11 @@ class pkgAcquire::Worker
     *  Used to send commands and configuration data to the subprocess.
     */
    int OutFd;
+
+   /** \brief The socket to send SCM_RIGHTS message through
+    */
+   int PrivSepSocketFd;
+   int PrivSepSocketFdChild;
 
    /** \brief Set to \b true if the worker is in a state in which it
     *  might generate data or command responses.
@@ -114,13 +125,13 @@ class pkgAcquire::Worker
    /** \brief The raw text values of messages received from the
     *  worker, in sequence.
     */
-   vector<string> MessageQueue;
+   std::vector<std::string> MessageQueue;
 
    /** \brief Buffers pending writes to the subprocess.
     *
     *  \todo Wouldn't a std::dequeue be more appropriate?
     */
-   string OutQueue;
+   std::string OutQueue;
    
    /** \brief Common code for the constructor.
     *
@@ -132,8 +143,8 @@ class pkgAcquire::Worker
    
    /** \brief Retrieve any available messages from the subprocess.
     *
-    *  The messages are retrieved as in ::ReadMessages(), and
-    *  MessageFailure() is invoked if an error occurs; in particular,
+    *  The messages are retrieved as in \link strutl.h ReadMessages()\endlink, and
+    *  #MethodFailure() is invoked if an error occurs; in particular,
     *  if the pipe to the subprocess dies unexpectedly while a message
     *  is being read.
     *
@@ -179,7 +190,7 @@ class pkgAcquire::Worker
     *
     *  \return \b true.
     */
-   bool Capabilities(string Message);
+   bool Capabilities(std::string Message);
 
    /** \brief Send a 601 Configuration message (containing the APT
     *  configuration) to the subprocess.
@@ -210,7 +221,7 @@ class pkgAcquire::Worker
     *  603 Media Changed, with the Failed field set to \b true if the
     *  user cancelled the media change).
     */
-   bool MediaChange(string Message);
+   bool MediaChange(std::string Message);
    
    /** \brief Invoked when the worked process dies unexpectedly.
     *
@@ -238,22 +249,22 @@ class pkgAcquire::Worker
    /** \brief The most recent status string received from the
     *  subprocess.
     */
-   string Status;
+   std::string Status;
 
    /** \brief How many bytes of the file have been downloaded.  Zero
     *  if the current progress of the file cannot be determined.
     */
-   unsigned long CurrentSize;
+   unsigned long long CurrentSize;
 
    /** \brief The total number of bytes to be downloaded.  Zero if the
     *  total size of the final is unknown.
     */
-   unsigned long TotalSize;
+   unsigned long long TotalSize;
 
    /** \brief How much of the file was already downloaded prior to
     *  starting this worker.
     */
-   unsigned long ResumePoint;
+   unsigned long long ResumePoint;
    
    /** \brief Tell the subprocess to download the given item.
     *
@@ -306,14 +317,17 @@ class pkgAcquire::Worker
     *  \param Config A location in which to store information about
     *  the fetch method.
     */
-   Worker(MethodConfig *Config);
+   explicit Worker(MethodConfig *Config);
 
    /** \brief Clean up this worker.
     *
     *  Closes the file descriptors; if MethodConfig::NeedsCleanup is
     *  \b false, also rudely interrupts the worker with a SIGINT.
     */
-   ~Worker();
+   virtual ~Worker();
+
+private:
+   APT_HIDDEN void PrepareFiles(char const * const caller, pkgAcquire::Queue::QItem const * const Itm);
 };
 
 /** @} */

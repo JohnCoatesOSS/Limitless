@@ -17,7 +17,12 @@
 
 
 #include <string>
+#include <apt-pkg/macros.h>
+#ifndef APT_8_CLEANER_HEADERS
 #include <apt-pkg/fileutl.h>
+#endif
+
+class FileFd;
 
 class ARArchive
 {
@@ -39,6 +44,7 @@ class ARArchive
 
    // Locate a member by name
    const Member *FindMember(const char *Name) const;
+   inline Member *Members() { return List; }
    
    ARArchive(FileFd &File);
    ~ARArchive();
@@ -48,15 +54,15 @@ class ARArchive
 struct ARArchive::Member
 {
    // Fields from the header
-   string Name;
+   std::string Name;
    unsigned long MTime;
    unsigned long UID;
    unsigned long GID;
    unsigned long Mode;
-   unsigned long Size;
+   unsigned long long Size;
    
    // Location of the data.
-   unsigned long Start;
+   unsigned long long Start;
    Member *Next;
    
    Member() : Start(0), Next(0) {};

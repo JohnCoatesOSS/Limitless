@@ -1,6 +1,5 @@
 // -*- mode: cpp; mode: fold -*-
 // Description								/*{{{*/
-// $Id: indexcopy.h,v 1.3 2001/05/27 04:46:54 jgg Exp $
 /* ######################################################################
 
    Index Copying - Aid for copying and verifying the index files
@@ -11,84 +10,119 @@
 #define INDEXCOPY_H
 
 #include <vector>
+#ifndef APT_11_CLEAN_HEADERS
 #include <string>
 #include <stdio.h>
+#endif
 
+#include <apt-pkg/macros.h>
+
+#ifndef APT_10_CLEANER_HEADERS
+#include <apt-pkg/gpgv.h>
+class FileFd;
+#endif
+#ifndef APT_8_CLEANER_HEADERS
 using std::string;
 using std::vector;
+#endif
 
 class pkgTagSection;
-class FileFd;
-class indexRecords;
 class pkgCdromStatus;
+class FileFd;
+class metaIndex;
 
 class IndexCopy								/*{{{*/
 {
+   /** \brief dpointer placeholder (for later in case we need it) */
+   void * const d;
+
    protected:
    
    pkgTagSection *Section;
    
-   string ChopDirs(string Path,unsigned int Depth);
-   bool ReconstructPrefix(string &Prefix,string OrigPath,string CD,
-			  string File);
-   bool ReconstructChop(unsigned long &Chop,string Dir,string File);
-   void ConvertToSourceList(string CD,string &Path);
-   bool GrabFirst(string Path,string &To,unsigned int Depth);
-   virtual bool GetFile(string &Filename,unsigned long &Size) = 0;
-   virtual bool RewriteEntry(FILE *Target,string File) = 0;
+   std::string ChopDirs(std::string Path,unsigned int Depth);
+   bool ReconstructPrefix(std::string &Prefix,std::string OrigPath,std::string CD,
+			  std::string File);
+   bool ReconstructChop(unsigned long &Chop,std::string Dir,std::string File);
+   void ConvertToSourceList(std::string CD,std::string &Path);
+   bool GrabFirst(std::string Path,std::string &To,unsigned int Depth);
+   virtual bool GetFile(std::string &Filename,unsigned long long &Size) = 0;
+   virtual bool RewriteEntry(FileFd &Target, std::string const &File) = 0;
    virtual const char *GetFileName() = 0;
    virtual const char *Type() = 0;
    
    public:
 
-   bool CopyPackages(string CDROM,string Name,vector<string> &List,
+   bool CopyPackages(std::string CDROM,std::string Name,std::vector<std::string> &List,
 		     pkgCdromStatus *log);
-   virtual ~IndexCopy() {};
+   IndexCopy();
+   virtual ~IndexCopy();
 };
 									/*}}}*/
 class PackageCopy : public IndexCopy					/*{{{*/
 {
+   void * const d;
    protected:
-   
-   virtual bool GetFile(string &Filename,unsigned long &Size);
-   virtual bool RewriteEntry(FILE *Target,string File);
-   virtual const char *GetFileName() {return "Packages";};
-   virtual const char *Type() {return "Package";};
-   
+
+   virtual bool GetFile(std::string &Filename,unsigned long long &Size) APT_OVERRIDE;
+   virtual bool RewriteEntry(FileFd &Target, std::string const &File) APT_OVERRIDE;
+   virtual const char *GetFileName() APT_OVERRIDE {return "Packages";};
+   virtual const char *Type() APT_OVERRIDE {return "Package";};
+
    public:
+   PackageCopy();
+   virtual ~PackageCopy();
 };
 									/*}}}*/
 class SourceCopy : public IndexCopy					/*{{{*/
 {
+   void * const d;
    protected:
    
-   virtual bool GetFile(string &Filename,unsigned long &Size);
-   virtual bool RewriteEntry(FILE *Target,string File);
-   virtual const char *GetFileName() {return "Sources";};
-   virtual const char *Type() {return "Source";};
-   
+   virtual bool GetFile(std::string &Filename,unsigned long long &Size) APT_OVERRIDE;
+   virtual bool RewriteEntry(FileFd &Target, std::string const &File) APT_OVERRIDE;
+   virtual const char *GetFileName() APT_OVERRIDE {return "Sources";};
+   virtual const char *Type() APT_OVERRIDE {return "Source";};
+
    public:
+   SourceCopy();
+   virtual ~SourceCopy();
 };
 									/*}}}*/
 class TranslationsCopy							/*{{{*/
 {
+   void * const d;
    protected:
    pkgTagSection *Section;
 
    public:
-   bool CopyTranslations(string CDROM,string Name,vector<string> &List,
+   bool CopyTranslations(std::string CDROM,std::string Name,std::vector<std::string> &List,
 			 pkgCdromStatus *log);
+
+   TranslationsCopy();
+   virtual ~TranslationsCopy();
 };
 									/*}}}*/
 class SigVerify								/*{{{*/
 {
-   bool Verify(string prefix,string file, indexRecords *records);
-   bool CopyMetaIndex(string CDROM, string CDName, 
-		      string prefix, string file);
+   /** \brief dpointer placeholder (for later in case we need it) */
+   void * const d;
+
+   APT_HIDDEN bool Verify(std::string prefix,std::string file, metaIndex *records);
+   APT_HIDDEN bool CopyMetaIndex(std::string CDROM, std::string CDName,
+		      std::string prefix, std::string file);
 
  public:
-   bool CopyAndVerify(string CDROM,string Name,vector<string> &SigList,
-		      vector<string> PkgList,vector<string> SrcList);
+   bool CopyAndVerify(std::string CDROM,std::string Name,std::vector<std::string> &SigList,
+		      std::vector<std::string> PkgList,std::vector<std::string> SrcList);
+
+   APT_DEPRECATED_MSG("Use ExecGPGV instead") static bool RunGPGV(std::string const &File, std::string const &FileOut,
+		       int const &statusfd, int fd[2]);
+   APT_DEPRECATED_MSG("Use ExecGPGV instead") static bool RunGPGV(std::string const &File, std::string const &FileOut,
+			      int const &statusfd = -1);
+
+   SigVerify();
+   virtual ~SigVerify();
 };
 									/*}}}*/
 

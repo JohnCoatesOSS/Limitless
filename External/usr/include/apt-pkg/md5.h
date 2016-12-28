@@ -10,7 +10,7 @@
    store a MD5Sum in 16 bytes of memory.
    
    A MD5Sum is used to generate a (hopefully) unique 16 byte number for a
-   block of data. This can be used to gaurd against corruption of a file.
+   block of data. This can be used to guard against corruption of a file.
    MD5 should not be used for tamper protection, use SHA or something more
    secure.
    
@@ -23,58 +23,36 @@
 #ifndef APTPKG_MD5_H
 #define APTPKG_MD5_H
 
+#include <stdint.h>
 
+#include "hashsum_template.h"
+
+#ifndef APT_10_CLEANER_HEADERS
 #include <string>
 #include <cstring>
 #include <algorithm>
-#include <stdint.h>
-
-#include <apt-pkg/srkstring.h>
-
+#endif
+#ifndef APT_8_CLEANER_HEADERS
 using std::string;
 using std::min;
+#endif
 
-class MD5Summation;
+typedef HashSumValue<128> MD5SumValue;
 
-class MD5SumValue
-{
-   friend class MD5Summation;
-   unsigned char Sum[4*4];
-   
-   public:
-
-   // Accessors
-   bool operator ==(const MD5SumValue &rhs) const; 
-   string Value() const;
-   inline void Value(unsigned char S[16]) 
-         {for (int I = 0; I != sizeof(Sum); I++) S[I] = Sum[I];};
-   inline operator string() const {return Value();};
-   bool Set(string Str);
-   bool Set(const srkString &Str);
-   inline void Set(unsigned char S[16]) 
-         {for (int I = 0; I != sizeof(Sum); I++) Sum[I] = S[I];};
-
-   MD5SumValue(string Str);
-   MD5SumValue(const srkString &Str);
-   MD5SumValue();
-};
-
-class MD5Summation
+class MD5Summation : public SummationImplementation
 {
    uint32_t Buf[4];
    unsigned char Bytes[2*4];
    unsigned char In[16*4];
    bool Done;
-   
+
    public:
 
-   bool Add(const unsigned char *Data,unsigned long Size);
-   inline bool Add(const char *Data) {return Add((unsigned char *)Data,strlen(Data));};
-   bool AddFD(int Fd,unsigned long Size);
-   inline bool Add(const unsigned char *Beg,const unsigned char *End) 
-                  {return Add(Beg,End-Beg);};
+   bool Add(const unsigned char *inbuf, unsigned long long inlen) APT_OVERRIDE APT_NONNULL(2);
+   using SummationImplementation::Add;
+
    MD5SumValue Result();
-   
+
    MD5Summation();
 };
 

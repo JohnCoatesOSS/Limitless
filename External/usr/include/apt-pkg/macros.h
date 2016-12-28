@@ -44,7 +44,7 @@
 #define _boundv(a,b,c) b = _bound(a,b,c)
 #define ABS(a) (((a) < (0)) ?-(a) : (a))
 
-/* Usefull count macro, use on an array of things and it will return the
+/* Useful count macro, use on an array of things and it will return the
    number of items in the array */
 #define _count(a) (sizeof(a)/sizeof(a[0]))
 
@@ -54,37 +54,118 @@
 #define CLRFLAG(v,f)	((v) &=~FLAG(f))
 #define	CHKFLAG(v,f)	((v) &  FLAG(f) ? true : false)
 
-// some nice optional GNUC features
-#if __GNUC__ >= 3
-        #define __must_check    __attribute__ ((warn_unused_result))
-#ifndef __deprecated
-        #define __deprecated    __attribute__ ((deprecated))
-#endif
-        /* likely() and unlikely() can be used to mark boolean expressions
-           as (not) likely true which will help the compiler to optimise */
-        #define likely(x)       __builtin_expect (!!(x), 1)
-        #define unlikely(x)     __builtin_expect (!!(x), 0)
+#ifdef __GNUC__
+#define APT_GCC_VERSION (__GNUC__ << 8 | __GNUC_MINOR__)
 #else
-        #define __must_check    /* no warn_unused_result */
-        #define __deprecated    /* no deprecated */
-        #define likely(x)       (x)
-        #define unlikely(x)     (x)
+#define APT_GCC_VERSION 0
+#endif
+
+/* likely() and unlikely() can be used to mark boolean expressions
+   as (not) likely true which will help the compiler to optimise */
+#if APT_GCC_VERSION >= 0x0300
+	#define likely(x)	__builtin_expect (!!(x), 1)
+	#define unlikely(x)	__builtin_expect (!!(x), 0)
+#else
+	#define likely(x)	(x)
+	#define unlikely(x)	(x)
+#endif
+
+#if APT_GCC_VERSION >= 0x0300
+	#define APT_DEPRECATED	__attribute__ ((deprecated))
+	#define APT_DEPRECATED_MSG(X)	__attribute__ ((deprecated(X)))
+	#define APT_CONST	__attribute__((const))
+	#define APT_PURE	__attribute__((pure))
+	#define APT_NORETURN	__attribute__((noreturn))
+	#define APT_PRINTF(n)	__attribute__((format(printf, n, n + 1)))
+	#define APT_WEAK        __attribute__((weak));
+#else
+	#define APT_DEPRECATED
+	#define APT_DEPRECATED_MSG
+	#define APT_CONST
+	#define APT_PURE
+	#define APT_NORETURN
+	#define APT_PRINTF(n)
+	#define APT_WEAK
+#endif
+
+#if APT_GCC_VERSION > 0x0302
+	#define APT_NONNULL(...)	__attribute__((nonnull(__VA_ARGS__)))
+	#define APT_MUSTCHECK		__attribute__((warn_unused_result))
+#else
+	#define APT_NONNULL(...)
+	#define APT_MUSTCHECK
+#endif
+
+#if APT_GCC_VERSION >= 0x0400
+	#define APT_SENTINEL	__attribute__((sentinel))
+	#define APT_PUBLIC __attribute__ ((visibility ("default")))
+    #define APT_HIDDEN __attribute__ ((visibility ("hidden")))
+#else
+	#define APT_SENTINEL
+	#define APT_PUBLIC
+    #define APT_HIDDEN
 #endif
 
 // cold functions are unlikely() to be called
-#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
-        #define __cold  __attribute__ ((__cold__))
+#if APT_GCC_VERSION >= 0x0403
+	#define APT_COLD	__attribute__ ((__cold__))
+	#define APT_HOT		__attribute__ ((__hot__))
 #else
-        #define __cold  /* no cold marker */
+	#define APT_COLD
+	#define APT_HOT
 #endif
 
-#ifdef __GNUG__
-// Methods have a hidden this parameter that is visible to this attribute
-	#define __like_printf_1 __attribute__ ((format (printf, 2, 3)))
-	#define __like_printf_2 __attribute__ ((format (printf, 3, 4)))
+#ifndef APT_10_CLEANER_HEADERS
+#if APT_GCC_VERSION >= 0x0300
+	#define __must_check	__attribute__ ((warn_unused_result))
+	#define __deprecated	__attribute__((deprecated))
+	#define __attrib_const	__attribute__ ((__const__))
+	#define __like_printf(n)	__attribute__((format(printf, n, n + 1)))
 #else
-	#define __like_printf_1
-	#define __like_printf_2
+	#define __must_check	/* no warn_unused_result */
+	#define __deprecated	/* no deprecated */
+	#define __attrib_const	/* no const attribute */
+	#define __like_printf(n)	/* no like-printf */
 #endif
+#if APT_GCC_VERSION >= 0x0403
+	#define __cold	__attribute__ ((__cold__))
+	#define __hot	__attribute__ ((__hot__))
+#else
+	#define __cold	/* no cold marker */
+	#define __hot	/* no hot marker */
+#endif
+#endif
+
+#if __GNUC__ >= 4
+	#define APT_IGNORE_DEPRECATED_PUSH \
+		_Pragma("GCC diagnostic push") \
+		_Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+	#define APT_IGNORE_DEPRECATED_POP \
+		_Pragma("GCC diagnostic pop")
+	#define APT_IGNORE_DEPRECATED(XXX) \
+		APT_IGNORE_DEPRECATED_PUSH \
+		XXX \
+		APT_IGNORE_DEPRECATED_POP
+#else
+	#define APT_IGNORE_DEPRECATED_PUSH
+	#define APT_IGNORE_DEPRECATED_POP
+	#define APT_IGNORE_DEPRECATED(XXX) XXX
+#endif
+
+#if __cplusplus >= 201103L
+	#define APT_OVERRIDE override
+#else
+	#define APT_OVERRIDE /* no c++11 standard */
+#endif
+
+// These lines are extracted by the makefiles and the buildsystem
+// Increasing MAJOR or MINOR results in the need of recompiling all
+// reverse-dependencies of libapt-pkg against the new SONAME.
+// Non-ABI-Breaks should only increase RELEASE number.
+// See also buildlib/libversion.mak
+#define APT_PKG_MAJOR 5
+#define APT_PKG_MINOR 0
+#define APT_PKG_RELEASE 1
+#define APT_PKG_ABI ((APT_PKG_MAJOR * 100) + APT_PKG_MINOR)
 
 #endif

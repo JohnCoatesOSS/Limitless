@@ -1,6 +1,5 @@
 // -*- mode: c++; mode: fold -*-
 // Description								/*{{{*/
-// $Id: depcache.h,v 1.14 2001/02/20 07:03:17 jgg Exp $
 /* ######################################################################
 
    DepCache - Dependency Extension data for the cache
@@ -15,7 +14,7 @@
    
    This structure is important to support the readonly status of the cache 
    file. When the data is saved the cache will be refereshed from our 
-   internal rep and written to disk. Then the actual persistant data 
+   internal rep and written to disk. Then the actual persistent data
    files will be put on the disk.
 
    Each dependency is compared against 3 target versions to produce to
@@ -38,14 +37,29 @@
 #ifndef PKGLIB_DEPCACHE_H
 #define PKGLIB_DEPCACHE_H
 
-
+#include <apt-pkg/configuration.h>
 #include <apt-pkg/pkgcache.h>
-#include <apt-pkg/progress.h>
+#include <apt-pkg/cacheiterators.h>
+#include <apt-pkg/macros.h>
 
-#include <regex.h>
+#include <stddef.h>
 
-#include <vector>
 #include <memory>
+#include <list>
+#include <string>
+#include <utility>
+
+#ifndef APT_8_CLEANER_HEADERS
+#include <apt-pkg/progress.h>
+#include <apt-pkg/error.h>
+#endif
+#ifndef APT_10_CLEANER_HEADERS
+#include <set>
+#include <vector>
+#endif
+
+class OpProgress;
+class pkgVersioningSystem;
 
 class pkgDepCache : protected pkgCache::Namespace
 {
@@ -55,7 +69,7 @@ class pkgDepCache : protected pkgCache::Namespace
    class InRootSetFunc
    {
    public:
-     virtual bool InRootSet(const pkgCache::PkgIterator &pkg) {return false;};
+     virtual bool InRootSet(const pkgCache::PkgIterator &/*pkg*/) {return false;};
      virtual ~InRootSetFunc() {};
    };
 
@@ -76,10 +90,10 @@ class pkgDepCache : protected pkgCache::Namespace
     *  \param follow_suggests If \b true, suggestions of the package
     *  will be recursively marked.
     */
-   void MarkPackage(const pkgCache::PkgIterator &pkg,
+   APT_HIDDEN void MarkPackage(const pkgCache::PkgIterator &pkg,
 		    const pkgCache::VerIterator &ver,
-		    bool follow_recommends,
-		    bool follow_suggests);
+		    bool const &follow_recommends,
+		    bool const &follow_suggests);
 
    /** \brief Update the Marked field of all packages.
     *
@@ -119,10 +133,10 @@ class pkgDepCache : protected pkgCache::Namespace
                        DepCandPolicy = (1 << 4), DepCandMin = (1 << 5)};
    
    // These flags are used in StateCache::iFlags
-   enum InternalFlags {AutoKept = (1 << 0), Purge = (1 << 1), ReInstall = (1 << 2)};
+   enum InternalFlags {AutoKept = (1 << 0), Purge = (1 << 1), ReInstall = (1 << 2), Protected = (1 << 3)};
       
    enum VersionTypes {NowVersion, InstallVersion, CandidateVersion};
-   enum ModeList {ModeDelete = 0, ModeKeep = 1, ModeInstall = 2};
+   enum ModeList {ModeDelete = 0, ModeKeep = 1, ModeInstall = 2, ModeGarbage = 3};
 
    /** \brief Represents an active action group.
     *
@@ -149,12 +163,13 @@ class pkgDepCache : protected pkgCache::Namespace
     */
    class ActionGroup
    {
+       void * const d;
        pkgDepCache &cache;
 
        bool released;
 
        /** Action groups are noncopyable. */
-       ActionGroup(const ActionGroup &other);
+       APT_HIDDEN ActionGroup(const ActionGroup &other);
    public:
        /** \brief Create a new ActionGroup.
 	*
@@ -164,7 +179,7 @@ class pkgDepCache : protected pkgCache::Namespace
 	*  As long as this object exists, no automatic cleanup
 	*  operations will be undertaken.
 	*/
-       ActionGroup(pkgDepCache &cache);
+       explicit ActionGroup(pkgDepCache &cache);
 
        /** \brief Clean up the action group before it is destroyed.
         *
@@ -177,33 +192,24 @@ class pkgDepCache : protected pkgCache::Namespace
 	*  If this is the last action group, the automatic cache
 	*  cleanup operations will be undertaken.
 	*/
-       ~ActionGroup();
+       virtual ~ActionGroup();
    };
 
    /** \brief Returns \b true for packages matching a regular
     *  expression in APT::NeverAutoRemove.
     */
-   class DefaultRootSetFunc : public InRootSetFunc
+   class DefaultRootSetFunc : public InRootSetFunc, public Configuration::MatchAgainstConfig
    {
-     std::vector<regex_t *> rootSetRegexp;
-     bool constructedSuccessfully;
-
    public:
-     DefaultRootSetFunc();
-     ~DefaultRootSetFunc();
+     DefaultRootSetFunc() : Configuration::MatchAgainstConfig("APT::NeverAutoRemove") {};
+     virtual ~DefaultRootSetFunc() {};
 
-     /** \return \b true if the class initialized successfully, \b
-      *  false otherwise.  Used to avoid throwing an exception, since
-      *  APT classes generally don't.
-      */
-     bool wasConstructedSuccessfully() const { return constructedSuccessfully; }
-
-     bool InRootSet(const pkgCache::PkgIterator &pkg);
+     bool InRootSet(const pkgCache::PkgIterator &pkg) APT_OVERRIDE { return pkg.end() == false && Match(pkg.Name()); };
    };
 
    struct StateCache
    {
-      // Epoch stripped text versions of the two version fields
+      // text versions of the two version fields
       const char *CandVersion;
       const char *CurVersion;
 
@@ -234,15 +240,17 @@ class pkgDepCache : protected pkgCache::Namespace
       unsigned char DepState;          // DepState Flags
 
       // Update of candidate version
-      const char *StripEpoch(const char *Ver);
+      APT_DEPRECATED_MSG("Use the method of the same name in contrib/strutl.h instead if you must") const char *StripEpoch(const char *Ver) APT_PURE;
       void Update(PkgIterator Pkg,pkgCache &Cache);
       
       // Various test members for the current status of the package
       inline bool NewInstall() const {return Status == 2 && Mode == ModeInstall;};
       inline bool Delete() const {return Mode == ModeDelete;};
+      inline bool Purge() const {return Delete() == true && (iFlags & pkgDepCache::Purge) == pkgDepCache::Purge; };
       inline bool Keep() const {return Mode == ModeKeep;};
+      inline bool Protect() const {return (iFlags & Protected) == Protected;};
       inline bool Upgrade() const {return Status > 0 && Mode == ModeInstall;};
-      inline bool Upgradable() const {return Status >= 1;};
+      inline bool Upgradable() const {return Status >= 1 && CandidateVer != NULL;};
       inline bool Downgrade() const {return Status < 0 && Mode == ModeInstall;};
       inline bool Held() const {return Status != 0 && Keep();};
       inline bool NowBroken() const {return (DepState & DepNowMin) != DepNowMin;};
@@ -250,6 +258,7 @@ class pkgDepCache : protected pkgCache::Namespace
       inline bool InstBroken() const {return (DepState & DepInstMin) != DepInstMin;};
       inline bool InstPolicyBroken() const {return (DepState & DepInstPolicy) != DepInstPolicy;};
       inline bool Install() const {return Mode == ModeInstall;};
+      inline bool ReInstall() const {return Delete() == false && (iFlags & pkgDepCache::ReInstall) == pkgDepCache::ReInstall;};
       inline VerIterator InstVerIter(pkgCache &Cache)
                 {return VerIterator(Cache,InstallVer);};
       inline VerIterator CandidateVerIter(pkgCache &Cache)
@@ -258,17 +267,28 @@ class pkgDepCache : protected pkgCache::Namespace
    
    // Helper functions
    void BuildGroupOrs(VerIterator const &V);
-   void UpdateVerState(PkgIterator Pkg);
+   void UpdateVerState(PkgIterator const &Pkg);
 
    // User Policy control
-   class APT_DEPRECATED Policy
+   class Policy
    {
       public:
-      
-      virtual VerIterator GetCandidateVer(PkgIterator Pkg);
-      virtual bool IsImportantDep(DepIterator Dep);
-      
+      Policy() {
+         InstallRecommends = _config->FindB("APT::Install-Recommends", false);
+         InstallSuggests = _config->FindB("APT::Install-Suggests", false);
+      }
+
+      virtual VerIterator GetCandidateVer(PkgIterator const &Pkg);
+      virtual bool IsImportantDep(DepIterator const &Dep) const;
+      virtual signed short GetPriority(PkgIterator const &Pkg);
+      virtual signed short GetPriority(VerIterator const &Ver, bool ConsiderFiles=true);
+      virtual signed short GetPriority(PkgFileIterator const &File);
+
       virtual ~Policy() {};
+
+      private:
+      bool InstallRecommends;
+      bool InstallSuggests;
    };
 
    private:
@@ -285,9 +305,11 @@ class pkgDepCache : protected pkgCache::Namespace
    pkgCache *Cache;
    StateCache *PkgState;
    unsigned char *DepState;
-   
-   double iUsrSize;
-   double iDownloadSize;
+
+   /** Stores the space changes after installation */
+   signed long long iUsrSize;
+   /** Stores how much we need to download to get the packages */
+   unsigned long long iDownloadSize;
    unsigned long iInstCount;
    unsigned long iDelCount;
    unsigned long iKeepCount;
@@ -295,51 +317,59 @@ class pkgDepCache : protected pkgCache::Namespace
    unsigned long iPolicyBrokenCount;
    unsigned long iBadCount;
 
+   bool DebugMarker;
+   bool DebugAutoInstall;
+
    Policy *delLocalPolicy;           // For memory clean up..
    Policy *LocalPolicy;
    
    // Check for a matching provides
-   bool CheckDep(DepIterator Dep,int Type,PkgIterator &Res);
-   inline bool CheckDep(DepIterator Dep,int Type)
+   bool CheckDep(DepIterator const &Dep,int const Type,PkgIterator &Res);
+   inline bool CheckDep(DepIterator const &Dep,int const Type)
    {
       PkgIterator Res(*this,0);
       return CheckDep(Dep,Type,Res);
    }
    
    // Computes state information for deps and versions (w/o storing)
-   unsigned char DependencyState(DepIterator &D);
-   unsigned char VersionState(DepIterator D,unsigned char Check,
-			      unsigned char SetMin,
-			      unsigned char SetPolicy);
+   unsigned char DependencyState(DepIterator const &D);
+   unsigned char VersionState(DepIterator D,unsigned char const Check,
+			      unsigned char const SetMin,
+			      unsigned char const SetPolicy) const;
 
    // Recalculates various portions of the cache, call after changing something
    void Update(DepIterator Dep);           // Mostly internal
    void Update(PkgIterator const &P);
    
    // Count manipulators
-   void AddSizes(const PkgIterator &Pkg,signed long Mult = 1);
-   inline void RemoveSizes(const PkgIterator &Pkg) {AddSizes(Pkg,-1);};
-   void AddStates(const PkgIterator &Pkg,int Add = 1);
-   inline void RemoveStates(const PkgIterator &Pkg) {AddStates(Pkg,-1);};
+   void AddSizes(const PkgIterator &Pkg, bool const Invert = false);
+   inline void RemoveSizes(const PkgIterator &Pkg) {AddSizes(Pkg, true);};
+   void AddStates(const PkgIterator &Pkg, bool const Invert = false);
+   inline void RemoveStates(const PkgIterator &Pkg) {AddStates(Pkg,true);};
    
    public:
 
    // Legacy.. We look like a pkgCache
    inline operator pkgCache &() {return *Cache;};
    inline Header &Head() {return *Cache->HeaderP;};
+   inline GrpIterator GrpBegin() {return Cache->GrpBegin();};
    inline PkgIterator PkgBegin() {return Cache->PkgBegin();};
-   inline PkgIterator FindPkg(string const &Name) {return Cache->FindPkg(Name);};
+   inline GrpIterator FindGrp(std::string const &Name) {return Cache->FindGrp(Name);};
+   inline PkgIterator FindPkg(std::string const &Name) {return Cache->FindPkg(Name);};
+   inline PkgIterator FindPkg(std::string const &Name, std::string const &Arch) {return Cache->FindPkg(Name, Arch);};
 
    inline pkgCache &GetCache() {return *Cache;};
    inline pkgVersioningSystem &VS() {return *Cache->VS;};
-   
+
    // Policy implementation
-   inline VerIterator GetCandidateVer(PkgIterator Pkg) {return LocalPolicy->GetCandidateVer(Pkg);};
-   inline bool IsImportantDep(DepIterator Dep) {return LocalPolicy->IsImportantDep(Dep);};
+   APT_DEPRECATED_MSG("Confusingly named method which returns the candidate as chosen by policy (NOT as chosen via .SetCandidateVersion!). You probably want to use .GetCandidateVersion instead.") inline VerIterator GetCandidateVer(PkgIterator const &Pkg) {return /* GetCandidateVersion(Pkg); but for API compat: */ LocalPolicy->GetCandidateVer(Pkg);};
+
+   inline bool IsImportantDep(DepIterator Dep) const {return LocalPolicy->IsImportantDep(Dep);};
    inline Policy &GetPolicy() {return *LocalPolicy;};
    
    // Accessors
    inline StateCache &operator [](PkgIterator const &I) {return PkgState[I->ID];};
+   inline StateCache &operator [](PkgIterator const &I) const {return PkgState[I->ID];};
    inline unsigned char &operator [](DepIterator const &I) {return DepState[I->ID];};
 
    /** \return A function identifying packages in the root set other
@@ -363,42 +393,58 @@ class pkgDepCache : protected pkgCache::Namespace
    /** \brief Update the Marked and Garbage fields of all packages.
     *
     *  This routine is implicitly invoked after all state manipulators
-    *  and when an ActionGroup is destroyed.  It invokes #MarkRequired
-    *  and #Sweep to do its dirty work.
+    *  and when an ActionGroup is destroyed.  It invokes the private
+    *  MarkRequired() and Sweep() to do its dirty work.
     *
     *  \param rootFunc A predicate that returns \b true for packages
     *  that should be added to the root set.
     */
-   bool MarkAndSweep(InRootSetFunc &rootFunc)
-   {
-     return MarkRequired(rootFunc) && Sweep();
-   }
-
-   bool MarkAndSweep()
-   {
-     std::auto_ptr<InRootSetFunc> f(GetRootSetFunc());
-     if(f.get() != NULL)
-       return MarkAndSweep(*f.get());
-     else
-       return false;
-   }
+   bool MarkAndSweep(InRootSetFunc &rootFunc);
+   bool MarkAndSweep();
 
    /** \name State Manipulators
     */
    // @{
-   void MarkKeep(PkgIterator const &Pkg, bool Soft = false,
-		 bool FromUser = true);
-   void MarkKeep(PkgIterator const &Pkg, bool Soft,
-		 bool FromUser, unsigned long Depth);
-   void MarkDelete(PkgIterator const &Pkg,bool Purge = false);
-   void MarkDelete(PkgIterator const &Pkg, bool Purge,
-                   unsigned long Depth, bool FromUser = true);
-   void MarkInstall(PkgIterator const &Pkg,bool AutoInst = true,
+   bool MarkKeep(PkgIterator const &Pkg, bool Soft = false,
+		 bool FromUser = true, unsigned long Depth = 0);
+   bool MarkDelete(PkgIterator const &Pkg, bool MarkPurge = false,
+                   unsigned long Depth = 0, bool FromUser = true);
+   bool MarkInstall(PkgIterator const &Pkg,bool AutoInst = true,
 		    unsigned long Depth = 0, bool FromUser = true,
 		    bool ForceImportantDeps = false);
+   void MarkProtected(PkgIterator const &Pkg) { PkgState[Pkg->ID].iFlags |= Protected; };
 
    void SetReInstall(PkgIterator const &Pkg,bool To);
+
+   /** @return 'the' candidate version of a package
+    *
+    * The version returned is the version previously set explicitly via
+    * SetCandidate* methods like #SetCandidateVersion or if there wasn't one
+    * set the version as chosen via #Policy.
+    *
+    * @param Pkg is the package to return the candidate for
+    */
+   pkgCache::VerIterator GetCandidateVersion(pkgCache::PkgIterator const &Pkg);
    void SetCandidateVersion(VerIterator TargetVer);
+   bool SetCandidateRelease(pkgCache::VerIterator TargetVer,
+				std::string const &TargetRel);
+   /** Set the candidate version for dependencies too if needed.
+    *
+    *  Sets not only the candidate version as SetCandidateVersion does,
+    *  but walks also down the dependency tree and checks if it is required
+    *  to set the candidate of the dependency to a version from the given
+    *  release, too.
+    *
+    *  \param TargetVer new candidate version of the package
+    *  \param TargetRel try to switch to this release if needed
+    *  \param[out] Changed a list of pairs consisting of the \b old
+    *              version of the changed package and the version which
+    *              required the switch of this dependency
+    *  \return \b true if the switch was successful, \b false otherwise
+    */
+   bool SetCandidateRelease(pkgCache::VerIterator TargetVer,
+			    std::string const &TargetRel,
+			    std::list<std::pair<pkgCache::VerIterator, pkgCache::VerIterator> > &Changed);
 
    /** Set the "is automatically installed" flag of Pkg. */
    void MarkAuto(const PkgIterator &Pkg, bool Auto);
@@ -407,51 +453,43 @@ class pkgDepCache : protected pkgCache::Namespace
    /** \return \b true if it's OK for MarkInstall to install
     *  the given package.
     *
-    *  See the default implementation for a simple example how this
-    *  method can be used.
-    *  Overriding implementations should use the hold-state-flag to cache
-    *  results from previous checks of this package - also it should
-    *  be used if the default resolver implementation is also used to
-    *  ensure that these packages are handled like "normal" dpkg holds.
+    *  The default implementation simply calls all IsInstallOk*
+    *  method mentioned below.
+    *
+    *  Overriding implementations should use the hold-state-flag to
+    *  cache results from previous checks of this package - if possible.
     *
     *  The parameters are the same as in the calling MarkInstall:
     *  \param Pkg       the package that MarkInstall wants to install.
-    *  \param AutoInst  needs a previous MarkInstall this package?
+    *  \param AutoInst  install this and all its dependencies
     *  \param Depth     recursive deep of this Marker call
     *  \param FromUser  was the install requested by the user?
     */
-   bool IsInstallOk(const PkgIterator &Pkg,bool AutoInst = true,
+   virtual bool IsInstallOk(const PkgIterator &Pkg,bool AutoInst = true,
 			    unsigned long Depth = 0, bool FromUser = true);
 
    /** \return \b true if it's OK for MarkDelete to remove
     *  the given package.
     *
-    *  See the default implementation for a simple example how this
-    *  method can be used.
-    *  Overriding implementations should use the hold-state-flag to cache
-    *  results from previous checks of this package - also it should
-    *  be used if the default resolver implementation is also used to
-    *  ensure that these packages are handled like "normal" dpkg holds.
+    *  The default implementation simply calls all IsDeleteOk*
+    *  method mentioned below, see also #IsInstallOk.
     *
     *  The parameters are the same as in the calling MarkDelete:
     *  \param Pkg       the package that MarkDelete wants to remove.
-    *  \param Purge     should we purge instead of "only" remove?
+    *  \param MarkPurge should we purge instead of "only" remove?
     *  \param Depth     recursive deep of this Marker call
     *  \param FromUser  was the remove requested by the user?
     */
-   bool IsDeleteOk(const PkgIterator &Pkg,bool Purge = false,
+   virtual bool IsDeleteOk(const PkgIterator &Pkg,bool MarkPurge = false,
 			    unsigned long Depth = 0, bool FromUser = true);
 
-   // This is for debuging
-   void Update(OpProgress *Prog = 0);
-
    // read persistent states
-   bool readStateFile(OpProgress *prog);
-   bool writeStateFile(OpProgress *prog, bool InstalledOnly=false);
+   bool readStateFile(OpProgress * const prog);
+   bool writeStateFile(OpProgress * const prog, bool const InstalledOnly=true);
    
    // Size queries
-   inline double UsrSize() {return iUsrSize;};
-   inline double DebSize() {return iDownloadSize;};
+   inline signed long long UsrSize() {return iUsrSize;};
+   inline unsigned long long DebSize() {return iDownloadSize;};
    inline unsigned long DelCount() {return iDelCount;};
    inline unsigned long KeepCount() {return iKeepCount;};
    inline unsigned long InstCount() {return iInstCount;};
@@ -459,10 +497,29 @@ class pkgDepCache : protected pkgCache::Namespace
    inline unsigned long PolicyBrokenCount() {return iPolicyBrokenCount;};
    inline unsigned long BadCount() {return iBadCount;};
 
-   bool Init(OpProgress *Prog);
-   
-   pkgDepCache(pkgCache *Cache,Policy *Plcy = 0);
+   bool Init(OpProgress * const Prog);
+   // Generate all state information
+   void Update(OpProgress * const Prog = 0);
+
+   pkgDepCache(pkgCache * const Cache,Policy * const Plcy = 0);
    virtual ~pkgDepCache();
+
+   protected:
+   // methods call by IsInstallOk
+   bool IsInstallOkMultiArchSameVersionSynced(PkgIterator const &Pkg,
+	 bool const AutoInst, unsigned long const Depth, bool const FromUser);
+   bool IsInstallOkDependenciesSatisfiableByCandidates(PkgIterator const &Pkg,
+      bool const AutoInst, unsigned long const Depth, bool const FromUser);
+
+   // methods call by IsDeleteOk
+   bool IsDeleteOkProtectInstallRequests(PkgIterator const &Pkg,
+	 bool const rPurge, unsigned long const Depth, bool const FromUser);
+
+   private:
+   void * const d;
+
+   APT_HIDDEN bool IsModeChangeOk(ModeList const mode, PkgIterator const &Pkg,
+			unsigned long const Depth, bool const FromUser);
 };
 
 #endif

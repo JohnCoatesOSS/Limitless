@@ -1,6 +1,5 @@
 // -*- mode: cpp; mode: fold -*-
 // Description								/*{{{*/
-// $Id: orderlist.h,v 1.9 2001/02/20 07:03:17 jgg Exp $
 /* ######################################################################
 
    Order List - Represents and Manipulates an ordered list of packages.
@@ -16,12 +15,16 @@
 #ifndef PKGLIB_ORDERLIST_H
 #define PKGLIB_ORDERLIST_H
 
-
 #include <apt-pkg/pkgcache.h>
+#include <apt-pkg/cacheiterators.h>
+#include <apt-pkg/macros.h>
+
+#include <string>
 
 class pkgDepCache;
 class pkgOrderList : protected pkgCache::Namespace
 {
+   void * const d;
    protected:
 
    pkgDepCache &Cache;   
@@ -37,7 +40,7 @@ class pkgOrderList : protected pkgCache::Namespace
    Package **End;
    Package **List;
    Package **AfterEnd;
-   string *FileList;
+   std::string *FileList;
    DepIterator Loops[20];
    int LoopCount;
    int Depth;
@@ -45,7 +48,8 @@ class pkgOrderList : protected pkgCache::Namespace
    bool Debug;
    
    // Main visit function
-   bool VisitNode(PkgIterator Pkg);
+   APT_DEPRECATED_MSG("Add a unique calling identifier as parameter for debugging output") bool VisitNode(PkgIterator Pkg) { return VisitNode(Pkg, "UNKNOWN"); };
+   bool VisitNode(PkgIterator Pkg, char const* from);
    bool VisitDeps(DepFunc F,PkgIterator Pkg);
    bool VisitRDeps(DepFunc F,PkgIterator Pkg);
    bool VisitRProvides(DepFunc F,VerIterator Ver);
@@ -65,16 +69,20 @@ class pkgOrderList : protected pkgCache::Namespace
    bool DoRun();
    
    // For pre sorting
-   static pkgOrderList *Me;
-   static int OrderCompareA(const void *a, const void *b);
-   static int OrderCompareB(const void *a, const void *b);
-   int FileCmp(PkgIterator A,PkgIterator B);
+   int OrderCompareA(Package *a, Package *b) APT_PURE;
+   int OrderCompareB(Package *a, Package *b) APT_PURE;
+   int FileCmp(PkgIterator A,PkgIterator B) APT_PURE;
    
    public:
 
    typedef Package **iterator;
    
-   // State flags
+   /* State flags
+      The Loop flag can be set on a package that is currently being processed by either SmartConfigure or
+      SmartUnPack. This allows the package manager to tell when a loop has been formed as it will try to 
+      SmartUnPack or SmartConfigure a package with the Loop flag set. It will then either stop (as it knows
+      that the operation is unnecessary as its already in process), or in the case of the conflicts resolution
+      in SmartUnPack, use EarlyRemove to resolve the situation.  */
    enum Flags {Added = (1 << 0), AddPending = (1 << 1),
                Immediate = (1 << 2), Loop = (1 << 3),
                UnPacked = (1 << 4), Configured = (1 << 5),
@@ -89,10 +97,13 @@ class pkgOrderList : protected pkgCache::Namespace
    void Flag(PkgIterator Pkg,unsigned long State, unsigned long F) {Flags[Pkg->ID] = (Flags[Pkg->ID] & (~F)) | State;};
    inline void Flag(PkgIterator Pkg,unsigned long F) {Flags[Pkg->ID] |= F;};
    inline void Flag(Package *Pkg,unsigned long F) {Flags[Pkg->ID] |= F;};
+   // RmFlag removes a flag from a package 
+   inline void RmFlag(Package *Pkg,unsigned long F) {Flags[Pkg->ID] &= ~F;};
+   // IsNow will return true if the Pkg has been not been either configured or unpacked
    inline bool IsNow(PkgIterator Pkg) {return (Flags[Pkg->ID] & (States & (~Removed))) == 0;};
-   bool IsMissing(PkgIterator Pkg);
+   bool IsMissing(PkgIterator Pkg) APT_PURE;
    void WipeFlags(unsigned long F);
-   void SetFileList(string *FileList) {this->FileList = FileList;};
+   void SetFileList(std::string *FileList) {this->FileList = FileList;};
 
    // Accessors
    inline iterator begin() {return List;};
@@ -105,13 +116,13 @@ class pkgOrderList : protected pkgCache::Namespace
    
    // Ordering modes
    bool OrderCritical();
-   bool OrderUnpack(string *FileList = 0);
+   bool OrderUnpack(std::string *FileList = 0);
    bool OrderConfigure();
 
    int Score(PkgIterator Pkg);
 
-   pkgOrderList(pkgDepCache *Cache);
-   ~pkgOrderList();
+   explicit pkgOrderList(pkgDepCache *Cache);
+   virtual ~pkgOrderList();
 };
 
 #endif

@@ -13,10 +13,10 @@
 // Include Files							/*{{{*/
 #include <string>
 #include <vector>
+#include <limits>
 									/*}}}*/
 namespace APT {
-class Configuration {							/*{{{*/
-public:									/*{{{*/
+namespace Configuration {							/*{{{*/
 	/** \brief Returns a vector of usable Compression Types
 	 *
 	 *  Files can be compressed in various ways to decrease the size of the
@@ -36,11 +36,93 @@ public:									/*{{{*/
 	 *  \param Cached saves the result so we need to calculated it only once
 	 *                this parameter should ony be used for testing purposes.
 	 *
-	 *  \return a vector of (all) Language Codes in the prefered usage order
+	 *  \return a vector of the compression types in the preferred usage order
 	 */
-	std::vector<std::string> static const getCompressionTypes(bool const &Cached = true);
+	std::vector<std::string> const getCompressionTypes(bool const &Cached = true);
+
+	/** \brief Returns a vector of Language Codes
+	 *
+	 *  Languages can be defined with their two or five chars long code.
+	 *  This methods handles the various ways to set the preferred codes,
+	 *  honors the environment and ensures that the codes are not listed twice.
+	 *
+	 *  The special word "environment" will be replaced with the long and the short
+	 *  code of the local settings and it will be insured that this will not add
+	 *  duplicates. So in an german local the setting "environment, de_DE, en, de"
+	 *  will result in "de_DE, de, en".
+	 *
+	 *  Another special word is "none" which separates the preferred from all codes
+	 *  in this setting. So setting and method can be used to get codes the user want
+	 *  to see or to get all language codes APT (should) have Translations available.
+	 *
+	 *  \param All return all codes or only codes for languages we want to use
+	 *  \param Cached saves the result so we need to calculated it only once
+	 *                this parameter should ony be used for testing purposes.
+	 *  \param Locale don't get the locale from the system but use this one instead
+	 *                this parameter should ony be used for testing purposes.
+	 *
+	 *  \return a vector of (all) Language Codes in the preferred usage order
+	 */
+	std::vector<std::string> const getLanguages(bool const &All = false,
+			bool const &Cached = true, char const ** const Locale = 0);
+
+	/** \brief Are we interested in the given Language?
+	 *
+	 *  \param Lang is the language we want to check
+	 *  \param All defines if we check against all codes or only against used codes
+	 *  \return true if we are interested, false otherwise
+	 */
+	bool checkLanguage(std::string Lang, bool const All = false);
+
+	/** \brief Returns a vector of Architectures we support
+	 *
+	 *  \param Cached saves the result so we need to calculated it only once
+	 *                this parameter should ony be used for testing purposes.
+	 *
+	 *  \return a vector of Architectures in preferred order
+	 */
+	std::vector<std::string> const getArchitectures(bool const &Cached = true);
+
+	/** \brief Are we interested in the given Architecture?
+	 *
+	 *  \param Arch we want to check
+	 *  \return true if we are interested, false otherwise
+	 */
+	bool checkArchitecture(std::string const &Arch);
+
+	/** \brief Representation of supported compressors */
+	struct Compressor {
+		std::string Name;
+		std::string Extension;
+		std::string Binary;
+		std::vector<std::string> CompressArgs;
+		std::vector<std::string> UncompressArgs;
+		unsigned short Cost;
+
+		Compressor(char const *name, char const *extension, char const *binary,
+			   char const *compressArg, char const *uncompressArg,
+			   unsigned short const cost);
+		Compressor() : Cost(std::numeric_limits<unsigned short>::max()) {};
+	};
+
+	/** \brief Return a vector of Compressors supported for data.tar's
+	 *
+	 *  \param Cached saves the result so we need to calculated it only once
+	 *                this parameter should ony be used for testing purposes.
+	 *
+	 *  \return a vector of Compressors
+	 */
+	std::vector<Compressor> const getCompressors(bool const Cached = true);
+
+	/** \brief Return a vector of extensions supported for data.tar's */
+	std::vector<std::string> const getCompressorExtensions();
+
+	/** \return Return a vector of enabled build profile specifications */
+	std::vector<std::string> const getBuildProfiles();
+	/** \return Return a comma-separated list of enabled build profile specifications */
+	std::string const getBuildProfilesString();
 									/*}}}*/
-};
+}
 									/*}}}*/
 }
 #endif

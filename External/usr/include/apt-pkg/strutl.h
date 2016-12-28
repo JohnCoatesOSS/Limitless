@@ -17,126 +17,242 @@
 #define STRUTL_H
 
 
-
-#include <stdlib.h>
+#include <limits>
 #include <string>
 #include <cstring>
 #include <vector>
 #include <iostream>
+#ifdef APT_PKG_EXPOSE_STRING_VIEW
+#include <apt-pkg/string_view.h>
+#endif
 #include <time.h>
+#include <stddef.h>
 
-#include <apt-pkg/srkstring.h>
+#include "macros.h"
 
+#ifndef APT_10_CLEANER_HEADERS
+#include <stdlib.h>
+#endif
+#ifndef APT_8_CLEANER_HEADERS
 using std::string;
 using std::vector;
 using std::ostream;
+#endif
 
-#ifdef __GNUG__
-// Methods have a hidden this parameter that is visible to this attribute
-#define APT_FORMAT2 __attribute__ ((format (printf, 2, 3)))
-#define APT_FORMAT3 __attribute__ ((format (printf, 3, 4)))
-#else
-#define APT_FORMAT2
-#define APT_FORMAT3
-#endif    
+namespace APT {
+   namespace String {
+      std::string Strip(const std::string &s);
+      bool Endswith(const std::string &s, const std::string &ending);
+      bool Startswith(const std::string &s, const std::string &starting);
+   }
+}
 
-bool UTF8ToCodeset(const char *codeset, const string &orig, string *dest);
+
+bool UTF8ToCodeset(const char *codeset, const std::string &orig, std::string *dest);
 char *_strstrip(char *String);
+char *_strrstrip(char *String); // right strip only
 char *_strtabexpand(char *String,size_t Len);
-bool ParseQuoteWord(const char *&String,string &Res);
-bool ParseCWord(const char *&String,string &Res);
-string QuoteString(const string &Str,const char *Bad);
-string DeQuoteString(const string &Str);
-string SizeToStr(double Bytes);
-string TimeToStr(unsigned long Sec);
-string Base64Encode(const string &Str);
-string OutputInDepth(const unsigned long Depth, const char* Separator="  ");
-string URItoFileName(const string &URI);
-string TimeRFC1123(time_t Date);
-bool StrToTime(const string &Val,time_t &Result);
-string LookupTag(const string &Message,const char *Tag,const char *Default = 0);
-int StringToBool(const string &Text,int Default = -1);
-bool ReadMessages(int Fd, vector<string> &List);
+bool ParseQuoteWord(const char *&String,std::string &Res);
+bool ParseCWord(const char *&String,std::string &Res);
+std::string QuoteString(const std::string &Str,const char *Bad);
+std::string DeQuoteString(const std::string &Str);
+std::string DeQuoteString(std::string::const_iterator const &begin, std::string::const_iterator const &end);
+
+// unescape (\0XX and \xXX) from a string
+std::string DeEscapeString(const std::string &input);
+
+std::string SizeToStr(double Bytes);
+std::string TimeToStr(unsigned long Sec);
+std::string Base64Encode(const std::string &Str);
+std::string OutputInDepth(const unsigned long Depth, const char* Separator="  ");
+std::string URItoFileName(const std::string &URI);
+APT_DEPRECATED_MSG("Specify if GMT is required or a numeric timezone can be used") std::string TimeRFC1123(time_t Date);
+/** returns a datetime string as needed by HTTP/1.1 and Debian files.
+ *
+ * Note: The date will always be represented in a UTC timezone
+ *
+ * @param Date to be represented as a string
+ * @param NumericTimezone is preferred in general, but HTTP/1.1 requires the use
+ *    of GMT as timezone instead. \b true means that the timezone should be denoted
+ *    as "+0000" while \b false uses "GMT".
+ */
+std::string TimeRFC1123(time_t Date, bool const NumericTimezone);
+/** parses time as needed by HTTP/1.1 and Debian files.
+ *
+ * HTTP/1.1 prefers dates in RFC1123 format (but the other two obsolete date formats
+ * are supported to) and e.g. Release files use the same format in Date & Valid-Until
+ * fields.
+ *
+ * Note: datetime strings need to be in UTC timezones (GMT, UTC, Z, +/-0000) to be
+ * parsed. Other timezones will be rejected as invalid. Previous implementations
+ * accepted other timezones, but treated them as UTC.
+ *
+ * @param str is the datetime string to parse
+ * @param[out] time will be the seconds since epoch of the given datetime if
+ *    parsing is successful, undefined otherwise.
+ * @return \b true if parsing was successful, otherwise \b false.
+ */
+bool RFC1123StrToTime(const char* const str,time_t &time) APT_MUSTCHECK;
+bool FTPMDTMStrToTime(const char* const str,time_t &time) APT_MUSTCHECK;
+APT_DEPRECATED_MSG("Use RFC1123StrToTime or FTPMDTMStrToTime as needed instead") bool StrToTime(const std::string &Val,time_t &Result);
+std::string LookupTag(const std::string &Message,const char *Tag,const char *Default = 0);
+int StringToBool(const std::string &Text,int Default = -1);
+bool ReadMessages(int Fd, std::vector<std::string> &List);
 bool StrToNum(const char *Str,unsigned long &Res,unsigned Len,unsigned Base = 0);
-bool Hex2Num(const string &Str,unsigned char *Num,unsigned int Length);
-bool Hex2Num(const srkString &Str,unsigned char *Num,unsigned int Length);
+bool StrToNum(const char *Str,unsigned long long &Res,unsigned Len,unsigned Base = 0);
+bool Base256ToNum(const char *Str,unsigned long &Res,unsigned int Len);
+bool Base256ToNum(const char *Str,unsigned long long &Res,unsigned int Len);
+bool Hex2Num(const std::string &Str,unsigned char *Num,unsigned int Length);
+#ifdef APT_PKG_EXPOSE_STRING_VIEW
+APT_HIDDEN bool Hex2Num(const APT::StringView Str,unsigned char *Num,unsigned int Length);
+#endif
+// input changing string split
 bool TokSplitString(char Tok,char *Input,char **List,
 		    unsigned long ListMax);
-void ioprintf(ostream &out,const char *format,...) APT_FORMAT2;
-void strprintf(string &out,const char *format,...) APT_FORMAT2;
-char *safe_snprintf(char *Buffer,char *End,const char *Format,...) APT_FORMAT3;
-bool CheckDomainList(const string &Host, const string &List);
-int tolower_ascii(int c);
+
+// split a given string by a char
+std::vector<std::string> VectorizeString(std::string const &haystack, char const &split) APT_PURE;
+
+/* \brief Return a vector of strings from string "input" where "sep"
+ * is used as the delimiter string.
+ *
+ * \param input The input string.
+ *
+ * \param sep The separator to use.
+ *
+ * \param maxsplit (optional) The maximum amount of splitting that
+ * should be done .
+ * 
+ * The optional "maxsplit" argument can be used to limit the splitting,
+ * if used the string is only split on maxsplit places and the last
+ * item in the vector contains the remainder string.
+ */
+std::vector<std::string> StringSplit(std::string const &input, 
+                                     std::string const &sep, 
+                                     unsigned int maxsplit=std::numeric_limits<unsigned int>::max()) APT_CONST;
+
+void ioprintf(std::ostream &out,const char *format,...) APT_PRINTF(2);
+void strprintf(std::string &out,const char *format,...) APT_PRINTF(2);
+char *safe_snprintf(char *Buffer,char *End,const char *Format,...) APT_PRINTF(3);
+bool CheckDomainList(const std::string &Host, const std::string &List);
+
+/* Do some compat mumbo jumbo */
+#define tolower_ascii  tolower_ascii_inline
+#define isspace_ascii  isspace_ascii_inline
+
+APT_CONST APT_HOT
+static inline int tolower_ascii_unsafe(int const c)
+{
+   return c | 0x20;
+}
+APT_CONST APT_HOT
+static inline int tolower_ascii_inline(int const c)
+{
+   return (c >= 'A' && c <= 'Z') ? c + 32 : c;
+}
+APT_CONST APT_HOT
+static inline int isspace_ascii_inline(int const c)
+{
+   // 9='\t',10='\n',11='\v',12='\f',13='\r',32=' '
+   return (c >= 9 && c <= 13) || c == ' ';
+}
+
+// StringViewCompareFast - awkward attempt to optimize cache generation	/*{{{*/
+#ifdef APT_PKG_EXPOSE_STRING_VIEW
+/**
+ * \brief Faster comparison for string views (compare size before data)
+ *
+ * Still stable, but faster than the normal ordering.
+ *  As this is used for package comparison this *MUST* be case insensitive,
+ * as the alternative is to lower case all dependency fields which is slow. */
+static inline int StringViewCompareFast(APT::StringView a, APT::StringView b) {
+    if (a.size() != b.size())
+        return a.size() - b.size();
+    auto l(a.data()), r(b.data());
+    for (auto e(a.size()), i(decltype(e)(0)); i != e; ++i)
+        if (tolower_ascii_inline(l[i]) != tolower_ascii_inline(r[i]))
+            return tolower_ascii(l[i]) < tolower_ascii(r[i]) ? -1 : 1;
+    return 0;
+}
+#endif
+									/*}}}*/
+
+
+std::string StripEpoch(const std::string &VerStr);
 
 #define APT_MKSTRCMP(name,func) \
-inline int name(const srkString &A,const char *B) {return func(A.Start,A.Start+A.Size,B,B+strlen(B));}; \
-inline int name(const char *A,const char *B) {return func(A,A+strlen(A),B,B+strlen(B));}; \
-inline int name(const char *A,const char *AEnd,const char *B) {return func(A,AEnd,B,B+strlen(B));}; \
-inline int name(const string& A,const char *B) {return func(A.c_str(),A.c_str()+A.length(),B,B+strlen(B));}; \
-inline int name(const string& A,const string& B) {return func(A.c_str(),A.c_str()+A.length(),B.c_str(),B.c_str()+B.length());}; \
-inline int name(const string& A,const char *B,const char *BEnd) {return func(A.c_str(),A.c_str()+A.length(),B,BEnd);};
+inline APT_PURE int name(const char *A,const char *B) {return func(A,A+strlen(A),B,B+strlen(B));} \
+inline APT_PURE int name(const char *A,const char *AEnd,const char *B) {return func(A,AEnd,B,B+strlen(B));} \
+inline APT_PURE int name(const std::string& A,const char *B) {return func(A.c_str(),A.c_str()+A.length(),B,B+strlen(B));} \
+inline APT_PURE int name(const std::string& A,const std::string& B) {return func(A.c_str(),A.c_str()+A.length(),B.c_str(),B.c_str()+B.length());} \
+inline APT_PURE int name(const std::string& A,const char *B,const char *BEnd) {return func(A.c_str(),A.c_str()+A.length(),B,BEnd);}
 
 #define APT_MKSTRCMP2(name,func) \
-inline int name(const srkString &A,const char *B) {return func(A.Start,A.Start+A.Size,B,B+strlen(B));}; \
-inline int name(const char *A,const char *AEnd,const char *B) {return func(A,AEnd,B,B+strlen(B));}; \
-inline int name(const string& A,const char *B) {return func(A.begin(),A.end(),B,B+strlen(B));}; \
-inline int name(const string& A,const string& B) {return func(A.begin(),A.end(),B.begin(),B.end());}; \
-inline int name(const string& A,const char *B,const char *BEnd) {return func(A.begin(),A.end(),B,BEnd);};
+inline APT_PURE int name(const char *A,const char *AEnd,const char *B) {return func(A,AEnd,B,B+strlen(B));} \
+inline APT_PURE int name(const std::string& A,const char *B) {return func(A.begin(),A.end(),B,B+strlen(B));} \
+inline APT_PURE int name(const std::string& A,const std::string& B) {return func(A.begin(),A.end(),B.begin(),B.end());} \
+inline APT_PURE int name(const std::string& A,const char *B,const char *BEnd) {return func(A.begin(),A.end(),B,BEnd);}
 
-int stringcmp(const char *A,const char *AEnd,const char *B,const char *BEnd);
-int stringcasecmp(const char *A,const char *AEnd,const char *B,const char *BEnd);
+int APT_PURE stringcmp(const char *A,const char *AEnd,const char *B,const char *BEnd);
+int APT_PURE stringcasecmp(const char *A,const char *AEnd,const char *B,const char *BEnd);
 
 /* We assume that GCC 3 indicates that libstdc++3 is in use too. In that
    case the definition of string::const_iterator is not the same as
    const char * and we need these extra functions */
 #if __GNUC__ >= 3
-int stringcmp(string::const_iterator A,string::const_iterator AEnd,
+int APT_PURE stringcmp(std::string::const_iterator A,std::string::const_iterator AEnd,
 	      const char *B,const char *BEnd);
-int stringcmp(string::const_iterator A,string::const_iterator AEnd,
-	      string::const_iterator B,string::const_iterator BEnd);
-int stringcasecmp(string::const_iterator A,string::const_iterator AEnd,
+int APT_PURE stringcmp(std::string::const_iterator A,std::string::const_iterator AEnd,
+	      std::string::const_iterator B,std::string::const_iterator BEnd);
+int APT_PURE stringcasecmp(std::string::const_iterator A,std::string::const_iterator AEnd,
 		  const char *B,const char *BEnd);
-int stringcasecmp(string::const_iterator A,string::const_iterator AEnd,
-                  string::const_iterator B,string::const_iterator BEnd);
+int APT_PURE stringcasecmp(std::string::const_iterator A,std::string::const_iterator AEnd,
+                  std::string::const_iterator B,std::string::const_iterator BEnd);
 
-inline int stringcmp(string::const_iterator A,string::const_iterator Aend,const char *B) {return stringcmp(A,Aend,B,B+strlen(B));};
-inline int stringcasecmp(string::const_iterator A,string::const_iterator Aend,const char *B) {return stringcasecmp(A,Aend,B,B+strlen(B));};
+inline APT_PURE int stringcmp(std::string::const_iterator A,std::string::const_iterator Aend,const char *B) {return stringcmp(A,Aend,B,B+strlen(B));}
+inline APT_PURE int stringcasecmp(std::string::const_iterator A,std::string::const_iterator Aend,const char *B) {return stringcasecmp(A,Aend,B,B+strlen(B));}
 #endif
 
-APT_MKSTRCMP2(stringcmp,stringcmp);
-APT_MKSTRCMP2(stringcasecmp,stringcasecmp);
+APT_MKSTRCMP2(stringcmp,stringcmp)
+APT_MKSTRCMP2(stringcasecmp,stringcasecmp)
 
-inline const char *DeNull(const char *s) {return (s == 0?"(null)":s);};
+// Return the length of a NULL-terminated string array
+size_t APT_PURE strv_length(const char **str_array);
+
+
+inline const char *DeNull(const char *s) {return (s == 0?"(null)":s);}
 
 class URI
 {
-   void CopyFrom(const string &From);
-		 
+   void CopyFrom(const std::string &From);
+
    public:
-   
-   string Access;
-   string User;
-   string Password;
-   string Host;
-   string Path;
+
+   std::string Access;
+   std::string User;
+   std::string Password;
+   std::string Host;
+   std::string Path;
    unsigned int Port;
    
-   operator string();
-   inline void operator =(const string &From) {CopyFrom(From);};
+   operator std::string();
+   inline void operator =(const std::string &From) {CopyFrom(From);}
    inline bool empty() {return Access.empty();};
-   static string SiteOnly(const string &URI);
+   static std::string SiteOnly(const std::string &URI);
+   static std::string ArchiveOnly(const std::string &URI);
+   static std::string NoUserPassword(const std::string &URI);
    
-   URI(string Path) {CopyFrom(Path);};
-   URI() : Port(0) {};
+   URI(std::string Path) {CopyFrom(Path);}
+   URI() : Port(0) {}
 };
 
 struct SubstVar
 {
    const char *Subst;
-   const string *Contents;
+   const std::string *Contents;
 };
-string SubstVar(string Str,const struct SubstVar *Vars);
-string SubstVar(const string &Str,const string &Subst,const string &Contents);
+std::string SubstVar(std::string Str,const struct SubstVar *Vars);
+std::string SubstVar(const std::string &Str,const std::string &Subst,const std::string &Contents);
 
 struct RxChoiceList
 {
@@ -146,7 +262,5 @@ struct RxChoiceList
 };
 unsigned long RegexChoice(RxChoiceList *Rxs,const char **ListBegin,
 		      const char **ListEnd);
-
-#undef APT_FORMAT2
 
 #endif

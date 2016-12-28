@@ -10,19 +10,29 @@
 #ifndef APTPKG_CLEAN_H
 #define APTPKG_CLEAN_H
 
-
+#ifndef APT_10_CLEANER_HEADERS
 #include <apt-pkg/pkgcache.h>
+#endif
+
+#include <string>
+
+class pkgCache;
 
 class pkgArchiveCleaner
 {
-   protected:
-   
-   virtual void Erase(const char * /*File*/,string /*Pkg*/,string /*Ver*/,struct stat & /*St*/) {};
+   /** \brief dpointer placeholder (for later in case we need it) */
+   void * const d;
 
-   public:   
-   
-   bool Go(string Dir,pkgCache &Cache);
-   virtual ~pkgArchiveCleaner() {};
+   protected:
+
+   virtual void Erase(const char * /*File*/,std::string /*Pkg*/,std::string /*Ver*/,struct stat & /*St*/) {};
+
+   public:
+
+   bool Go(std::string Dir,pkgCache &Cache);
+
+   pkgArchiveCleaner();
+   virtual ~pkgArchiveCleaner();
 };
 
 #endif
