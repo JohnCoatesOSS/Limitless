@@ -4,3 +4,6 @@
 [submodule "icu"]
 	path = icu
 	url = git://git.saurik.com/apple/icu.git
+[submodule "apt"]
+	path = apt
+	url = git://git.saurik.com/apt.git
