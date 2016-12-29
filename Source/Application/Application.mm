@@ -1377,9 +1377,28 @@ NSString* repoURL(@"");
 	} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
 		NSLog(@"Travelling to a repo through 3D Touch");
 		[tabbar_ setSelectedIndex:1];
-		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
-		NSString *currentRepoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
-		[sVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
+        
+        NSArray *tabBarViewControllers = [tabbar_ viewControllers];
+        if (tabBarViewControllers.count < 2) {
+            NSLog(@"LMX Error: Tab bar expected to have at least two VCs, has: %d",
+                  (int)tabBarViewControllers.count);
+            return;
+        }
+        UINavigationController *sourcesTabVC = [tabBarViewControllers objectAtIndex:1];
+        NSArray<UIViewController *> *sourcesTabChildViewControllers = sourcesTabVC.childViewControllers;
+        if (sourcesTabChildViewControllers.count == 1) {
+            NSLog(@"LMX Error: Sources navigation controller expected to have at least one View Controller, has: %d",
+                  (int)sourcesTabChildViewControllers.count);
+        }
+        
+        SourcesController *sourcesVC = (id)sourcesTabChildViewControllers.firstObject;
+		NSString *currentRepoURL = (NSString *)shortcutItem.userInfo[@"repoURL"];
+        if (!currentRepoURL) {
+            NSLog(@"LMX Error: Missing repo URL in homescreen shortcut");
+            return;
+        }
+        
+		[sourcesVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
 	}
 	
 }
