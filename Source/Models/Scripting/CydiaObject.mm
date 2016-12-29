@@ -284,7 +284,7 @@
     if ([Device isSimulator]) {
         return @[@"com.facebook.Messenger"];
     }
-    id set = [(id)SBSCopyApplicationDisplayIdentifiers(0, 0) autorelease];
+    id set = [(id)SBSCopyApplicationDisplayIdentifiers(false, false) autorelease];
     if (set == nil)
         return [NSArray array];
     
