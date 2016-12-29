@@ -4637,10 +4637,7 @@ static _H<NSMutableSet> Diversions_;
 }
 
 - (NSArray *) getDisplayIdentifiers {
-    NSSet *set([SBSCopyApplicationDisplayIdentifiers() autorelease]);
-    if (set == nil || ![set isKindOfClass:[NSSet class]])
-        return [NSArray array];
-    return [set allObjects];
+    return SBSCopyApplicationDisplayIdentifiers(false, false);
 }
 
 - (NSString *) getLocalizedNameForDisplayIdentifier:(NSString *)identifier {
