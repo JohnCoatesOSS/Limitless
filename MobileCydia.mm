@@ -10304,29 +10304,28 @@ int main(int argc, char *argv[]) {
     Locale_ = CFLocaleCopyCurrent();
     Languages_ = [NSLocale preferredLanguages];
 
-    //CFStringRef locale(CFLocaleGetIdentifier(Locale_));
-    //NSLog(@"%@", [Languages_ description]);
+    std::string languages;
+    const char *translation(NULL);
 
-    const char *lang;
+    // XXX: this isn't really a language, but this is compatible with older Cydia builds
     if (Locale_ != NULL)
-        lang = [(NSString *) CFLocaleGetIdentifier(Locale_) UTF8String];
-    else if (Languages_ != nil && [Languages_ count] != 0)
-        lang = [[Languages_ objectAtIndex:0] UTF8String];
-    else
-        // XXX: consider just setting to C and then falling through?
-        lang = NULL;
+        if (const char *language = [(NSString *) CFLocaleGetIdentifier(Locale_) UTF8String]) {
+            RegEx pattern("([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?");
+            if (pattern(language)) {
+                translation = strdup([pattern->*@"%1$@%2$@" UTF8String]);
+                languages += translation;
+                languages += ",";
+            }
+        }
 
-    if (lang != NULL) {
-        RegEx pattern("([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?");
-        lang = !pattern(lang) ? NULL : [pattern->*@"%1$@%2$@" UTF8String];
-    }
+    if (Languages_ != nil)
+        for (NSString *language : Languages_) {
+            languages += [language UTF8String];
+            languages += ",";
+        }
 
-    NSLog(@"Setting Language: %s", lang);
-
-    if (lang != NULL) {
-        setenv("LANG", lang, true);
-        setlocale(LC_ALL, lang);
-    }
+    languages += "en";
+    NSLog(@"Setting Language: %s", languages.c_str());
     /* }}} */
     /* Index Collation {{{ */
     if (Class $UILocalizedIndexedCollation = objc_getClass("UILocalizedIndexedCollation")) { @try {
@@ -10577,7 +10576,11 @@ int main(int argc, char *argv[]) {
     _config->Set("Dir::Bin::Methods::store", "/Applications/Cydia.app/store");
 
     _config->Set("pkgCacheGen::ForceEssential", "");
-    _config->Set("APT::Acquire::Translation", "environment");
+
+    if (translation != NULL)
+        _config->Set("APT::Acquire::Translation", translation);
+    if (!languages.empty())
+        _config->Set("Acquire::Languages", languages);
 
     // XXX: this timeout might be important :(
     //_config->Set("Acquire::http::Timeout", 15);
