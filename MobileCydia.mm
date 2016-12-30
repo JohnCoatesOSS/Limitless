@@ -3869,7 +3869,7 @@ class CydiaLogCleaner :
         opened = cache_.Open(progress, false);
     _end
     if (!opened) {
-        // XXX: what if there are errors, but Open() == true? this should be merged with popError:
+        // XXX: this block should probably be merged with popError: in some way
         while (!_error->empty()) {
             std::string error;
             bool warning(!_error->PopMessage(error));
@@ -3897,7 +3897,8 @@ class CydiaLogCleaner :
         }
 
         return;
-    }
+    } else if ([self popErrorWithTitle:title forOperation:true])
+        return;
     _trace();
 
     unlink("/tmp/cydia.chk");
