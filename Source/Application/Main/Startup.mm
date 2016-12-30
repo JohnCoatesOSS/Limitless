@@ -179,30 +179,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
 + (void)setUpLocale {
     Locale_ = CFLocaleCopyCurrent();
     Languages_ = [NSLocale preferredLanguages];
-    
-    //CFStringRef locale(CFLocaleGetIdentifier(Locale_));
-    //NSLog(@"%@", [Languages_ description]);
-    
-    const char *lang;
-    if (Locale_ != NULL)
-        lang = [(NSString *) CFLocaleGetIdentifier(Locale_) UTF8String];
-    else if (Languages_ != nil && [Languages_ count] != 0)
-        lang = [[Languages_ objectAtIndex:0] UTF8String];
-    else
-        // XXX: consider just setting to C and then falling through?
-        lang = NULL;
-    
-    if (lang != NULL) {
-        RegEx pattern("([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?");
-        lang = !pattern(lang) ? NULL : [pattern->*@"%1$@%2$@" UTF8String];
-    }
-    
-    NSLog(@"Setting Language: %s", lang);
-    
-    if (lang != NULL) {
-        setenv("LANG", lang, true);
-        setlocale(LC_ALL, lang);
-    }
 }
 
 + (void)setUpSystemInformation {

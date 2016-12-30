@@ -13,6 +13,8 @@
 #import "LMXAPTConfig.h"
 #import "APTManager+Files.h"
 #import "LMXAPTStatus.hpp"
+#import "UIGlobals.h"
+#include "CyteKit/RegEx.hpp"
 
 @interface APTManager ()
 
@@ -76,7 +78,8 @@
         std::cout << "Error: " << errorMessage << std::endl;
     }
     
-    self.configuration[@"APT::Acquire::Translation"] = @"environment";
+    [self setLanguage];
+    
     self.configuration[@"Acquire::AllowInsecureRepositories"] = @"true";
     self.configuration[@"Acquire::Check-Valid-Until"] = @"false";
     self.configuration[@"pkgCacheGen::ForceEssential"] = @"";
@@ -117,6 +120,39 @@
         _config->Dump();
     }
 }
+
+- (void)setLanguage {
+    const char *translation(NULL);
+    NSMutableArray *languages = [NSMutableArray new];
+    
+    
+    // XXX: this isn't really a language, but this is compatible with older Cydia builds
+    if (const char *language = [(NSString *) CFLocaleGetIdentifier(Locale_) UTF8String]) {
+        RegEx pattern("([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?");
+        if (pattern(language)) {
+            translation = strdup([pattern->*@"%1$@%2$@" UTF8String]);
+            [languages addObject:@(translation)];
+        }
+        
+    }
+    if (Languages_ != nil) {
+        for (NSString *language : Languages_) {
+            [languages addObject:language];
+        }
+    }
+    
+     [languages addObject:@"en"];
+    
+    if (translation != NULL) {
+        self.configuration[@"APT::Acquire::Translation"] = @(translation);
+    }
+    
+   if (languages.count > 0 ){
+       NSString *languagesString = [languages componentsJoinedByString:@","];
+       self.configuration[@"Acquire::Languages"] = languagesString;
+   }
+}
+
 - (void)sandboxSetup {
     if ([Platform isSandboxed]) {
         _debugMode = TRUE;
