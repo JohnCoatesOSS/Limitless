@@ -141,7 +141,9 @@
         }
     }
     
-     [languages addObject:@"en"];
+    [languages addObject:@"en"];
+    
+    NSLog(@"Setting Language: [%s] %@", translation, [languages componentsJoinedByString:@","]);
     
     if (translation != NULL) {
         self.configuration[@"APT::Acquire::Translation"] = @(translation);
