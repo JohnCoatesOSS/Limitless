@@ -10325,7 +10325,7 @@ int main(int argc, char *argv[]) {
         }
 
     languages += "en";
-    NSLog(@"Setting Language: %s", languages.c_str());
+    NSLog(@"Setting Language: [%s] %s", translation, languages.c_str());
     /* }}} */
     /* Index Collation {{{ */
     if (Class $UILocalizedIndexedCollation = objc_getClass("UILocalizedIndexedCollation")) { @try {
@@ -10579,8 +10579,7 @@ int main(int argc, char *argv[]) {
 
     if (translation != NULL)
         _config->Set("APT::Acquire::Translation", translation);
-    if (!languages.empty())
-        _config->Set("Acquire::Languages", languages);
+    _config->Set("Acquire::Languages", languages);
 
     // XXX: this timeout might be important :(
     //_config->Set("Acquire::http::Timeout", 15);
