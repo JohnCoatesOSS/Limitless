@@ -26,7 +26,6 @@ cycc += -fvisibility=hidden
 
 link += -Wl,-dead_strip
 link += -Wl,-no_dead_strip_inits_and_terms
-link += -Wl,-s
 
 flag += -Xarch_arm64 -Iapt
 flag += -Xarch_arm64 -Iapt-contrib
