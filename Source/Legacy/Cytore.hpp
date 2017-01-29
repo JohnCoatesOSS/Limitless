@@ -181,7 +181,7 @@ class File {
         return blocks_.size() * Block_;
     }
 
-    void Open(const char *path) {
+    void Open(const char *path) { open:
         _assert(file_ == -1);
         file_ = open(path,
                      O_RDWR | O_CREAT | O_EXLOCK, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
@@ -201,8 +201,12 @@ class File {
 
             Header_().magic_ = Magic;
             Size_() = core;
+        } else if (size < core) {
+            close(file_);
+            file_ = -1;
+            unlink(path);
+            goto open;
         } else {
-            _assert(size >= core);
             // XXX: this involves an unneccessary call to ftruncate()
             _assert(Truncate_((size_t)size));
             _assert(Header_().magic_ == Magic);
