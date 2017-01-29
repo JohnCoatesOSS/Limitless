@@ -49,6 +49,12 @@ EOF
 }
 # }}}
 
+before=$(stat -c '%i-%Y' status)
+
+output=$(mktemp status-tmp.XXXXXX)
+xxxxxx=${output##status-tmp.}
+rm -f status-tmp.!("${xxxxxx}")
+
 {
 
 # Delete Old Packages {{{
@@ -135,9 +141,11 @@ EOF
 
     pseudo "cy+lib.corefoundation" "$(/usr/libexec/cydia/cfversion)" "virtual corefoundation dependency"
 
-} >"${status}"_
+} >"${output}"
 
-mv -f "${status}"{_,}
+# XXX: this is a poor replacement for flock
+test "${before}" = "$(stat -c '%i-%Y' status)"
+mv -f "${output}" "${status}"
 
 if [[ ${cpu} == arm || ${cpu} == arm64 ]]; then
     if [[ ! -h /User && -d /User ]]; then
