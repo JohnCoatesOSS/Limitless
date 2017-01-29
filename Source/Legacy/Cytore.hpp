@@ -53,7 +53,7 @@ struct Header {
     uint32_t version_;
     uint32_t size_;
     uint32_t reserved_;
-};
+} _packed;
 
 template <typename Target_>
 class Offset {
@@ -83,11 +83,11 @@ class Offset {
     bool IsNull() const {
         return offset_ == 0;
     }
-};
+} _packed;
 
 struct Block {
     Cytore::Offset<void> reserved_;
-};
+} _packed;
 
 template <typename Type_>
 static _finline Type_ Round(Type_ value, Type_ size) {
