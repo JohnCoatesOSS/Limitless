@@ -180,7 +180,7 @@ MobileCydia: sysroot $(object) entitlements.xml Objects/libapt64.a
 	@mkdir -p bins
 	@cp -a $@ bins/$@-$(version)
 	@echo "[strp] $@"
-	@strip $@
+	@grep '~' <<<"$(version)" >/dev/null && echo "skipping..." || strip $@
 	@echo "[uikt] $@"
 	@./uikit.sh $@
 	@echo "[sign] $@"
