@@ -194,7 +194,11 @@ class File {
 
         off_t size = stat.st_size;
         if (size == 0) {
-            _assert(Truncate_(core));
+            if (!Truncate_(core)) {
+                unlink(path);
+                _assert(false);
+            }
+
             Header_().magic_ = Magic;
             Size_() = core;
         } else {
