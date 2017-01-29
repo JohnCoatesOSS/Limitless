@@ -1420,14 +1420,14 @@ struct PackageValue :
 
     char version_[8];
     char name_[];
-};
+} _packed;
 
 struct MetaValue :
     Cytore::Block
 {
     uint32_t active_;
     Cytore::Offset<PackageValue> packages_[1 << 16];
-};
+} _packed;
 
 static Cytore::File<MetaValue> MetaFile_;
 // }}}
