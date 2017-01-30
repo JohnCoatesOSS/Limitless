@@ -8532,8 +8532,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
         [Sources_ removeObjectForKey:[source key]];
 
-        [delegate_ _saveConfig];
-        [delegate_ reloadDataWithInvocation:nil];
+        [delegate_ syncData];
     }
 }
 
