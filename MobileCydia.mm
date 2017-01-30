@@ -9118,9 +9118,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (void) reloadSpringBoard {
     if (kCFCoreFoundationVersionNumber >= 700) // XXX: iOS 6.x
-        system("/bin/launchctl stop com.apple.backboardd");
+        system("/usr/libexec/cydia/cydo /bin/launchctl stop com.apple.backboardd");
     else
-        system("/bin/launchctl stop com.apple.SpringBoard");
+        system("/usr/libexec/cydia/cydo /bin/launchctl stop com.apple.SpringBoard");
     sleep(15);
     system("/usr/bin/killall backboardd SpringBoard");
 }
