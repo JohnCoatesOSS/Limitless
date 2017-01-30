@@ -72,7 +72,7 @@ libs += -licucore
 uikit := 
 uikit += -framework UIKit
 
-link += -Wl,-segalign,4000
+link += -Xarch_armv6 -Wl,-segalign,4000
 
 dirs := Menes CyteKit Cydia SDURLCache
 
