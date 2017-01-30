@@ -41,6 +41,7 @@ Installed-Size: 0
 Architecture: ${arch}
 Version: ${version}
 Description: ${description}
+Maintainer: Jay Freeman (saurik) <saurik@saurik.com>
 Tag: role::cydia
 EOF
 
