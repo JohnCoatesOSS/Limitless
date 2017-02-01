@@ -48,6 +48,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
 
 + (Database *) sharedInstance;
 - (unsigned) era;
+- (bool) hasPackages;
 
 - (void) _readCydia:(NSNumber *)fd;
 - (void) _readStatus:(NSNumber *)fd;

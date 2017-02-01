@@ -42,6 +42,10 @@
     CFArrayRemoveAllValues(packages_);
 }
 
+- (bool) hasPackages {
+    return CFArrayGetCount(packages_) != 0;
+}
+
 - (void) dealloc {
     // XXX: actually implement this thing
     _assert(false);

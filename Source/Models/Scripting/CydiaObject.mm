@@ -517,10 +517,17 @@
 }
 
 - (NSString *) substitutePackageNames:(NSString *)message {
+    auto database([Database sharedInstance]);
+    
+    // XXX: this check is less racy than you'd expect, but this entire concept is a little awkward
+    if ([database hasPackages]) {
+        return message;
+    }
+    
     NSMutableArray *words([[[message componentsSeparatedByString:@" "] mutableCopy] autorelease]);
     for (size_t i(0), e([words count]); i != e; ++i) {
         NSString *word([words objectAtIndex:i]);
-        if (Package *package = [[Database sharedInstance] packageWithName:word])
+        if (Package *package = [database packageWithName:word])
             [words replaceObjectAtIndex:i withObject:[package name]];
     }
     
