@@ -53,6 +53,7 @@ EOF
 before=$(stat -c '%i-%Y' "${status}")
 
 output=$(mktemp "${data}"/status-tmp.XXXXXX)
+chmod 644 "${output}"
 xxxxxx=${output##*/status-tmp.}
 rm -f "${data}"/status-tmp.!("${xxxxxx}")
 
