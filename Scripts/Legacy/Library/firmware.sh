@@ -50,8 +50,6 @@ EOF
 }
 # }}}
 
-before=$(stat -c '%i-%Y' "${status}")
-
 output=$(mktemp "${data}"/status-tmp.XXXXXX)
 xxxxxx=${output##*/status-tmp.}
 rm -f "${data}"/status-tmp.!("${xxxxxx}")
@@ -144,8 +142,6 @@ rm -f "${data}"/status-tmp.!("${xxxxxx}")
 
 } >"${output}"
 
-# XXX: this is a poor replacement for flock
-test "${before}" = "$(stat -c '%i-%Y' "${status}")"
 mv -f "${output}" "${status}"
 
 if [[ ${cpu} == arm || ${cpu} == arm64 ]]; then
