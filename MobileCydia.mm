@@ -4865,7 +4865,7 @@ static _H<NSMutableSet> Diversions_;
     auto database([Database sharedInstance]);
 
     // XXX: this check is less racy than you'd expect, but this entire concept is a little awkward
-    if ([database hasPackages])
+    if (![database hasPackages])
         return message;
 
     NSMutableArray *words([[[message componentsSeparatedByString:@" "] mutableCopy] autorelease]);
