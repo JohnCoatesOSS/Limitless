@@ -150,7 +150,7 @@ float CYScrollViewDecelerationRateNormal;
     dlopen("/System/Library/Frameworks/SafariServices.framework/SafariServices", RTLD_GLOBAL | RTLD_LAZY);
     $SFSafariViewController = objc_getClass("SFSafariViewController");
 
-    if (float *_UIScrollViewDecelerationRateNormal = reinterpret_cast<float *>(dlsym(RTLD_DEFAULT, "UIScrollViewDecelerationRateNormal")))
+    if (CGFloat *_UIScrollViewDecelerationRateNormal = reinterpret_cast<float *>(dlsym(RTLD_DEFAULT, "UIScrollViewDecelerationRateNormal")))
         CYScrollViewDecelerationRateNormal = *_UIScrollViewDecelerationRateNormal;
     else // XXX: this actually might be fast on some older systems: we should look into this
         CYScrollViewDecelerationRateNormal = 0.998;
