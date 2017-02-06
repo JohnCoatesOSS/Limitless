@@ -56,3 +56,5 @@ fastlane/report.xml
 fastlane/screenshots
 Release
 app/Pods
+Objects
+cydo
