@@ -8,6 +8,7 @@
 #import "System.h"
 #import "ProgressController.h"
 #import "GeneralHelpers.h"
+#import "SwipeActionController.h"
 
 
 @implementation ProgressController
@@ -24,6 +25,20 @@
                             target:self
                             action:@selector(cancel)
                             ] autorelease] : nil;
+}
+
+- (UIBarButtonItem *) rightButton {
+    return [[progress_ running] boolValue] ? [super rightButton] : [[[UIBarButtonItem alloc]
+                                                                     initWithTitle:UCLocalize("CLOSE")
+                                                                     style:UIBarButtonItemStylePlain
+                                                                     target:self
+                                                                     action:@selector(closeWithoutAnyPostInstallActions) // TODO: decide whether or not use the original -close method
+                                                                     ] autorelease];
+}
+
+- (void) applyRightButton
+{
+    [[self navigationItem] setRightBarButtonItem:![[progress_ running] boolValue] ? [self rightButton] : nil];
 }
 
 - (void) updateCancel {
@@ -62,6 +77,14 @@
 - (void) viewWillAppear:(BOOL)animated {
     [[[self navigationController] navigationBar] setBarStyle:UIBarStyleBlack];
     [super viewWillAppear:animated];
+}
+
+// The original -close method may respring or reboot device, but we don't want that - just close the progress window
+- (void) closeWithoutAnyPostInstallActions
+{
+    UpdateExternalStatus(0);
+    [delegate_ returnToCydia];
+    [super close];
 }
 
 - (void) close {
@@ -115,19 +138,10 @@
     [self updateProgress];
 }
 
-- (UIBarButtonItem *) rightButton {
-    return [[progress_ running] boolValue] ? [super rightButton] : [[[UIBarButtonItem alloc]
-                                                                     initWithTitle:UCLocalize("CLOSE")
-                                                                     style:UIBarButtonItemStylePlain
-                                                                     target:self
-                                                                     action:@selector(close)
-                                                                     ] autorelease];
-}
-
 - (void) invoke:(NSInvocation *)invocation withTitle:(NSString *)title {
     UpdateExternalStatus(1);
     
-    [progress_ setRunning:true];
+    [progress_ setRunning:YES];
     [self setTitle:title];
     // implicit updateProgress
     
@@ -203,10 +217,16 @@
     
     UpdateExternalStatus(Finish_ == 0 ? 0 : 2);
     
-    [progress_ setRunning:false];
+    [progress_ setRunning:NO];
     [self updateProgress];
     
     [self applyRightButton];
+    
+    // TODO: Let user specify when to auto-close installation page
+    if ([[SwipeActionController sharedInstance] dismissAfterProgress] && Finish_ != 1 && Finish_ != 4) {
+        [[SwipeActionController sharedInstance] setDismissAfterProgress:NO];
+        [self closeWithoutAnyPostInstallActions];
+    }
 }
 
 - (void) addProgressEvent:(CydiaProgressEvent *)event {

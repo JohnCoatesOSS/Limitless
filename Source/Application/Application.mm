@@ -40,6 +40,7 @@
 #import "CYPackageController.h"
 #import "ConfirmationController.h"
 #import "LMXRespringController.h"
+#import "SwipeActionController.h"
 #import "UIColor+CydiaColors.h"
 
 @interface Application () {
@@ -1162,7 +1163,24 @@ errno == ENOTDIR \
     
     if ([Device isPad])
         [confirm_ setModalPresentationStyle:UIModalPresentationFormSheet];
-    [tabbar_ presentViewController:confirm_ animated:YES completion:nil];
+    SwipeActionController *SAC([SwipeActionController sharedInstance]);
+    bool fromSwipe = [SAC fromSwipeAction];
+    bool dismissAsQueue = [SAC dismissAsQueue];
+    [tabbar_ presentViewController:confirm_ animated:YES completion:^{
+        // some actions needed after package confirmation page presentation triggered by swipe actions
+        if (![page->issues_ count]) {
+            if (fromSwipe) {
+                if (dismissAsQueue) {
+                    [page _doContinue];
+                    [SAC setDismissAsQueue:NO];
+                }
+                else if ([SAC dismissAfterProgress] && !Queuing_) {
+                    [page performSelector:@selector(confirmButtonClicked) withObject:nil afterDelay:0.2];
+                }
+            }
+        }
+        [SAC setFromSwipeAction:NO];
+    }];
     
     return true;
 }

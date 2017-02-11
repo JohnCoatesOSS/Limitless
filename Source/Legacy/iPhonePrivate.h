@@ -241,7 +241,11 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 
 @interface UIColor (Apple)
 + (UIColor *) pinStripeColor;
-+ (UIColor *)systemDarkGreenColor;
++ (UIColor *) systemDarkGreenColor;
++ (UIColor *) systemBlueColor;
++ (UIColor *) systemYellowColor;
++ (UIColor *) systemOrangeColor;
++ (UIColor *) systemGreenColor;
 @end
 
 @interface UIControl (Apple)

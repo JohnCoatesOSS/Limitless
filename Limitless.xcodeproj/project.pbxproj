@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		525B33891DFCED9300D14ED7 /* SwipeActionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 525B33881DFCED9300D14ED7 /* SwipeActionController.m */; };
 		BC2569201DF00B4D000EA2C3 /* UIColor+CydiaColors.m in Sources */ = {isa = PBXBuildFile; fileRef = BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */; };
 		FA01D21C1D1B22B100B49E70 /* DiskUsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA01D20F1D1B22B100B49E70 /* DiskUsage.cpp */; };
 		FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */ = {isa = PBXBuildFile; fileRef = FA01D2111D1B22B100B49E70 /* lookup3.c */; };
@@ -578,6 +579,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		525B33881DFCED9300D14ED7 /* SwipeActionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwipeActionController.m; sourceTree = "<group>"; };
+		525B338A1DFCEDA800D14ED7 /* SwipeActionController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwipeActionController.h; sourceTree = "<group>"; };
 		BC25691E1DF00B4D000EA2C3 /* UIColor+CydiaColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+CydiaColors.h"; sourceTree = "<group>"; };
 		BC25691F1DF00B4D000EA2C3 /* UIColor+CydiaColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CydiaColors.m"; sourceTree = "<group>"; };
 		FA01D20C1D1B22B100B49E70 /* cfversion.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = cfversion.mm; sourceTree = "<group>"; };
@@ -1986,6 +1989,8 @@
 				FA6C86E61D76216300FB99CF /* PackageSettingsController.mm */,
 				FA6C86E81D7621CC00FB99CF /* InstalledController.h */,
 				FA6C86E91D7621CC00FB99CF /* InstalledController.mm */,
+				525B33881DFCED9300D14ED7 /* SwipeActionController.m */,
+				525B338A1DFCEDA800D14ED7 /* SwipeActionController.h */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -2520,12 +2525,12 @@
 				TargetAttributes = {
 					FA28E7091D1B21A5003D3724 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = E6QK4MU6LM;
+						DevelopmentTeam = HWW5CTH5AN;
 						ProvisioningStyle = Automatic;
 					};
 					FA3A18321DEAB1F3000557AC = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = E6QK4MU6LM;
+						DevelopmentTeam = HWW5CTH5AN;
 						ProvisioningStyle = Automatic;
 					};
 					FA9010FA1DE12B1C00A607AC = {
@@ -2539,6 +2544,7 @@
 					};
 					FAE642941DF13EC200E975B8 = {
 						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -2766,6 +2772,7 @@
 				FA6C86781D75756800FB99CF /* CydiaOperation.mm in Sources */,
 				FA6C86A31D75967800FB99CF /* CydiaScript.mm in Sources */,
 				FA1247E71D778DB800C21DAC /* Paths.mm in Sources */,
+				525B33891DFCED9300D14ED7 /* SwipeActionController.m in Sources */,
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
@@ -3402,7 +3409,7 @@
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HWW5CTH5AN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
@@ -3428,7 +3435,7 @@
 				"CLANG_ENABLE_MODULES[sdk=iphonesimulator*]" = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HWW5CTH5AN;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/External/System/Library/PrivateFrameworks",
@@ -3450,7 +3457,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HWW5CTH5AN;
 				ENABLE_TESTABILITY = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = Tools/runAsSuperuser/Info.plist;
@@ -3467,7 +3474,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = HWW5CTH5AN;
 				INFOPLIST_FILE = Tools/runAsSuperuser/Info.plist;
 				INFOPLIST_OUTPUT_FORMAT = XML;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -20,12 +20,14 @@
     _H<UIAlertView> essential_;
     
     _H<NSDictionary> changes_;
-    _H<NSMutableArray> issues_;
+    @public _H<NSMutableArray> issues_;
     _H<NSDictionary> sizes_;
     
     BOOL substrate_;
 }
 
 - (id) initWithDatabase:(Database *)database;
+- (void) _doContinue;
+- (void) confirmButtonClicked;
 
 @end

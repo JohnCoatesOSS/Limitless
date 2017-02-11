@@ -25,5 +25,6 @@
 - (id) initWithDatabase:(Database *)database
              forPackage:(NSString *)name
            withReferrer:(NSString *)referrer;
+- (void) _clickButtonWithName:(NSString *)name;
 
 @end

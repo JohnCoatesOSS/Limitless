@@ -12,6 +12,7 @@
 #import "CYPackageController.h"
 #import "PackageCell.h"
 #import "InstalledController.h"
+#import "SwipeActionController.h"
 
 @implementation PackageListController
 
@@ -124,7 +125,20 @@
 - (void) didSelectPackage:(Package *)package {
     CYPackageController *view([[[CYPackageController alloc] initWithDatabase:database_ forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]] autorelease]);
     [view setDelegate:delegate_];
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        // some actions needed after showing tweak page triggered by swipe actions
+        SwipeActionController *SAC([SwipeActionController sharedInstance]);
+        if ([SAC autoClickDowngrade]) {
+            [view _clickButtonWithName:@"DOWNGRADE"];
+            [SAC setAutoClickDowngrade:NO];
+        } else if ([SAC autoClickBuy]) {
+            [view customButtonClicked];
+            [SAC setAutoClickBuy:NO];
+        }
+    }];
     [[self navigationController] pushViewController:view animated:YES];
+    [CATransaction commit];
 }
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)list {
@@ -192,12 +206,93 @@
 
 - (NSArray *)tableView:(UITableView *)tableView
 editActionsForRowAtIndexPath:(NSIndexPath *)path {
-    // FIXME: Favorites broken. Switching off for Beta 5
-    return @[];
-    
     Package *package([self packageAtIndexPath:path]);
-    package = [database_ packageWithName:[package id]];
-    
+    // package = [database_ packageWithName:[package id]]; // do we need this?
+    Cydia *delegate((Cydia *)[UIApplication sharedApplication]);
+    NSMutableArray *actions([NSMutableArray array]);
+    BOOL installed = ![package uninstalled];
+    BOOL upgradable = [package upgradableAndEssential:NO];
+    BOOL isQueue = [package mode] != nil;
+    bool commercial = [package isCommercial];
+    SwipeActionController *SAC([SwipeActionController sharedInstance]);
+    if (installed) {
+        // Uninstall action
+        UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:[SAC removeString] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+            [SAC setFromSwipeAction:YES];
+            [SAC setDismissAfterProgress:[SAC autoDismissWhenQueue]];
+            [delegate removePackage:package];
+        }];
+        [actions addObject:deleteAction];
+    }
+    NSString *installTitle = installed ? (upgradable ? [SAC upgradeString] : [SAC reinstallString]) : (commercial ? [SAC buyString] : [SAC installString]);
+    if ((!installed || [Device isPad] || [SAC shortLabel]) && !isQueue) {
+        // Install or reinstall or upgrade action
+        UITableViewRowAction *installAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:installTitle handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+            [SAC setFromSwipeAction:YES];
+            [SAC setDismissAfterProgress:[SAC autoPerform] && (!commercial || (commercial && installed))];
+            if (commercial && !installed) {
+                [SAC setAutoClickBuy:YES];
+                [self didSelectPackage:package];
+            }
+            else
+                [delegate installPackage:package];
+        }];
+        installAction.backgroundColor = [UIColor systemBlueColor];
+        [actions addObject:installAction];
+    }
+    if (installed && !isQueue) {
+        // Queue reinstall action
+        NSString *queueReinstallTitle = [SAC queueString:installTitle];
+        UITableViewRowAction *queueReinstallAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:queueReinstallTitle handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+            [SAC setDismissAfterProgress:NO];
+            [SAC setDismissAsQueue:[SAC autoDismissWhenQueue]];
+            [SAC setFromSwipeAction:YES];
+            [delegate installPackage:package];
+        }];
+        queueReinstallAction.backgroundColor = [UIColor orangeColor];
+        [actions addObject:queueReinstallAction];
+    }
+    if (isQueue) {
+        // Clear action
+        UITableViewRowAction *clearAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"⌧" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+            [SAC setDismissAfterProgress:NO];
+            [SAC setDismissAsQueue:Queuing_];
+            [SAC setFromSwipeAction:YES];
+            [delegate clearPackage:package];
+        }];
+        clearAction.backgroundColor = [UIColor grayColor];
+        [actions addObject:clearAction];
+    } else {
+        // Queue install action
+        NSString *queueTitle = [SAC queueString:(installed ? [SAC removeString] : installTitle)];
+        UITableViewRowAction *queueAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:queueTitle handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+            [SAC setDismissAfterProgress:NO];
+            [SAC setDismissAsQueue:[SAC autoDismissWhenQueue]];
+            [SAC setFromSwipeAction:YES];
+            if (installed)
+                [delegate removePackage:package];
+            else
+                [delegate installPackage:package];
+        }];
+        queueAction.backgroundColor = installed ? [UIColor systemYellowColor] : [UIColor systemGreenColor];
+        [actions addObject:queueAction];
+    }
+    if (!isQueue) {
+        // Downgrade action
+        NSArray *downgrades = [package downgrades];
+        if (downgrades.count > 0)	{
+            UITableViewRowAction *downgradeAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:[SAC downgradeString] handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+                [SAC setDismissAfterProgress:NO];
+                [SAC setDismissAsQueue:NO];
+                [SAC setAutoClickDowngrade:YES];
+                [SAC setFromSwipeAction:YES];
+                [self didSelectPackage:package];
+            }];
+            downgradeAction.backgroundColor = [UIColor purpleColor];
+            [actions addObject:downgradeAction];
+        }
+    }
+    // Favorite action
     _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
     [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
     favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -211,7 +306,17 @@ editActionsForRowAtIndexPath:(NSIndexPath *)path {
     }];
     [addToFavoritesAction _setButton:favoritesButton];
     addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
-    return @[ addToFavoritesAction ];
+    [actions addObject:addToFavoritesAction];
+    return actions;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView setEditing:NO animated:YES];
 }
 
 - (void) updateHeight {
