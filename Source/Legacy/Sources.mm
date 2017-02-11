@@ -30,7 +30,7 @@
 #import "GeneralGlobals.h"
 
 void CydiaWriteSources() {
-    NSString *sourcesListPath = [Paths.aptState subpath:@"sources.list"];
+    NSString *sourcesListPath = [Paths.aptEtc subpath:@"sources.list"];
     const char *sourcesListPathCString = sourcesListPath.UTF8String;
     unlink(sourcesListPathCString);
     FILE *file(fopen(sourcesListPathCString, "w"));
