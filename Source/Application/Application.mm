@@ -96,6 +96,7 @@
     [self setUpWindow];
 	[self setUpViewControllers];
 	[self setUpNavigationControllerAndTabBar];
+    [self setUpDarkAppearance];
 	
 	// - Homescreen Shortcut Start
 	
@@ -290,6 +291,19 @@
     Font18_ = [UIFont systemFontOfSize:18];
     Font18Bold_ = [UIFont boldSystemFontOfSize:18];
     Font22Bold_ = [UIFont boldSystemFontOfSize:22];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"HH.mm"];
+    NSString *strCurrentTime = [dateFormatter stringFromDate:[NSDate date]];
+    
+    NSLog(@"Check float value: %.2f",[strCurrentTime floatValue]);
+    if ([strCurrentTime floatValue] >= 18.00 || [strCurrentTime floatValue]  <= 6.00){
+        NSLog(@"It's night time");
+        UIColor.isDarkModeEnabled = YES;
+    }else{
+        NSLog(@"It's day time");
+        UIColor.isDarkModeEnabled = NO;
+    }
     
     if(UIColor.isDarkModeEnabled) {
         [[UINavigationBar appearance] setBarTintColor:[UIColor cydia_tintColor]];
@@ -1401,6 +1415,24 @@ NSString* repoURL(@"");
 		[sourcesVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
 	}
 	
+}
+
+#pragma mark - Dark Mode
+
+- (void)setUpDarkAppearance {
+    if([UIColor isDarkModeEnabled]) {
+        // Table View Styles
+        [[UITableView appearance] setBackgroundColor:[UIColor cydia_darkTableViewBackground]];
+        [[UITableView appearance] setSeparatorColor:[UIColor cydia_darkTableViewSeperator]];
+        [[UITableViewCell appearance] setBackgroundColor:[UIColor cydia_darkTableViewCell]];
+        UIView *selectionView = [[[UIView alloc] init] autorelease];
+        [selectionView setBackgroundColor:[UIColor cydia_darkTableViewCellSelection]];
+        [[UITableViewCell appearance] setSelectedBackgroundView:selectionView];
+        
+        // Dark keyboard
+        [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+        [[UITextView appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+    }
 }
 
 @end

@@ -5,6 +5,8 @@
 
 #include "iPhonePrivate.h"
 
+#include "UIColor+CydiaColors.h"
+
 #include "CyteKit/IndirectDelegate.h"
 #include "CyteKit/Localize.h"
 #include "CyteKit/WebViewController.h"
@@ -946,7 +948,7 @@ float CYScrollViewDecelerationRateNormal;
         ] autorelease];
 
         loadingitem_ = [[[UIBarButtonItem alloc]
-            initWithTitle:(kCFCoreFoundationVersionNumber >= 800 ? @"       " : @" ")
+            initWithTitle:(kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_7_0 ? @"       " : @" ")
             style:UIBarButtonItemStylePlain
             target:self
             action:@selector(reloadButtonClicked)
@@ -954,8 +956,8 @@ float CYScrollViewDecelerationRateNormal;
 
         UIActivityIndicatorViewStyle style;
         float left;
-        if (kCFCoreFoundationVersionNumber >= 800) {
-            style = UIActivityIndicatorViewStyleGray;
+        if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_7_0) {
+            style = ([UIColor isDarkModeEnabled] ? UIActivityIndicatorViewStyleWhite : UIActivityIndicatorViewStyleGray);
             left = 7;
         } else {
             style = UIActivityIndicatorViewStyleWhite;

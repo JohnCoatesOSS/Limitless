@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface UIColor (CydiaColors)
-@property (class, readonly) BOOL isDarkModeEnabled;
+@property (class, readwrite) BOOL isDarkModeEnabled;
 + (UIColor*) cydia_blueColor;
 + (UIColor*) cydia_blueVariantColor;
 + (UIColor*) cydia_folderColor;
@@ -22,5 +22,12 @@
 + (UIColor*) cydia_removingColor;
 + (UIColor*) cydia_tintColor;
 + (UIColor*) cydia_black;
++ (UIColor*) cydia_darkTableViewCell;
++ (UIColor*) cydia_darkTableViewBackground;
++ (UIColor*) cydia_darkTableViewSeperator;
++ (UIColor*) cydia_darkTableViewCellSelection;
++ (UIColor*) cydia_darkInstallingColor;
++ (UIColor*) cydia_darkRemovingColor;
++ (UIColor*) cydia_darkCommercialColor;
 + (UIColor*) cydia_favoritesColor;
 @end

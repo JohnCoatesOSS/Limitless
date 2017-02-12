@@ -21,6 +21,7 @@
 
 #include "Cydia/LoadingView.h"
 #include "CyteKit/Localize.h"
+#include "UIColor+CydiaColors.h"
 
 @implementation CydiaLoadingView
 
@@ -29,16 +30,20 @@
         container_ = [[[UIView alloc] init] autorelease];
         [container_ setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin];
 
-        spinner_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+        spinner_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:([UIColor isDarkModeEnabled] ? UIActivityIndicatorViewStyleWhite : UIActivityIndicatorViewStyleGray)] autorelease];
         [spinner_ startAnimating];
         [container_ addSubview:spinner_];
 
         label_ = [[[UILabel alloc] init] autorelease];
         [label_ setFont:[UIFont boldSystemFontOfSize:15.0f]];
         [label_ setBackgroundColor:[UIColor clearColor]];
-        [label_ setTextColor:[UIColor blackColor]];
-        [label_ setShadowColor:[UIColor whiteColor]];
-        [label_ setShadowOffset:CGSizeMake(0, 1)];
+        if(kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0) {
+            // Keep shadow on pre-iOS 7 devices
+            [label_ setShadowColor:[UIColor whiteColor]];
+            [label_ setShadowOffset:CGSizeMake(0, 1)];
+        }
+        
+        [label_ setTextColor:([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])];
         [label_ setText:[NSString stringWithFormat:Elision_, UCLocalize("LOADING"), nil]];
         [container_ addSubview:label_];
 

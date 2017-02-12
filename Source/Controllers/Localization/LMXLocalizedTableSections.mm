@@ -95,7 +95,7 @@ static struct UReplaceableCallbacks CollationUCalls_ = {
         if (self.testModeEnabled) {
             NSLog(@"locale identifier: %@", [locale localeIdentifier]);
         }
-        if (kCFCoreFoundationVersionNumber >= 800 && [[locale localeIdentifier] isEqualToString:@"zh@collation=stroke"]) {
+        if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_7_0 && [[locale localeIdentifier] isEqualToString:@"zh@collation=stroke"]) {
             self.collationTableIndexTitles = [NSArray arrayWithObjects:@"1",@"•",@"4",@"•",@"7",@"•",@"10",@"•",@"13",@"•",@"16",@"•",@"19",@"A",@"•",@"E",@"•",@"I",@"•",@"M",@"•",@"R",@"•",@"V",@"•",@"Z",@"#",nil];
             NSInteger sectionOffsets[] = {
                 0,1,3,4,6,7,9,10,12,13,15,16,

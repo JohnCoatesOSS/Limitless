@@ -19,12 +19,7 @@
         
         content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
         [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        if (UIColor.isDarkModeEnabled) {
-            [content_ setBackgroundColor:[UIColor cydia_black]];
-        } else {
-            [content_ setBackgroundColor:[UIColor whiteColor]];
-        }
-        
+        [content_ setBackgroundColor:[UIColor clearColor]];
         [content addSubview:content_];
         
         [content_ setDelegate:self];
@@ -102,7 +97,7 @@
     frame.origin.x = bounds.size.width - frame.size.width;
     frame.origin.y = Retina((bounds.size.height - frame.size.height) / 2);
     
-    if (kCFCoreFoundationVersionNumber < 800)
+    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         frame.origin.x -= 8;
     [indicator_ setFrame:frame];
 }
@@ -130,20 +125,20 @@
         [icon_ drawInRect:Retina(rect)];
     }
     
-    if (highlighted && kCFCoreFoundationVersionNumber < 800)
+    if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
 	
     if (!highlighted)
-        UISetColor([UIColor whiteColor].CGColor);
+        UISetColor(([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]).CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
-	[origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle}];
+    [origin_ drawInRect:CGRectMake(52, 8, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName:  ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])}];
     
     if (!highlighted)
-        UISetColor([UIColor whiteColor].CGColor);
-	[label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : [UIColor whiteColor])}];
+        UISetColor([UIColor cydia_grayColor].CGColor);
+    [label_ drawInRect:CGRectMake(52, 29, width-49, CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (!highlighted ? [UIColor cydia_grayColor] : ([UIColor isDarkModeEnabled] ? [UIColor cydia_grayColor] : [UIColor blackColor]))}];
 }
 
 - (void) setFetch:(NSNumber *)fetch {

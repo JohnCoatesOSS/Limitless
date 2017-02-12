@@ -104,11 +104,6 @@
         UILongPressGestureRecognizer *favoriteGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(favoriteGestureRecognized:)];
         [cell addGestureRecognizer:favoriteGesture];
     }
-  
-    // TODO: fix background color
-    if(UIColor.isDarkModeEnabled) {
-        [cell setBackgroundColor:[UIColor cydia_black]];
-    }
     return cell;
 }
 
@@ -433,10 +428,6 @@
 - (void) loadView {
     list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]
                                           style:UITableViewStylePlain] autorelease];
-    // TODO: fix background color
-    if(UIColor.isDarkModeEnabled) {
-        [list_ setBackgroundColor:[UIColor cydia_black]];
-    }
     [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
     [list_ setRowHeight:53];
     [(UITableView *) list_ setDataSource:self];

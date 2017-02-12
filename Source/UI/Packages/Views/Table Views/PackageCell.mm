@@ -8,7 +8,7 @@
 #import "PackageCell.h"
 #import "DisplayHelpers.hpp"
 #import "Source.h"
-
+#import "UIColor+CydiaColors.h"
 
 @implementation PackageCell
 
@@ -40,9 +40,9 @@
     badge_ = nil;
     placard_ = nil;
     
-    if (package == nil) {
-        [content_ setBackgroundColor:[UIColor whiteColor]];
-    } else {
+    if (package == nil)
+        [content_ setBackgroundColor:[UIColor clearColor]];
+    else {
         [package parse];
         
         Source *source = [package source];
@@ -86,17 +86,17 @@
         
         if (NSString *mode = [package mode]) {
             if ([mode isEqualToString:@"REMOVE"] || [mode isEqualToString:@"PURGE"]) {
-                color = [UIColor cydia_removingColor];
+                color = ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkRemovingColor] : [UIColor cydia_removingColor]);
                 placard = @"removing";
             } else {
-                color = [UIColor cydia_installingColor];
+                color = ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkInstallingColor] : [UIColor cydia_installingColor]);
                 placard = @"installing";
             }
         } else {
             if (UIColor.isDarkModeEnabled) {
                 color = [UIColor cydia_black];
             } else {
-                color = [UIColor whiteColor];
+                color = [UIColor clearColor];
             }
             
             if ([package installed] != nil)
@@ -147,15 +147,15 @@
         [badge_ drawInRect:Retina(rect)];
     }
     
-    if (highlighted && kCFCoreFoundationVersionNumber < 800)
+    if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
 	if (!highlighted) {
-        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : [UIColor blackColor].CGColor);
-		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialColor] : [UIColor blackColor])}];
+        UISetColor((commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])).CGColor);
+		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]))}];
 	} else {
 		[name_ drawInRect:CGRectMake(36, 8, width - (placard_ == nil ? 68 : 94), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName:Font18Bold_,NSParagraphStyleAttributeName: truncatingStyle}];
 	}
@@ -196,18 +196,19 @@
         [badge_ drawInRect:Retina(rect)];
     }
     
-    if (highlighted && kCFCoreFoundationVersionNumber < 800) {
+    if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
     }
     
     if (!highlighted)
-        UISetColor(commercial_ ? [UIColor cydia_commercialColor].CGColor : [UIColor blackColor].CGColor);
+        UISetColor((commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])).CGColor);
 	
 	NSMutableParagraphStyle *truncatingStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
 	[truncatingStyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
-    [name_ drawInRect:CGRectMake(48, 8, (width - (placard_ == nil ? 80 : 106)), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialColor] : [UIColor blackColor])}];
-	[source_ drawInRect:CGRectMake(58, 29, (width - 29), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialColor] : [UIColor blackColor])}];
+    [name_ drawInRect:CGRectMake(48, 8, (width - (placard_ == nil ? 80 : 106)), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]))}];
+	[source_ drawInRect:CGRectMake(58, 29, (width - 29), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])}];
+
     
 	if (!highlighted) {
         UISetColor(commercial_ ? [UIColor cydia_commercialVariantColor].CGColor : [UIColor cydia_grayColor].CGColor);

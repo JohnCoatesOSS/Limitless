@@ -33,7 +33,7 @@
         [self setDelegate:self];
         
         indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteTiny] autorelease];
-        [indicator_ setOrigin:CGPointMake(kCFCoreFoundationVersionNumber >= 800 ? 2 : 4, 2)];
+        [indicator_ setOrigin:CGPointMake(kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_7_0 ? 2 : 4, 2)];
         
         [[self view] setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
     } return self;
