@@ -6,3 +6,7 @@
 //
 
 #pragma once
+#import <UIKit/UIKit.h>
+#import "Device.h"
+#import "Platform.h"
+#import "NSError+Limitless.h"

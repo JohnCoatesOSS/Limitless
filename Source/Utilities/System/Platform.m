@@ -26,7 +26,8 @@
     }
     NSString *executablePath = [NSBundle mainBundle].executablePath;
     if ([executablePath hasPrefix:@"/Applications"] ||
-        [executablePath hasPrefix:@"/var/mobile/Applications"]) {
+        [executablePath hasPrefix:@"/var/mobile/Applications"] ||
+        [executablePath hasPrefix:@"/private/var/mobile/Applications"]) {
         return FALSE;
     } else {
         return TRUE;

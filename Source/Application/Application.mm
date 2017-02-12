@@ -213,11 +213,13 @@
 #pragma mark - State
 
 - (void) saveState {
+    NSString *savedStatePath = [Paths.aptCache subpath:@"SavedState.plist"];
+    
     [[NSDictionary dictionaryWithObjectsAndKeys:
       @"InterfaceState", [tabbar_ navigationURLCollection],
       @"LastClosed", [NSDate date],
       @"InterfaceIndex", [NSNumber numberWithInt:[tabbar_ selectedIndex]],
-      nil] writeToFile:[Paths savedState] atomically:YES];
+      nil] writeToFile:savedStatePath atomically:YES];
     
     [self _saveConfig];
 }
@@ -529,7 +531,8 @@ errno == ENOTDIR \
     [self refreshIfPossible];
     [self disemulate];
     
-    NSDictionary *state([NSDictionary dictionaryWithContentsOfFile:[Paths savedState]]);
+    NSString *savedStatePath = [Paths.aptCache subpath:@"SavedState.plist"];
+    NSDictionary *state = [NSDictionary dictionaryWithContentsOfFile:savedStatePath];
     
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
     NSArray *saved = [[[state objectForKey:@"InterfaceState"] mutableCopy] autorelease];
@@ -672,7 +675,8 @@ errno == ENOTDIR \
 - (void) _refreshIfPossible {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSDate *update([[NSDictionary dictionaryWithContentsOfFile:[Paths cacheState]] objectForKey:@"LastUpdate"]);
+    NSString *cacheStatePath = [Paths.aptCache subpath:@"CacheState.plist"];
+    NSDate *update([[NSDictionary dictionaryWithContentsOfFile:cacheStatePath] objectForKey:@"LastUpdate"]);
     
     bool recently = false;
     if (update != nil) {
@@ -1387,9 +1391,28 @@ NSString* repoURL(@"");
 	} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
 		NSLog(@"Travelling to a repo through 3D Touch");
 		[tabbar_ setSelectedIndex:1];
-		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
-		NSString *currentRepoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
-		[sVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
+        
+        NSArray *tabBarViewControllers = [tabbar_ viewControllers];
+        if (tabBarViewControllers.count < 2) {
+            NSLog(@"LMX Error: Tab bar expected to have at least two VCs, has: %d",
+                  (int)tabBarViewControllers.count);
+            return;
+        }
+        UINavigationController *sourcesTabVC = [tabBarViewControllers objectAtIndex:1];
+        NSArray<UIViewController *> *sourcesTabChildViewControllers = sourcesTabVC.childViewControllers;
+        if (sourcesTabChildViewControllers.count == 1) {
+            NSLog(@"LMX Error: Sources navigation controller expected to have at least one View Controller, has: %d",
+                  (int)sourcesTabChildViewControllers.count);
+        }
+        
+        SourcesController *sourcesVC = (id)sourcesTabChildViewControllers.firstObject;
+		NSString *currentRepoURL = (NSString *)shortcutItem.userInfo[@"repoURL"];
+        if (!currentRepoURL) {
+            NSLog(@"LMX Error: Missing repo URL in homescreen shortcut");
+            return;
+        }
+        
+		[sourcesVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
 	}
 	
 }

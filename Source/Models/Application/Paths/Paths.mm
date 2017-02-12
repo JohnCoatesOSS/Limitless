@@ -6,6 +6,7 @@
 //
 
 #import "Paths.h"
+#import <sys/stat.h>
 
 @interface Paths ()
 
@@ -13,14 +14,29 @@
 
 @implementation Paths
 
++ (NSString *)sandboxDocumentsDirectory {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *urls = [fileManager URLsForDirectory:NSDocumentDirectory
+                                        inDomains:NSUserDomainMask];
+    NSURL *url = urls[0];
+    NSString *path = url.path;
+    return path;
+}
+
++ (NSString *)rootDirectory {
+    if ([Platform isSandboxed]) {
+        NSString *directory = [self documentsFile:@"root/"];
+        [self createDirectoryIfDoesntExist:directory];
+        return directory;
+    }
+    
+    return @"/";
+    
+}
+
 + (NSString *)applicationLibraryDirectory {
     if ([Platform isSandboxed]) {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSArray *urls = [fileManager URLsForDirectory:NSDocumentDirectory
-                                            inDomains:NSUserDomainMask];
-        NSURL *url = urls[0];
-        NSString *path = url.path;
-        return path;
+        return [self sandboxDocumentsDirectory];
     }
     
     return @"/var/mobile/Library/Limitless";
@@ -28,8 +44,7 @@
 
 + (NSString *)varLibCydiaDirectory {
     if ([Platform isSandboxed]) {
-        NSString *applicationLibraryDirectory = [self applicationLibraryDirectory];
-        NSString *varLibCydiaDirectory = [applicationLibraryDirectory stringByAppendingPathComponent:@"var/lib/cydia"];
+        NSString *varLibCydiaDirectory = [self rootFile:@"var/lib/cydia"];
         [self createDirectoryIfDoesntExist:varLibCydiaDirectory];
         return varLibCydiaDirectory;
     }
@@ -39,8 +54,7 @@
 
 + (NSString *)etcAptDirectory {
     if ([Platform isSandboxed]) {
-        NSString *directory = [[self applicationLibraryDirectory] stringByAppendingPathComponent:@"etc/apt"];
-        
+        NSString *directory = [self rootFile:@"etc/apt"];
         [self createDirectoryIfDoesntExist:directory];
         return directory;
         
@@ -58,8 +72,20 @@
         return path;
     }
     
-    return @"/var/mobile/Library/Caches/com.saurik.Cydia";
+    return @"/var/mobile/Library/Caches/com.saurik.Cydia/";
 }
+
++ (NSString *)stateDirectory {
+    if ([Platform isSandboxed]) {
+        NSString *directory = [self cacheFile:@"APTState/"];
+        [self createDirectoryIfDoesntExist:directory];
+        return directory;
+    }
+    
+    return @"/var/mobile/Library/Caches/com.saurik.Cydia/";
+}
+
+
 + (NSString *)cacheFile:(NSString *)filename {
     return [[self cacheDirectory] stringByAppendingPathComponent:filename];
 }
@@ -68,27 +94,16 @@
     return [[self applicationLibraryDirectory] stringByAppendingPathComponent:filename];
 }
 
-+ (NSString *)cacheState {
-    return [self cacheFile:@"CacheState.plist"];
++ (NSString *)rootFile:(NSString *)filename {
+    return [[self rootDirectory] stringByAppendingPathComponent:filename];
 }
 
-+ (NSString *)savedState {
-    return [self cacheFile:@"SavedState.plist"];
++ (NSString *)aptFile:(NSString *)filename {
+    return [[self etcAptDirectory] stringByAppendingPathComponent:filename];
 }
 
-+ (NSString *)sourcesList {
-    return [self cacheFile:@"sources.list"];
-}
-
-+ (NSString *)dpkgStatus {
-    if ([Platform isSandboxed]) {
-        NSString *applicationLibraryDirectory = [self applicationLibraryDirectory];
-        NSString *dpkgDirectory = [applicationLibraryDirectory stringByAppendingPathComponent:@"var/lib/dpkg"];
-        [self createDirectoryIfDoesntExist:dpkgDirectory];
-        return [dpkgDirectory stringByAppendingPathComponent:@"status"];
-    }
-    
-    return @"/var/lib/dpkg/status";
++ (NSString *)stateFile:(NSString *)filename {
+    return [[self etcAptDirectory] stringByAppendingPathComponent:filename];
 }
 
 + (void)createDirectoryIfDoesntExist:(NSString *)directory {
@@ -106,6 +121,8 @@
         }
         
     }
+    
+    chmod(directory.UTF8String, 0755);
 }
 
 @end

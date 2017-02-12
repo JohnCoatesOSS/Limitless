@@ -121,7 +121,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     App_ = [NSBundle mainBundle].bundlePath;
     Advanced_ = TRUE;
     
-    Cache_ = [[Paths cacheDirectory] retain];
+    Cache_ = [Paths.aptCache retain];
     
     if (![Device isSimulator]) {
         mkdir([Cache_ UTF8String], 0755);
@@ -328,9 +328,11 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
         
         Version_ = [NSNumber numberWithUnsignedInt:1];
         
-        if (NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithContentsOfFile:[Paths cacheState]]) {
+        NSString *cacheStatePath = [Paths.aptCache subpath:@"CacheState.plist"];
+        NSMutableDictionary *cache = [NSMutableDictionary dictionaryWithContentsOfFile:cacheStatePath];
+        if (cache) {
             [cache removeObjectForKey:@"LastUpdate"];
-            [cache writeToFile:[Paths cacheState] atomically:YES];
+            [cache writeToFile:cacheStatePath atomically:YES];
         }
     }
     

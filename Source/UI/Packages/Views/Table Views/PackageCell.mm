@@ -93,9 +93,7 @@
                 placard = @"installing";
             }
         } else {
-            if (package.isFavorited){
-                color = [UIColor cydia_favoritesColor];
-            } else if (UIColor.isDarkModeEnabled) {
+            if (UIColor.isDarkModeEnabled) {
                 color = [UIColor cydia_black];
             } else {
                 color = [UIColor clearColor];
@@ -200,6 +198,7 @@
     
     if (highlighted && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_7_0)
         UISetColor([UIColor whiteColor].CGColor);
+    }
     
     if (!highlighted)
         UISetColor((commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])).CGColor);
@@ -209,22 +208,26 @@
 	
     [name_ drawInRect:CGRectMake(48, 8, (width - (placard_ == nil ? 80 : 106)), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font18Bold_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? ([UIColor isDarkModeEnabled] ? [UIColor cydia_darkCommercialColor] : [UIColor cydia_commercialColor]) : ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor]))}];
 	[source_ drawInRect:CGRectMake(58, 29, (width - 29), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font12_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: ([UIColor isDarkModeEnabled] ? [UIColor whiteColor] : [UIColor blackColor])}];
+
     
 	if (!highlighted) {
         UISetColor(commercial_ ? [UIColor cydia_commercialVariantColor].CGColor : [UIColor cydia_grayColor].CGColor);
 		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle, NSForegroundColorAttributeName: (commercial_ ? [UIColor cydia_commercialVariantColor] : [UIColor cydia_grayColor])}];
-	} else
-		[description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle}];
+    } else {
+        [description_ drawInRect:CGRectMake(12, 46, (width - 46), CGFLOAT_MAX) withAttributes:@{NSFontAttributeName: Font14_, NSParagraphStyleAttributeName: truncatingStyle}];
+    }
     
-    if (placard_ != nil)
+    if (placard_ != nil) {
         [placard_ drawAtPoint:CGPointMake(width - 52, 9)];
+    }
 }
 
 - (void) drawContentRect:(CGRect)rect {
-    if (summarized_)
+    if (summarized_) {
         [self drawSummaryContentRect:rect];
-    else
+    } else {
         [self drawNormalContentRect:rect];
+    }
 }
 
 @end
