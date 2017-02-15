@@ -83,7 +83,7 @@ class RegEx {
         UParseError error;
         size_t size(size_);
         UChar data[size];
-        size = _rgxcall(uregex_group, regex_, match, data, size);
+        size = _rgxcall(uregex_group, regex_, (int32_t)match, data, (int32_t)size);
         return [[[NSString alloc] initWithBytes:data length:(size * sizeof(UChar)) encoding:NSUTF16LittleEndianStringEncoding] autorelease];
     }
 
@@ -97,7 +97,7 @@ class RegEx {
 
     bool operator ()(const UChar *data, size_t size) {
         UParseError error;
-        _rgxcallv(uregex_setText, regex_, data, size);
+        _rgxcallv(uregex_setText, regex_, data, (int32_t)size);
 
         if (_rgxcall(uregex_matches, regex_, -1)) {
             size_ = size;

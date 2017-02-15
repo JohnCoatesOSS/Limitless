@@ -204,7 +204,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (Section *)sectionAtIndexPath:(NSIndexPath *)indexPath {
     Section *section = nil;
-    int index = [indexPath row];
+    int index = (int)[indexPath row];
     if (![self isEditing]) {
         index -= 1;
         if (index >= 0)

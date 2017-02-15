@@ -39,7 +39,7 @@
         length = count;
     }
     for (size_t i(0); i != length; ++i) {
-        objects[i] = [self item:state->state++];
+        objects[i] = [self item:(unsigned int)state->state++];
     }
     state->itemsPtr = objects;
     state->mutationsPtr = (unsigned long *)self;

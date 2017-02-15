@@ -68,7 +68,7 @@
         
         if (finish_r(line, size)) {
             NSString *finish = finish_r[1];
-            int index = [Finishes_ indexOfObject:finish];
+            int index = (int)[Finishes_ indexOfObject:finish];
             if (index != INT_MAX && index > Finish_)
                 Finish_ = index;
         }
@@ -460,7 +460,7 @@
             
             
             size_t count(CFArrayGetCount(packages_));
-            MetaFile_->active_ = count;
+            MetaFile_->active_ = (uint32_t)count;
             for (size_t index(0); index != count; ++index)
                 [(Package *) CFArrayGetValueAtIndex(packages_, index) setIndex:index];
         }

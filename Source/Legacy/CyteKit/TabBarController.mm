@@ -19,6 +19,8 @@
 **/
 /* }}} */
 
+#include "CyteKit/UCPlatform.h"
+
 #include "CyteKit/TabBarController.h"
 
 #include "iPhonePrivate.h"

@@ -191,7 +191,7 @@
     [[NSDictionary dictionaryWithObjectsAndKeys:
       @"InterfaceState", [tabbar_ navigationURLCollection],
       @"LastClosed", [NSDate date],
-      @"InterfaceIndex", [NSNumber numberWithInt:[tabbar_ selectedIndex]],
+      @"InterfaceIndex", [NSNumber numberWithInt:(int)[tabbar_ selectedIndex]],
       nil] writeToFile:savedStatePath atomically:YES];
     
     [self _saveConfig];
@@ -589,7 +589,7 @@ errno == ENOTDIR \
         UITabBarItem *changesItem = [[[tabbar_ viewControllers] objectAtIndex:2] tabBarItem];
         if (changes != 0) {
             _trace();
-            NSString *badge([[NSNumber numberWithInt:changes] stringValue]);
+            NSString *badge([[NSNumber numberWithInt:(int)changes] stringValue]);
             [changesItem setBadgeValue:badge];
             [changesItem setAnimatedBadge:([essential_ count] > 0)];
             [self setApplicationIconBadgeNumber:changes];
@@ -908,7 +908,7 @@ errno == ENOTDIR \
 
 - (void) _loaded {
     if ([broken_ count] != 0) {
-        int count = [broken_ count];
+        int count = (int)[broken_ count];
         
         UIAlertView *alert = [[[UIAlertView alloc]
                                initWithTitle:(count == 1 ? UCLocalize("HALFINSTALLED_PACKAGE") : [NSString stringWithFormat:UCLocalize("HALFINSTALLED_PACKAGES"), count])
@@ -924,7 +924,7 @@ errno == ENOTDIR \
         [alert setNumberOfRows:2];
         [alert show];
     } else if (!Ignored_ && [essential_ count] != 0) {
-        int count = [essential_ count];
+        int count = (int)[essential_ count];
         
         UIAlertView *alert = [[[UIAlertView alloc]
                                initWithTitle:(count == 1 ? UCLocalize("ESSENTIAL_UPGRADE") : [NSString stringWithFormat:UCLocalize("ESSENTIAL_UPGRADES"), count])

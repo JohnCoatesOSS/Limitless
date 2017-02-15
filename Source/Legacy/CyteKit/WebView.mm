@@ -19,6 +19,8 @@
 **/
 /* }}} */
 
+#include "CyteKit/UCPlatform.h"
+
 #include "CyteKit/dispatchEvent.h"
 #include "CyteKit/WebView.h"
 

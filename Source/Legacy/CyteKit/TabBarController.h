@@ -22,7 +22,6 @@
 #ifndef CyteKit_TabBarController_H
 #define CyteKit_TabBarController_H
 
-#include <CyteKit/UCPlatform.h>
 #include <CyteKit/ViewController.h>
 
 #include <UIKit/UIKit.h>

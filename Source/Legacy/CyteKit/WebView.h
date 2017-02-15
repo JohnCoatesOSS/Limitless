@@ -22,13 +22,14 @@
 #ifndef CyteKit_CydiaBrowser_H
 #define CyteKit_CydiaBrowser_H
 
-#include <WebKit/DOMNodeList.h>
-#include <WebKit/WebFrame.h>
-#include <WebKit/WebPolicyDelegate.h>
-#include <WebKit/WebScriptObject.h>
-#include <WebKit/WebView.h>
+#include <UIKit/UIKit.h>
 
-#include <JavaScriptCore/JavaScriptCore.h>
+@protocol WebPolicyDecisionListener;
+
+@class WebDataSource;
+@class WebFrame;
+@class WebScriptObject;
+@class WebView;
 
 enum CYWebPolicyDecision {
     CYWebPolicyDecisionUnknown,

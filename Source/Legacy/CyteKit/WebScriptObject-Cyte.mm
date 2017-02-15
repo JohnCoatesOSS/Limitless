@@ -19,7 +19,11 @@
 **/
 /* }}} */
 
+#include "CyteKit/UCPlatform.h"
+
 #include "CyteKit/WebScriptObject-Cyte.h"
+
+#include "iPhonePrivate.h"
 
 @implementation WebScriptObject (Cyte)
 
@@ -42,7 +46,7 @@
     else if (length > count)
         length = count;
     for (size_t i(0); i != length; ++i)
-        objects[i] = [self objectAtIndex:state->state++];
+        objects[i] = [self objectAtIndex:(unsigned int)state->state++];
     state->itemsPtr = objects;
     state->mutationsPtr = (unsigned long *) self;
     return length;

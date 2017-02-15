@@ -4,6 +4,7 @@ platform:              ios
 install-name:          '@rpath/libapt-pkg.dylib'
 current-version:       5.0.1
 compatibility-version: 5
+objc-constraint:       none
 exports:
   - archs:              [ armv7, armv7s, arm64, i386, x86_64 ]
     symbols:            [ _TFRewritePackageOrder, _TFRewriteSourceOrder,

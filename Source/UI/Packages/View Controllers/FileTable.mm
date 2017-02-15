@@ -87,7 +87,7 @@
             NSMutableArray *stack = [NSMutableArray arrayWithCapacity:8];
             [stack addObject:@"/"];
             
-            for (int i(0), e([files_ count]); i != e; ++i) {
+            for (int i(0), e((int32_t)[files_ count]); i != e; ++i) {
                 NSString *file = [files_ objectAtIndex:i];
                 while (![file hasPrefix:[stack lastObject]])
                     [stack removeLastObject];

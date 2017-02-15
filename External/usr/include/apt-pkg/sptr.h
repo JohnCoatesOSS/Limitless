@@ -63,7 +63,7 @@ class APT_DEPRECATED_MSG("use std::unique_ptr instead") SPtrArray
    inline SPtrArray() : Ptr(0) {};
 #if __GNUC__ >= 4
 	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wunsafe-loop-optimizations"
+//    #pragma GCC diagnostic ignored "-Wunsafe-loop-optimizations"
 	// gcc warns about this, but we can do nothing here…
 #endif
    inline ~SPtrArray() {delete [] Ptr;};

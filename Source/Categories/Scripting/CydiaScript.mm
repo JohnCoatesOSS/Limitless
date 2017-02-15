@@ -20,7 +20,8 @@
 - (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context {
     WebScriptObject *object([context evaluateWebScript:@"[]"]);
     for (size_t i(0), e([self count]); i != e; ++i)
-        [object setWebScriptValueAtIndex:i value:[[self objectAtIndex:i] Cydia$webScriptObjectInContext:context]];
+        [object setWebScriptValueAtIndex:(unsigned int)i
+                                   value:[[self objectAtIndex:i] Cydia$webScriptObjectInContext:context]];
     return object;
 }
 

@@ -42,7 +42,7 @@
    bounv will change b so that it is within the limits of a-c. */
 #define _bound(a,b,c) MIN(c,MAX(b,a))
 #define _boundv(a,b,c) b = _bound(a,b,c)
-#define ABS(a) (((a) < (0)) ?-(a) : (a))
+//#define ABS(a) (((a) < (0)) ?-(a) : (a))
 
 /* Useful count macro, use on an array of things and it will return the
    number of items in the array */

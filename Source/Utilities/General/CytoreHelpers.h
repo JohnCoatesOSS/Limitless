@@ -99,7 +99,7 @@ static inline void PackageImport(const void *key, const void *value, void *conte
     if (NSDate *date = [package objectForKey:@"FirstSeen"]) {
         time_t time([date timeIntervalSince1970]);
         if (metadata->first_ > time || metadata->first_ == 0)
-            metadata->first_ = time;
+            metadata->first_ = (int32_t)time;
     }
     
     NSDate *date([package objectForKey:@"LastSeen"]);
@@ -118,7 +118,7 @@ static inline void PackageImport(const void *key, const void *value, void *conte
                 strncpy(metadata->version_, latest, sizeof(metadata->version_));
                 metadata->vhash_ = vhash;
                 
-                metadata->last_ = time;
+                metadata->last_ = (int)time;
             }
     }
 }

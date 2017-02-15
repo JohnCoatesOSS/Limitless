@@ -109,7 +109,7 @@
         if (!section.Find([name UTF8String], start, end)) {
             return (NSString *) [NSNull null];
         }
-        return [NSString stringWithUTF8Bytes:start length:end - start];
+        return [NSString stringWithUTF8Bytes:start length:(int)(end - start)];
     }
 }
 

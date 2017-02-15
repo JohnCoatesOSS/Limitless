@@ -200,7 +200,7 @@ class File {
             }
 
             Header_().magic_ = Magic;
-            Size_() = core;
+            Size_() = (int32_t)core;
         } else if (size < core) {
             close(file_);
             file_ = -1;

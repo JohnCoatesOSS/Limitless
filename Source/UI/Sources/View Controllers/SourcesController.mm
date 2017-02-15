@@ -238,7 +238,7 @@
     [alert setNumberOfRows:1];
     [alert addTextFieldWithValue:@"http://" label:@""];
     
-    UITextInputTraits *traits = [[alert textField] textInputTraits];
+    NSObject <UITextInputTraits> *traits = [[alert textField] textInputTraits];
     [traits setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [traits setAutocorrectionType:UITextAutocorrectionTypeNo];
     [traits setKeyboardType:UIKeyboardTypeURL];
@@ -373,7 +373,7 @@
         [sources_ sortUsingSelector:@selector(compareByName:)];
         _trace();
         
-        int count([sources_ count]);
+        int count((int)[sources_ count]);
         offset_ = 0;
         for (int i = 0; i != count; i++) {
             if ([[sources_ objectAtIndex:i] record] == nil)

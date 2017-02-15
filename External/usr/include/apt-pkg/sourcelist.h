@@ -105,7 +105,7 @@ class pkgSourceList
    // List accessors
    inline const_iterator begin() const {return SrcList.begin();};
    inline const_iterator end() const {return SrcList.end();};
-   inline unsigned int size() const {return SrcList.size();};
+   inline unsigned int size() const {return (unsigned int)SrcList.size();};
    inline bool empty() const {return SrcList.empty();};
 
    bool FindIndex(pkgCache::PkgFileIterator File,

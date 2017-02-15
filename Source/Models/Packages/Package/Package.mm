@@ -126,12 +126,12 @@
         latest = latest + length - capped;
         
         if (metadata->first_ == 0)
-            metadata->first_ = now_;
+            metadata->first_ = (int32_t)now_;
         
         if (metadata->vhash_ != vhash || strncmp(metadata->version_, latest, sizeof(metadata->version_)) != 0) {
             strncpy(metadata->version_, latest, sizeof(metadata->version_));
             metadata->vhash_ = vhash;
-            metadata->last_ = now_;
+            metadata->last_ = (int32_t)now_;
         } else if (metadata->last_ == 0)
             metadata->last_ = metadata->first_;
         _end
@@ -882,7 +882,7 @@
 }
 
 - (uint32_t) recent {
-    return std::numeric_limits<uint32_t>::max() - upgraded_;
+    return (int32_t)(std::numeric_limits<uint32_t>::max() - upgraded_);
 }
 
 - (uint32_t) rank {
@@ -984,8 +984,9 @@
 }
 
 - (void) setIndex:(size_t)index {
-    if (metadata_->index_ != index)
-        metadata_->index_ = index;
+    if (metadata_->index_ != index) {
+        metadata_->index_ = (int32_t)index;
+    }
 }
 
 - (CYString &) cyname {
@@ -996,7 +997,7 @@
     NSString *section([self section]);
     for (size_t i(0), e([sections count]); i != e; ++i) {
         if ([section isEqualToString:[[sections objectAtIndex:i] name]])
-            return i;
+            return (int32_t)i;
     }
     
     return _not(uint32_t);

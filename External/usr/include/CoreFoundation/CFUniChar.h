@@ -45,7 +45,7 @@ CF_INLINE bool CFUniCharIsSurrogateLowCharacter(UniChar character) {
 }
 
 CF_INLINE UTF32Char CFUniCharGetLongCharacterForSurrogatePair(UniChar surrogateHigh, UniChar surrogateLow) {
-    return ((surrogateHigh - 0xD800UL) << 10) + (surrogateLow - 0xDC00UL) + 0x0010000UL;
+    return (UTF32Char)((surrogateHigh - 0xD800UL) << 10) + (surrogateLow - 0xDC00UL) + 0x0010000UL;
 }
 
 // The following values coinside TextEncodingFormat format defines in TextCommon.h

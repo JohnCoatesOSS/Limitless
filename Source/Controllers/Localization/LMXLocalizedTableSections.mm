@@ -25,7 +25,7 @@ typedef std::basic_string<UChar> ustring;
 #define UC ustring &str(*reinterpret_cast<ustring *>(rep))
 static struct UReplaceableCallbacks CollationUCalls_ = {
     .length = [](const UReplaceable *rep) -> int32_t { CUC;
-        return str.size();
+        return (int32_t)str.size();
     },
     
     .charAt = [](const UReplaceable *rep, int32_t offset) -> UChar { CUC;
@@ -188,10 +188,10 @@ static struct UReplaceableCallbacks CollationUCalls_ = {
     int32_t length;
     CollationString_.resize(name.size());
     u_strFromUTF8WithSub(&CollationString_[0],
-                         CollationString_.size(),
+                         (int32_t)CollationString_.size(),
                          &length,
                          name.data(),
-                         name.size(),
+                         (int32_t)name.size(),
                          0xfffd,
                          NULL,
                          &code);
@@ -201,7 +201,7 @@ static struct UReplaceableCallbacks CollationUCalls_ = {
     }
     CollationString_.resize(length);
     
-    length = CollationString_.size();
+    length = (int32_t)CollationString_.size();
     utrans_trans(transliterator,
                  reinterpret_cast<UReplaceable *>(&CollationString_),
                  &CollationUCalls_,
@@ -214,7 +214,7 @@ static struct UReplaceableCallbacks CollationUCalls_ = {
     }
     _assert(CollationString_.size() == length);
     
-    u_strToUTF8WithSub(NULL, 0, &length, CollationString_.data(), CollationString_.size(), 0xfffd, NULL, &code);
+    u_strToUTF8WithSub(NULL, 0, &length, CollationString_.data(), (int32_t)CollationString_.size(), 0xfffd, NULL, &code);
     if (code == U_BUFFER_OVERFLOW_ERROR) {
         code = U_ZERO_ERROR;
     }
@@ -229,7 +229,7 @@ static struct UReplaceableCallbacks CollationUCalls_ = {
                        length,
                        NULL,
                        CollationString_.data(),
-                       CollationString_.size(),
+                       (int32_t)CollationString_.size(),
                        0xfffd,
                        NULL,
                        &code);
