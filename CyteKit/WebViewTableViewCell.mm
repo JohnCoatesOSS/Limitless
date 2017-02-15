@@ -19,7 +19,10 @@
 **/
 /* }}} */
 
+#include "CyteKit/UCPlatform.h"
+
 #include "CyteKit/WebViewTableViewCell.h"
+
 #include "iPhonePrivate.h"
 
 @implementation CyteWebViewTableViewCell

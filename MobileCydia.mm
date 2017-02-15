@@ -53,7 +53,6 @@
 #include <QuartzCore/CALayer.h>
 
 #include <WebCore/WebCoreThread.h>
-#include <WebKit/DOMHTMLIFrameElement.h>
 
 #include <algorithm>
 #include <fstream>
@@ -8855,7 +8854,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [alert setNumberOfRows:1];
     [alert addTextFieldWithValue:@"http://" label:@""];
 
-    UITextInputTraits *traits = [[alert textField] textInputTraits];
+    NSObject<UITextInputTraits> *traits = [[alert textField] textInputTraits];
     [traits setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     [traits setAutocorrectionType:UITextAutocorrectionTypeNo];
     [traits setKeyboardType:UIKeyboardTypeURL];
@@ -9605,7 +9604,7 @@ _end
         [super applicationSuspend];
 }
 
-- (void) applicationSuspend:(__GSEvent *)event {
+- (void) applicationSuspend:(GSEventRef)event {
     if ([self isSafeToSuspend])
         [super applicationSuspend:event];
 }

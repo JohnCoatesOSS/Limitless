@@ -19,7 +19,11 @@
 **/
 /* }}} */
 
+#include "CyteKit/UCPlatform.h"
+
 #include "CyteKit/WebScriptObject-Cyte.h"
+
+#include "iPhonePrivate.h"
 
 @implementation WebScriptObject (Cyte)
 

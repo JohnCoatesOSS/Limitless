@@ -22,8 +22,6 @@
 #ifndef CyteKit_ViewController_H
 #define CyteKit_ViewController_H
 
-#include <CyteKit/UCPlatform.h>
-
 #include <UIKit/UIKit.h>
 
 #include <Menes/ObjectHandle.h>

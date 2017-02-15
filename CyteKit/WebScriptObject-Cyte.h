@@ -22,7 +22,7 @@
 #ifndef CyteKit_WebScriptObject_Cyte_H
 #define CyteKit_WebScriptObject_Cyte_H
 
-#include <WebKit/WebScriptObject.h>
+#include "iPhonePrivate.h"
 
 @interface WebScriptObject (Cyte)
 - (NSUInteger) count;

@@ -22,8 +22,6 @@
 #ifndef CyteKit_TableViewCell_H
 #define CyteKit_TableViewCell_H
 
-#include <CyteKit/UCPlatform.h>
-
 #include <UIKit/UIKit.h>
 
 #include <Menes/ObjectHandle.h>

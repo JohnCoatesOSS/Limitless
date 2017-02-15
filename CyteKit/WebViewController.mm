@@ -1,30 +1,19 @@
 #include "CyteKit/UCPlatform.h"
-#include "CyteKit/WebViewController.h"
-
-#include "CyteKit/MFMailComposeViewController-MailToURL.h"
-
-#include "iPhonePrivate.h"
 
 #include "CyteKit/IndirectDelegate.h"
 #include "CyteKit/Localize.h"
-#include "CyteKit/WebViewController.h"
+#include "CyteKit/MFMailComposeViewController-MailToURL.h"
 #include "CyteKit/RegEx.hpp"
 #include "CyteKit/WebThreadLocked.hpp"
+#include "CyteKit/WebViewController.h"
+
+#include "iPhonePrivate.h"
 
 //#include <QuartzCore/CALayer.h>
 // XXX: fix the minimum requirement
 extern NSString * const kCAFilterNearest;
 
 #include <WebCore/WebCoreThread.h>
-
-#import <WebKit/WebKitErrors.h>
-#import <WebKit/WebPreferences.h>
-
-#include <WebKit/DOMCSSPrimitiveValue.h>
-#include <WebKit/DOMCSSStyleDeclaration.h>
-#include <WebKit/DOMDocument.h>
-#include <WebKit/DOMHTMLBodyElement.h>
-#include <WebKit/DOMRGBColor.h>
 
 #include <dlfcn.h>
 #include <objc/runtime.h>
@@ -683,7 +672,7 @@ float CYScrollViewDecelerationRateNormal;
     [alert addTextFieldWithValue:@"" label:UCLocalize("PASSWORD")];
 
     UITextField *username([alert textFieldAtIndex:0]); {
-        UITextInputTraits *traits([username textInputTraits]);
+        NSObject<UITextInputTraits> *traits([username textInputTraits]);
         [traits setAutocapitalizationType:UITextAutocapitalizationTypeNone];
         [traits setAutocorrectionType:UITextAutocorrectionTypeNo];
         [traits setKeyboardType:UIKeyboardTypeASCIICapable];
@@ -691,7 +680,7 @@ float CYScrollViewDecelerationRateNormal;
     }
 
     UITextField *password([alert textFieldAtIndex:1]); {
-        UITextInputTraits *traits([password textInputTraits]);
+        NSObject<UITextInputTraits> *traits([password textInputTraits]);
         [traits setAutocapitalizationType:UITextAutocapitalizationTypeNone];
         [traits setAutocorrectionType:UITextAutocorrectionTypeNo];
         [traits setKeyboardType:UIKeyboardTypeASCIICapable];

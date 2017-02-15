@@ -24,13 +24,12 @@
 
 #include <UIKit/UIKit.h>
 
-#include <WebKit/DOMNodeList.h>
-#include <WebKit/WebFrame.h>
-#include <WebKit/WebPolicyDelegate.h>
-#include <WebKit/WebScriptObject.h>
-#include <WebKit/WebView.h>
+@protocol WebPolicyDecisionListener;
 
-#include <JavaScriptCore/JavaScriptCore.h>
+@class WebDataSource;
+@class WebFrame;
+@class WebScriptObject;
+@class WebView;
 
 enum CYWebPolicyDecision {
     CYWebPolicyDecisionUnknown,

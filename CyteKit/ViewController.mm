@@ -19,10 +19,12 @@
 **/
 /* }}} */
 
-#include "CyteKit/ViewController.h"
+#include "CyteKit/UCPlatform.h"
 
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
+
+#include "CyteKit/ViewController.h"
 
 #include "iPhonePrivate.h"
 
