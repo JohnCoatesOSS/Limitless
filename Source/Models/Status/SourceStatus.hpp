@@ -30,7 +30,10 @@ public:
         }
         
         //printf("Set(%s, %s)\n", fetch ? "true" : "false", uri.c_str());
-        [database_ setFetch:fetch forURI:uri.c_str()];
+        auto slash(uri.rfind('/'));
+        if (slash != std::string::npos) {
+            [database_ setFetch:fetch forURI:uri.substr(0, slash).c_str()];
+        }
     }
     
     _finline void Set(bool fetch, pkgAcquire::Item *item) {
