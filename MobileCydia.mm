@@ -10273,7 +10273,11 @@ int main(int argc, char *argv[]) {
         }
 
     if (Languages_ != nil)
-        for (NSString *language : Languages_) {
+        for (NSString *locale : Languages_) {
+            auto components([NSLocale componentsFromLocaleIdentifier:locale]);
+            NSString *language([components objectForKey:(id)kCFLocaleLanguageCode]);
+            if (NSString *script = [components objectForKey:(id)kCFLocaleScriptCode])
+                language = [NSString stringWithFormat:@"%@-%@", language, script];
             languages += [language UTF8String];
             languages += ",";
         }
