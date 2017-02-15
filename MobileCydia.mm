@@ -6398,6 +6398,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 #if !AlwaysReload
 - (void) _customButtonClicked {
+    if (commercial_ && [package_ uninstalled])
+        return [self reloadURLWithCache:NO];
+
     size_t count(buttons_.size());
     if (count == 0)
         return;
@@ -6423,12 +6426,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
         [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
     }
-}
-
-- (void) reloadButtonClicked {
-    if (commercial_ && function_ == nil && [package_ uninstalled])
-        return;
-    [self customButtonClicked];
 }
 
 - (void) applyLoadingTitle {
