@@ -412,6 +412,7 @@ reload:
 }
 
 #pragma mark - 3D touch
+
 - (void)viewDidLoad{
     [super viewDidLoad];
     if ([self isForceTouchAvailable]) {

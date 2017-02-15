@@ -10,7 +10,7 @@
 @class Package;
 
 @interface PackageListController : CyteViewController
-<UITableViewDataSource,UITableViewDelegate> {
+<UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate> {
     _transient Database *database_;
     unsigned era_;
     _H<NSArray> packages_;

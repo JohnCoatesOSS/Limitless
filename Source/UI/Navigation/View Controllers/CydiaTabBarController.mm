@@ -14,19 +14,6 @@
 
 @implementation CydiaTabBarController
 
-- (NSArray *) navigationURLCollection {
-    NSMutableArray *items([NSMutableArray array]);
-    
-    // XXX: Should this deal with transient view controllers?
-    for (id navigation in [self viewControllers]) {
-        NSArray *stack = [navigation performSelector:@selector(navigationURLCollection)];
-        if (stack != nil)
-            [items addObject:stack];
-    }
-    
-    return items;
-}
-
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super init]) != nil) {
         database_ = database;

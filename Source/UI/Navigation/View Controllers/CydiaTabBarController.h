@@ -23,7 +23,6 @@
 
 - (id) initWithDatabase:(Database *)database;
 
-- (NSArray *) navigationURLCollection;
 - (void) beginUpdate;
 - (BOOL) updating;
 - (void) cancelUpdate;

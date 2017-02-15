@@ -53,6 +53,10 @@
     return nil;
 }
 
+- (NSURL *) navigationURL {
+    return nil;
+}
+
 @end
 
 @implementation CyteViewController {
@@ -108,10 +112,6 @@
 - (void) unloadData {
     loaded_ = NO;
     [super unloadData];
-}
-
-- (NSURL *) navigationURL {
-    return nil;
 }
 
 - (void) setPageColor:(UIColor *)color {

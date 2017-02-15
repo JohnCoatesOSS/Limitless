@@ -31,6 +31,7 @@
 
 @interface CyteTabBarController : UITabBarController
 
+- (NSArray *) navigationURLCollection;
 - (UIViewController *) unselectedViewController;
 - (void) setUnselectedViewController:(UIViewController *)transient;
 

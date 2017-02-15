@@ -36,6 +36,19 @@
     _H<UIViewController> remembered_;
 }
 
+- (NSArray *) navigationURLCollection {
+    NSMutableArray *items([NSMutableArray array]);
+
+    // XXX: Should this deal with transient view controllers?
+    for (id navigation in [self viewControllers]) {
+        NSArray *stack = [navigation performSelector:@selector(navigationURLCollection)];
+        if (stack != nil)
+            [items addObject:stack];
+    }
+
+    return items;
+}
+
 - (void) didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 
