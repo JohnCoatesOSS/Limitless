@@ -330,10 +330,10 @@ static const CFStringCompareFlags LaxCompareFlags_ = kCFCompareNumerically | kCF
 /* Insertion Sort {{{ */
 
 template <typename Type_>
-CFIndex CFBSearch_(const Type_ &element, const void *list, CFIndex count, CFComparatorFunction comparator, void *context) {
+size_t CFBSearch_(const Type_ &element, const void *list, size_t count, CFComparisonResult (*comparator)(Type_, Type_, void *), void *context) {
     const char *ptr = (const char *)list;
     while (0 < count) {
-        CFIndex half = count / 2;
+        size_t half = count / 2;
         const char *probe = ptr + sizeof(Type_) * half;
         CFComparisonResult cr = comparator(element, * (const Type_ *) probe, context);
         if (0 == cr) return (probe - (const char *)list) / sizeof(Type_);
@@ -343,22 +343,21 @@ CFIndex CFBSearch_(const Type_ &element, const void *list, CFIndex count, CFComp
     return (ptr - (const char *)list) / sizeof(Type_);
 }
 
-void CFArrayInsertionSortValues(CFMutableArrayRef array, CFRange range, CFComparatorFunction comparator, void *context) {
-    if (range.length == 0)
+template <typename Type_>
+void CYArrayInsertionSortValues(Type_ *values, size_t length, CFComparisonResult (*comparator)(Type_, Type_, void *), void *context) {
+    if (length == 0)
         return;
-    const void **values(new const void *[range.length]);
-    CFArrayGetValues(array, range, values);
 
 #if HistogramInsertionSort > 0
-    uint32_t total(0), *offsets(new uint32_t[range.length]);
+    uint32_t total(0), *offsets(new uint32_t[length]);
 #endif
 
-    for (CFIndex index(1); index != range.length; ++index) {
-        const void *value(values[index]);
+    for (size_t index(1); index != length; ++index) {
+        Type_ value(values[index]);
 #if 0
-        CFIndex correct(CFBSearch_(value, values, index, comparator, context));
+        size_t correct(CFBSearch_(value, values, index, comparator, context));
 #else
-        CFIndex correct(index);
+        size_t correct(index);
         while (comparator(value, values[correct - 1], context) == kCFCompareLessThan) {
 #if HistogramInsertionSort > 1
             NSLog(@"%@ < %@", value, values[correct - 1]);
@@ -384,11 +383,8 @@ void CFArrayInsertionSortValues(CFMutableArrayRef array, CFRange range, CFCompar
         }
     }
 
-    CFArrayReplaceValues(array, range, values, range.length);
-    delete [] values;
-
 #if HistogramInsertionSort > 0
-    for (CFIndex index(0); index != range.length; ++index)
+    for (size_t index(0); index != range.length; ++index)
         if (offsets[index] != 0)
             NSLog(@"Insertion Displacement [%u]: %u", index, offsets[index]);
     NSLog(@"Average Insertion Displacement: %f", double(total) / range.length);
@@ -4006,27 +4002,27 @@ class CydiaLogCleaner :
 
         packages.resize(last);
 
-        packages_ = [[[NSMutableArray alloc] initWithObjects:packages.data() count:packages.size()] autorelease];
-
         if (lost > 128) {
             NSLog(@"lost = %zu", lost);
 
             _profile(reloadDataWithInvocation$radix$8)
-            [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(8)];
+            CYRadixSortUsingFunction(packages.data(), packages.size(), reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix), reinterpret_cast<void *>(8));
             _end
 
             _profile(reloadDataWithInvocation$radix$4)
-            [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(4)];
+            CYRadixSortUsingFunction(packages.data(), packages.size(), reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix), reinterpret_cast<void *>(4));
             _end
 
             _profile(reloadDataWithInvocation$radix$0)
-            [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(0)];
+            CYRadixSortUsingFunction(packages.data(), packages.size(), reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix), reinterpret_cast<void *>(0));
             _end
         }
 
         _profile(reloadDataWithInvocation$insertion)
-        CFArrayInsertionSortValues((CFMutableArrayRef) (NSArray *) packages_, CFRangeMake(0, packages.size()), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare), NULL);
+        CYArrayInsertionSortValues(packages.data(), packages.size(), &PackageNameCompare, NULL);
         _end
+
+        packages_ = [[[NSArray alloc] initWithObjects:packages.data() count:packages.size()] autorelease];
 
         /*_profile(reloadDataWithInvocation$CFQSortArray)
         CFQSortArray(&packages.front(), packages.size(), sizeof(packages.front()), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare_), NULL);
@@ -4046,7 +4042,7 @@ class CydiaLogCleaner :
 
         MetaFile_->active_ = packages.size();
         for (size_t index(0), count(packages.size()); index != count; ++index) {
-            auto package((Package *) [packages_ objectAtIndex:index]);
+            auto package(packages[index]);
             [package setIndex:index];
             [package release];
         }
