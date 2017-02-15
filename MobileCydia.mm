@@ -1194,7 +1194,10 @@ class SourceStatus :
         }
 
         //printf("Set(%s, %s)\n", fetch ? "true" : "false", uri.c_str());
-        [database_ setFetch:fetch forURI:uri.c_str()];
+
+        auto slash(uri.rfind('/'));
+        if (slash != std::string::npos)
+            [database_ setFetch:fetch forURI:uri.substr(0, slash).c_str()];
     }
 
     _finline void Set(bool fetch, pkgAcquire::Item *item) {
@@ -1659,13 +1662,10 @@ static void SaveConfig(NSObject *lock) {
         _profile(Source$setMetaIndex$DescURI)
         for (pkgAcquire::ItemIterator item(acquire.ItemsBegin()); item != acquire.ItemsEnd(); item++) {
             std::string file((*item)->DescURI());
-            files_.insert(file);
-            if (file.length() < sizeof("Packages.bz2") || file.substr(file.length() - sizeof("Packages.bz2")) != "/Packages.bz2")
+            auto slash(file.rfind('/'));
+            if (slash == std::string::npos)
                 continue;
-            file = file.substr(0, file.length() - 4);
-            files_.insert(file);
-            files_.insert(file + ".gz");
-            files_.insert(file + "Index");
+            files_.insert(file.substr(0, slash));
         }
         _end
 
