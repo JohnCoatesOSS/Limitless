@@ -329,30 +329,18 @@ static const CFStringCompareFlags LaxCompareFlags_ = kCFCompareNumerically | kCF
 
 /* Insertion Sort {{{ */
 
-CFIndex SKBSearch_(const void *element, CFIndex elementSize, const void *list, CFIndex count, CFComparatorFunction comparator, void *context) {
+template <typename Type_>
+CFIndex CFBSearch_(const Type_ &element, const void *list, CFIndex count, CFComparatorFunction comparator, void *context) {
     const char *ptr = (const char *)list;
     while (0 < count) {
         CFIndex half = count / 2;
-        const char *probe = ptr + elementSize * half;
-        CFComparisonResult cr = comparator(element, probe, context);
-    if (0 == cr) return (probe - (const char *)list) / elementSize;
-        ptr = (cr < 0) ? ptr : probe + elementSize;
+        const char *probe = ptr + sizeof(Type_) * half;
+        CFComparisonResult cr = comparator(element, * (const Type_ *) probe, context);
+        if (0 == cr) return (probe - (const char *)list) / sizeof(Type_);
+        ptr = (cr < 0) ? ptr : probe + sizeof(Type_);
         count = (cr < 0) ? half : (half + (count & 1) - 1);
     }
-    return (ptr - (const char *)list) / elementSize;
-}
-
-CFIndex CFBSearch_(const void *element, CFIndex elementSize, const void *list, CFIndex count, CFComparatorFunction comparator, void *context) {
-    const char *ptr = (const char *)list;
-    while (0 < count) {
-        CFIndex half = count / 2;
-        const char *probe = ptr + elementSize * half;
-        CFComparisonResult cr = comparator(element, probe, context);
-    if (0 == cr) return (probe - (const char *)list) / elementSize;
-        ptr = (cr < 0) ? ptr : probe + elementSize;
-        count = (cr < 0) ? half : (half + (count & 1) - 1);
-    }
-    return (ptr - (const char *)list) / elementSize;
+    return (ptr - (const char *)list) / sizeof(Type_);
 }
 
 void CFArrayInsertionSortValues(CFMutableArrayRef array, CFRange range, CFComparatorFunction comparator, void *context) {
@@ -367,7 +355,9 @@ void CFArrayInsertionSortValues(CFMutableArrayRef array, CFRange range, CFCompar
 
     for (CFIndex index(1); index != range.length; ++index) {
         const void *value(values[index]);
-        //CFIndex correct(SKBSearch_(&value, sizeof(const void *), values, index, comparator, context));
+#if 0
+        CFIndex correct(CFBSearch_(value, values, index, comparator, context));
+#else
         CFIndex correct(index);
         while (comparator(value, values[correct - 1], context) == kCFCompareLessThan) {
 #if HistogramInsertionSort > 1
@@ -375,7 +365,12 @@ void CFArrayInsertionSortValues(CFMutableArrayRef array, CFRange range, CFCompar
 #endif
             if (--correct == 0)
                 break;
+            if (index - correct >= 8) {
+                correct = CFBSearch_(value, values, correct, comparator, context);
+                break;
+            }
         }
+#endif
         if (correct != index) {
             size_t offset(index - correct);
 #if HistogramInsertionSort
