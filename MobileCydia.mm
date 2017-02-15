@@ -112,6 +112,8 @@ extern "C" {
 #include "Substrate.hpp"
 #include "Menes/Menes.h"
 
+#include "CyteKit/Application.h"
+#include "CyteKit/NavigationController.h"
 #include "CyteKit/RegEx.hpp"
 #include "CyteKit/TableViewCell.h"
 #include "CyteKit/TabBarController.h"
@@ -7019,15 +7021,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 @end
 /* }}} */
 
-/* Cydia Navigation Controller Interface {{{ */
-@interface UINavigationController (Cydia)
-
-- (NSArray *) navigationURLCollection;
-- (void) unloadData;
-
-@end
-/* }}} */
-
 /* Cydia Tab Bar Controller {{{ */
 @interface CydiaTabBarController : CyteTabBarController <
     UITabBarControllerDelegate,
@@ -7042,26 +7035,12 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     _transient NSObject<CydiaDelegate> *updatedelegate_;
 }
 
-- (NSArray *) navigationURLCollection;
 - (void) beginUpdate;
 - (BOOL) updating;
 
 @end
 
 @implementation CydiaTabBarController
-
-- (NSArray *) navigationURLCollection {
-    NSMutableArray *items([NSMutableArray array]);
-
-    // XXX: Should this deal with transient view controllers?
-    for (id navigation in [self viewControllers]) {
-        NSArray *stack = [navigation performSelector:@selector(navigationURLCollection)];
-        if (stack != nil)
-            [items addObject:stack];
-    }
-
-    return items;
-}
 
 - (id) initWithDatabase:(Database *)database {
     if ((self = [super init]) != nil) {
@@ -7156,47 +7135,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (void) setUpdateDelegate:(id)delegate {
     updatedelegate_ = delegate;
-}
-
-@end
-/* }}} */
-
-/* Cydia Navigation Controller Implementation {{{ */
-@implementation UINavigationController (Cydia)
-
-- (NSArray *) navigationURLCollection {
-    NSMutableArray *stack([NSMutableArray array]);
-
-    for (CyteViewController *controller in [self viewControllers]) {
-        NSString *url = [[controller navigationURL] absoluteString];
-        if (url != nil)
-            [stack addObject:url];
-    }
-
-    return stack;
-}
-
-- (void) reloadData {
-    [super reloadData];
-
-    UIViewController *visible([self visibleViewController]);
-    if (visible != nil)
-        [visible reloadData];
-
-    // on the iPad, this view controller is ALSO visible. :(
-    if (IsWildcat_)
-        if (UIViewController *modal = [self modalViewController])
-            if ([modal modalPresentationStyle] == UIModalPresentationFormSheet)
-                if (UIViewController *top = [self topViewController])
-                    if (top != visible)
-                        [top reloadData];
-}
-
-- (void) unloadData {
-    for (CyteViewController *page in [self viewControllers])
-        [page unloadData];
-
-    [super unloadData];
 }
 
 @end
@@ -8999,7 +8937,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 @end
 
-@interface Cydia : UIApplication <
+@interface Cydia : CyteApplication <
     ConfirmationControllerDelegate,
     DatabaseDelegate,
     CydiaDelegate
@@ -9898,32 +9836,9 @@ _end
     [tabbar_ setUpdateDelegate:self];
 }
 
-- (void) _sendMemoryWarningNotification {
-    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iPhoneOS_3_0) // XXX: maybe 4_0?
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UIApplicationMemoryWarningNotification" object:[UIApplication sharedApplication]];
-    else
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UIApplicationDidReceiveMemoryWarningNotification" object:[UIApplication sharedApplication]];
-}
-
-- (void) _sendMemoryWarningNotifications {
-    while (true) {
-        [self performSelectorOnMainThread:@selector(_sendMemoryWarningNotification) withObject:nil waitUntilDone:NO];
-        sleep(2);
-        //usleep(2000000);
-    }
-}
-
-- (void) applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    NSLog(@"--");
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
-}
-
 - (void) applicationDidFinishLaunching:(id)unused {
-    //[NSThread detachNewThreadSelector:@selector(_sendMemoryWarningNotifications) toTarget:self withObject:nil];
-
+    [super applicationDidFinishLaunching:unused];
 _trace();
-    if ([self respondsToSelector:@selector(setApplicationSupportsShakeToEdit:)])
-        [self setApplicationSupportsShakeToEdit:NO];
 
     @synchronized (HostConfig_) {
         [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];

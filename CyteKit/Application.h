@@ -19,22 +19,15 @@
 **/
 /* }}} */
 
-#ifndef CyteKit_TabBarController_H
-#define CyteKit_TabBarController_H
-
-#include <CyteKit/ViewController.h>
+#ifndef CyteKit_Application_H
+#define CyteKit_Application_H
 
 #include <UIKit/UIKit.h>
 
-@interface UITabBarController (Cydia)
-@end
+@interface CyteApplication : UIApplication
 
-@interface CyteTabBarController : UITabBarController
-
-- (NSArray *) navigationURLCollection;
-- (UIViewController *) unselectedViewController;
-- (void) setUnselectedViewController:(UIViewController *)transient;
+- (void) applicationDidFinishLaunching:(id)unused;
 
 @end
 
-#endif//CyteKit_TabBarController_H
+#endif//CyteKit_Application_H
