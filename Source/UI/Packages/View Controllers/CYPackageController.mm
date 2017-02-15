@@ -83,6 +83,10 @@
 
 #if !AlwaysReload
 - (void) _customButtonClicked {
+    if (commercial_ && [package_ uninstalled]) {
+        return [self reloadURLWithCache:NO];
+    }
+    
     size_t count(buttons_.size());
     if (count == 0)
         return;
@@ -108,12 +112,6 @@
         
         [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
     }
-}
-
-- (void) reloadButtonClicked {
-    if (commercial_ && function_ == nil && [package_ uninstalled])
-        return;
-    [self customButtonClicked];
 }
 
 - (void) applyLoadingTitle {

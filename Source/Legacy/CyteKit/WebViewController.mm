@@ -815,9 +815,9 @@ float CYScrollViewDecelerationRateNormal;
 
 - (UIBarButtonItem *) customButton {
     if (custom_ == nil)
-        return nil;
+        return [self rightButton];
     else if ((/*clang:*/id) custom_ == [NSNull null])
-        return (UIBarButtonItem *) [NSNull null];
+        return nil;
 
     return [[[UIBarButtonItem alloc]
         initWithTitle:static_cast<NSString *>(custom_.operator NSObject *())
@@ -870,14 +870,7 @@ float CYScrollViewDecelerationRateNormal;
         [self applyLoadingTitle];
     } else {
         [indicator_ stopAnimating];
-
-        UIBarButtonItem *button([self customButton]);
-        if (button == nil)
-            button = [self rightButton];
-        else if (button == (UIBarButtonItem *) [NSNull null])
-            button = nil;
-
-        [[self navigationItem] setRightBarButtonItem:button animated:YES];
+        [[self navigationItem] setRightBarButtonItem:[self customButton] animated:YES];
     }
 }
 
@@ -942,7 +935,7 @@ float CYScrollViewDecelerationRateNormal;
             initWithTitle:(kCFCoreFoundationVersionNumber >= 800 ? @"       " : @" ")
             style:UIBarButtonItemStylePlain
             target:self
-            action:@selector(reloadButtonClicked)
+            action:@selector(customButtonClicked)
         ] autorelease];
 
         UIActivityIndicatorViewStyle style;
