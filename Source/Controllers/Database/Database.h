@@ -32,7 +32,7 @@ typedef std::map< unsigned long, _H<Source> > SourceMap;
     SourceMap sourceMap_;
     _H<NSMutableArray> sourceList_;
     
-    CFMutableArrayRef packages_;
+    _H<NSArray> packages_;
     
     _transient NSObject<DatabaseDelegate> *delegate_;
     _transient NSObject<ProgressDelegate> *progress_;

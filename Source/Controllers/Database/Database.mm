@@ -36,14 +36,11 @@
 }
 
 - (void) releasePackages {
-    CFArrayApplyFunction(packages_,
-                         CFRangeMake(0, CFArrayGetCount(packages_)),
-                         reinterpret_cast<CFArrayApplierFunction>(&CFRelease), NULL);
-    CFArrayRemoveAllValues(packages_);
+    packages_ = nil;
 }
 
 - (bool) hasPackages {
-    return CFArrayGetCount(packages_) != 0;
+    return [packages_ count] != 0;
 }
 
 - (void) dealloc {
@@ -167,13 +164,6 @@
         
         zone_ = NSCreateZone(1024 * 1024, 256 * 1024, NO);
         
-        size_t capacity(MetaFile_->active_);
-        if (capacity == 0)
-            capacity = 16384;
-        else
-            capacity += 1024;
-        
-        packages_ = CFArrayCreateMutable(kCFAllocatorDefault, capacity, NULL);
         sourceList_ = [NSMutableArray arrayWithCapacity:16];
         
         int fds[2];
@@ -218,7 +208,7 @@
 }
 
 - (NSArray *) packages {
-    return (NSArray *) packages_;
+    return packages_;
 }
 
 - (NSArray *) sources {
@@ -408,38 +398,86 @@
         }
         
         {
-            /*std::vector<Package *> packages;
-             packages.reserve(std::max(10000U, [packages_ count] + 1000));
-             packages_ = nil;*/
+            size_t capacity(MetaFile_->active_);
+            if (capacity == 0) {
+                capacity = 128*1024;
+            } else {
+                capacity += 1024;
+            }
+    
+            std::vector<Package *> packages;
+            packages.reserve(capacity);
+            size_t lost(0);
+            size_t last(0);
             
             _profile(reloadDataWithInvocation$packageWithIterator)
-            for (pkgCache::PkgIterator iterator = cache->PkgBegin(); !iterator.end(); ++iterator)
-                if (Package *package = [Package packageWithIterator:iterator withZone:zone_ inPool:&pool_ database:self])
-                    //packages.push_back(package);
-                    CFArrayAppendValue(packages_, CFRetain(package));
+            for (pkgCache::PkgIterator iterator = cache->PkgBegin(); !iterator.end(); ++iterator) {
+                if (Package *package = [Package newPackageWithIterator:iterator withZone:zone_ inPool:&pool_ database:self]) {
+                    if (unsigned index = package.metadata->index_) {
+                        --index;
+                        if (packages.size() == index) {
+                            packages.push_back(package);
+                        } else if (packages.size() <= index) {
+                            packages.resize(index + 1, nil);
+                            packages[index] = package;
+                            continue;
+                        } else {
+                            std::swap(package, packages[index]);
+                            if (package != nil)
+                                goto lost;
+                            if (last != index)
+                                continue;
+                        }
+                    } else lost: {
+                        ++lost;
+                        if (last == packages.size()) {
+                            packages.push_back(package);
+                            ++last;
+                        } else {
+                            packages[last] = package;
+                            ++last;
+                        }
+                    }
+                    
+                    for (; last != packages.size(); ++last)
+                        if (packages[last] == nil)
+                            break;
+                }
+            }
             _end
             
+            for (size_t next(last + 1); last != packages.size(); ++last, ++next) {
+                while (true) {
+                    if (next == packages.size())
+                        goto done;
+                    if (packages[next] != nil)
+                        break;
+                    ++next;
+                }
+                std::swap(packages[last], packages[next]);
+            } done:;
             
-            /*if (packages.empty())
-             packages_ = [[NSArray alloc] init];
-             else
-             packages_ = [[NSArray alloc] initWithObjects:&packages.front() count:packages.size()];
-             _trace();*/
+            packages.resize(last);
+            packages_ = [[[NSMutableArray alloc] initWithObjects:packages.data() count:packages.size()] autorelease];
             
-            _profile(reloadDataWithInvocation$radix$8)
-            [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(8)];
-            _end
-            
-            _profile(reloadDataWithInvocation$radix$4)
-            [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(4)];
-            _end
-            
-            _profile(reloadDataWithInvocation$radix$0)
-            [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(0)];
-            _end
+            if (lost > 128) {
+                NSLog(@"lost = %zu", lost);
+                
+                _profile(reloadDataWithInvocation$radix$8)
+                [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(8)];
+                _end
+                
+                _profile(reloadDataWithInvocation$radix$4)
+                [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(4)];
+                _end
+                
+                _profile(reloadDataWithInvocation$radix$0)
+                [(NSMutableArray *) packages_ radixSortUsingFunction:reinterpret_cast<MenesRadixSortFunction>(&PackagePrefixRadix) withContext:reinterpret_cast<void *>(0)];
+                _end
+            }
             
             _profile(reloadDataWithInvocation$insertion)
-            CFArrayInsertionSortValues(packages_, CFRangeMake(0, CFArrayGetCount(packages_)), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare), NULL);
+            CFArrayInsertionSortValues((CFMutableArrayRef) (NSArray *) packages_, CFRangeMake(0, packages.size()), reinterpret_cast<CFComparatorFunction>(&PackageNameCompare), NULL);
             _end
             
             /*_profile(reloadDataWithInvocation$CFQSortArray)
@@ -459,10 +497,12 @@
              _end*/
             
             
-            size_t count(CFArrayGetCount(packages_));
-            MetaFile_->active_ = (uint32_t)count;
-            for (size_t index(0); index != count; ++index)
-                [(Package *) CFArrayGetValueAtIndex(packages_, index) setIndex:index];
+            MetaFile_->active_ = (uint32_t)packages.size();
+            for (size_t index(0), count(packages.size()); index != count; ++index) {
+                auto package((Package *) [packages_ objectAtIndex:index]);
+                [package setIndex:index];
+                [package release];
+            }
         }
     } }
 

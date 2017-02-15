@@ -147,7 +147,7 @@
         _end } return self;
 }
 
-+ (Package *) packageWithIterator:(pkgCache::PkgIterator)iterator withZone:(NSZone *)zone inPool:(CYPool *)pool database:(Database *)database {
++ (Package *) newPackageWithIterator:(pkgCache::PkgIterator)iterator withZone:(NSZone *)zone inPool:(CYPool *)pool database:(Database *)database {
     pkgCache::VerIterator version;
     
     _profile(Package$packageWithIterator$GetCandidateVer)
@@ -172,11 +172,12 @@
                ];
     _end
     
-    _profile(Package$packageWithIterator$Autorelease)
-    package = [package autorelease];
-    _end
-    
     return package;
+}
+
+// XXX: just in case a Cydia extension is using this (I bet this is unlikely, though, due to CYPool?)
++ (Package *) packageWithIterator:(pkgCache::PkgIterator)iterator withZone:(NSZone *)zone inPool:(CYPool *)pool database:(Database *)database {
+        return [[self newPackageWithIterator:iterator withZone:zone inPool:pool database:database] autorelease];
 }
 
 
@@ -984,8 +985,8 @@
 }
 
 - (void) setIndex:(size_t)index {
-    if (metadata_->index_ != index) {
-        metadata_->index_ = (int32_t)index;
+    if (metadata_->index_ != index + 1) {
+        metadata_->index_ = (int32_t)index + 1;
     }
 }
 
