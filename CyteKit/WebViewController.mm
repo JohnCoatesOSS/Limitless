@@ -549,7 +549,6 @@ float CYScrollViewDecelerationRateNormal;
 #endif
 
     if ([frame parentFrame] == nil) {
-        loaded_ = true;
     }
 }
 
