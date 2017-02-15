@@ -24,8 +24,6 @@
 
 #include <UIKit/UIKit.h>
 
-#include <Menes/ObjectHandle.h>
-
 @interface UIViewController (Cydia)
 - (BOOL) hasLoaded;
 - (void) reloadData;
@@ -33,11 +31,7 @@
 - (UIViewController *) parentOrPresentingViewController;
 @end
 
-@interface CyteViewController : UIViewController <UIViewControllerPreviewingDelegate> {
-    _transient id delegate_;
-    BOOL loaded_;
-    _H<UIColor> color_;
-}
+@interface CyteViewController : UIViewController <UIViewControllerPreviewingDelegate>
 
 // The default implementation of this method is essentially a no-op,
 // but calling the superclass implementation is *required*.
@@ -64,6 +58,7 @@
 - (void) releaseSubviews;
 
 - (void) setPageColor:(UIColor *)color;
+- (UIColor *) pageColor;
 
 @end
 

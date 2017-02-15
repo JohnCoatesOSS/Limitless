@@ -22,16 +22,16 @@
         UIView *content([self contentView]);
         CGRect bounds([content bounds]);
         
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content addSubview:content_];
+        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        [content addSubview:self.content];
         if (UIColor.isDarkModeEnabled) {
-            [content_ setBackgroundColor:[UIColor cydia_tintColor]];
+            [self.content setBackgroundColor:[UIColor cydia_tintColor]];
         } else {
-            [content_ setBackgroundColor:[UIColor whiteColor]];
+            [self.content setBackgroundColor:[UIColor whiteColor]];
         }
         
-        [content_ setDelegate:self];
+        [self.content setDelegate:self];
     } return self;
 }
 
@@ -76,7 +76,7 @@
     [self setAccessoryType:editing ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator];
     [self setSelectionStyle:editing ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleBlue];
     
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
 }
 
 - (void) setFrame:(CGRect)frame {
@@ -91,7 +91,7 @@
 }
 
 - (void) drawContentRect:(CGRect)rect {
-    bool highlighted(highlighted_ && !editing_);
+    bool highlighted(self.highlighted && !editing_);
     
     [icon_ drawInRect:CGRectMake(7, 7, 32, 32)];
     

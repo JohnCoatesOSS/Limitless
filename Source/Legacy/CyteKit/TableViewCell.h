@@ -24,25 +24,23 @@
 
 #include <UIKit/UIKit.h>
 
-#include <Menes/ObjectHandle.h>
-
 @protocol CyteTableViewCellDelegate
 - (void) drawContentRect:(CGRect)rect;
 @end
 
-@interface CyteTableViewCellContentView : UIView {
-    _transient id<CyteTableViewCellDelegate> delegate_;
-}
+@interface CyteTableViewCellContentView : UIView
 
 - (id) delegate;
 - (void) setDelegate:(id<CyteTableViewCellDelegate>)delegate;
 
 @end
 
-@interface CyteTableViewCell : UITableViewCell {
-    _H<CyteTableViewCellContentView, 1> content_;
-    bool highlighted_;
-}
+@interface CyteTableViewCell : UITableViewCell
+
+- (void) setContent:(CyteTableViewCellContentView *)content;
+- (CyteTableViewCellContentView *) content;
+
+- (bool) highlighted;
 
 @end
 

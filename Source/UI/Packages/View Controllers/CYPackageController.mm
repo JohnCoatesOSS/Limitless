@@ -17,14 +17,14 @@
 }
 
 - (void) _clickButtonWithPackage:(Package *)package {
-    [delegate_ installPackage:package];
+    [self.delegate installPackage:package];
 }
 
 - (void) _clickButtonWithName:(NSString *)name {
     if ([name isEqualToString:@"CLEAR"])
-        return [delegate_ clearPackage:package_];
+        return [self.delegate clearPackage:package_];
     else if ([name isEqualToString:@"REMOVE"])
-        return [delegate_ removePackage:package_];
+        return [self.delegate removePackage:package_];
     else if ([name isEqualToString:@"DOWNGRADE"]) {
         sheet_ = [[[UIActionSheet alloc]
                    initWithTitle:nil
@@ -38,7 +38,7 @@
             [sheet_ addButtonWithTitle:[version latest]];
         [sheet_ setContext:@"version"];
         
-        [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
+        [self.delegate showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
         return;
     }
     
@@ -47,7 +47,7 @@
     else if ([name isEqualToString:@"UPGRADE"]);
     else _assert(false);
     
-    [delegate_ installPackage:package_];
+    [self.delegate installPackage:package_];
 }
 
 - (void) actionSheet:(UIActionSheet *)sheet clickedButtonAtIndex:(NSInteger)button {
@@ -110,7 +110,7 @@
             [sheet_ addButtonWithTitle:button];
         [sheet_ setContext:@"modify"];
         
-        [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
+        [self.delegate showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
     }
 }
 
@@ -136,7 +136,7 @@
 }
 
 - (void) ensureRequestSchemeMatchesDepictionScheme:(NSString *)scheme {
-    NSURLRequest *request = request_;
+    NSURLRequest *request = self.request;
     if (!request || !scheme || !request.URL.scheme) {
         return;
     }
@@ -153,7 +153,7 @@
                                              resolvingAgainstBaseURL:YES];
     components.scheme = scheme;
     mutableRequest.URL = components.URL;
-    request_ = mutableRequest;
+    self.request = mutableRequest;
 }
 - (void) reloadData {
     package_ = [database_ packageWithName:name_];

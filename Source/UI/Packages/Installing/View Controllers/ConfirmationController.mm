@@ -33,7 +33,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 - (void) complete {
     if (substrate_)
         RestartSubstrate_ = true;
-    [delegate_ confirmWithNavigationController:[self navigationController]];
+    [self.delegate confirmWithNavigationController:[self navigationController]];
 }
 
 - (void) alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)button {
@@ -56,7 +56,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (void) _doContinue {
-    [delegate_ cancelAndClear:NO];
+    [self.delegate cancelAndClear:NO];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -281,7 +281,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 #endif
 
 - (void) cancelButtonClicked {
-    [delegate_ cancelAndClear:YES];
+    [self.delegate cancelAndClear:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

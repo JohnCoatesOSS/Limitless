@@ -33,7 +33,7 @@
 - (id) initWithDatabase:(Database *)database delegate:(id)delegate {
     if ((self = [super init]) != nil) {
         database_ = database;
-        delegate_ = delegate;
+        self.delegate = delegate;
         
         [database_ setProgressDelegate:self];
         
@@ -68,19 +68,19 @@
     UpdateExternalStatus(0);
     
     if (Finish_ > 1)
-        [delegate_ saveState];
+        [self.delegate saveState];
     
     switch (Finish_) {
         case 0:
-            [delegate_ returnToCydia];
+            [self.delegate returnToCydia];
             break;
             
         case 1:
-            [delegate_ terminateWithSuccess];
-            /*if ([delegate_ respondsToSelector:@selector(suspendWithAnimation:)])
-             [delegate_ suspendWithAnimation:YES];
+            [self.delegate terminateWithSuccess];
+            /*if ([self.delegate respondsToSelector:@selector(suspendWithAnimation:)])
+             [self.delegate suspendWithAnimation:YES];
              else
-             [delegate_ suspend];*/
+             [self.delegate suspend];*/
             break;
             
         case 2:
@@ -92,9 +92,9 @@
             goto reload;
             
         reload: {
-            UIProgressHUD *hud([delegate_ addProgressHUD]);
+            UIProgressHUD *hud([self.delegate addProgressHUD]);
             [hud setText:UCLocalize("LOADING")];
-            [delegate_ performSelector:@selector(reloadSpringBoard) withObject:nil afterDelay:0.5];
+            [self.delegate performSelector:@selector(reloadSpringBoard) withObject:nil afterDelay:0.5];
             return;
         }
             

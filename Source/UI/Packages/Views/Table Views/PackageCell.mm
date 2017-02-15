@@ -17,12 +17,12 @@
         UIView *content([self contentView]);
         CGRect bounds([content bounds]);
         
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content addSubview:content_];
+        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        [content addSubview:self.content];
         
-        [content_ setDelegate:self];
-        [content_ setOpaque:YES];
+        [self.content setDelegate:self];
+        [self.content setOpaque:YES];
     } return self;
 }
 
@@ -41,7 +41,7 @@
     placard_ = nil;
     
     if (package == nil) {
-        [content_ setBackgroundColor:[UIColor whiteColor]];
+        [self.content setBackgroundColor:[UIColor whiteColor]];
     } else {
         [package parse];
         
@@ -105,18 +105,18 @@
                 placard = nil;
         }
         
-        [content_ setBackgroundColor:color];
+        [self.content setBackgroundColor:color];
         
         if (placard != nil)
             placard_ = [UIImage imageAtPath:[NSString stringWithFormat:@"%@/%@.png", App_, placard]];
     }
     
     [self setNeedsDisplay];
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
 }
 
 - (void) drawSummaryContentRect:(CGRect)rect {
-    bool highlighted(highlighted_);
+    bool highlighted(self.highlighted);
     float width([self bounds].size.width);
     
     if (icon_ != nil) {
@@ -165,7 +165,7 @@
 }
 
 - (void) drawNormalContentRect:(CGRect)rect {
-    bool highlighted(highlighted_);
+    bool highlighted(self.highlighted);
     float width([self bounds].size.width);
     
     if (icon_ != nil) {

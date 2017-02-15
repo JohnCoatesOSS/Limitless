@@ -17,24 +17,24 @@
         UIView *content([self contentView]);
         CGRect bounds([content bounds]);
         
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
         if (UIColor.isDarkModeEnabled) {
-            [content_ setBackgroundColor:[UIColor cydia_black]];
+            [self.content setBackgroundColor:[UIColor cydia_black]];
         } else {
-            [content_ setBackgroundColor:[UIColor whiteColor]];
+            [self.content setBackgroundColor:[UIColor whiteColor]];
         }
         
-        [content addSubview:content_];
+        [content addSubview:self.content];
         
-        [content_ setDelegate:self];
-        [content_ setOpaque:YES];
+        [self.content setDelegate:self];
+        [self.content setOpaque:YES];
         
         indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
         [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
         [content addSubview:indicator_];
         
-        [[content_ layer] setContentsGravity:kCAGravityTopLeft];
+        [[self.content layer] setContentsGravity:kCAGravityTopLeft];
     } return self;
 }
 
@@ -42,7 +42,7 @@
 - (void) _setImage:(NSArray *)data {
     if ([url_ isEqual:[data objectAtIndex:0]]) {
         icon_ = [data objectAtIndex:1];
-        [content_ setNeedsDisplay];
+        [self.content setNeedsDisplay];
     }
 }
 
@@ -76,7 +76,7 @@
     origin_ = [source name];
     label_ = source.rootURI;
     
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
     
     url_ = [source iconURL];
     [NSThread detachNewThreadSelector:@selector(_setSource:) toTarget:self withObject:url_];
@@ -89,7 +89,7 @@
     icon_ = [UIImage imageNamed:@"folder.png"];
     origin_ = UCLocalize("ALL_SOURCES");
     label_ = UCLocalize("ALL_SOURCES_EX");
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
 }
 
 - (void) layoutSubviews {
@@ -112,7 +112,7 @@
 }
 
 - (void) drawContentRect:(CGRect)rect {
-    bool highlighted(highlighted_);
+    bool highlighted(self.highlighted);
     float width(rect.size.width);
     
     if (icon_ != nil) {

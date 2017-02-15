@@ -13,7 +13,7 @@
     _transient id delegate_;
 }
 
-- (id) initWithDelegate:(IndirectDelegate *)indirect;
+- (id) initWithDelegate:(CyteWebViewController *)indirect;
 - (void) setDelegate:(id)delegate;
 
 @end

@@ -126,7 +126,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                                       source:[self source]
                                       section:[section name]
                                       ] autorelease];
-    [controller setDelegate:delegate_];
+    [controller setDelegate:self.delegate];
     
     [[self navigationController] pushViewController:controller animated:YES];
 }
@@ -223,7 +223,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editing)
         [list_ reloadData];
     else
-        [delegate_ updateData];
+        [self.delegate updateData];
     
     [self updateNavigationItem];
 }

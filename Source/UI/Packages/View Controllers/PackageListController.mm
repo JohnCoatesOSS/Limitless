@@ -123,7 +123,7 @@
 
 - (void) didSelectPackage:(Package *)package {
     CYPackageController *view([[[CYPackageController alloc] initWithDatabase:database_ forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]] autorelease]);
-    [view setDelegate:delegate_];
+    [view setDelegate:self.delegate];
     [[self navigationController] pushViewController:view animated:YES];
 }
 
@@ -258,10 +258,6 @@ editActionsForRowAtIndexPath:(NSIndexPath *)path {
     [super releaseSubviews];
 }
 
-- (void) setDelegate:(id)delegate {
-    delegate_ = delegate;
-}
-
 - (bool) shouldYield {
     return false;
 }
@@ -295,7 +291,7 @@ reload:
             if (![self shouldBlock])
                 hud = nil;
             else {
-                hud = [delegate_ addProgressHUD];
+                hud = [self.delegate addProgressHUD];
                 [hud setText:UCLocalize("LOADING")];
             }
             
@@ -303,7 +299,7 @@ reload:
             packages = [self yieldToSelector:@selector(_reloadPackages)];
             
             if (hud != nil)
-                [delegate_ removeProgressHUD:hud];
+                [self.delegate removeProgressHUD:hud];
         } while (reloading_ == 2);
     } else {
         packages = [self _reloadPackages];
@@ -441,7 +437,7 @@ reload:
         Package *package([self packageAtIndexPath:path]);
         package = [database_ packageWithName:[package id]];
         CYPackageController *view([[[CYPackageController alloc] initWithDatabase:database_ forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]] autorelease]);
-        [view setDelegate:delegate_];
+        [view setDelegate:self.delegate];
         return view;
     }
     return nil;

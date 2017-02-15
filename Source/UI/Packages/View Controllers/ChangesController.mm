@@ -42,7 +42,7 @@
 }
 
 - (void) setLeftBarButtonItem {
-    if ([delegate_ updating])
+    if ([self.delegate updating])
         [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
                                                       initWithTitle:UCLocalize("CANCEL")
                                                       style:UIBarButtonItemStyleDone
@@ -59,16 +59,16 @@
 }
 
 - (void) refreshButtonClicked {
-    if ([delegate_ requestUpdate])
+    if ([self.delegate requestUpdate])
         [self setLeftBarButtonItem];
 }
 
 - (void) cancelButtonClicked {
-    [delegate_ cancelUpdate];
+    [self.delegate cancelUpdate];
 }
 
 - (void) upgradeButtonClicked {
-    [delegate_ distUpgrade];
+    [self.delegate distUpgrade];
     [[self navigationItem] setRightBarButtonItem:nil animated:YES];
 }
 

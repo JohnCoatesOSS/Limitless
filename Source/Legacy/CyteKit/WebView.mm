@@ -94,7 +94,8 @@
 @end
 // }}}
 
-@implementation CyteWebView : UIWebView
+@implementation CyteWebView : UIWebView {
+}
 
 #if ShowInternals
 #include "CyteKit/UCInternal.h"

@@ -27,6 +27,7 @@
 #include "CyteKit/ViewController.h"
 
 #include "iPhonePrivate.h"
+#include <Menes/ObjectHandle.h>
 #import "Display.h"
 
 @implementation UIViewController (Cydia)
@@ -54,7 +55,11 @@
 
 @end
 
-@implementation CyteViewController
+@implementation CyteViewController {
+    _transient id delegate_;
+    BOOL loaded_;
+    _H<UIColor> color_;
+}
 
 - (void) setDelegate:(id)delegate {
     delegate_ = delegate;
@@ -113,6 +118,10 @@
     if (color == nil)
         color = [UIColor groupTableViewBackgroundColor];
     color_ = color;
+}
+
+- (UIColor *) pageColor {
+    return color_;
 }
 
 #include "InterfaceOrientation.h"

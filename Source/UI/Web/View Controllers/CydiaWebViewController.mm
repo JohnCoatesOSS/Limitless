@@ -11,8 +11,12 @@
 
 @implementation CydiaWebViewController
 
-- (NSURL *) navigationURL {
-    return request_ == nil ? nil : [NSURL URLWithString:[NSString stringWithFormat:@"cydia://url/%@", [[request_ URL] absoluteString]]];
+- (NSURL *)navigationURL {
+    if (NSURLRequest *request = self.request) {
+        return [NSURL URLWithString:[NSString stringWithFormat:@"cydia://url/%@", [[request URL] absoluteString]]];
+    } else {
+        return nil;
+    }
 }
 
 + (void) _initialize {
@@ -119,7 +123,7 @@
 
 - (id) init {
     if ((self = [super initWithWidth:0 ofClass:[CydiaWebViewController class]]) != nil) {
-        cydia_ = [[[CydiaObject alloc] initWithDelegate:indirect_] autorelease];
+        cydia_ = [[[CydiaObject alloc] initWithDelegate:self.indirect] autorelease];
     } return self;
 }
 

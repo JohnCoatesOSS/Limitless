@@ -19,7 +19,7 @@
 
 @implementation CydiaObject
 
-- (id) initWithDelegate:(IndirectDelegate *)indirect {
+- (id) initWithDelegate:(CyteWebViewController *)indirect {
     if ((self = [super init]) != nil) {
         indirect_ = (CyteWebViewController *) indirect;
     } return self;

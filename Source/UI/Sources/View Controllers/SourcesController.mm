@@ -161,9 +161,9 @@
         ) {
         NSString *warning(cydia_ ? [self yieldToSelector:@selector(getWarning)] : nil);
         
-        [delegate_ releaseNetworkActivityIndicator];
+        [self.delegate releaseNetworkActivityIndicator];
         
-        [delegate_ removeProgressHUD:hud_];
+        [self.delegate removeProgressHUD:hud_];
         hud_ = nil;
         
         if (cydia_) {
@@ -266,9 +266,9 @@
                 cydia_ = false;
                 
                 // XXX: this is stupid
-                hud_ = [delegate_ addProgressHUD];
+                hud_ = [self.delegate addProgressHUD];
                 [hud_ setText:UCLocalize("VERIFYING_URL")];
-                [delegate_ retainNetworkActivityIndicator];
+                [self.delegate retainNetworkActivityIndicator];
             } break;
                 
             case 0:
@@ -300,10 +300,10 @@
 
 
 - (void) complete {
-    [delegate_ addTrivialSource:href_];
+    [self.delegate addTrivialSource:href_];
     href_ = nil;
     
-    [delegate_ syncData];
+    [self.delegate syncData];
 }
 
 - (NSString *) getWarning {
@@ -337,7 +337,7 @@
                                                       target:self
                                                       action:@selector(addButtonClicked)
                                                       ] autorelease] animated:animated];
-    else if ([delegate_ updating])
+    else if ([self.delegate updating])
         [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
                                                       initWithTitle:UCLocalize("CANCEL")
                                                       style:UIBarButtonItemStyleDone
@@ -392,13 +392,13 @@
 }
 
 - (void) refreshButtonClicked {
-    if ([delegate_ requestUpdate]) {
+    if ([self.delegate requestUpdate]) {
         [self updateButtonsForEditingStatusAnimated:YES];
     }
 }
 
 - (void) cancelButtonClicked {
-    [delegate_ cancelUpdate];
+    [self.delegate cancelUpdate];
 }
 
 - (void) editButtonClicked {
@@ -475,7 +475,7 @@
                                      source:[self sourceAtIndexPath:indexPath]
                                      ] autorelease]);
     
-    [controller setDelegate:delegate_];
+    [controller setDelegate:self.delegate];
     [[self navigationController] pushViewController:controller animated:YES];
 }
 
@@ -505,7 +505,7 @@
         if (!source) return;
         
         [Sources_ removeObjectForKey:[source key]];
-        [delegate_ syncData];
+        [self.delegate syncData];
     }];
     
     [copyAction _setButton:shareButton];

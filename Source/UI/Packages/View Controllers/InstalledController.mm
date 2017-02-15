@@ -130,7 +130,7 @@ static BOOL _isFiltered = NO;
 
 #if !AlwaysReload
 - (void) queueButtonClicked {
-    [delegate_ queue];
+    [self.delegate queue];
 }
 #endif
 

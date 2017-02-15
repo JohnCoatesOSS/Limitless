@@ -50,7 +50,7 @@
     if (package_ == nil)
         return;
     if ([package_ setSubscribed:value])
-        [delegate_ updateData];
+        [self.delegate updateData];
 }
 
 - (void) _updateIgnored {
@@ -73,7 +73,7 @@
     [invocation setTarget:self];
     [invocation setSelector:@selector(_updateIgnored)];
     
-    [delegate_ reloadDataWithInvocation:invocation];
+    [self.delegate reloadDataWithInvocation:invocation];
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
