@@ -147,7 +147,14 @@
     }
     
     if (Languages_ != nil) {
-        for (NSString *language : Languages_) {
+        for (NSString *locale in Languages_) {
+            NSDictionary *components = [NSLocale componentsFromLocaleIdentifier:locale];
+            NSString *language = [components objectForKey:(id)kCFLocaleLanguageCode];
+            NSString *script = [components objectForKey:(id)kCFLocaleScriptCode];
+            if (script) {
+                language = [NSString stringWithFormat:@"%@-%@", language, script];
+            }
+            
             [languages addObject:language];
         }
     }
