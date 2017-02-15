@@ -26,15 +26,10 @@
 
 #include <UIKit/UIKit.h>
 
-#include <Menes/ObjectHandle.h>
-
 @interface UITabBarController (Cydia)
 @end
 
-@interface CyteTabBarController : UITabBarController {
-    _transient UIViewController *transient_;
-    _H<UIViewController> remembered_;
-}
+@interface CyteTabBarController : UITabBarController
 
 - (UIViewController *) unselectedViewController;
 - (void) setUnselectedViewController:(UIViewController *)transient;

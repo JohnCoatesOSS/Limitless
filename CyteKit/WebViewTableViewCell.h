@@ -24,15 +24,11 @@
 
 #include <UIKit/UIKit.h>
 
-#include "Menes/ObjectHandle.h"
 #include "CyteKit/WebView.h"
 
 @interface CyteWebViewTableViewCell : UITableViewCell <
     CyteWebViewDelegate
-> {
-    // XXX: I'm not really the delegate here: fix this!
-    _H<CyteWebView, 1> webview_;
-}
+>
 
 + (CyteWebViewTableViewCell *) cellWithRequest:(NSURLRequest *)request;
 - (id) initWithRequest:(NSURLRequest *)request;

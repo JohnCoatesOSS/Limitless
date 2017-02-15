@@ -24,12 +24,16 @@
 #include "CyteKit/TabBarController.h"
 
 #include "iPhonePrivate.h"
+#include <Menes/ObjectHandle.h>
 
 @implementation UITabBarController (Cydia)
 
 @end
 
-@implementation CyteTabBarController
+@implementation CyteTabBarController {
+    _transient UIViewController *transient_;
+    _H<UIViewController> remembered_;
+}
 
 - (void) didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

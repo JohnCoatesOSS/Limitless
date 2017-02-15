@@ -8,6 +8,7 @@
 #include "CyteKit/WebViewController.h"
 
 #include "iPhonePrivate.h"
+#include <Menes/ObjectHandle.h>
 
 //#include <QuartzCore/CALayer.h>
 // XXX: fix the minimum requirement
@@ -115,7 +116,43 @@ float CYScrollViewDecelerationRateNormal;
 @end
 /* }}} */
 
-@implementation CyteWebViewController
+@implementation CyteWebViewController {
+    _H<CyteWebView, 1> webview_;
+    _transient UIScrollView *scroller_;
+
+    _H<UIActivityIndicatorView> indicator_;
+    _H<IndirectDelegate, 1> indirect_;
+    _H<NSURLAuthenticationChallenge> challenge_;
+
+    bool error_;
+    _H<NSURLRequest> request_;
+    bool ready_;
+
+    _transient NSNumber *sensitive_;
+    _H<NSURL> appstore_;
+
+    _H<NSString> title_;
+    _H<NSMutableSet> loading_;
+
+    _H<NSMutableSet> registered_;
+    _H<NSTimer> timer_;
+
+    // XXX: NSString * or UIImage *
+    _H<NSObject> custom_;
+    _H<NSString> style_;
+
+    _H<WebScriptObject> function_;
+
+    float width_;
+    Class class_;
+
+    _H<UIBarButtonItem> reloaditem_;
+    _H<UIBarButtonItem> loadingitem_;
+
+    bool visible_;
+    bool hidesNavigationBar_;
+    bool allowsNavigationAction_;
+}
 
 #if ShowInternals
 #include "CyteKit/UCInternal.h"
@@ -150,7 +187,7 @@ float CYScrollViewDecelerationRateNormal;
         [loading_ removeAllObjects];
 
         if ([self retainsNetworkActivityIndicator])
-            [delegate_ releaseNetworkActivityIndicator];
+            [self.delegate releaseNetworkActivityIndicator];
     }
 }
 
@@ -172,6 +209,10 @@ float CYScrollViewDecelerationRateNormal;
     return (CyteWebView *) [self view];
 }
 
+- (CyteWebViewController *) indirect {
+    return (CyteWebViewController *) (IndirectDelegate *) indirect_;
+}
+
 - (NSURL *) URLWithURL:(NSURL *)url {
     return url;
 }
@@ -191,6 +232,10 @@ float CYScrollViewDecelerationRateNormal;
 - (void) setRequest:(NSURLRequest *)request {
     _assert(request_ == nil);
     request_ = request;
+}
+
+- (NSURLRequest *) request {
+    return request_;
 }
 
 - (void) setURL:(NSURL *)url {
@@ -398,7 +443,7 @@ float CYScrollViewDecelerationRateNormal;
     NSURL *url([request URL]);
 
     // XXX: filter to internal usage?
-    CyteViewController *page([delegate_ pageForURL:url forExternal:NO withReferrer:referrer]);
+    CyteViewController *page([self.delegate pageForURL:url forExternal:NO withReferrer:referrer]);
 
     if (page == nil) {
         CyteWebViewController *browser([[[class_ alloc] init] autorelease]);
@@ -406,8 +451,8 @@ float CYScrollViewDecelerationRateNormal;
         page = browser;
     }
 
-    [page setDelegate:delegate_];
-    [page setPageColor:color_];
+    [page setDelegate:self.delegate];
+    [page setPageColor:self.pageColor];
 
     if (!pop) {
         [[self navigationItem] setTitle:title_];
@@ -416,7 +461,7 @@ float CYScrollViewDecelerationRateNormal;
     } else {
         UINavigationController *navigation([[[UINavigationController alloc] initWithRootViewController:page] autorelease]);
 
-        [navigation setDelegate:delegate_];
+        [navigation setDelegate:self.delegate];
 
         [[page navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
             initWithTitle:UCLocalize("CLOSE")
@@ -525,7 +570,7 @@ float CYScrollViewDecelerationRateNormal;
         return;
 
     if ([name isEqualToString:@"_open"])
-        [delegate_ openURL:url];
+        [self.delegate openURL:url];
     else {
         NSString *scheme([[url scheme] lowercaseString]);
         if ([scheme isEqualToString:@"mailto"])
@@ -602,7 +647,7 @@ float CYScrollViewDecelerationRateNormal;
                     }
 
                     [super setPageColor:uic];
-                    [scroller_ setBackgroundColor:color_];
+                    [scroller_ setBackgroundColor:self.pageColor];
                     break;
                 }
     }
@@ -763,7 +808,7 @@ float CYScrollViewDecelerationRateNormal;
     } else if ([context isEqualToString:@"itmsappss"]) {
         if (button == [alert cancelButtonIndex]) {
         } else if (button == [alert firstOtherButtonIndex]) {
-            [delegate_ openURL:appstore_];
+            [self.delegate openURL:appstore_];
         }
 
         [alert dismissWithClickedButtonIndex:-1 animated:YES];
@@ -862,7 +907,7 @@ float CYScrollViewDecelerationRateNormal;
         return;
 
     if ([self retainsNetworkActivityIndicator])
-        [delegate_ retainNetworkActivityIndicator];
+        [self.delegate retainNetworkActivityIndicator];
 
     [self didStartLoading];
 }
@@ -879,7 +924,7 @@ float CYScrollViewDecelerationRateNormal;
     [[self navigationItem] setTitle:title_];
 
     if ([self retainsNetworkActivityIndicator])
-        [delegate_ releaseNetworkActivityIndicator];
+        [self.delegate releaseNetworkActivityIndicator];
 
     [self didFinishLoading];
 }
@@ -1015,7 +1060,7 @@ float CYScrollViewDecelerationRateNormal;
     [webview_ setBackgroundColor:nil];
 
     [scroller_ setFixedBackgroundPattern:YES];
-    [scroller_ setBackgroundColor:color_];
+    [scroller_ setBackgroundColor:self.pageColor];
     [scroller_ setClipsSubviews:YES];
 
     [scroller_ setBounces:YES];

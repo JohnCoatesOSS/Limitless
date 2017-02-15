@@ -112,7 +112,6 @@ extern "C" {
 #include "Substrate.hpp"
 #include "Menes/Menes.h"
 
-#include "CyteKit/IndirectDelegate.h"
 #include "CyteKit/RegEx.hpp"
 #include "CyteKit/TableViewCell.h"
 #include "CyteKit/TabBarController.h"
@@ -4337,7 +4336,7 @@ static _H<NSMutableSet> Diversions_;
     _transient id delegate_;
 }
 
-- (id) initWithDelegate:(IndirectDelegate *)indirect;
+- (id) initWithDelegate:(CyteWebViewController *)indirect;
 
 @end
 
@@ -4357,9 +4356,9 @@ static _H<NSMutableSet> Diversions_;
 /* Web Scripting {{{ */
 @implementation CydiaObject
 
-- (id) initWithDelegate:(IndirectDelegate *)indirect {
+- (id) initWithDelegate:(CyteWebViewController *)indirect {
     if ((self = [super init]) != nil) {
-        indirect_ = (CyteWebViewController *) indirect;
+        indirect_ = indirect;
     } return self;
 }
 
@@ -4978,7 +4977,10 @@ static _H<NSMutableSet> Diversions_;
 @implementation CydiaWebViewController
 
 - (NSURL *) navigationURL {
-    return request_ == nil ? nil : [NSURL URLWithString:[NSString stringWithFormat:@"cydia://url/%@", [[request_ URL] absoluteString]]];
+    if (NSURLRequest *request = self.request)
+        return [NSURL URLWithString:[NSString stringWithFormat:@"cydia://url/%@", [[request URL] absoluteString]]];
+    else
+        return nil;
 }
 
 + (void) _initialize {
@@ -5081,7 +5083,7 @@ static _H<NSMutableSet> Diversions_;
 
 - (id) init {
     if ((self = [super initWithWidth:0 ofClass:[CydiaWebViewController class]]) != nil) {
-        cydia_ = [[[CydiaObject alloc] initWithDelegate:indirect_] autorelease];
+        cydia_ = [[[CydiaObject alloc] initWithDelegate:self.indirect] autorelease];
     } return self;
 }
 
@@ -5184,7 +5186,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 - (void) complete {
     if (substrate_)
         RestartSubstrate_ = true;
-    [delegate_ confirmWithNavigationController:[self navigationController]];
+    [self.delegate confirmWithNavigationController:[self navigationController]];
 }
 
 - (void) alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)button {
@@ -5207,7 +5209,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (void) _doContinue {
-    [delegate_ cancelAndClear:NO];
+    [self.delegate cancelAndClear:NO];
     [self dismissModalViewControllerAnimated:YES];
 }
 
@@ -5430,7 +5432,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 #endif
 
 - (void) cancelButtonClicked {
-    [delegate_ cancelAndClear:YES];
+    [self.delegate cancelAndClear:YES];
     [self dismissModalViewControllerAnimated:YES];
 }
 
@@ -5614,7 +5616,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 - (id) initWithDatabase:(Database *)database delegate:(id)delegate {
     if ((self = [super init]) != nil) {
         database_ = database;
-        delegate_ = delegate;
+        self.delegate = delegate;
 
         [database_ setProgressDelegate:self];
 
@@ -5649,19 +5651,19 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     UpdateExternalStatus(0);
 
     if (Finish_ > 1)
-        [delegate_ saveState];
+        [self.delegate saveState];
 
     switch (Finish_) {
         case 0:
-            [delegate_ returnToCydia];
+            [self.delegate returnToCydia];
         break;
 
         case 1:
-            [delegate_ terminateWithSuccess];
-            /*if ([delegate_ respondsToSelector:@selector(suspendWithAnimation:)])
-                [delegate_ suspendWithAnimation:YES];
+            [self.delegate terminateWithSuccess];
+            /*if ([self.delegate respondsToSelector:@selector(suspendWithAnimation:)])
+                [self.delegate suspendWithAnimation:YES];
             else
-                [delegate_ suspend];*/
+                [self.delegate suspend];*/
         break;
 
         case 2:
@@ -5673,9 +5675,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             goto reload;
 
         reload: {
-            UIProgressHUD *hud([delegate_ addProgressHUD]);
+            UIProgressHUD *hud([self.delegate addProgressHUD]);
             [hud setText:UCLocalize("LOADING")];
-            [delegate_ performSelector:@selector(reloadSpringBoard) withObject:nil afterDelay:0.5];
+            [self.delegate performSelector:@selector(reloadSpringBoard) withObject:nil afterDelay:0.5];
             return;
         }
 
@@ -5873,12 +5875,12 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         UIView *content([self contentView]);
         CGRect bounds([content bounds]);
 
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content addSubview:content_];
+        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        [content addSubview:self.content];
 
-        [content_ setDelegate:self];
-        [content_ setOpaque:YES];
+        [self.content setDelegate:self];
+        [self.content setOpaque:YES];
     } return self;
 }
 
@@ -5897,7 +5899,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     placard_ = nil;
 
     if (package == nil)
-        [content_ setBackgroundColor:[UIColor whiteColor]];
+        [self.content setBackgroundColor:[UIColor whiteColor]];
     else {
         [package parse];
 
@@ -5957,18 +5959,18 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                 placard = nil;
         }
 
-        [content_ setBackgroundColor:color];
+        [self.content setBackgroundColor:color];
 
         if (placard != nil)
             placard_ = [UIImage imageAtPath:[NSString stringWithFormat:@"%@/%@.png", App_, placard]];
     }
 
     [self setNeedsDisplay];
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
 }
 
 - (void) drawSummaryContentRect:(CGRect)rect {
-    bool highlighted(highlighted_);
+    bool highlighted(self.highlighted);
     float width([self bounds].size.width);
 
     if (icon_ != nil) {
@@ -6011,7 +6013,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (void) drawNormalContentRect:(CGRect)rect {
-    bool highlighted(highlighted_);
+    bool highlighted(self.highlighted);
     float width([self bounds].size.width);
 
     if (icon_ != nil) {
@@ -6096,12 +6098,12 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         UIView *content([self contentView]);
         CGRect bounds([content bounds]);
 
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content addSubview:content_];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
+        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        [content addSubview:self.content];
+        [self.content setBackgroundColor:[UIColor whiteColor]];
 
-        [content_ setDelegate:self];
+        [self.content setDelegate:self];
     } return self;
 }
 
@@ -6146,7 +6148,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     [self setAccessoryType:editing ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator];
     [self setSelectionStyle:editing ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleBlue];
 
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
 }
 
 - (void) setFrame:(CGRect)frame {
@@ -6161,7 +6163,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (void) drawContentRect:(CGRect)rect {
-    bool highlighted(highlighted_ && !editing_);
+    bool highlighted(self.highlighted && !editing_);
 
     [icon_ drawInRect:CGRectMake(7, 7, 32, 32)];
 
@@ -6332,14 +6334,14 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (void) _clickButtonWithPackage:(Package *)package {
-    [delegate_ installPackage:package];
+    [self.delegate installPackage:package];
 }
 
 - (void) _clickButtonWithName:(NSString *)name {
     if ([name isEqualToString:@"CLEAR"])
-        return [delegate_ clearPackage:package_];
+        return [self.delegate clearPackage:package_];
     else if ([name isEqualToString:@"REMOVE"])
-        return [delegate_ removePackage:package_];
+        return [self.delegate removePackage:package_];
     else if ([name isEqualToString:@"DOWNGRADE"]) {
         sheet_ = [[[UIActionSheet alloc]
             initWithTitle:nil
@@ -6353,7 +6355,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             [sheet_ addButtonWithTitle:[version latest]];
         [sheet_ setContext:@"version"];
 
-        [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
+        [self.delegate showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
         return;
     }
 
@@ -6362,7 +6364,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     else if ([name isEqualToString:@"UPGRADE"]);
     else _assert(false);
 
-    [delegate_ installPackage:package_];
+    [self.delegate installPackage:package_];
 }
 
 - (void) actionSheet:(UIActionSheet *)sheet clickedButtonAtIndex:(NSInteger)button {
@@ -6424,7 +6426,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             [sheet_ addButtonWithTitle:button];
         [sheet_ setContext:@"modify"];
 
-        [delegate_ showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
+        [self.delegate showActionSheet:sheet_ fromItem:[[self navigationItem] rightBarButtonItem]];
     }
 }
 
@@ -6521,7 +6523,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (id) initWithDatabase:(Database *)database title:(NSString *)title;
-- (void) setDelegate:(id)delegate;
 - (void) resetCursor;
 - (void) clearData;
 
@@ -6634,7 +6635,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 - (void) didSelectPackage:(Package *)package {
     CYPackageController *view([[[CYPackageController alloc] initWithDatabase:database_ forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]] autorelease]);
-    [view setDelegate:delegate_];
+    [view setDelegate:self.delegate];
     [[self navigationController] pushViewController:view animated:YES];
 }
 
@@ -6732,10 +6733,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     [super releaseSubviews];
 }
 
-- (void) setDelegate:(id)delegate {
-    delegate_ = delegate;
-}
-
 - (bool) shouldYield {
     return false;
 }
@@ -6768,7 +6765,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             if (![self shouldBlock])
                 hud = nil;
             else {
-                hud = [delegate_ addProgressHUD];
+                hud = [self.delegate addProgressHUD];
                 [hud setText:UCLocalize("LOADING")];
             }
 
@@ -6776,7 +6773,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
             packages = [self yieldToSelector:@selector(_reloadPackages)];
 
             if (hud != nil)
-                [delegate_ removeProgressHUD:hud];
+                [self.delegate removeProgressHUD:hud];
         } while (reloading_ == 2);
     } else {
         packages = [self _reloadPackages];
@@ -7443,7 +7440,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     if (editing)
         [list_ reloadData];
     else
-        [delegate_ updateData];
+        [self.delegate updateData];
 
     [self updateNavigationItem];
 }
@@ -7505,7 +7502,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         source:[self source]
         section:[section name]
     ] autorelease];
-    [controller setDelegate:delegate_];
+    [controller setDelegate:self.delegate];
 
     [[self navigationController] pushViewController:controller animated:YES];
 }
@@ -7650,7 +7647,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) setLeftBarButtonItem {
-    if ([delegate_ updating])
+    if ([self.delegate updating])
         [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
             initWithTitle:UCLocalize("CANCEL")
             style:UIBarButtonItemStyleDone
@@ -7667,16 +7664,16 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) refreshButtonClicked {
-    if ([delegate_ requestUpdate])
+    if ([self.delegate requestUpdate])
         [self setLeftBarButtonItem];
 }
 
 - (void) cancelButtonClicked {
-    [delegate_ cancelUpdate];
+    [self.delegate cancelUpdate];
 }
 
 - (void) upgradeButtonClicked {
-    [delegate_ distUpgrade];
+    [self.delegate distUpgrade];
     [[self navigationItem] setRightBarButtonItem:nil animated:YES];
 }
 
@@ -8021,7 +8018,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     if (package_ == nil)
         return;
     if ([package_ setSubscribed:value])
-        [delegate_ updateData];
+        [self.delegate updateData];
 }
 
 - (void) _updateIgnored {
@@ -8044,7 +8041,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     [invocation setTarget:self];
     [invocation setSelector:@selector(_updateIgnored)];
 
-    [delegate_ reloadDataWithInvocation:invocation];
+    [self.delegate reloadDataWithInvocation:invocation];
 }
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -8235,7 +8232,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 #if !AlwaysReload
 - (void) queueButtonClicked {
-    [delegate_ queue];
+    [self.delegate queue];
 }
 #endif
 
@@ -8285,7 +8282,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 - (void) _setImage:(NSArray *)data {
     if ([url_ isEqual:[data objectAtIndex:0]]) {
         icon_ = [data objectAtIndex:1];
-        [content_ setNeedsDisplay];
+        [self.content setNeedsDisplay];
     }
 }
 
@@ -8319,7 +8316,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     origin_ = [source name];
     label_ = [source rooturi];
 
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
 
     url_ = [source iconURL];
     [NSThread detachNewThreadSelector:@selector(_setSource:) toTarget:self withObject:url_];
@@ -8332,7 +8329,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     icon_ = [UIImage imageNamed:@"folder.png"];
     origin_ = UCLocalize("ALL_SOURCES");
     label_ = UCLocalize("ALL_SOURCES_EX");
-    [content_ setNeedsDisplay];
+    [self.content setNeedsDisplay];
 }
 
 - (SourceCell *) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
@@ -8340,19 +8337,19 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         UIView *content([self contentView]);
         CGRect bounds([content bounds]);
 
-        content_ = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [content_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content_ setBackgroundColor:[UIColor whiteColor]];
-        [content addSubview:content_];
+        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
+        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+        [self.content setBackgroundColor:[UIColor whiteColor]];
+        [content addSubview:self.content];
 
-        [content_ setDelegate:self];
-        [content_ setOpaque:YES];
+        [self.content setDelegate:self];
+        [self.content setOpaque:YES];
 
         indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
         [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
         [content addSubview:indicator_];
 
-        [[content_ layer] setContentsGravity:kCAGravityTopLeft];
+        [[self.content layer] setContentsGravity:kCAGravityTopLeft];
     } return self;
 }
 
@@ -8376,7 +8373,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) drawContentRect:(CGRect)rect {
-    bool highlighted(highlighted_);
+    bool highlighted(self.highlighted);
     float width(rect.size.width);
 
     if (icon_ != nil) {
@@ -8520,7 +8517,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         source:[self sourceAtIndexPath:indexPath]
     ] autorelease]);
 
-    [controller setDelegate:delegate_];
+    [controller setDelegate:self.delegate];
     [[self navigationController] pushViewController:controller animated:YES];
 }
 
@@ -8539,7 +8536,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
         [Sources_ removeObjectForKey:[source key]];
 
-        [delegate_ syncData];
+        [self.delegate syncData];
     }
 }
 
@@ -8548,10 +8545,10 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) complete {
-    [delegate_ addTrivialSource:href_];
+    [self.delegate addTrivialSource:href_];
     href_ = nil;
 
-    [delegate_ syncData];
+    [self.delegate syncData];
 }
 
 - (NSString *) getWarning {
@@ -8590,9 +8587,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     ) {
         NSString *warning(cydia_ ? [self yieldToSelector:@selector(getWarning)] : nil);
 
-        [delegate_ releaseNetworkActivityIndicator];
+        [self.delegate releaseNetworkActivityIndicator];
 
-        [delegate_ removeProgressHUD:hud_];
+        [self.delegate removeProgressHUD:hud_];
         hud_ = nil;
 
         if (cydia_) {
@@ -8709,9 +8706,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
                 cydia_ = false;
 
                 // XXX: this is stupid
-                hud_ = [delegate_ addProgressHUD];
+                hud_ = [self.delegate addProgressHUD];
                 [hud_ setText:UCLocalize("VERIFYING_URL")];
-                [delegate_ retainNetworkActivityIndicator];
+                [self.delegate retainNetworkActivityIndicator];
             } break;
 
             case 0:
@@ -8751,7 +8748,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             target:self
             action:@selector(addButtonClicked)
         ] autorelease] animated:animated];
-    else if ([delegate_ updating])
+    else if ([self.delegate updating])
         [[self navigationItem] setLeftBarButtonItem:[[[UIBarButtonItem alloc]
             initWithTitle:UCLocalize("CANCEL")
             style:UIBarButtonItemStyleDone
@@ -8866,12 +8863,12 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (void) refreshButtonClicked {
-    if ([delegate_ requestUpdate])
+    if ([self.delegate requestUpdate])
         [self updateButtonsForEditingStatusAnimated:YES];
 }
 
 - (void) cancelButtonClicked {
-    [delegate_ cancelUpdate];
+    [self.delegate cancelUpdate];
 }
 
 - (void) editButtonClicked {

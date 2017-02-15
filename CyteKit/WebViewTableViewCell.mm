@@ -24,8 +24,12 @@
 #include "CyteKit/WebViewTableViewCell.h"
 
 #include "iPhonePrivate.h"
+#include <Menes/ObjectHandle.h>
 
-@implementation CyteWebViewTableViewCell
+@implementation CyteWebViewTableViewCell {
+    // XXX: I'm not really the delegate here: fix this!
+    _H<CyteWebView, 1> webview_;
+}
 
 + (CyteWebViewTableViewCell *) cellWithRequest:(NSURLRequest *)request {
     CyteWebViewTableViewCell *cell([[[self alloc] initWithRequest:request] autorelease]);
