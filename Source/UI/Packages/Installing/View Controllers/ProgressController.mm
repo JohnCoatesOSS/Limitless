@@ -42,7 +42,7 @@
         
         [self setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/#!/progress/", UI_]]];
         
-        [scroller_ setBackgroundColor:[UIColor blackColor]];
+        [self setPageColor:[UIColor blackColor]];
         
         [[self navigationItem] setHidesBackButton:YES];
         
