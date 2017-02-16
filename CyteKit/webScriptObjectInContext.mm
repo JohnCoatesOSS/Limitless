@@ -21,35 +21,36 @@
 
 #include "CyteKit/UCPlatform.h"
 
-#include "CyteKit/WebScriptObject-Cyte.h"
+#include "CyteKit/webScriptObjectInContext.h"
 
 #include "iPhonePrivate.h"
 
-@implementation WebScriptObject (Cyte)
+@implementation NSObject (CydiaScript)
 
-- (NSUInteger) count {
-    id length([self valueForKey:@"length"]);
-    if ([length respondsToSelector:@selector(intValue)])
-        return [length intValue];
-    else
-        return 0;
+- (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context {
+    return self;
 }
 
-- (id) objectAtIndex:(unsigned)index {
-    return [self webScriptValueAtIndex:index];
+@end
+
+@implementation NSArray (CydiaScript)
+
+- (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context {
+    WebScriptObject *object([context evaluateWebScript:@"[]"]);
+    for (size_t i(0), e([self count]); i != e; ++i)
+        [object setWebScriptValueAtIndex:i value:[[self objectAtIndex:i] Cydia$webScriptObjectInContext:context]];
+    return object;
 }
 
-- (NSUInteger) countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)objects count:(NSUInteger)count {
-    size_t length([self count] - state->state);
-    if (length <= 0)
-        return 0;
-    else if (length > count)
-        length = count;
-    for (size_t i(0); i != length; ++i)
-        objects[i] = [self objectAtIndex:state->state++];
-    state->itemsPtr = objects;
-    state->mutationsPtr = (unsigned long *) self;
-    return length;
+@end
+
+@implementation NSDictionary (CydiaScript)
+
+- (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context {
+    WebScriptObject *object([context evaluateWebScript:@"({})"]);
+    for (id i in self)
+        [object setValue:[[self objectForKey:i] Cydia$webScriptObjectInContext:context] forKey:i];
+    return object;
 }
 
 @end

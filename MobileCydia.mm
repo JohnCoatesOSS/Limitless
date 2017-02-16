@@ -112,16 +112,7 @@ extern "C" {
 #include "Substrate.hpp"
 #include "Menes/Menes.h"
 
-#include "CyteKit/Application.h"
-#include "CyteKit/NavigationController.h"
-#include "CyteKit/RegEx.hpp"
-#include "CyteKit/TableViewCell.h"
-#include "CyteKit/TabBarController.h"
-#include "CyteKit/URLCache.h"
-#include "CyteKit/WebScriptObject-Cyte.h"
-#include "CyteKit/WebViewController.h"
-#include "CyteKit/WebViewTableViewCell.h"
-#include "CyteKit/stringWithUTF8Bytes.h"
+#include "CyteKit/CyteKit.h"
 
 #include "Cydia/MIMEAddress.h"
 #include "Cydia/LoadingViewController.h"
@@ -388,47 +379,6 @@ void CYArrayInsertionSortValues(Type_ *values, size_t length, CFComparisonResult
 }
 
 /* }}} */
-
-/* Apple Bug Fixes {{{ */
-@implementation UIWebDocumentView (Cydia)
-
-- (void) _setScrollerOffset:(CGPoint)offset {
-    UIScroller *scroller([self _scroller]);
-
-    CGSize size([scroller contentSize]);
-    CGSize bounds([scroller bounds].size);
-
-    CGPoint max;
-    max.x = size.width - bounds.width;
-    max.y = size.height - bounds.height;
-
-    // wtf Apple?!
-    if (max.x < 0)
-        max.x = 0;
-    if (max.y < 0)
-        max.y = 0;
-
-    offset.x = offset.x < 0 ? 0 : offset.x > max.x ? max.x : offset.x;
-    offset.y = offset.y < 0 ? 0 : offset.y > max.y ? max.y : offset.y;
-
-    [scroller setOffset:offset];
-}
-
-@end
-/* }}} */
-
-NSUInteger DOMNodeList$countByEnumeratingWithState$objects$count$(DOMNodeList *self, SEL sel, NSFastEnumerationState *state, id *objects, NSUInteger count) {
-    size_t length([self length] - state->state);
-    if (length <= 0)
-        return 0;
-    else if (length > count)
-        length = count;
-    for (size_t i(0); i != length; ++i)
-        objects[i] = [self item:state->state++];
-    state->itemsPtr = objects;
-    state->mutationsPtr = (unsigned long *) self;
-    return length;
-}
 
 /* Cydia NSString Additions {{{ */
 @interface NSString (Cydia)
@@ -5127,42 +5077,6 @@ static _H<NSMutableSet> Diversions_;
 @end
 /* }}} */
 
-// CydiaScript {{{
-@interface NSObject (CydiaScript)
-- (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context;
-@end
-
-@implementation NSObject (CydiaScript)
-
-- (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context {
-    return self;
-}
-
-@end
-
-@implementation NSArray (CydiaScript)
-
-- (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context {
-    WebScriptObject *object([context evaluateWebScript:@"[]"]);
-    for (size_t i(0), e([self count]); i != e; ++i)
-        [object setWebScriptValueAtIndex:i value:[[self objectAtIndex:i] Cydia$webScriptObjectInContext:context]];
-    return object;
-}
-
-@end
-
-@implementation NSDictionary (CydiaScript)
-
-- (id) Cydia$webScriptObjectInContext:(WebScriptObject *)context {
-    WebScriptObject *object([context evaluateWebScript:@"({})"]);
-    for (id i in self)
-        [object setValue:[[self objectForKey:i] Cydia$webScriptObjectInContext:context] forKey:i];
-    return object;
-}
-
-@end
-// }}}
-
 /* Confirmation Controller {{{ */
 bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     if (!iterator.end())
@@ -9811,12 +9725,6 @@ _trace();
         [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
     }
 
-    [NSURLCache setSharedURLCache:[[[CyteURLCache alloc]
-        initWithMemoryCapacity:524288
-        diskCapacity:10485760
-        diskPath:Cache("SDURLCache")
-    ] autorelease]];
-
     [CydiaWebViewController _initialize];
 
     [NSURLProtocol registerClass:[CydiaURLProtocol class]];
@@ -10038,24 +9946,6 @@ id Dealloc_(id self, SEL selector) {
     return object;
 }*/
 
-Class $WAKWindow;
-
-static CGSize $WAKWindow$screenSize(WAKWindow *self, SEL _cmd) {
-    CGSize size([[UIScreen mainScreen] bounds].size);
-    /*if ([$WAKWindow respondsToSelector:@selector(hasLandscapeOrientation)])
-        if ([$WAKWindow hasLandscapeOrientation])
-            std::swap(size.width, size.height);*/
-    return size;
-}
-
-Class $NSUserDefaults;
-
-MSHook(id, NSUserDefaults$objectForKey$, NSUserDefaults *self, SEL _cmd, NSString *key) {
-    if ([key respondsToSelector:@selector(isEqualToString:)] && [key isEqualToString:@"WebKitLocalStorageDatabasePathPreferenceKey"])
-        return Cache("LocalStorage");
-    return _NSUserDefaults$objectForKey$(self, _cmd, key);
-}
-
 static NSMutableDictionary *AutoreleaseDeepMutableCopyOfDictionary(CFTypeRef type) {
     if (type == NULL)
         return nil;
@@ -10126,21 +10016,6 @@ int main(int argc, char *argv[]) {
 
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
 
-    /* Library Hacks {{{ */
-    class_addMethod(objc_getClass("DOMNodeList"), @selector(countByEnumeratingWithState:objects:count:), (IMP) &DOMNodeList$countByEnumeratingWithState$objects$count$, "I20@0:4^{NSFastEnumerationState}8^@12I16");
-
-    $WAKWindow = objc_getClass("WAKWindow");
-    if ($WAKWindow != NULL)
-        if (Method method = class_getInstanceMethod($WAKWindow, @selector(screenSize)))
-            method_setImplementation(method, (IMP) &$WAKWindow$screenSize);
-
-    $NSUserDefaults = objc_getClass("NSUserDefaults");
-    Method NSUserDefaults$objectForKey$(class_getInstanceMethod($NSUserDefaults, @selector(objectForKey:)));
-    if (NSUserDefaults$objectForKey$ != NULL) {
-        _NSUserDefaults$objectForKey$ = reinterpret_cast<id (*)(NSUserDefaults *, SEL, NSString *)>(method_getImplementation(NSUserDefaults$objectForKey$));
-        method_setImplementation(NSUserDefaults$objectForKey$, reinterpret_cast<IMP>(&$NSUserDefaults$objectForKey$));
-    }
-    /* }}} */
     /* Set Locale {{{ */
     Locale_ = CFLocaleCopyCurrent();
     Languages_ = [NSLocale preferredLanguages];
