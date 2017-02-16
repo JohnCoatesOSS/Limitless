@@ -117,6 +117,7 @@ extern "C" {
 #include "CyteKit/RegEx.hpp"
 #include "CyteKit/TableViewCell.h"
 #include "CyteKit/TabBarController.h"
+#include "CyteKit/URLCache.h"
 #include "CyteKit/WebScriptObject-Cyte.h"
 #include "CyteKit/WebViewController.h"
 #include "CyteKit/WebViewTableViewCell.h"
@@ -125,8 +126,6 @@ extern "C" {
 #include "Cydia/MIMEAddress.h"
 #include "Cydia/LoadingViewController.h"
 #include "Cydia/ProgressEvent.h"
-
-#include "SDURLCache/SDURLCache.h"
 /* }}} */
 
 /* Profiler {{{ */
@@ -198,10 +197,6 @@ void PrintTimes() {
 
 #define _end }
 /* }}} */
-
-// XXX: I hate clang. Apple: please get over your petty hatred of GPL and fix your gcc fork
-#define synchronized(lock) \
-    synchronized(static_cast<NSObject *>(lock))
 
 extern NSString *Cydia_;
 
@@ -800,7 +795,6 @@ static _H<NSMutableDictionary> SessionData_;
 static _H<NSObject> HostConfig_;
 static _H<NSMutableSet> BridgedHosts_;
 static _H<NSMutableSet> InsecureHosts_;
-static _H<NSMutableSet> CachedURLs_;
 
 static NSString *kCydiaProgressEventTypeError = @"Error";
 static NSString *kCydiaProgressEventTypeInformation = @"Information";
@@ -8910,57 +8904,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 @end
 /* }}} */
 
-@interface CYURLCache : SDURLCache {
-}
-
-@end
-
-@implementation CYURLCache
-
-- (void) logEvent:(NSString *)event forRequest:(NSURLRequest *)request {
-#if !ForRelease
-    if (false);
-    else if ([event isEqualToString:@"no-cache"])
-        event = @"!!!";
-    else if ([event isEqualToString:@"store"])
-        event = @">>>";
-    else if ([event isEqualToString:@"invalid"])
-        event = @"???";
-    else if ([event isEqualToString:@"memory"])
-        event = @"mem";
-    else if ([event isEqualToString:@"disk"])
-        event = @"ssd";
-    else if ([event isEqualToString:@"miss"])
-        event = @"---";
-
-    NSLog(@"%@: %@", event, [[request URL] absoluteString]);
-#endif
-}
-
-- (void) storeCachedResponse:(NSCachedURLResponse *)cached forRequest:(NSURLRequest *)request {
-    if (NSURLResponse *response = [cached response])
-        if (NSString *mime = [response MIMEType])
-            if ([mime isEqualToString:@"text/cache-manifest"]) {
-                NSURL *url([response URL]);
-
-#if !ForRelease
-                NSLog(@"###: %@", [url absoluteString]);
-#endif
-
-                @synchronized (HostConfig_) {
-                    [CachedURLs_ addObject:url];
-                }
-            }
-
-    [super storeCachedResponse:cached forRequest:request];
-}
-
-- (void) createDiskCachePath {
-    [super createDiskCachePath];
-}
-
-@end
-
 @interface Cydia : CyteApplication <
     ConfirmationControllerDelegate,
     DatabaseDelegate,
@@ -9868,7 +9811,7 @@ _trace();
         [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
     }
 
-    [NSURLCache setSharedURLCache:[[[CYURLCache alloc]
+    [NSURLCache setSharedURLCache:[[[CyteURLCache alloc]
         initWithMemoryCapacity:524288
         diskCapacity:10485760
         diskPath:Cache("SDURLCache")
@@ -10095,33 +10038,6 @@ id Dealloc_(id self, SEL selector) {
     return object;
 }*/
 
-Class $NSURLConnection;
-
-MSHook(id, NSURLConnection$init$, NSURLConnection *self, SEL _cmd, NSURLRequest *request, id delegate, BOOL usesCache, int64_t maxContentLength, BOOL startImmediately, NSDictionary *connectionProperties) {
-    NSMutableURLRequest *copy([[request mutableCopy] autorelease]);
-
-    NSURL *url([copy URL]);
-
-    @synchronized (HostConfig_) {
-        if (NSString *control = [copy valueForHTTPHeaderField:@"Cache-Control"])
-            if ([control isEqualToString:@"max-age=0"])
-                if ([CachedURLs_ containsObject:url]) {
-#if !ForRelease
-                    NSLog(@"~~~: %@", url);
-#endif
-
-                    [copy setCachePolicy:NSURLRequestReturnCacheDataDontLoad];
-
-                    [copy setValue:nil forHTTPHeaderField:@"Cache-Control"];
-                    [copy setValue:nil forHTTPHeaderField:@"If-Modified-Since"];
-                    [copy setValue:nil forHTTPHeaderField:@"If-None-Match"];
-                }
-    }
-
-    if ((self = _NSURLConnection$init$(self, _cmd, copy, delegate, usesCache, maxContentLength, startImmediately, connectionProperties)) != nil) {
-    } return self;
-}
-
 Class $WAKWindow;
 
 static CGSize $WAKWindow$screenSize(WAKWindow *self, SEL _cmd) {
@@ -10200,7 +10116,6 @@ int main(int argc, char *argv[]) {
     @synchronized (HostConfig_) {
         BridgedHosts_ = [NSMutableSet setWithCapacity:4];
         InsecureHosts_ = [NSMutableSet setWithCapacity:4];
-        CachedURLs_ = [NSMutableSet setWithCapacity:32];
     }
 
     NSString *ui(@"ui/ios");
@@ -10218,13 +10133,6 @@ int main(int argc, char *argv[]) {
     if ($WAKWindow != NULL)
         if (Method method = class_getInstanceMethod($WAKWindow, @selector(screenSize)))
             method_setImplementation(method, (IMP) &$WAKWindow$screenSize);
-
-    $NSURLConnection = objc_getClass("NSURLConnection");
-    Method NSURLConnection$init$(class_getInstanceMethod($NSURLConnection, @selector(_initWithRequest:delegate:usesCache:maxContentLength:startImmediately:connectionProperties:)));
-    if (NSURLConnection$init$ != NULL) {
-        _NSURLConnection$init$ = reinterpret_cast<id (*)(NSURLConnection *, SEL, NSURLRequest *, id, BOOL, int64_t, BOOL, NSDictionary *)>(method_getImplementation(NSURLConnection$init$));
-        method_setImplementation(NSURLConnection$init$, reinterpret_cast<IMP>(&$NSURLConnection$init$));
-    }
 
     $NSUserDefaults = objc_getClass("NSUserDefaults");
     Method NSUserDefaults$objectForKey$(class_getInstanceMethod($NSUserDefaults, @selector(objectForKey:)));
