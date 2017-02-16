@@ -3909,20 +3909,21 @@ class CydiaLogCleaner :
                         continue;
                     } else {
                         std::swap(package, packages[index]);
-                        if (package != nil)
+                        if (package != nil) {
+                            if (package.metadata->index_ == index + 1)
+                                ++lost;
                             goto lost;
+                        }
                         if (last != index)
                             continue;
                     }
-                } else lost: {
+                } else {
                     ++lost;
-                    if (last == packages.size()) {
+                    lost: if (last == packages.size())
                         packages.push_back(package);
-                        ++last;
-                    } else {
+                    else
                         packages[last] = package;
-                        ++last;
-                    }
+                    ++last;
                 }
 
                 for (; last != packages.size(); ++last)
