@@ -800,7 +800,6 @@ static _H<NSMutableDictionary> SessionData_;
 static _H<NSObject> HostConfig_;
 static _H<NSMutableSet> BridgedHosts_;
 static _H<NSMutableSet> InsecureHosts_;
-static _H<NSMutableSet> PipelinedHosts_;
 static _H<NSMutableSet> CachedURLs_;
 
 static NSString *kCydiaProgressEventTypeError = @"Error";
@@ -4541,8 +4540,6 @@ static _H<NSMutableSet> Diversions_;
         return @"addInsecureHost";
     else if (selector == @selector(addInternalRedirect::))
         return @"addInternalRedirect";
-    else if (selector == @selector(addPipelinedHost:scheme:))
-        return @"addPipelinedHost";
     else if (selector == @selector(addSource:::))
         return @"addSource";
     else if (selector == @selector(addTrivialSource:))
@@ -4773,14 +4770,6 @@ static _H<NSMutableSet> Diversions_;
 - (void) addInsecureHost:(NSString *)host {
 @synchronized (HostConfig_) {
     [InsecureHosts_ addObject:host];
-} }
-
-- (void) addPipelinedHost:(NSString *)host scheme:(NSString *)scheme {
-@synchronized (HostConfig_) {
-    if (scheme != (id) [WebUndefined undefined])
-        host = [NSString stringWithFormat:@"%@:%@", [scheme lowercaseString], host];
-
-    [PipelinedHosts_ addObject:host];
 } }
 
 - (void) popViewController:(NSNumber *)value {
@@ -10113,16 +10102,7 @@ MSHook(id, NSURLConnection$init$, NSURLConnection *self, SEL _cmd, NSURLRequest 
 
     NSURL *url([copy URL]);
 
-    NSString *host([url host]);
-    NSString *scheme([[url scheme] lowercaseString]);
-
-    NSString *compound([NSString stringWithFormat:@"%@:%@", scheme, host]);
-
     @synchronized (HostConfig_) {
-        if ([copy respondsToSelector:@selector(setHTTPShouldUsePipelining:)])
-            if ([PipelinedHosts_ containsObject:host] || [PipelinedHosts_ containsObject:compound])
-                [copy setHTTPShouldUsePipelining:YES];
-
         if (NSString *control = [copy valueForHTTPHeaderField:@"Cache-Control"])
             if ([control isEqualToString:@"max-age=0"])
                 if ([CachedURLs_ containsObject:url]) {
@@ -10220,7 +10200,6 @@ int main(int argc, char *argv[]) {
     @synchronized (HostConfig_) {
         BridgedHosts_ = [NSMutableSet setWithCapacity:4];
         InsecureHosts_ = [NSMutableSet setWithCapacity:4];
-        PipelinedHosts_ = [NSMutableSet setWithCapacity:4];
         CachedURLs_ = [NSMutableSet setWithCapacity:32];
     }
 
