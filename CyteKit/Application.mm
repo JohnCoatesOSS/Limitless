@@ -24,6 +24,8 @@
 #include <Foundation/Foundation.h>
 #include <UIKit/UIKit.h>
 
+#include "CyteKit/Application.h"
+
 #include "iPhonePrivate.h"
 #include <Menes/ObjectHandle.h>
 
