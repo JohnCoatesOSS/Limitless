@@ -6437,7 +6437,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 #if !AlwaysReload
 - (void) _customButtonClicked {
-    if (commercial_ && [package_ uninstalled])
+    if (commercial_ && self.isLoading && [package_ uninstalled])
         return [self reloadURLWithCache:NO];
 
     size_t count(buttons_.size());
