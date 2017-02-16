@@ -83,7 +83,7 @@
 
 #if !AlwaysReload
 - (void) _customButtonClicked {
-    if (commercial_ && [package_ uninstalled]) {
+    if (commercial_ && self.isLoading && [package_ uninstalled]) {
         return [self reloadURLWithCache:NO];
     }
     
