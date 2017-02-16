@@ -423,20 +423,24 @@
                             continue;
                         } else {
                             std::swap(package, packages[index]);
-                            if (package != nil)
+                            if (package != nil) {
+                                if (package.metadata->index_ == index + 1) {
+                                    lost += 1;
+                                }
                                 goto lost;
+                            }
                             if (last != index)
                                 continue;
                         }
-                    } else lost: {
-                        ++lost;
+                    } else {
+                        lost += 1;
+                    lost:
                         if (last == packages.size()) {
                             packages.push_back(package);
-                            ++last;
                         } else {
                             packages[last] = package;
-                            ++last;
                         }
+                        last += 1;
                     }
                     
                     for (; last != packages.size(); ++last)
