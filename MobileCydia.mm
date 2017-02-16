@@ -10315,29 +10315,6 @@ int main(int argc, char *argv[]) {
         CollationStarts_ = [NSArray arrayWithObjects:@"a",@"b",@"c",@"d",@"e",@"f",@"g",@"h",@"i",@"j",@"k",@"l",@"m",@"n",@"o",@"p",@"q",@"r",@"s",@"t",@"u",@"v",@"w",@"x",@"y",@"z",@"ʒ",nil];
     }
     /* }}} */
-    /* Parse Arguments {{{ */
-    bool substrate(false);
-
-    if (argc != 0) {
-        char **args(argv);
-        int arge(1);
-
-        for (int argi(1); argi != argc; ++argi)
-            if (strcmp(argv[argi], "--") == 0) {
-                arge = argi;
-                argv[argi] = argv[0];
-                argv += argi;
-                argc -= argi;
-                break;
-            }
-
-        for (int argi(1); argi != arge; ++argi)
-            if (strcmp(args[argi], "--substrate") == 0)
-                substrate = true;
-            else
-                fprintf(stderr, "unknown argument: %s\n", args[argi]);
-    }
-    /* }}} */
 
     App_ = [[NSBundle mainBundle] bundlePath];
     Advanced_ = YES;
