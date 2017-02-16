@@ -12,7 +12,6 @@ _H<NSMutableDictionary> SessionData_;
 _H<NSObject> HostConfig_;
 _H<NSMutableSet> BridgedHosts_;
 _H<NSMutableSet> InsecureHosts_;
-_H<NSMutableSet> PipelinedHosts_;
 _H<NSMutableSet> CachedURLs_;
 
 bool IsReachable(const char *name) {

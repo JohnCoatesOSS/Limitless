@@ -16,7 +16,6 @@ extern _H<NSMutableDictionary> SessionData_;
 extern _H<NSObject> HostConfig_;
 extern _H<NSMutableSet> BridgedHosts_;
 extern _H<NSMutableSet> InsecureHosts_;
-extern _H<NSMutableSet> PipelinedHosts_;
 extern _H<NSMutableSet> CachedURLs_;
 
 /// Whether we have network connectivity to reach a domain

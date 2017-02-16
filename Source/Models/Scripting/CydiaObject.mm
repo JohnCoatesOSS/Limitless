@@ -144,8 +144,6 @@
         return @"addInsecureHost";
     else if (selector == @selector(addInternalRedirect::))
         return @"addInternalRedirect";
-    else if (selector == @selector(addPipelinedHost:scheme:))
-        return @"addPipelinedHost";
     else if (selector == @selector(addSource:::))
         return @"addSource";
     else if (selector == @selector(addTrivialSource:))
@@ -393,14 +391,6 @@
 - (void) addInsecureHost:(NSString *)host {
     @synchronized (HostConfig_) {
         [InsecureHosts_ addObject:host];
-    } }
-
-- (void) addPipelinedHost:(NSString *)host scheme:(NSString *)scheme {
-    @synchronized (HostConfig_) {
-        if (scheme != (id) [WebUndefined undefined])
-            host = [NSString stringWithFormat:@"%@:%@", [scheme lowercaseString], host];
-        
-        [PipelinedHosts_ addObject:host];
     } }
 
 - (void) popViewController:(NSNumber *)value {

@@ -26,15 +26,7 @@ MSHook(id, NSURLConnection$init$, NSURLConnection *self, SEL _cmd, NSURLRequest 
     
     NSURL *url([copy URL]);
     
-    NSString *host([url host]);
-    NSString *scheme([[url scheme] lowercaseString]);
-    
-    NSString *compound([NSString stringWithFormat:@"%@:%@", scheme, host]);
-    
     @synchronized (HostConfig_) {
-        if ([copy respondsToSelector:@selector(setHTTPShouldUsePipelining:)])
-            if ([PipelinedHosts_ containsObject:host] || [PipelinedHosts_ containsObject:compound])
-                [copy setHTTPShouldUsePipelining:YES];
         
         if (NSString *control = [copy valueForHTTPHeaderField:@"Cache-Control"])
             if ([control isEqualToString:@"max-age=0"])

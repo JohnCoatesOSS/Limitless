@@ -97,7 +97,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     @synchronized (HostConfig_) {
         BridgedHosts_ = [NSMutableSet setWithCapacity:4];
         InsecureHosts_ = [NSMutableSet setWithCapacity:4];
-        PipelinedHosts_ = [NSMutableSet setWithCapacity:4];
         CachedURLs_ = [NSMutableSet setWithCapacity:32];
     }
     
