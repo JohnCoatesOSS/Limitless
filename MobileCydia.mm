@@ -735,8 +735,6 @@ _H<NSMutableDictionary> Sources_;
 static _transient NSNumber *Version_;
 static time_t now_;
 
-bool IsWildcat_;
-CGFloat ScreenScale_;
 static NSString *Idiom_;
 static _H<NSString> Firmware_;
 static NSString *Major_;
@@ -9979,25 +9977,14 @@ int main(int argc, char *argv[]) {
 
     UpdateExternalStatus(0);
 
-    UIScreen *screen([UIScreen mainScreen]);
-    if ([screen respondsToSelector:@selector(scale)])
-        ScreenScale_ = [screen scale];
-    else
-        ScreenScale_ = 1;
-
-    UIDevice *device([UIDevice currentDevice]);
-    if ([device respondsToSelector:@selector(userInterfaceIdiom)]) {
-        UIUserInterfaceIdiom idiom([device userInterfaceIdiom]);
-        if (idiom == UIUserInterfaceIdiomPad)
-            IsWildcat_ = true;
-    }
-
     Idiom_ = IsWildcat_ ? @"ipad" : @"iphone";
 
     RegEx pattern("([0-9]+\\.[0-9]+).*");
 
+    UIDevice *device([UIDevice currentDevice]);
     if (pattern([device systemVersion]))
         Firmware_ = pattern[1];
+
     if (pattern(Cydia_))
         Major_ = pattern[1];
 

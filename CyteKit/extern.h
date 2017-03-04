@@ -19,21 +19,12 @@
 **/
 /* }}} */
 
-#ifndef CyteKit_CyteKit_H
-#define CyteKit_CyteKit_H
+#ifndef CyteKit_extern_H
+#define CyteKit_extern_H
 
-#include "CyteKit/Application.h"
-#include "CyteKit/NavigationController.h"
-#include "CyteKit/RegEx.hpp"
-#include "CyteKit/TableViewCell.h"
-#include "CyteKit/TabBarController.h"
-#include "CyteKit/URLCache.h"
-#include "CyteKit/WebViewController.h"
-#include "CyteKit/WebViewTableViewCell.h"
+#include <CoreGraphics/CoreGraphics.h>
 
-#include "CyteKit/countByEnumeratingWithState.h"
-#include "CyteKit/extern.h"
-#include "CyteKit/stringWithUTF8Bytes.h"
-#include "CyteKit/webScriptObjectInContext.h"
+extern bool IsWildcat_;
+extern CGFloat ScreenScale_;
 
-#endif//CyteKit_CyteKit_H
+#endif//CyteKit_extern_H

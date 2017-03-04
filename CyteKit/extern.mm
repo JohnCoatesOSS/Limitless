@@ -19,21 +19,24 @@
 **/
 /* }}} */
 
-#ifndef CyteKit_CyteKit_H
-#define CyteKit_CyteKit_H
+#include <CyteKit/extern.h>
+#include <UIKit/UIKit.h>
 
-#include "CyteKit/Application.h"
-#include "CyteKit/NavigationController.h"
-#include "CyteKit/RegEx.hpp"
-#include "CyteKit/TableViewCell.h"
-#include "CyteKit/TabBarController.h"
-#include "CyteKit/URLCache.h"
-#include "CyteKit/WebViewController.h"
-#include "CyteKit/WebViewTableViewCell.h"
+bool IsWildcat_;
+CGFloat ScreenScale_;
 
-#include "CyteKit/countByEnumeratingWithState.h"
-#include "CyteKit/extern.h"
-#include "CyteKit/stringWithUTF8Bytes.h"
-#include "CyteKit/webScriptObjectInContext.h"
+__attribute__((__constructor__))
+void CyteKit_extern() {
+    UIScreen *screen([UIScreen mainScreen]);
+    if ([screen respondsToSelector:@selector(scale)])
+        ScreenScale_ = [screen scale];
+    else
+        ScreenScale_ = 1;
 
-#endif//CyteKit_CyteKit_H
+    UIDevice *device([UIDevice currentDevice]);
+    if ([device respondsToSelector:@selector(userInterfaceIdiom)]) {
+        UIUserInterfaceIdiom idiom([device userInterfaceIdiom]);
+        if (idiom == UIUserInterfaceIdiomPad)
+            IsWildcat_ = true;
+    }
+}
