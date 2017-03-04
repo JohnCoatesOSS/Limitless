@@ -24,7 +24,6 @@
 
 #include "CyteKit/Application.h"
 #include "CyteKit/NavigationController.h"
-#include "CyteKit/RegEx.hpp"
 #include "CyteKit/TableViewCell.h"
 #include "CyteKit/TabBarController.h"
 #include "CyteKit/URLCache.h"

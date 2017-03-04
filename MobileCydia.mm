@@ -113,6 +113,7 @@ extern "C" {
 #include "Menes/Menes.h"
 
 #include "CyteKit/CyteKit.h"
+#include "CyteKit/RegEx.hpp"
 
 #include "Cydia/MIMEAddress.h"
 #include "Cydia/LoadingViewController.h"
