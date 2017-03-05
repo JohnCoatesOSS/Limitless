@@ -716,7 +716,6 @@ static _H<NSString> Firmware_;
 static NSString *Major_;
 
 static _H<NSMutableDictionary> SessionData_;
-static _H<NSObject> HostConfig_;
 static _H<NSMutableSet> BridgedHosts_;
 static _H<NSMutableSet> InsecureHosts_;
 
@@ -4627,12 +4626,12 @@ class CydiaLogCleaner :
 } }
 
 - (void) addBridgedHost:(NSString *)host {
-@synchronized (HostConfig_) {
+@synchronized (BridgedHosts_) {
     [BridgedHosts_ addObject:host];
 } }
 
 - (void) addInsecureHost:(NSString *)host {
-@synchronized (HostConfig_) {
+@synchronized (InsecureHosts_) {
     [InsecureHosts_ addObject:host];
 } }
 
@@ -4853,7 +4852,7 @@ class CydiaLogCleaner :
     if ([[[self scheme] lowercaseString] isEqualToString:@"https"])
         return true;
 
-    @synchronized (HostConfig_) {
+    @synchronized (InsecureHosts_) {
         if ([InsecureHosts_ containsObject:[self host]])
             return true;
     }
@@ -4886,7 +4885,7 @@ class CydiaLogCleaner :
 
     bool bridged(false);
 
-    @synchronized (HostConfig_) {
+    @synchronized (BridgedHosts_) {
         if ([scheme isEqualToString:@"file"])
             bridged = true;
         else if ([scheme isEqualToString:@"https"])
@@ -4938,7 +4937,7 @@ class CydiaLogCleaner :
     if (Machine_ != NULL && [copy valueForHTTPHeaderField:@"X-Machine"] == nil)
         [copy setValue:[NSString stringWithUTF8String:Machine_] forHTTPHeaderField:@"X-Machine"];
 
-    bool bridged; @synchronized (HostConfig_) {
+    bool bridged; @synchronized (BridgedHosts_) {
         bridged = [BridgedHosts_ containsObject:host];
     }
 
@@ -9579,7 +9578,7 @@ _end
     [super applicationDidFinishLaunching:unused];
 _trace();
 
-    @synchronized (HostConfig_) {
+    @synchronized (BridgedHosts_) {
         [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
     }
 
@@ -9857,12 +9856,8 @@ int main(int argc, char *argv[]) {
         Major_ = pattern[1];
 
     SessionData_ = [NSMutableDictionary dictionaryWithCapacity:4];
-
-    HostConfig_ = [[[NSObject alloc] init] autorelease];
-    @synchronized (HostConfig_) {
-        BridgedHosts_ = [NSMutableSet setWithCapacity:4];
-        InsecureHosts_ = [NSMutableSet setWithCapacity:4];
-    }
+    BridgedHosts_ = [NSMutableSet setWithCapacity:4];
+    InsecureHosts_ = [NSMutableSet setWithCapacity:4];
 
     NSString *ui(@"ui/ios");
     if (Idiom_ != nil)
