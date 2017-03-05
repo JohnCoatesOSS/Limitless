@@ -696,9 +696,6 @@ _H<NSMutableDictionary> Sources_;
 static _transient NSNumber *Version_;
 static time_t now_;
 
-static _H<NSString> Firmware_;
-static NSString *Major_;
-
 static _H<NSMutableDictionary> SessionData_;
 static _H<NSMutableSet> BridgedHosts_;
 static _H<NSMutableSet> InsecureHosts_;
@@ -9238,13 +9235,9 @@ _end
 
 - (void) applicationDidFinishLaunching:(id)unused {
     [super applicationDidFinishLaunching:unused];
-_trace();
-
-    @synchronized (BridgedHosts_) {
-        [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
-    }
-
     [CyteWebViewController _initialize];
+
+    [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
 
     [NSURLProtocol registerClass:[CydiaURLProtocol class]];
 
@@ -9506,20 +9499,11 @@ int main(int argc, char *argv[]) {
     CyteInitialize(@"Cydia", Cydia_);
     UpdateExternalStatus(0);
 
-    RegEx pattern("([0-9]+\\.[0-9]+).*");
-
-    UIDevice *device([UIDevice currentDevice]);
-    if (pattern([device systemVersion]))
-        Firmware_ = pattern[1];
-
-    if (pattern(Cydia_))
-        Major_ = pattern[1];
-
     SessionData_ = [NSMutableDictionary dictionaryWithCapacity:4];
     BridgedHosts_ = [NSMutableSet setWithCapacity:4];
     InsecureHosts_ = [NSMutableSet setWithCapacity:4];
 
-    UI_ = CydiaURL([NSString stringWithFormat:@"ui/ios~%@/%@", IsWildcat_ ? @"ipad" : @"iphone", Major_]);
+    UI_ = CydiaURL([NSString stringWithFormat:@"ui/ios~%@/1.1", IsWildcat_ ? @"ipad" : @"iphone"]);
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
 
     /* Set Locale {{{ */
@@ -9621,7 +9605,7 @@ int main(int argc, char *argv[]) {
 
     void *gestalt(dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY));
     $MGCopyAnswer = reinterpret_cast<CFStringRef (*)(CFStringRef)>(dlsym(gestalt, "MGCopyAnswer"));
-    UniqueID_ = UniqueIdentifier(device);
+    UniqueID_ = UniqueIdentifier([UIDevice currentDevice]);
 
     /* System Information {{{ */
     size_t size;
