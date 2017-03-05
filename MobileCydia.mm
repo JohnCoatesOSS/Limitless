@@ -641,9 +641,6 @@ static _H<UIFont> Font18_;
 static _H<UIFont> Font18Bold_;
 static _H<UIFont> Font22Bold_;
 
-static NSString *SerialNumber_ = nil;
-static NSString *ChipID_ = nil;
-static NSString *BBSNum_ = nil;
 static _H<NSString> UniqueID_;
 
 static _H<NSLocale> CollationLocale_;
@@ -711,7 +708,6 @@ _H<NSMutableDictionary> Sources_;
 static _transient NSNumber *Version_;
 static time_t now_;
 
-static NSString *Idiom_;
 static _H<NSString> Firmware_;
 static NSString *Major_;
 
@@ -4331,7 +4327,7 @@ class CydiaLogCleaner :
 }
 
 - (NSString *) idiom {
-    return (id) Idiom_ ?: [NSNull null];
+    return IsWildcat_ ? @"ipad" : @"iphone";
 }
 
 - (NSArray *) cells {
@@ -4376,15 +4372,15 @@ class CydiaLogCleaner :
 }
 
 - (NSString *) bbsnum {
-    return (id) BBSNum_ ?: [NSNull null];
+    return (id) CYHex((NSData *) CYIOGetValue("IOService:/AppleARMPE/baseband", @"snum"), false) ?: [NSNull null];
 }
 
 - (NSString *) ecid {
-    return (id) ChipID_ ?: [NSNull null];
+    return (id) [CYHex((NSData *) CYIOGetValue("IODeviceTree:/chosen", @"unique-chip-id"), true) uppercaseString] ?: [NSNull null];
 }
 
 - (NSString *) serial {
-    return SerialNumber_;
+    return (NSString *) CYIOGetValue("IOService:/", @"IOPlatformSerialNumber");
 }
 
 - (NSString *) role {
@@ -9844,8 +9840,6 @@ int main(int argc, char *argv[]) {
     CyteInitialize(@"Cydia", Cydia_);
     UpdateExternalStatus(0);
 
-    Idiom_ = IsWildcat_ ? @"ipad" : @"iphone";
-
     RegEx pattern("([0-9]+\\.[0-9]+).*");
 
     UIDevice *device([UIDevice currentDevice]);
@@ -9859,12 +9853,7 @@ int main(int argc, char *argv[]) {
     BridgedHosts_ = [NSMutableSet setWithCapacity:4];
     InsecureHosts_ = [NSMutableSet setWithCapacity:4];
 
-    NSString *ui(@"ui/ios");
-    if (Idiom_ != nil)
-        ui = [ui stringByAppendingString:[NSString stringWithFormat:@"~%@", Idiom_]];
-    ui = [ui stringByAppendingString:[NSString stringWithFormat:@"/%@", Major_]];
-    UI_ = CydiaURL(ui);
-
+    UI_ = CydiaURL([NSString stringWithFormat:@"ui/ios~%@/%@", IsWildcat_ ? @"ipad" : @"iphone", Major_]);
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
 
     /* Set Locale {{{ */
@@ -9966,6 +9955,7 @@ int main(int argc, char *argv[]) {
 
     void *gestalt(dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY));
     $MGCopyAnswer = reinterpret_cast<CFStringRef (*)(CFStringRef)>(dlsym(gestalt, "MGCopyAnswer"));
+    UniqueID_ = UniqueIdentifier(device);
 
     /* System Information {{{ */
     size_t size;
@@ -9979,12 +9969,6 @@ int main(int argc, char *argv[]) {
         if (sysctlbyname("kern.maxproc", NULL, NULL, &maxproc, sizeof(maxproc)) == -1)
             perror("sysctlbyname(\"kern.maxproc\", #)");
     }
-
-    SerialNumber_ = (NSString *) CYIOGetValue("IOService:/", @"IOPlatformSerialNumber");
-    ChipID_ = [CYHex((NSData *) CYIOGetValue("IODeviceTree:/chosen", @"unique-chip-id"), true) uppercaseString];
-    BBSNum_ = CYHex((NSData *) CYIOGetValue("IOService:/AppleARMPE/baseband", @"snum"), false);
-
-    UniqueID_ = UniqueIdentifier(device);
     /* }}} */
     /* Load Database {{{ */
     SectionMap_ = [[[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Sections" ofType:@"plist"]] autorelease];
