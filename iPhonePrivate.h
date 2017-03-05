@@ -334,6 +334,7 @@ enum {
 
 @interface NSObject (Apple)
 + (BOOL) isKeyExcludedFromWebScript:(const char *)name;
+- (NSArray *) attributeKeys;
 @end
 
 @interface NSString (Apple)
