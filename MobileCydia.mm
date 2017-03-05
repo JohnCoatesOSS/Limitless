@@ -6631,61 +6631,18 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 /* }}} */
 
 /* Cydia:// Protocol {{{ */
-@interface CydiaURLProtocol : NSURLProtocol {
+@interface CydiaURLProtocol : CyteURLProtocol {
 }
 
 @end
 
 @implementation CydiaURLProtocol
 
-+ (BOOL) canInitWithRequest:(NSURLRequest *)request {
-    NSURL *url([request URL]);
-    if (url == nil)
-        return NO;
-
-    NSString *scheme([[url scheme] lowercaseString]);
-    if (scheme != nil && [scheme isEqualToString:@"cydia"])
-        return YES;
-    if ([[url absoluteString] hasPrefix:@"about:cydia-"])
-        return YES;
-
-    return NO;
++ (NSString *) scheme {
+    return @"cydia";
 }
 
-+ (NSURLRequest *) canonicalRequestForRequest:(NSURLRequest *)request {
-    return request;
-}
-
-- (void) _returnPNGWithImage:(UIImage *)icon forRequest:(NSURLRequest *)request {
-    id<NSURLProtocolClient> client([self client]);
-    if (icon == nil)
-        [client URLProtocol:self didFailWithError:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:nil]];
-    else {
-        NSData *data(UIImagePNGRepresentation(icon));
-
-        NSURLResponse *response([[[NSURLResponse alloc] initWithURL:[request URL] MIMEType:@"image/png" expectedContentLength:-1 textEncodingName:nil] autorelease]);
-        [client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
-        [client URLProtocol:self didLoadData:data];
-        [client URLProtocolDidFinishLoading:self];
-    }
-}
-
-- (void) startLoading {
-    id<NSURLProtocolClient> client([self client]);
-    NSURLRequest *request([self request]);
-
-    NSURL *url([request URL]);
-    NSString *href([url absoluteString]);
-    NSString *scheme([[url scheme] lowercaseString]);
-
-    NSString *path;
-
-    if ([scheme isEqualToString:@"cydia"])
-        path = [href substringFromIndex:8];
-    else if ([scheme isEqualToString:@"about"])
-        path = [href substringFromIndex:12];
-    else _assert(false);
-
+- (bool) loadForPath:(NSString *)path ofRequest:(NSURLRequest *)request {
     NSRange slash([path rangeOfString:@"/"]);
 
     NSString *command;
@@ -6745,11 +6702,10 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
             icon = [UIImage imageNamed:@"unknown.png"];
         [self _returnPNGWithImage:icon forRequest:request];
     } else fail: {
-        [client URLProtocol:self didFailWithError:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil]];
+        return [super loadForPath:path ofRequest:request];
     }
-}
 
-- (void) stopLoading {
+    return true;
 }
 
 @end
