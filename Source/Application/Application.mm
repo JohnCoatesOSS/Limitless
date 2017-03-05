@@ -243,9 +243,7 @@
     }
 }
 - (void)setUpHostConfiguration {
-    @synchronized (HostConfig_) {
-        [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
-    }
+    [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
 }
 
 - (void)setSharedURLCache {

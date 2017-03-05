@@ -81,16 +81,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
 }
 
 + (void)setUpLegacyGlobals {
-    UIDevice *device = [UIDevice currentDevice];
-    RegEx pattern = "([0-9]+\\.[0-9]+).*";
-    if (pattern([device systemVersion])) {
-        Firmware_ = pattern[1];
-    }
-    
-    if (pattern(Cydia_)) {
-        Major_ = pattern[1];
-    }
-    
     SessionData_ = [NSMutableDictionary dictionaryWithCapacity:4];
     
     HostConfig_ = [[NSObject new] autorelease];
@@ -100,7 +90,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
         CachedURLs_ = [NSMutableSet setWithCapacity:32];
     }
     
-    UI_ = CydiaURL([NSString stringWithFormat:@"ui/ios~%@/%@", [Device isPad] ? @"ipad" : @"iphone", Major_]);
+    UI_ = CydiaURL([NSString stringWithFormat:@"ui/ios~%@/%@", [Device isPad] ? @"ipad" : @"iphone", @"1.1"]);
     
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
     [self setUpLibraryHacks];
@@ -117,7 +107,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     void *gestalt(dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY));
     $MGCopyAnswer = reinterpret_cast<CFStringRef (*)(CFStringRef)>(dlsym(gestalt, "MGCopyAnswer"));
-    UniqueID_ = UniqueIdentifier(device);
+    UniqueID_ = UniqueIdentifier([UIDevice currentDevice]);
     
     [self setUpSystemInformation];
     [[APTManager sharedInstance] setup];
