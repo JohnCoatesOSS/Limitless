@@ -10014,7 +10014,7 @@ int main(int argc, char *argv[]) {
     UniqueID_ = UniqueIdentifier(device);
 
     if (NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile:@"/Applications/MobileSafari.app/Info.plist"]) {
-        Product_ = [info objectForKey:@"SafariProductVersion"];
+        Product_ = [info objectForKey:@"SafariProductVersion"] ?: [info objectForKey:@"CFBundleShortVersionString"];
         Safari_ = [info objectForKey:@"CFBundleVersion"];
     }
 
