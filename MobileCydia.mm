@@ -667,7 +667,6 @@ static NSString *SerialNumber_ = nil;
 static NSString *ChipID_ = nil;
 static NSString *BBSNum_ = nil;
 static _H<NSString> UniqueID_;
-static _H<NSString> UserAgent_;
 static _H<NSString> Product_;
 static _H<NSString> Safari_;
 
@@ -4257,60 +4256,6 @@ class CydiaLogCleaner :
 @end
 /* }}} */
 
-static _H<NSMutableSet> Diversions_;
-
-@interface Diversion : NSObject {
-    RegEx pattern_;
-    _H<NSString> key_;
-    _H<NSString> format_;
-}
-
-@end
-
-@implementation Diversion
-
-- (id) initWithFrom:(NSString *)from to:(NSString *)to {
-    if ((self = [super init]) != nil) {
-        pattern_ = [from UTF8String];
-        key_ = from;
-        format_ = to;
-    } return self;
-}
-
-- (NSString *) divert:(NSString *)url {
-    return !pattern_(url) ? nil : pattern_->*format_;
-}
-
-+ (NSURL *) divertURL:(NSURL *)url {
-  divert:
-    NSString *href([url absoluteString]);
-
-    for (Diversion *diversion in (id) Diversions_)
-        if (NSString *diverted = [diversion divert:href]) {
-#if !ForRelease
-            NSLog(@"div: %@", diverted);
-#endif
-            url = [NSURL URLWithString:diverted];
-            goto divert;
-        }
-
-    return url;
-}
-
-- (NSString *) key {
-    return key_;
-}
-
-- (NSUInteger) hash {
-    return [key_ hash];
-}
-
-- (BOOL) isEqual:(Diversion *)object {
-    return self == object || [self class] == [object class] && [key_ isEqual:[object key]];
-}
-
-@end
-
 @interface CydiaObject : NSObject {
     _H<CyteWebViewController> indirect_;
     _transient id delegate_;
@@ -4326,7 +4271,6 @@ static _H<NSMutableSet> Diversions_;
     _H<CydiaObject> cydia_;
 }
 
-+ (void) addDiversion:(Diversion *)diversion;
 + (NSURLRequest *) requestWithHeaders:(NSURLRequest *)request;
 + (void) didClearWindowObject:(WebScriptObject *)window forFrame:(WebFrame *)frame withCydia:(CydiaObject *)cydia;
 - (void) setDelegate:(id)delegate;
@@ -4605,7 +4549,7 @@ static _H<NSMutableSet> Diversions_;
 }
 
 - (void) addInternalRedirect:(NSString *)from :(NSString *)to {
-    [CydiaWebViewController performSelectorOnMainThread:@selector(addDiversion:) withObject:[[[Diversion alloc] initWithFrom:from to:to] autorelease] waitUntilDone:NO];
+    [CyteWebViewController performSelectorOnMainThread:@selector(addDiversion:) withObject:[[[Diversion alloc] initWithFrom:from to:to] autorelease] waitUntilDone:NO];
 }
 
 - (NSDictionary *) getApplicationInfo:(NSString *)display value:(NSString *)key {
@@ -4953,16 +4897,6 @@ static _H<NSMutableSet> Diversions_;
         return nil;
 }
 
-+ (void) _initialize {
-    [super _initialize];
-
-    Diversions_ = [NSMutableSet setWithCapacity:0];
-}
-
-+ (void) addDiversion:(Diversion *)diversion {
-    [Diversions_ addObject:diversion];
-}
-
 - (void) webView:(WebView *)view didClearWindowObject:(WebScriptObject *)window forFrame:(WebFrame *)frame {
     [super webView:view didClearWindowObject:window forFrame:frame];
     [CydiaWebViewController didClearWindowObject:window forFrame:frame withCydia:cydia_];
@@ -4993,10 +4927,6 @@ static _H<NSMutableSet> Diversions_;
 
     system("/usr/bin/dpkg -l >/tmp/dpkgl.log");
     [controller addAttachmentData:[NSData dataWithContentsOfFile:@"/tmp/dpkgl.log"] mimeType:@"text/plain" fileName:@"dpkgl.log"];
-}
-
-- (NSURL *) URLWithURL:(NSURL *)url {
-    return [Diversion divertURL:url];
 }
 
 - (NSURLRequest *) webView:(WebView *)view resource:(id)resource willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response fromDataSource:(WebDataSource *)source {
@@ -5045,10 +4975,6 @@ static _H<NSMutableSet> Diversions_;
 - (void) setDelegate:(id)delegate {
     [super setDelegate:delegate];
     [cydia_ setDelegate:delegate];
-}
-
-- (NSString *) applicationNameForUserAgent {
-    return UserAgent_;
 }
 
 - (id) init {
@@ -9681,7 +9607,7 @@ _trace();
         [BridgedHosts_ addObject:[[NSURL URLWithString:CydiaURL(@"")] host]];
     }
 
-    [CydiaWebViewController _initialize];
+    [CyteWebViewController _initialize];
 
     [NSURLProtocol registerClass:[CydiaURLProtocol class]];
 
@@ -10121,7 +10047,7 @@ int main(int argc, char *argv[]) {
     if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", Product_))
         agent = [NSString stringWithFormat:@"Version/%@ %@", match[1], agent];
 
-    UserAgent_ = agent;
+    [CyteWebViewController setApplicationNameForUserAgent:agent];
     /* }}} */
     /* Load Database {{{ */
     SectionMap_ = [[[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Sections" ofType:@"plist"]] autorelease];
