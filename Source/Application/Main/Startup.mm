@@ -100,11 +100,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
         CachedURLs_ = [NSMutableSet setWithCapacity:32];
     }
     
-    NSString *idiom = [Device isPad] ? @"ipad" : @"iphone";
-    NSString *ui = @"ui/ios";
-    ui = [ui stringByAppendingString:[NSString stringWithFormat:@"~%@", idiom]];
-    ui = [ui stringByAppendingString:[NSString stringWithFormat:@"/%@", Major_]];
-    UI_ = CydiaURL(ui);
+    UI_ = CydiaURL([NSString stringWithFormat:@"ui/ios~%@/%@", [Device isPad] ? @"ipad" : @"iphone", Major_]);
     
     PackageName = reinterpret_cast<CYString &(*)(Package *, SEL)>(method_getImplementation(class_getInstanceMethod([Package class], @selector(cyname))));
     [self setUpLibraryHacks];
@@ -121,6 +117,7 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     
     void *gestalt(dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY));
     $MGCopyAnswer = reinterpret_cast<CFStringRef (*)(CFStringRef)>(dlsym(gestalt, "MGCopyAnswer"));
+    UniqueID_ = UniqueIdentifier(device);
     
     [self setUpSystemInformation];
     [[APTManager sharedInstance] setup];
@@ -211,12 +208,6 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     size = sizeof(usermem);
     if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1)
         usermem = 0;
-    
-    SerialNumber_ = (NSString *) CYIOGetValue("IOService:/", @"IOPlatformSerialNumber");
-    ChipID_ = [CYHex((NSData *) CYIOGetValue("IODeviceTree:/chosen", @"unique-chip-id"), true) uppercaseString];
-    BBSNum_ = CYHex((NSData *) CYIOGetValue("IOService:/AppleARMPE/baseband", @"snum"), false);
-    
-    UniqueID_ = UniqueIdentifier([UIDevice currentDevice]);
     
     if (NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile:@"/Applications/MobileSafari.app/Info.plist"]) {
         Product_ = [info objectForKey:@"SafariProductVersion"] ?: [info objectForKey:@"CFBundleShortVersionString"];;

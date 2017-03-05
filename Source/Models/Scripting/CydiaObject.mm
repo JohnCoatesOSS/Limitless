@@ -117,15 +117,15 @@
 }
 
 - (NSString *) bbsnum {
-    return (id) BBSNum_ ?: [NSNull null];
+    return (id) CYHex((NSData *) CYIOGetValue("IOService:/AppleARMPE/baseband", @"snum"), false) ?: [NSNull null];
 }
 
 - (NSString *) ecid {
-    return (id) ChipID_ ?: [NSNull null];
+    return (id) [CYHex((NSData *) CYIOGetValue("IODeviceTree:/chosen", @"unique-chip-id"), true) uppercaseString] ?: [NSNull null];
 }
 
 - (NSString *) serial {
-    return SerialNumber_;
+    return (NSString *) CYIOGetValue("IOService:/", @"IOPlatformSerialNumber");
 }
 
 - (NSString *) role {
