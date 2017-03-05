@@ -29,6 +29,7 @@
 #include "CyteKit/URLCache.h"
 #include "CyteKit/WebViewController.h"
 #include "CyteKit/WebViewTableViewCell.h"
+#include "CyteKit/Window.h"
 
 #include "CyteKit/countByEnumeratingWithState.h"
 #include "CyteKit/extern.h"

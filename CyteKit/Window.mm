@@ -19,20 +19,31 @@
 **/
 /* }}} */
 
-#ifndef CyteKit_TabBarController_H
-#define CyteKit_TabBarController_H
+#include "CyteKit/UCPlatform.h"
 
-#include <CyteKit/ViewController.h>
+#include "CyteKit/ViewController.h"
+#include "CyteKit/Window.h"
 
-#include <UIKit/UIKit.h>
+#include "iPhonePrivate.h"
+#include <Menes/ObjectHandle.h>
 
-@interface CyteTabBarController : UITabBarController
+@implementation CyteWindow {
+    _transient UIViewController *root_;
+}
 
-- (NSArray *) navigationURLCollection;
-- (void) addViewControllers:(id)no, ...;
-- (UIViewController *) unselectedViewController;
-- (void) setUnselectedViewController:(UIViewController *)transient;
+- (void) setRootViewController:(UIViewController *)controller {
+    if ([super respondsToSelector:@selector(setRootViewController:)])
+        [super setRootViewController:controller];
+    else {
+        [self addSubview:[controller view]];
+        [[root_ view] removeFromSuperview];
+    }
+
+    root_ = controller;
+}
+
+- (void) unloadData {
+    [root_ unloadData];
+}
 
 @end
-
-#endif//CyteKit_TabBarController_H

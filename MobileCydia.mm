@@ -4593,7 +4593,7 @@ static _H<NSMutableSet> Diversions_;
 }
 
 - (void) unload {
-    [delegate_ performSelectorOnMainThread:@selector(unloadData) withObject:nil waitUntilDone:NO];
+    [[indirect_ rootViewController] performSelectorOnMainThread:@selector(unloadData) withObject:nil waitUntilDone:NO];
 }
 
 - (void) setScrollAlwaysBounceVertical:(NSNumber *)value {
@@ -6526,9 +6526,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     [self getKeyboardCurve:&curve duration:&duration forNotification:notification];
 
     CGRect kbframe = CGRectMake(Retina(center.x - bounds.size.width / 2), Retina(center.y - bounds.size.height / 2), bounds.size.width, bounds.size.height);
-    UIViewController *base = self;
-    while ([base parentOrPresentingViewController] != nil)
-        base = [base parentOrPresentingViewController];
+    UIViewController *base([self rootViewController]);
     CGRect viewframe = [[base view] convertRect:[list_ frame] fromView:[list_ superview]];
     CGRect intersection = CGRectIntersection(viewframe, kbframe);
 
@@ -8823,7 +8821,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     DatabaseDelegate,
     CydiaDelegate
 > {
-    _H<UIWindow> window_;
+    _H<CyteWindow> window_;
     _H<CydiaTabBarController> tabbar_;
     _H<CyteTabBarController> emulated_;
     _H<AppCacheController> appcache_;
@@ -8958,13 +8956,9 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     return [controllers objectAtIndex:3];
 }
 
-- (void) unloadData {
-    [tabbar_ unloadData];
-}
-
 - (void) _updateData {
     [self _saveConfig];
-    [self unloadData];
+    [window_ unloadData];
 
     UINavigationController *navigation = [self queueNavigationController];
 
@@ -9083,14 +9077,9 @@ _end
     if (emulated_ == nil)
         return;
 
-    if ([window_ respondsToSelector:@selector(setRootViewController:)])
-        [window_ setRootViewController:tabbar_];
-    else {
-        [window_ addSubview:[tabbar_ view]];
-        [[emulated_ view] removeFromSuperview];
-    }
-
+    [window_ setRootViewController:tabbar_];
     emulated_ = nil;
+
     [window_ setUserInteractionEnabled:YES];
 }
 
@@ -9684,39 +9673,6 @@ _end
     [self reloadSpringBoard];
 }
 
-- (void) setupViewControllers {
-    tabbar_ = [[[CydiaTabBarController alloc] initWithDatabase:database_] autorelease];
-
-    NSMutableArray *items;
-    if (kCFCoreFoundationVersionNumber < 800) {
-        items = [NSMutableArray arrayWithObjects:
-            [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage imageNamed:@"home.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage imageNamed:@"install.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage imageNamed:@"changes.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage imageNamed:@"manage.png"] tag:0] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage imageNamed:@"search.png"] tag:0] autorelease],
-        nil];
-    } else {
-        items = [NSMutableArray arrayWithObjects:
-            [[[UITabBarItem alloc] initWithTitle:@"Cydia" image:[UIImage imageNamed:@"home7.png"] selectedImage:[UIImage imageNamed:@"home7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SOURCES") image:[UIImage imageNamed:@"install7.png"] selectedImage:[UIImage imageNamed:@"install7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("CHANGES") image:[UIImage imageNamed:@"changes7.png"] selectedImage:[UIImage imageNamed:@"changes7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("INSTALLED") image:[UIImage imageNamed:@"manage7.png"] selectedImage:[UIImage imageNamed:@"manage7s.png"]] autorelease],
-            [[[UITabBarItem alloc] initWithTitle:UCLocalize("SEARCH") image:[UIImage imageNamed:@"search7.png"] selectedImage:[UIImage imageNamed:@"search7s.png"]] autorelease],
-        nil];
-    }
-
-    NSMutableArray *controllers([NSMutableArray array]);
-    for (UITabBarItem *item in items) {
-        UINavigationController *controller([[[UINavigationController alloc] init] autorelease]);
-        [controller setTabBarItem:item];
-        [controllers addObject:controller];
-    }
-    [tabbar_ setViewControllers:controllers];
-
-    [tabbar_ setUpdateDelegate:self];
-}
-
 - (void) applicationDidFinishLaunching:(id)unused {
     [super applicationDidFinishLaunching:unused];
 _trace();
@@ -9746,7 +9702,7 @@ _trace();
     appcache_ = [[[AppCacheController alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/appcache/", UI_]]] autorelease];
     [appcache_ reloadData];
 
-    window_ = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    window_ = [[[CyteWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     [window_ orderFront:self];
     [window_ makeKey:self];
     [window_ setHidden:NO];
@@ -9793,7 +9749,18 @@ _trace();
     [database_ setDelegate:self];
 
     [window_ setUserInteractionEnabled:NO];
-    [self setupViewControllers];
+
+    tabbar_ = [[[CydiaTabBarController alloc] initWithDatabase:database_] autorelease];
+
+    [tabbar_ addViewControllers:nil,
+        @"Cydia", @"home.png", @"home7.png", @"home7s.png",
+        UCLocalize("SOURCES"), @"install.png", @"install7.png", @"install7s.png",
+        UCLocalize("CHANGES"), @"changes.png", @"changes7.png", @"changes7s.png",
+        UCLocalize("INSTALLED"), @"manage.png", @"manage7.png", @"manage7s.png",
+        UCLocalize("SEARCH"), @"search.png", @"search7.png", @"search7s.png",
+    nil];
+
+    [tabbar_ setUpdateDelegate:self];
 
     CydiaLoadingViewController *loading([[[CydiaLoadingViewController alloc] init] autorelease]);
     UINavigationController *navigation([[[UINavigationController alloc] init] autorelease]);
@@ -9806,10 +9773,7 @@ _trace();
     if ([emulated_ respondsToSelector:@selector(concealTabBarSelection)])
         [emulated_ concealTabBarSelection];
 
-    if ([window_ respondsToSelector:@selector(setRootViewController:)])
-        [window_ setRootViewController:emulated_];
-    else
-        [window_ addSubview:[emulated_ view]];
+    [window_ setRootViewController:emulated_];
 
     [self performSelector:@selector(loadData) withObject:nil afterDelay:0];
 _trace();
