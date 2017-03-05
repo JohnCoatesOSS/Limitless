@@ -27,4 +27,6 @@
 extern bool IsWildcat_;
 extern CGFloat ScreenScale_;
 
+bool CyteIsReachable(const char *name);
+
 #endif//CyteKit_extern_H

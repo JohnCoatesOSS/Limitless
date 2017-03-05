@@ -258,26 +258,6 @@ static NSString *UniqueIdentifier(UIDevice *device = nil) {
         return [(id)$MGCopyAnswer(CFSTR("UniqueDeviceID")) autorelease];
 }
 
-static bool IsReachable(const char *name) {
-    SCNetworkReachabilityFlags flags; {
-        SCNetworkReachabilityRef reachability(SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, name));
-        SCNetworkReachabilityGetFlags(reachability, &flags);
-        CFRelease(reachability);
-    }
-
-    // XXX: this elaborate mess is what Apple is using to determine this? :(
-    // XXX: do we care if the user has to intervene? maybe that's ok?
-    return
-        (flags & kSCNetworkReachabilityFlagsReachable) != 0 && (
-            (flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0 || (
-                (flags & kSCNetworkReachabilityFlagsConnectionOnDemand) != 0 ||
-                (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0
-            ) && (flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0 ||
-            (flags & kSCNetworkReachabilityFlagsIsWWAN) != 0
-        )
-    ;
-}
-
 static const NSUInteger UIViewAutoresizingFlexibleBoth(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
 
 static _finline NSString *CydiaURL(NSString *path) {
@@ -4766,7 +4746,7 @@ class CydiaLogCleaner :
 }
 
 - (NSNumber *) isReachable:(NSString *)name {
-    return [NSNumber numberWithBool:IsReachable([name UTF8String])];
+    return [NSNumber numberWithBool:CyteIsReachable([name UTF8String])];
 }
 
 - (void) installPackages:(NSArray *)packages {
@@ -8800,7 +8780,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 }
 
 - (bool) requestUpdate {
-    if (IsReachable("cydia.saurik.com")) {
+    if (CyteIsReachable("cydia.saurik.com")) {
         [self beginUpdate];
         return true;
     } else {
@@ -8913,7 +8893,7 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     //  - We already auto-refreshed this launch.
     //  - Auto-refresh is disabled.
     //  - Cydia's server is not reachable
-    if (recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com")) {
+    if (recently || loaded_ || ManualRefresh || !CyteIsReachable("cydia.saurik.com")) {
         // If we are cancelling, we need to make sure it knows it's already loaded.
         loaded_ = true;
 
@@ -9540,7 +9520,7 @@ _end
     }
 
     if (interval <= -(15*60)) {
-        if (IsReachable("cydia.saurik.com")) {
+        if (CyteIsReachable("cydia.saurik.com")) {
             [tabbar_ beginUpdate];
             [appcache_ reloadURLWithCache:YES];
         }

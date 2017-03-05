@@ -20,10 +20,32 @@
 /* }}} */
 
 #include <CyteKit/extern.h>
+
+#include <SystemConfiguration/SystemConfiguration.h>
 #include <UIKit/UIKit.h>
 
 bool IsWildcat_;
 CGFloat ScreenScale_;
+
+bool CyteIsReachable(const char *name) {
+    SCNetworkReachabilityFlags flags; {
+        SCNetworkReachabilityRef reachability(SCNetworkReachabilityCreateWithName(kCFAllocatorDefault, name));
+        SCNetworkReachabilityGetFlags(reachability, &flags);
+        CFRelease(reachability);
+    }
+
+    // XXX: this elaborate mess is what Apple is using to determine this? :(
+    // XXX: do we care if the user has to intervene? maybe that's ok?
+    return
+        (flags & kSCNetworkReachabilityFlagsReachable) != 0 && (
+            (flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0 || (
+                (flags & kSCNetworkReachabilityFlagsConnectionOnDemand) != 0 ||
+                (flags & kSCNetworkReachabilityFlagsConnectionOnTraffic) != 0
+            ) && (flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0 ||
+            (flags & kSCNetworkReachabilityFlagsIsWWAN) != 0
+        )
+    ;
+}
 
 __attribute__((__constructor__))
 void CyteKit_extern() {
