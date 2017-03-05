@@ -23,10 +23,16 @@
 #define CyteKit_extern_H
 
 #include <CoreGraphics/CoreGraphics.h>
+#include <Foundation/Foundation.h>
 
 extern bool IsWildcat_;
 extern CGFloat ScreenScale_;
 
+extern char *Machine_;
+extern const char *System_;
+
 bool CyteIsReachable(const char *name);
+
+void CyteInitialize(NSString *app, NSString *version);
 
 #endif//CyteKit_extern_H

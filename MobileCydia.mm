@@ -641,14 +641,10 @@ static _H<UIFont> Font18_;
 static _H<UIFont> Font18Bold_;
 static _H<UIFont> Font22Bold_;
 
-static const char *Machine_ = NULL;
-static _H<NSString> System_;
 static NSString *SerialNumber_ = nil;
 static NSString *ChipID_ = nil;
 static NSString *BBSNum_ = nil;
 static _H<NSString> UniqueID_;
-static _H<NSString> Product_;
-static _H<NSString> Safari_;
 
 static _H<NSLocale> CollationLocale_;
 static _H<NSArray> CollationThumbs_;
@@ -4316,7 +4312,7 @@ class CydiaLogCleaner :
 }
 
 - (NSString *) build {
-    return System_;
+    return [NSString stringWithUTF8String:System_];
 }
 
 - (NSString *) coreFoundationVersionNumber {
@@ -9846,6 +9842,7 @@ int main(int argc, char *argv[]) {
 
     _trace();
 
+    CyteInitialize(@"Cydia", Cydia_);
     UpdateExternalStatus(0);
 
     Idiom_ = IsWildcat_ ? @"ipad" : @"iphone";
@@ -9988,46 +9985,11 @@ int main(int argc, char *argv[]) {
             perror("sysctlbyname(\"kern.maxproc\", #)");
     }
 
-    sysctlbyname("kern.osversion", NULL, &size, NULL, 0);
-    char *osversion = new char[size];
-    if (sysctlbyname("kern.osversion", osversion, &size, NULL, 0) == -1)
-        perror("sysctlbyname(\"kern.osversion\", ?)");
-    else
-        System_ = [NSString stringWithUTF8String:osversion];
-
-    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-    char *machine = new char[size];
-    if (sysctlbyname("hw.machine", machine, &size, NULL, 0) == -1)
-        perror("sysctlbyname(\"hw.machine\", ?)");
-    else
-        Machine_ = machine;
-
-    int64_t usermem(0);
-    size = sizeof(usermem);
-    if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1)
-        usermem = 0;
-
     SerialNumber_ = (NSString *) CYIOGetValue("IOService:/", @"IOPlatformSerialNumber");
     ChipID_ = [CYHex((NSData *) CYIOGetValue("IODeviceTree:/chosen", @"unique-chip-id"), true) uppercaseString];
     BBSNum_ = CYHex((NSData *) CYIOGetValue("IOService:/AppleARMPE/baseband", @"snum"), false);
 
     UniqueID_ = UniqueIdentifier(device);
-
-    if (NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile:@"/Applications/MobileSafari.app/Info.plist"]) {
-        Product_ = [info objectForKey:@"SafariProductVersion"] ?: [info objectForKey:@"CFBundleShortVersionString"];
-        Safari_ = [info objectForKey:@"CFBundleVersion"];
-    }
-
-    NSString *agent([NSString stringWithFormat:@"Cydia/%@ CyF/%.2f", Cydia_, kCFCoreFoundationVersionNumber]);
-
-    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", Safari_))
-        agent = [NSString stringWithFormat:@"Safari/%@ %@", match[1], agent];
-    if (RegEx match = RegEx("([0-9]+[A-Z][0-9]+[a-z]?).*", System_))
-        agent = [NSString stringWithFormat:@"Mobile/%@ %@", match[1], agent];
-    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", Product_))
-        agent = [NSString stringWithFormat:@"Version/%@ %@", match[1], agent];
-
-    [CyteWebViewController setApplicationNameForUserAgent:agent];
     /* }}} */
     /* Load Database {{{ */
     SectionMap_ = [[[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Sections" ofType:@"plist"]] autorelease];
@@ -10140,6 +10102,10 @@ int main(int argc, char *argv[]) {
     // XXX: this timeout might be important :(
     //_config->Set("Acquire::http::Timeout", 15);
 
+    int64_t usermem(0);
+    size = sizeof(usermem);
+    if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1)
+        usermem = 0;
     _config->Set("Acquire::http::MaxParallel", usermem >= 384 * 1024 * 1024 ? 16 : 3);
 
     mkdir([Cache("archives") UTF8String], 0755);

@@ -19,13 +19,24 @@
 **/
 /* }}} */
 
+#include <CyteKit/UCPlatform.h>
+
+#include <CyteKit/RegEx.hpp>
+#include <CyteKit/WebViewController.h>
 #include <CyteKit/extern.h>
 
 #include <SystemConfiguration/SystemConfiguration.h>
 #include <UIKit/UIKit.h>
 
+#include <sys/sysctl.h>
+
+#include <Menes/ObjectHandle.h>
+
 bool IsWildcat_;
 CGFloat ScreenScale_;
+
+char *Machine_;
+const char *System_;
 
 bool CyteIsReachable(const char *name) {
     SCNetworkReachabilityFlags flags; {
@@ -47,8 +58,7 @@ bool CyteIsReachable(const char *name) {
     ;
 }
 
-__attribute__((__constructor__))
-void CyteKit_extern() {
+void CyteInitialize(NSString *app, NSString *version) {
     UIScreen *screen([UIScreen mainScreen]);
     if ([screen respondsToSelector:@selector(scale)])
         ScreenScale_ = [screen scale];
@@ -61,4 +71,39 @@ void CyteKit_extern() {
         if (idiom == UIUserInterfaceIdiomPad)
             IsWildcat_ = true;
     }
+
+    size_t size;
+
+    sysctlbyname("kern.osversion", NULL, &size, NULL, 0);
+    char *osversion = new char[size];
+    if (sysctlbyname("kern.osversion", osversion, &size, NULL, 0) == -1)
+        perror("sysctlbyname(\"kern.osversion\", ?)");
+    else
+        System_ = osversion;
+
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = new char[size];
+    if (sysctlbyname("hw.machine", machine, &size, NULL, 0) == -1)
+        perror("sysctlbyname(\"hw.machine\", ?)");
+    else
+        Machine_ = machine;
+
+    _H<NSString> product;
+    _H<NSString> safari;
+
+    if (NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile:@"/Applications/MobileSafari.app/Info.plist"]) {
+        product = [info objectForKey:@"SafariProductVersion"] ?: [info objectForKey:@"CFBundleShortVersionString"];
+        safari = [info objectForKey:@"CFBundleVersion"];
+    }
+
+    NSString *agent([NSString stringWithFormat:@"%@/%@ CyF/%.2f", app, version, kCFCoreFoundationVersionNumber]);
+
+    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", safari))
+        agent = [NSString stringWithFormat:@"Safari/%@ %@", match[1], agent];
+    if (RegEx match = RegEx("([0-9]+[A-Z][0-9]+[a-z]?).*", System_))
+        agent = [NSString stringWithFormat:@"Mobile/%@ %@", match[1], agent];
+    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", product))
+        agent = [NSString stringWithFormat:@"Version/%@ %@", match[1], agent];
+
+    [CyteWebViewController setApplicationNameForUserAgent:agent];
 }
