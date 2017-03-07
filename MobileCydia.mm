@@ -5654,7 +5654,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 /* }}} */
 
 /* File Table {{{ */
-@interface FileTable : CyteViewController <
+@interface FileTable : CyteListController <
     UITableViewDataSource,
     UITableViewDelegate
 > {
@@ -5662,11 +5662,9 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     _H<Package> package_;
     _H<NSString> name_;
     _H<NSMutableArray> files_;
-    _H<UITableView, 2> list_;
 }
 
-- (id) initWithDatabase:(Database *)database;
-- (void) setPackage:(Package *)package;
+- (id) initWithDatabase:(Database *)database forPackage:(NSString *)name;
 
 @end
 
@@ -5698,47 +5696,36 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     return [NSURL URLWithString:[NSString stringWithFormat:@"cydia://package/%@/files", [package_ id]]];
 }
 
-- (void) loadView {
-    list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
-    [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-    [list_ setRowHeight:24.0f];
-    [(UITableView *) list_ setDataSource:self];
-    [list_ setDelegate:self];
-    [self setView:list_];
-}
-
-- (void) viewDidLoad {
-    [super viewDidLoad];
-
-    [[self navigationItem] setTitle:UCLocalize("INSTALLED_FILES")];
+- (CGFloat) rowHeight {
+    return 24;
 }
 
 - (void) releaseSubviews {
-    list_ = nil;
-
     package_ = nil;
     files_ = nil;
 
     [super releaseSubviews];
 }
 
-- (id) initWithDatabase:(Database *)database {
-    if ((self = [super init]) != nil) {
+- (id) initWithDatabase:(Database *)database forPackage:(NSString *)name {
+    if ((self = [super initWithTitle:UCLocalize("INSTALLED_FILES")]) != nil) {
         database_ = database;
+        name_ = name;
     } return self;
 }
 
-- (void) setPackage:(Package *)package {
-    package_ = nil;
-    name_ = nil;
+- (bool) shouldYield {
+    return false;
+}
 
-    files_ = [NSMutableArray arrayWithCapacity:32];
+- (void) _reloadData {
+    files_ = nil;
 
-    if (package != nil) {
-        package_ = package;
-        name_ = [package id];
+    package_ = [database_ packageWithName:name_];
+    if (package_ != nil) {
+        files_ = [NSMutableArray arrayWithCapacity:32];
 
-        if (NSArray *files = [package files])
+        if (NSArray *files = [package_ files])
             [files_ addObjectsFromArray:files];
 
         if ([files_ count] != 0) {
@@ -5763,13 +5750,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         }
     }
 
-    [list_ reloadData];
-}
-
-- (void) reloadData {
-    [super reloadData];
-
-    [self setPackage:[database_ packageWithName:name_]];
+    [super _reloadData];
 }
 
 @end
@@ -8857,10 +8838,7 @@ _end
             if ([arg2 isEqualToString:@"settings"]) {
                 controller = [[[PackageSettingsController alloc] initWithDatabase:database_ package:arg1] autorelease];
             } else if ([arg2 isEqualToString:@"files"]) {
-                if (Package *package = [database_ packageWithName:arg1]) {
-                    controller = [[[FileTable alloc] initWithDatabase:database_] autorelease];
-                    [(FileTable *)controller setPackage:package];
-                }
+                controller = [[[FileTable alloc] initWithDatabase:database_ forPackage:arg1] autorelease];
             }
         }
 
