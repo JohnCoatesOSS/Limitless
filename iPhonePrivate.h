@@ -40,7 +40,6 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 @class DOMRGBColor;
 // }}}
 // @class Web*; {{{
-@class WebDataSource;
 @class WebScriptObject;
 @class WebView;
 // }}}
@@ -284,6 +283,11 @@ enum {
 @interface WebPreferences : NSObject
 - (void) setCacheModel:(WebCacheModel)value;
 - (void) setJavaScriptCanOpenWindowsAutomatically:(BOOL)value;
+@end
+
+@interface WebDataSource : NSObject
+- (NSURLRequest *) request;
+- (NSURLResponse *) response;
 @end
 
 @interface WebFrame : NSObject
