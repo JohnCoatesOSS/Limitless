@@ -8350,7 +8350,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
     _H<NSURL> starturl_;
 
     unsigned locked_;
-    unsigned activity_;
 
     _H<StashController> stash_;
 
@@ -8769,25 +8768,6 @@ _end
     [self lockSuspend];
     [self detachNewProgressSelector:@selector(perform_) toTarget:self forController:navigation title:@"RUNNING"];
     [self unlockSuspend];
-}
-
-- (void) retainNetworkActivityIndicator {
-    if (activity_++ == 0)
-        [self setNetworkActivityIndicatorVisible:YES];
-
-#if TraceLogging
-    NSLog(@"retainNetworkActivityIndicator->%d", activity_);
-#endif
-}
-
-- (void) releaseNetworkActivityIndicator {
-    if (--activity_ == 0)
-        [self setNetworkActivityIndicatorVisible:NO];
-
-#if TraceLogging
-    NSLog(@"releaseNetworkActivityIndicator->%d", activity_);
-#endif
-
 }
 
 - (void) cancelAndClear:(bool)clear {
