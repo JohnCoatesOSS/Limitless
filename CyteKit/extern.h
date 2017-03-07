@@ -35,4 +35,24 @@ bool CyteIsReachable(const char *name);
 
 void CyteInitialize(NSString *app, NSString *version);
 
+static inline double Retina(double value) {
+    value *= ScreenScale_;
+    value = round(value);
+    value /= ScreenScale_;
+    return value;
+}
+
+static inline CGRect Retina(CGRect value) {
+    value.origin.x *= ScreenScale_;
+    value.origin.y *= ScreenScale_;
+    value.size.width *= ScreenScale_;
+    value.size.height *= ScreenScale_;
+    value = CGRectIntegral(value);
+    value.origin.x /= ScreenScale_;
+    value.origin.y /= ScreenScale_;
+    value.size.width /= ScreenScale_;
+    value.size.height /= ScreenScale_;
+    return value;
+}
+
 #endif//CyteKit_extern_H

@@ -272,11 +272,6 @@ static _finline void UpdateExternalStatus(uint64_t newStatus) {
     notify_post("com.saurik.Cydia.status");
 }
 
-static CGFloat CYStatusBarHeight() {
-    CGSize size([[UIApplication sharedApplication] statusBarFrame].size);
-    return UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]) ? size.height : size.width;
-}
-
 /* NSForcedOrderingSearch doesn't work on the iPhone */
 static const NSStringCompareOptions MatchCompareOptions_ = NSLiteralSearch | NSCaseInsensitiveSearch;
 static const NSStringCompareOptions LaxCompareOptions_ = NSNumericSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch | NSCaseInsensitiveSearch;
@@ -707,30 +702,6 @@ static NSString *kCydiaProgressEventTypeWarning = @"Warning";
 /* }}} */
 
 /* Display Helpers {{{ */
-inline float Interpolate(float begin, float end, float fraction) {
-    return (end - begin) * fraction + begin;
-}
-
-static inline double Retina(double value) {
-    value *= ScreenScale_;
-    value = round(value);
-    value /= ScreenScale_;
-    return value;
-}
-
-static inline CGRect Retina(CGRect value) {
-    value.origin.x *= ScreenScale_;
-    value.origin.y *= ScreenScale_;
-    value.size.width *= ScreenScale_;
-    value.size.height *= ScreenScale_;
-    value = CGRectIntegral(value);
-    value.origin.x /= ScreenScale_;
-    value.origin.y /= ScreenScale_;
-    value.size.width /= ScreenScale_;
-    value.size.height /= ScreenScale_;
-    return value;
-}
-
 static _finline const char *StripVersion_(const char *version) {
     const char *colon(strchr(version, ':'));
     return colon == NULL ? version : colon + 1;
@@ -5999,7 +5970,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 /* }}} */
 
 /* Package List Controller {{{ */
-@interface PackageListController : CyteViewController <
+@interface PackageListController : CyteListController <
     UITableViewDataSource,
     UITableViewDelegate
 > {
@@ -6007,7 +5978,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     unsigned era_;
     _H<NSArray> packages_;
     _H<NSArray> sections_;
-    _H<UITableView, 2> list_;
 
     _H<NSArray> thumbs_;
     std::vector<NSInteger> offset_;
@@ -6017,8 +5987,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (id) initWithDatabase:(Database *)database title:(NSString *)title;
-- (void) resetCursor;
-- (void) clearData;
 
 - (NSArray *) sectionsForPackages:(NSMutableArray *)packages;
 
@@ -6036,93 +6004,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 
 - (bool) showsSections {
     return true;
-}
-
-- (void) deselectWithAnimation:(BOOL)animated {
-    [list_ deselectRowAtIndexPath:[list_ indexPathForSelectedRow] animated:animated];
-}
-
-- (void) resizeForKeyboardBounds:(CGRect)bounds duration:(NSTimeInterval)duration curve:(UIViewAnimationCurve)curve {
-    CGRect base = [[self view] bounds];
-    base.size.height -= bounds.size.height;
-    base.origin = [list_ frame].origin;
-
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationCurve:curve];
-    [UIView setAnimationDuration:duration];
-    [list_ setFrame:base];
-    [UIView commitAnimations];
-}
-
-- (void) resizeForKeyboardBounds:(CGRect)bounds duration:(NSTimeInterval)duration {
-    [self resizeForKeyboardBounds:bounds duration:duration curve:UIViewAnimationCurveLinear];
-}
-
-- (void) resizeForKeyboardBounds:(CGRect)bounds {
-    [self resizeForKeyboardBounds:bounds duration:0];
-}
-
-- (void) getKeyboardCurve:(UIViewAnimationCurve *)curve duration:(NSTimeInterval *)duration forNotification:(NSNotification *)notification {
-    if (&UIKeyboardAnimationCurveUserInfoKey == NULL)
-        *curve = UIViewAnimationCurveEaseInOut;
-    else
-        [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:curve];
-
-    if (&UIKeyboardAnimationDurationUserInfoKey == NULL)
-        *duration = 0.3;
-    else
-        [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:duration];
-}
-
-- (void) keyboardWillShow:(NSNotification *)notification {
-    CGRect bounds;
-    CGPoint center;
-    [[[notification userInfo] objectForKey:UIKeyboardBoundsUserInfoKey] getValue:&bounds];
-    [[[notification userInfo] objectForKey:UIKeyboardCenterEndUserInfoKey] getValue:&center];
-
-    NSTimeInterval duration;
-    UIViewAnimationCurve curve;
-    [self getKeyboardCurve:&curve duration:&duration forNotification:notification];
-
-    CGRect kbframe = CGRectMake(Retina(center.x - bounds.size.width / 2), Retina(center.y - bounds.size.height / 2), bounds.size.width, bounds.size.height);
-    UIViewController *base([self rootViewController]);
-    CGRect viewframe = [[base view] convertRect:[list_ frame] fromView:[list_ superview]];
-    CGRect intersection = CGRectIntersection(viewframe, kbframe);
-
-    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iPhoneOS_3_0) // XXX: _UIApplicationLinkedOnOrAfter(4)
-        intersection.size.height += CYStatusBarHeight();
-
-    [self resizeForKeyboardBounds:intersection duration:duration curve:curve];
-}
-
-- (void) keyboardWillHide:(NSNotification *)notification {
-    NSTimeInterval duration;
-    UIViewAnimationCurve curve;
-    [self getKeyboardCurve:&curve duration:&duration forNotification:notification];
-
-    [self resizeForKeyboardBounds:CGRectZero duration:duration curve:curve];
-}
-
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    [self resizeForKeyboardBounds:CGRectZero];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-}
-
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-
-    [self resizeForKeyboardBounds:CGRectZero];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-}
-
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self deselectWithAnimation:animated];
 }
 
 - (void) didSelectPackage:(Package *)package {
@@ -6183,8 +6064,8 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     return offset_[index];
 }
 
-- (void) updateHeight {
-    [list_ setRowHeight:([self isSummarized] ? 38 : 73)];
+- (CGFloat) rowHeight {
+    return [self isSummarized] ? 38 : 73;
 }
 
 - (id) initWithDatabase:(Database *)database title:(NSString *)title {
@@ -6195,27 +6076,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     } return self;
 }
 
-- (void) loadView {
-    UIView *view([[[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease]);
-    [view setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
-    [self setView:view];
-
-    list_ = [[[UITableView alloc] initWithFrame:[[self view] bounds] style:UITableViewStylePlain] autorelease];
-    [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-    [view addSubview:list_];
-
-    // XXX: is 20 the most optimal number here?
-    [list_ setSectionIndexMinimumDisplayRowCount:20];
-
-    [(UITableView *) list_ setDataSource:self];
-    [list_ setDelegate:self];
-
-    [self updateHeight];
-}
-
 - (void) releaseSubviews {
-    list_ = nil;
-
     packages_ = nil;
     sections_ = nil;
 
@@ -6223,10 +6084,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     offset_.clear();
 
     [super releaseSubviews];
-}
-
-- (bool) shouldYield {
-    return false;
 }
 
 - (bool) shouldBlock {
@@ -6289,12 +6146,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         sections_ = [NSArray arrayWithObject:section];
     }
 
-    [self updateHeight];
-
-    _profile(PackageTable$reloadData$List)
-        [(UITableView *) list_ setDataSource:self];
-        [list_ reloadData];
-    _end
+    [super _reloadData];
 }
 
     PrintTimes();
@@ -6351,28 +6203,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     }
 
     return sections;
-}
-
-- (void) reloadData {
-    [super reloadData];
-
-    if ([self shouldYield])
-        [self performSelector:@selector(_reloadData) withObject:nil afterDelay:0];
-    else
-        [self _reloadData];
-}
-
-- (void) resetCursor {
-    [list_ scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-}
-
-- (void) clearData {
-    [self updateHeight];
-
-    [list_ setDataSource:nil];
-    [list_ reloadData];
-
-    [self resetCursor];
 }
 
 @end
@@ -7163,8 +6993,6 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
         [sections insertObject:ignored atIndex:0];
     if (upgrades_ != 0)
         [sections insertObject:upgradable atIndex:0];
-
-    [list_ reloadData];
 
     [[self navigationItem] setRightBarButtonItem:(upgrades_ == 0 ? nil : [[[UIBarButtonItem alloc]
         initWithTitle:[NSString stringWithFormat:UCLocalize("PARENTHETICAL"), UCLocalize("UPGRADE"), [NSString stringWithFormat:@"%u", upgrades_]]
