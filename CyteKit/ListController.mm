@@ -130,6 +130,12 @@ static CGFloat CYStatusBarHeight() {
     [self deselectWithAnimation:animated];
 }
 
+- (id) initWithTitle:(NSString *)title {
+    if ((self = [super init]) != nil) {
+        [[self navigationItem] setTitle:title];
+    } return self;
+}
+
 - (void) releaseSubviews {
     list_ = nil;
     [super releaseSubviews];

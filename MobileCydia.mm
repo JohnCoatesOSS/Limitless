@@ -5982,7 +5982,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     _H<NSArray> thumbs_;
     std::vector<NSInteger> offset_;
 
-    _H<NSString> title_;
     unsigned reloading_;
 }
 
@@ -6069,10 +6068,8 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 }
 
 - (id) initWithDatabase:(Database *)database title:(NSString *)title {
-    if ((self = [super init]) != nil) {
+    if ((self = [super initWithTitle:title]) != nil) {
         database_ = database;
-        title_ = [title copy];
-        [[self navigationItem] setTitle:title_];
     } return self;
 }
 

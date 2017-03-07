@@ -28,6 +28,8 @@
 
 @interface CyteListController : CyteViewController
 
+- (id) initWithTitle:(NSString *)title;
+
 - (bool) shouldYield;
 - (void) loadView;
 - (void) _reloadData;
