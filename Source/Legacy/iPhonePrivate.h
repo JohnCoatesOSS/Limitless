@@ -44,7 +44,11 @@ static const UIActivityIndicatorViewStyle UIActivityIndicatorViewStyleWhiteTiny(
 @class DOMRGBColor;
 // }}}
 // @class Web*; {{{
-@class WebDataSource;
+@interface WebDataSource : NSObject
+- (NSURLRequest *) request;
+- (NSURLResponse *) response;
+@end
+
 @class WebScriptObject;
 @class WebView;
 // }}}
