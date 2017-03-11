@@ -5337,14 +5337,6 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
 - (PackageCell *) init {
     CGRect frame(CGRectMake(0, 0, 320, 74));
     if ((self = [super initWithFrame:frame reuseIdentifier:@"Package"]) != nil) {
-        UIView *content([self contentView]);
-        CGRect bounds([content bounds]);
-
-        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content addSubview:self.content];
-
-        [self.content setDelegate:self];
         [self.content setOpaque:YES];
     } return self;
 }
@@ -5560,15 +5552,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         switch_ = [[[UISwitch alloc] initWithFrame:CGRectMake(218, 9, 60, 25)] autorelease];
         [switch_ addTarget:self action:@selector(onSwitch:) forEvents:UIControlEventValueChanged];
 
-        UIView *content([self contentView]);
-        CGRect bounds([content bounds]);
-
-        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-        [content addSubview:self.content];
         [self.content setBackgroundColor:[UIColor whiteColor]];
-
-        [self.content setDelegate:self];
     } return self;
 }
 
@@ -7524,20 +7508,12 @@ static void HomeControllerReachabilityCallback(SCNetworkReachabilityRef reachabi
 
 - (SourceCell *) initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if ((self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) != nil) {
-        UIView *content([self contentView]);
-        CGRect bounds([content bounds]);
-
-        self.content = [[[CyteTableViewCellContentView alloc] initWithFrame:bounds] autorelease];
-        [self.content setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
         [self.content setBackgroundColor:[UIColor whiteColor]];
-        [content addSubview:self.content];
-
-        [self.content setDelegate:self];
         [self.content setOpaque:YES];
 
         indicator_ = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGraySmall] autorelease];
         [indicator_ setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin];// | UIViewAutoresizingFlexibleBottomMargin];
-        [content addSubview:indicator_];
+        [[self contentView] addSubview:indicator_];
 
         [[self.content layer] setContentsGravity:kCAGravityTopLeft];
     } return self;
