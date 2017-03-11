@@ -9211,7 +9211,7 @@ int main(int argc, char *argv[]) {
 
     _trace();
 
-    CyteInitialize(@"Cydia", Cydia_);
+    CyteInitialize([NSString stringWithFormat:@"Cydia/%@", Cydia_]);
     UpdateExternalStatus(0);
 
     SessionData_ = [NSMutableDictionary dictionaryWithCapacity:4];

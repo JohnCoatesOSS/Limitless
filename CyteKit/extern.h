@@ -33,7 +33,7 @@ extern const char *System_;
 
 bool CyteIsReachable(const char *name);
 
-void CyteInitialize(NSString *app, NSString *version);
+void CyteInitialize(NSString *agent);
 
 static inline double Retina(double value) {
     value *= ScreenScale_;

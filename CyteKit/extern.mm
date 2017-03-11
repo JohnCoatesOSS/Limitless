@@ -58,7 +58,7 @@ bool CyteIsReachable(const char *name) {
     ;
 }
 
-void CyteInitialize(NSString *app, NSString *version) {
+void CyteInitialize(NSString *agent) {
     UIScreen *screen([UIScreen mainScreen]);
     if ([screen respondsToSelector:@selector(scale)])
         ScreenScale_ = [screen scale];
@@ -96,7 +96,7 @@ void CyteInitialize(NSString *app, NSString *version) {
         safari = [info objectForKey:@"CFBundleVersion"];
     }
 
-    NSString *agent([NSString stringWithFormat:@"%@/%@ CyF/%.2f", app, version, kCFCoreFoundationVersionNumber]);
+    agent = [NSString stringWithFormat:@"%@ CyF/%.2f", agent, kCFCoreFoundationVersionNumber];
 
     if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", safari))
         agent = [NSString stringWithFormat:@"Safari/%@ %@", match[1], agent];
