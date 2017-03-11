@@ -199,19 +199,29 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     if (sysctlbyname("hw.usermem", &usermem, &size, NULL, 0) == -1)
         usermem = 0;
     
+    NSString *safari = nil;
+    NSString *product = nil;
     if (NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile:@"/Applications/MobileSafari.app/Info.plist"]) {
-        Product_ = [info objectForKey:@"SafariProductVersion"] ?: [info objectForKey:@"CFBundleShortVersionString"];;
-        Safari_ = [info objectForKey:@"CFBundleVersion"];
+        product = [info objectForKey:@"SafariProductVersion"] ?: [info objectForKey:@"CFBundleShortVersionString"];;
+        safari = [info objectForKey:@"CFBundleVersion"];
     }
     
     NSString *agent([NSString stringWithFormat:@"Cydia/%@ CyF/%.2f", Cydia_, kCFCoreFoundationVersionNumber]);
     
-    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", Safari_))
-        agent = [NSString stringWithFormat:@"Safari/%@ %@", match[1], agent];
-    if (RegEx match = RegEx("([0-9]+[A-Z][0-9]+[a-z]?).*", System_))
+    if (safari) {
+        if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", safari)) {
+            agent = [NSString stringWithFormat:@"Safari/%@ %@", match[1], agent];
+        }
+    }
+    
+    if (RegEx match = RegEx("([0-9]+[A-Z][0-9]+[a-z]?).*", System_)) {
         agent = [NSString stringWithFormat:@"Mobile/%@ %@", match[1], agent];
-    if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", Product_))
-        agent = [NSString stringWithFormat:@"Version/%@ %@", match[1], agent];
+    }
+    if (product) {
+        if (RegEx match = RegEx("([0-9]+(\\.[0-9]+)+).*", product)) {
+            agent = [NSString stringWithFormat:@"Version/%@ %@", match[1], agent];
+        }
+    }
     
     UserAgent_ = agent;
 }

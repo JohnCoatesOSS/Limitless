@@ -12,4 +12,3 @@ extern _H<NSString> System_;
 extern _H<NSString> UniqueID_;
 extern _H<NSString> UserAgent_;
 extern _H<NSString> Product_;
-extern _H<NSString> Safari_;
