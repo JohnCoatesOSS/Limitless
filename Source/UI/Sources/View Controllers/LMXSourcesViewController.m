@@ -8,7 +8,9 @@
 
 #import "LMXSourcesViewController.h"
 #import "LMXSourcesDataSource.h"
-#import "APTManager.h"
+
+
+static NSString * const kSourceCellIdentifier = @"kSourceCellIdentifier";
 
 @interface LMXSourcesViewController ()
 
@@ -26,7 +28,7 @@
                          bundle:(nullable NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = @"Sources";
+        self.title = NSLocalizedString(@"Sources", nil);
     }
     return self;
 }
@@ -36,14 +38,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self tableViewSetup];
-    
-    NSError *error = nil;
-    NSArray *sources = [[APTManager sharedInstance] readSourcesWithError:&error];
-    if (error) {
-        NSLog(@"error reading sources: %@", error);
-    } else {
-        NSLog(@"sources: %@", sources);
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -74,6 +68,13 @@
     }
     
     return _dataSource;
+}
+
+
+// MARK: - Button Taps
+
+- (void)editButtonTapped {
+    
 }
 
 @end

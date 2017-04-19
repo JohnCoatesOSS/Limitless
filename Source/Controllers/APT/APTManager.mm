@@ -204,7 +204,7 @@
 
 // MARK: - Properties
 
-- (NSArray *)readSourcesWithError:(NSError **)error {
+- (NSArray <LMXAPTSource *> *)readSourcesWithError:(NSError **)error {
     pkgSourceList sourceList;
     if (!sourceList.ReadMainList()) {
         NSArray *latestErrors = self.popLatestErrors;
