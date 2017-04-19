@@ -37,6 +37,4 @@
 
 - (void)showAddSourcePrompt;
 
-- (void)selectSourceWithURL:(NSString*)url;
-
 @end
