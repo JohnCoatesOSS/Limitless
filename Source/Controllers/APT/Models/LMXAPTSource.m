@@ -33,4 +33,15 @@
             ];
 }
 
+// MARK: - Property Getters
+
+- (NSURL *)iconURL {
+    NSURL *iconURL = self.icon;
+    if (iconURL) {
+        return iconURL;
+    }
+    
+    return [self.releaseBaseURL URLByAppendingPathComponent:@"CydiaIcon.png"];
+}
+
 @end
