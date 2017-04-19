@@ -80,7 +80,7 @@ typedef enum : NSUInteger {
     }
     
     LMXAPTSource *source = self.sources[indexPath.row];
-    cell.textLabel.text = source.name;
+    cell.source = source;
     
     return cell;
 }

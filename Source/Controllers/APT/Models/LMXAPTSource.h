@@ -27,4 +27,6 @@
 @property (retain, strong) NSURL *releaseBaseURL;
 @property (retain, strong) NSArray<NSString *> *files;
 
+@property (nonatomic) NSURL *iconURL;
+
 @end
