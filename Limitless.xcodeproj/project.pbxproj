@@ -82,6 +82,8 @@
 		FA1AE6B61EA75F4800A126A4 /* Sections_.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE9FA1D79D83200CF5AAD /* Sections_.strings */; };
 		FA1AE6B71EA75F5900A126A4 /* folder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE8D81D79D57F00CF5AAD /* folder@2x.png */; };
 		FA1AE6B81EA75F5B00A126A4 /* folder.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE8D71D79D57F00CF5AAD /* folder.png */; };
+		FA1AE6BC1EA76FF500A126A4 /* LMXDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1AE6BB1EA76FF500A126A4 /* LMXDevice.m */; };
+		FA1AE6BD1EA76FF500A126A4 /* LMXDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1AE6BB1EA76FF500A126A4 /* LMXDevice.m */; };
 		FA1CAD731DF5CFF400B7766C /* LMXSourceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1CAD721DF5CFF400B7766C /* LMXSourceCell.m */; };
 		FA1CAD741DF5CFF400B7766C /* LMXSourceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1CAD721DF5CFF400B7766C /* LMXSourceCell.m */; };
 		FA1CAD781DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1CAD771DF5D0B200B7766C /* LMXSourcesDataSource.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -682,6 +684,8 @@
 		FA1247E61D778DB800C21DAC /* Paths.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Paths.mm; sourceTree = "<group>"; };
 		FA1AE6B11EA75B2100A126A4 /* LMXTheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXTheme.h; sourceTree = "<group>"; };
 		FA1AE6B21EA75B2100A126A4 /* LMXTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXTheme.m; sourceTree = "<group>"; };
+		FA1AE6BA1EA76FF400A126A4 /* LMXDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXDevice.h; sourceTree = "<group>"; };
+		FA1AE6BB1EA76FF500A126A4 /* LMXDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXDevice.m; sourceTree = "<group>"; };
 		FA1CAD711DF5CFF400B7766C /* LMXSourceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSourceCell.h; sourceTree = "<group>"; };
 		FA1CAD721DF5CFF400B7766C /* LMXSourceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSourceCell.m; sourceTree = "<group>"; };
 		FA1CAD761DF5D0B200B7766C /* LMXSourcesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSourcesDataSource.h; sourceTree = "<group>"; };
@@ -1263,6 +1267,15 @@
 				FA1AE6B21EA75B2100A126A4 /* LMXTheme.m */,
 			);
 			path = Theme;
+			sourceTree = "<group>";
+		};
+		FA1AE6B91EA76FB700A126A4 /* Device */ = {
+			isa = PBXGroup;
+			children = (
+				FA1AE6BA1EA76FF400A126A4 /* LMXDevice.h */,
+				FA1AE6BB1EA76FF500A126A4 /* LMXDevice.m */,
+			);
+			path = Device;
 			sourceTree = "<group>";
 		};
 		FA1CAD751DF5D08100B7766C /* Data Source */ = {
@@ -2155,6 +2168,7 @@
 		FA6D8CA51D746BA000283EDB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA1AE6B91EA76FB700A126A4 /* Device */,
 				FA1247E31D778CC900C21DAC /* Application */,
 				FA6C868F1D75905300FB99CF /* Scripting */,
 				FA6C868B1D758FA800FB99CF /* Networking */,
@@ -2781,6 +2795,7 @@
 				FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */,
 				FA5684B41DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */,
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
+				FA1AE6BC1EA76FF500A126A4 /* LMXDevice.m in Sources */,
 				FA6C86E41D7620A900FB99CF /* SearchController.mm in Sources */,
 				FA6C869C1D75940600FB99CF /* NSURL+Cydia.mm in Sources */,
 				FA23E2C11D774FEA001FBE4A /* Application.mm in Sources */,
@@ -2912,6 +2927,7 @@
 				FA1CAD791DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */,
 				FA1AE6B41EA75B2100A126A4 /* LMXTheme.m in Sources */,
 				FABC25FF1DF4CEC50033F1E2 /* LMXSourcesViewController.m in Sources */,
+				FA1AE6BD1EA76FF500A126A4 /* LMXDevice.m in Sources */,
 				FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */,
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
 				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
