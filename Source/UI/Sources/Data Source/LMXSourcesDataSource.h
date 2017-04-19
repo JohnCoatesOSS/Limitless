@@ -11,6 +11,6 @@
 
 @property (nonnull) NSArray <LMXAPTSource *> *sources;
 
-- (void)configureTableWithCellIdentifiers:(UITableView *)tableView;
+- (void)configureTableWithCellIdentifiers:(nonnull UITableView *)tableView;
 
 @end
