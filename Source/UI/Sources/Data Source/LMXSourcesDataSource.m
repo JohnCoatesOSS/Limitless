@@ -96,4 +96,20 @@ typedef enum : NSUInteger {
     }
 }
 
+// MARK: - Editing
+
+- (BOOL)isSourceAtIndexPathRemovable:(NSIndexPath *)indexPath {
+    if (indexPath.section == SectionAllSources) {
+        return FALSE;
+    }
+    
+    LMXAPTSource *source = self.sources[indexPath.row];
+    NSString *host = source.releaseBaseURL.host.lowercaseString;
+    if ([host isEqualToString:@"apt.saurik.com"]) {
+        return FALSE;
+    }
+    
+    return TRUE;
+}
+
 @end
