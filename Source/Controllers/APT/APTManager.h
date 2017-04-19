@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+@class LMXAPTSource;
+
 @interface APTManager : NSObject
 
 + (instancetype)sharedInstance;
 - (void)setup;
 
-- (NSArray *)readSourcesWithError:(NSError **)error;
+- (NSArray <LMXAPTSource *> *)readSourcesWithError:(NSError **)error;
 
 // MARK: - Debug
 
