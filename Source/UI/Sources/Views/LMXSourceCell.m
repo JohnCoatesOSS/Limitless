@@ -78,18 +78,20 @@
     _titleLabel.translatesAutoresizingMaskIntoConstraints = false;
     [_titleLabel.leftAnchor constraintEqualToAnchor:_textWrapper.leftAnchor].active = TRUE;
     [_titleLabel.topAnchor constraintEqualToAnchor:_textWrapper.topAnchor].active = TRUE;
+    [_textWrapper.rightAnchor constraintGreaterThanOrEqualToAnchor:_titleLabel.rightAnchor];
 }
 
 - (void)subtitleLabelSetup {
     _subtitleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _subtitleLabel.font = LMXTheme.cellFontUnimportant;
     _subtitleLabel.textColor = LMXTheme.cellColorLabelUnimportant;
-    [self.textWrapper addSubview:_subtitleLabel];
+    [_textWrapper addSubview:_subtitleLabel];
     
     _subtitleLabel.translatesAutoresizingMaskIntoConstraints = false;
     [_subtitleLabel.leftAnchor constraintEqualToAnchor:_textWrapper.leftAnchor].active = TRUE;
     [_subtitleLabel.topAnchor constraintEqualToAnchor:_titleLabel.bottomAnchor constant:2].active = TRUE;
     [_subtitleLabel.bottomAnchor constraintEqualToAnchor:_textWrapper.bottomAnchor].active = TRUE;
+    [_textWrapper.rightAnchor constraintGreaterThanOrEqualToAnchor:_subtitleLabel.rightAnchor];
 }
 
 // MARK: - Property Setters
@@ -117,7 +119,9 @@
         _source = nil;
     }
     
-    self.titleLabel.text = @"All Sources";
+    self.titleLabel.text = NSLocalizedString(@"ALL_SOURCES", "");
+    self.subtitleLabel.text = @"";
+    self.iconView.image = [UIImage imageNamed:@"folder.png"];
 }
 
 // MARK: - Hydration

@@ -75,7 +75,7 @@ typedef enum : NSUInteger {
                                            forIndexPath:indexPath];
     
     if (indexPath.section == SectionAllSources) {
-        cell.textLabel.text = @"All Sources";
+        cell.allSources = TRUE;
         return cell;
     }
     
