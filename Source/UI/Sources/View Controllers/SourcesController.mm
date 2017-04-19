@@ -72,11 +72,6 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [list_ deselectRowAtIndexPath:[list_ indexPathForSelectedRow] animated:animated];
-    
-    if (currentRepoURL && ![currentRepoURL isEqualToString:@""]) {
-        [self selectSourceWithURL:currentRepoURL];
-        currentRepoURL = @"";
-    }
 }
 
 // MARK: - View Management
