@@ -27,6 +27,7 @@
 #import "GeneralHelpers.h"
 #import "Paths.h"
 #import "APTManager.h"
+#import "APTSourcesManager.h"
 
 @interface Startup ()
 
@@ -306,6 +307,9 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     if (Sources_ == nil)
         Sources_ = [[[NSMutableDictionary alloc] initWithCapacity:0] autorelease];
     
+    [self parityCheckSourcesOriginalDictionary:Sources_
+                                 newDictionary:APTSourcesManager.sharedInstance.sources];
+    
     // XXX: this wrong, but in a way that doesn't matter :/
     if (Version_ == nil)
         Version_ = [metadata objectForKey:@"Version"];
@@ -372,6 +376,8 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     space_ = CGColorSpaceCreateDeviceRGB();
 }
 
+
+
 #pragma mark - Copying
 
 + (NSMutableDictionary *)autoreleasedDeepMutableDictionaryCopy:(CFTypeRef)type {
@@ -382,6 +388,22 @@ static const char * CydiaNotifyName = "com.saurik.Cydia.status";
     CFTypeRef copy(CFPropertyListCreateDeepCopy(kCFAllocatorDefault, type, kCFPropertyListMutableContainers));
     CFRelease(type);
     return [(NSMutableDictionary *) copy autorelease];
+}
+
+// MARK: - Parity Checks
+
++ (void)parityCheckSourcesOriginalDictionary:(NSDictionary *)original
+                               newDictionary:(NSDictionary *)newDictionary {
+    for (NSString *key in original) {
+        NSObject *originalValue = original[key];
+        NSObject *newValue = newDictionary[key];
+        if ([originalValue isEqual:newValue]) {
+            continue;
+        }
+        
+        [NSException raise:@"New method differs"
+                    format:@"key %@ original: %@ \nnew: %@", key, originalValue, newValue];
+    }
 }
 
 @end

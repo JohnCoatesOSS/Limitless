@@ -13,6 +13,8 @@
 
 - (void)configureTableWithCellIdentifiers:(nonnull UITableView *)tableView;
 
+- (void)reloadData;
+
 // Editing
 
 - (BOOL)isSourceAtIndexPathRemovable:(nonnull NSIndexPath *)indexPath;

@@ -6,6 +6,8 @@
 //
 
 #ifdef __OBJC__
+
+#define CYDIA_LEGACY_COMPATIBILITY
 #import <Compatibility/macOSToiOSBridge.h>
 #import "Device.h"
 #import "Platform.h"
