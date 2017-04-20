@@ -43,6 +43,12 @@ typedef enum : NSUInteger {
     }
 }
 
+// MARK: - Refreshing
+
+- (void)reloadData {
+    [self readSources];
+}
+
 // MARK: - Configure Table
 
 - (void)configureTableWithCellIdentifiers:(UITableView *)tableView {
@@ -89,7 +95,7 @@ typedef enum : NSUInteger {
          titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case SectionIndividualSources:
-            return @"Individual Sources";
+            return NSLocalizedString(@"INDIVIDUAL_SOURCES", "");
         default:
             return nil;
             

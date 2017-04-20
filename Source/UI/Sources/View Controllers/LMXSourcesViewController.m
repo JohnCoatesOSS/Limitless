@@ -9,9 +9,16 @@
 #import "LMXSourcesViewController.h"
 #import "LMXSourcesDataSource.h"
 #import "LMXDevice.h"
+#import "APTSourcesManager.h"
 
 
 static NSString * const kSourceCellIdentifier = @"kSourceCellIdentifier";
+
+typedef enum : NSUInteger {
+    AddSourceStateNone = 0,
+    AddSourceStateVerifyingPackageURL,
+    AddSourceStateCheckingForWarning,
+} AddSourceState;
 
 @interface LMXSourcesViewController ()
 
@@ -21,6 +28,10 @@ static NSString * const kSourceCellIdentifier = @"kSourceCellIdentifier";
 @property (strong) UIBarButtonItem *addSourceButton;
 
 @property BOOL hasAppeared;
+
+// Adding Source
+@property AddSourceState addSourceState;
+@property NSInteger fetchesActive;
 
 @end
 
@@ -112,68 +123,11 @@ static NSString * const kSourceCellIdentifier = @"kSourceCellIdentifier";
 
 // MARK: - Add Source
 
-- (void)addSourceWithURL:(NSString *)urlString {
-    NSLog(@"adding: %@", urlString);
-    NSURL *url = [NSURL URLWithString:urlString];
-    if (!url) {
-        NSLog(@"invalid URL: %@", urlString);
+- (void)showAlertForSourceInput {
+    if (self.addSourceState != AddSourceStateNone) {
+        NSLog(@"Can't add another repo while one repo add is happening!");
         return;
     }
-    
-    [self checkURLExists:[url URLByAppendingPathComponent:@"Packages.bz2"]];
-    [self checkURLExists:[url URLByAppendingPathComponent:@"Packages.gz"]];
-    
-}
-
-- (void)checkURLExists:(NSURL *)url {
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                       timeoutInterval:10];
-    
-    request.HTTPMethod = @"HEAD";
-    [request setValue:@"X-Machine" forHTTPHeaderField:LMXDevice.machineIdentifier];
-    [request setValue:@"X-Unique-ID" forHTTPHeaderField:LMXDevice.uniqueIdentifier];
-    
-    if ([[url scheme] isEqualToString:@"https"]) {
-        [request setValue:@"X-Cydia-Id" forHTTPHeaderField:LMXDevice.uniqueIdentifier];
-    }
-    
-    
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request
-                                            completionHandler:^(NSData * _Nullable data,
-                                                                NSURLResponse * _Nullable response,
-                                                                NSError * _Nullable error) {
-                                                if (error) {
-                                                    NSLog(@"Error verifying source: %@", error);
-                                                    return;
-                                                }
-                                                
-                                                NSLog(@"verifying source response: %@", response);
-                                                
-                                            }];
-    [task resume];
-
-}
-
-// MARK: - Button Taps
-
-- (void)editTapped {
-    BOOL editing = !self.tableView.editing;
-    [self.tableView setEditing:editing
-                      animated:TRUE];
-    
-    UIBarButtonItem *leftBarButtonItem;
-    if (editing) {
-        leftBarButtonItem = self.addSourceButton;
-    } else {
-        leftBarButtonItem = self.refreshButton;
-    }
-    [self.navigationItem setLeftBarButtonItem:leftBarButtonItem animated:TRUE];
-}
-
-- (void)addSourceTapped {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ENTER_APT_URL", "")
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleAlert];
@@ -193,7 +147,185 @@ static NSString * const kSourceCellIdentifier = @"kSourceCellIdentifier";
         textField.returnKeyType = UIReturnKeyNext;
     }];
     [self presentViewController:alertController animated:true completion:nil];
+}
+
+- (void)addSourceWithURL:(NSString *)urlString {
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (!url) {
+        NSLog(@"invalid URL: %@", urlString);
+        return;
+    }
+    self.addSourceState = AddSourceStateVerifyingPackageURL;
     
+    [self verifySourceURLExists:[url URLByAppendingPathComponent:@"Packages.bz2"]];
+    [self verifySourceURLExists:[url URLByAppendingPathComponent:@"Packages.gz"]];
+}
+
+- (void)verifySourceURLExists:(NSURL *)url {
+    self.fetchesActive += 1;
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                       timeoutInterval:10];
+    
+    request.HTTPMethod = @"HEAD";
+    [request setValue:@"X-Machine" forHTTPHeaderField:LMXDevice.machineIdentifier];
+    [request setValue:@"X-Unique-ID" forHTTPHeaderField:LMXDevice.uniqueIdentifier];
+    
+    if ([[url scheme] isEqualToString:@"https"]) {
+        [request setValue:@"X-Cydia-Id" forHTTPHeaderField:LMXDevice.uniqueIdentifier];
+    }
+    
+    
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request
+                                            completionHandler:^(NSData * _Nullable data,
+                                                                NSURLResponse * _Nullable response,
+                                                                NSError * _Nullable error) {
+                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                    [self responseFromPackagesVerification:response error:error];
+                                                });
+                                            }];
+    [task resume];
+
+}
+
+- (void)responseFromPackagesVerification:(NSURLResponse *)response error:(NSError *)error {
+    self.fetchesActive -= 1;
+    if (self.addSourceState != AddSourceStateVerifyingPackageURL) {
+        return;
+    }
+    
+    if (error) {
+        NSLog(@"Error verifying source: %@", error);
+        if (self.fetchesActive == 0) {
+            [self presentFailedToVerifySourceAlertWithMessage: error.localizedDescription];
+        }
+        return;
+    }
+    
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    
+    NSURL *url = [httpResponse.URL URLByDeletingLastPathComponent];
+    if (httpResponse.statusCode != 200) {
+        NSString *errorMessage;
+        errorMessage = [NSString stringWithFormat:@"Expected status from url %@, received: %d",
+                        url, (int)httpResponse.statusCode];
+        NSLog(@"%@", errorMessage);
+        if (self.fetchesActive == 0) {
+            [self presentFailedToVerifySourceAlertWithMessage:errorMessage];
+        }
+        return;
+    } else {
+        NSLog(@"response: %@", httpResponse);
+    }
+    
+    NSLog(@"verified source %@", url);
+    [self checkSourceURLForWarning:url];
+}
+
+- (void)presentFailedToVerifySourceAlertWithMessage:(NSString *)message {
+    self.addSourceState = AddSourceStateNone;
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"VERIFICATION_ERROR", "")
+                                                                             message:message
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", )
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:nil]];
+    
+    [self presentViewController:alertController animated:TRUE completion:nil];
+}
+
+- (void)checkSourceURLForWarning:(NSURL *)sourceURL {
+    self.addSourceState = AddSourceStateCheckingForWarning;
+    NSURL *warningURL = [self warningURLForSourceURL:sourceURL];
+    
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:warningURL
+                                        completionHandler:^(NSData * _Nullable data,
+                                                            NSURLResponse * _Nullable response,
+                                                            NSError * _Nullable error) {
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                [self receivedWarningData:data
+                                                             forSourceURL:sourceURL
+                                                                    error:error];
+                                            });
+                                            
+                                        }];
+    [task resume];
+    
+}
+
+- (NSURL *)warningURLForSourceURL:(NSURL *)sourceURL {
+    NSString *sourceURLString = sourceURL.absoluteString;
+    sourceURLString = [sourceURLString substringFromIndex:sourceURL.scheme.length + @"://".length];
+    NSURL *cydiaRoot = [NSURL URLWithString:@"https://cydia.saurik.com/"];
+    
+    NSString *endpoint = [NSString stringWithFormat:@"api/repotag/%@", sourceURLString];
+    return [cydiaRoot URLByAppendingPathComponent:endpoint];
+}
+
+- (void)receivedWarningData:(NSData *)data forSourceURL:(NSURL *)sourceURL
+                      error:(NSError *)error {
+    self.addSourceState = AddSourceStateNone;
+    if (error) {
+        NSLog(@"Error retrieving warning: %@", error);
+    } else if (data.length > 0) {
+        [self showWarningData:data
+                 forSourceURL:sourceURL];
+        return;
+    }
+    
+    [self finalizeSourceAdd:sourceURL];
+}
+
+- (void)showWarningData:(NSData *)data
+           forSourceURL:(NSURL *)sourceURL {
+    NSString *message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"SOURCE_WARNING", "")
+                                                                            message:message
+                                                                     preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"CANCEL", "")
+                                                                                style:UIAlertActionStyleCancel
+                                                                                handler:nil]];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ADD_ANYWAY", "")
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [self finalizeSourceAdd:sourceURL];
+                                                      }]];
+    [self presentViewController:alertController animated:TRUE completion:nil];
+}
+
+- (void)finalizeSourceAdd:(NSURL *)sourceURL {
+    NSLog(@"Finally add: %@", sourceURL);
+    [APTSourcesManager.sharedInstance addSource:sourceURL];
+    [APTSourcesManager.sharedInstance writeSources];
+    [self.dataSource reloadData];
+    [self.tableView reloadData];
+}
+
+// MARK: - Button Taps
+
+- (void)editTapped {
+    BOOL editing = !self.tableView.editing;
+    [self.tableView setEditing:editing
+                      animated:TRUE];
+    
+    UIBarButtonItem *leftBarButtonItem;
+    if (editing) {
+        leftBarButtonItem = self.addSourceButton;
+    } else {
+        leftBarButtonItem = self.refreshButton;
+    }
+    [self.navigationItem setLeftBarButtonItem:leftBarButtonItem animated:TRUE];
+}
+
+- (void)addSourceTapped {
+    [self showAlertForSourceInput];
 }
 
 - (void)refreshTapped {
