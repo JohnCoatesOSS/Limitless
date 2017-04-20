@@ -80,10 +80,7 @@ typedef enum : NSUInteger {
 }
 
 - (void)navigationItemSetup {
-    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
-                                                                                target:self
-                                                                                action:@selector(editTapped)];
-    self.navigationItem.rightBarButtonItem = editButton;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     _refreshButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh"
                                                       style:UIBarButtonItemStylePlain
@@ -368,12 +365,13 @@ typedef enum : NSUInteger {
     }
 }
 
-// MARK: - Button Taps
+// MARK: - Editing Mode
 
-- (void)editTapped {
-    BOOL editing = !self.tableView.editing;
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+    
     [self.tableView setEditing:editing
-                      animated:TRUE];
+                      animated:animated];
     
     UIBarButtonItem *leftBarButtonItem;
     if (editing) {
@@ -381,8 +379,10 @@ typedef enum : NSUInteger {
     } else {
         leftBarButtonItem = self.refreshButton;
     }
-    [self.navigationItem setLeftBarButtonItem:leftBarButtonItem animated:TRUE];
+    [self.navigationItem setLeftBarButtonItem:leftBarButtonItem animated:animated];
 }
+
+// MARK: - Button Taps
 
 - (void)addSourceTapped {
     [self showAlertForSourceInput];
