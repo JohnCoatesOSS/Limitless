@@ -10,7 +10,6 @@
 #import "Apt.h"
 #import "Paths.h"
 #import "APTSource-Private.h"
-#import "LMXAPTSource+APTLib.h"
 #import "LMXAPTConfig.h"
 #import "APTManager+Files.h"
 #import "LMXAPTStatus.hpp"
@@ -192,66 +191,6 @@ static BOOL _debugMode = false;
 }
 
 // MARK: - Updating
-
-- (BOOL)performUpdate {
-    OpProgress progress;
-    pkgCacheFile cache;
-    bool cacheOpened = cache.Open(progress, false);
-    if (!cacheOpened) {
-        NSLog(@"error opening cache: %@", self.popLatestErrors);
-        return FALSE;
-    }
-    
-    LMXAptStatus *status = new LMXAptStatus();
-    pkgAcquire *fetcher = new pkgAcquire(status);
-    pkgDepCache::Policy *policy = new pkgDepCache::Policy();
-    pkgRecords *records = new pkgRecords(cache);
-    pkgProblemResolver *resolver_ = new pkgProblemResolver(cache);
-    
-    pkgPackageManager *manager = _system->CreatePM(cache);
-    
-    pkgSourceList sourceList;
-    if (!sourceList.ReadMainList()) {
-        NSArray *latestErrors = self.popLatestErrors;
-        NSLog(@"error: %@", latestErrors);
-        return FALSE;
-    }
-    
-    manager->GetArchives(fetcher, &sourceList, records);
-    
-    bool updated = ListUpdate(*status, sourceList);
-    NSLog(@"updated: %d", updated);
-    
-    int PulseInterval = 500000;
-    if (fetcher->Run(PulseInterval) != pkgAcquire::Continue) {
-        
-        NSLog(@"fetcher errors: %@", [self popLatestErrors]);
-        return FALSE;
-    }
-    
-    bool failed = false;
-    for (pkgAcquire::ItemIterator item = fetcher->ItemsBegin(); item != fetcher->ItemsEnd(); item++) {
-        if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete)
-            continue;
-        if ((*item)->Status == pkgAcquire::Item::StatIdle)
-            continue;
-        
-        std::string uri = (*item)->DescURI();
-        std::string error = (*item)->ErrorText;
-        
-        NSLog(@"pAf:%s:%s\n", uri.c_str(), error.c_str());
-        failed = true;
-        
-        NSString *errorString = @(error.c_str());
-        NSLog(@"Acquire error: %@", errorString);
-        
-        //        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:kCydiaProgressEventTypeError]);
-        //        [delegate_ addProgressEventOnMainThread:event forTask:title];
-    }
-    
-    
-    return updated;
-}
 
 - (NSArray <APTSource *> *)readSourcesWithError:(NSError **)error {
     APTSourceList *list = [[APTSourceList alloc] initWithMainList];

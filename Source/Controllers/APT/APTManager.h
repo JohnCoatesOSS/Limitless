@@ -21,6 +21,5 @@
 // MARK: - Debug
 
 + (void)clearAPTState;
-- (BOOL)performUpdate;
 
 @end
