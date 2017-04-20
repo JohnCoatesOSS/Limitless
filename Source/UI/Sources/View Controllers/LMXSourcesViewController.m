@@ -11,6 +11,8 @@
 #import "LMXDevice.h"
 #import "APTSourcesManager.h"
 #import "APTSourceList.h"
+#import "APTSource.h"
+#import "LMXSourceCell.h"
 
 static NSString * const kSourceCellIdentifier = @"kSourceCellIdentifier";
 
@@ -310,21 +312,60 @@ typedef enum : NSUInteger {
 
 // MARK: - Refresh Sources
 
-
 - (void)refreshSources {    
     APTSourceList *list = APTSourceList.main;
-    [list performUpdateInBackgroundWithCompletion:^(BOOL success, NSArray<NSError *> * _Nonnull errors) {
+    
+    void(^completionBlock)(BOOL, NSArray *) = ^(BOOL success, NSArray<NSError *> * _Nonnull errors) {
         if (!success) {
             NSLog(@"Loading sources errors: %@", errors);
             return;
         }
-        
-        NSLog(@"Finish refreshing sources");
+    };
+    
+    SourcesUpdateStatusBlock statusBlock = ^(NSURL *url, SourceUpdateStatus status) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.dataSource reloadData];
-            [self.tableView reloadData];
+            [self refreshStatusUpdateForURL:url status:status];
         });
-    }];
+    };
+    
+    [list performUpdateInBackgroundWithCompletion:completionBlock statusBlock:statusBlock];
+}
+
+- (void)refreshStatusUpdateForURL:(NSURL *)url
+                           status:(SourceUpdateStatus)status {
+    NSString *urlAbsolute = url.absoluteString;
+    for (APTSource *source in self.dataSource.sources) {
+        NSString *baseURL = source.releaseBaseURL.absoluteString;
+        if(![urlAbsolute hasPrefix:baseURL]) {
+            continue;
+        }
+        
+        NSUInteger index = [self.dataSource.sources indexOfObject:source];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:1];
+        LMXSourceCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        
+        if (cell) {
+            switch (status) {
+                case SourceUpdateStatusLoading:
+                    cell.isLoading = true;
+                    break;
+                case SourceUpdateStatusFinished:
+                case SourceUpdateStatusFailed: {
+                    // Only shut off activity when Packages has finished downloading
+                    NSString *lastComponent = url.lastPathComponent;
+                    // Account for Packages.gz/bz2 as well as Packages.diff/Index
+                    if ([lastComponent hasPrefix:@"Packages"] || [lastComponent hasPrefix:@"Index"]) {
+                        cell.isLoading = false;
+                        [self.tableView reloadRowsAtIndexPaths:@[indexPath]
+                                              withRowAnimation:UITableViewRowAnimationNone];
+                    }
+                    break;
+                }
+            }
+        }
+        return;
+        
+    }
 }
 
 // MARK: - Button Taps

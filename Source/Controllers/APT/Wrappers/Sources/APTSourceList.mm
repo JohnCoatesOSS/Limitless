@@ -104,13 +104,19 @@ APT_SILENCE_DEPRECATIONS_BEGIN
 }
 
 - (void)performUpdateInBackgroundWithCompletion:(SourcesUpdateCompletion)completion {
-    dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-    dispatch_async(backgroundQueue, ^{
-        [self performUpdateWithCompletion:completion];
-    });
+    [self performUpdateInBackgroundWithCompletion:completion
+                                      statusBlock:nil];
 }
 
-- (void)performUpdateWithCompletion:(SourcesUpdateCompletion)completion {
+- (void)performUpdateInBackgroundWithCompletion:(SourcesUpdateCompletion)completion
+                                    statusBlock:(nullable SourcesUpdateStatusBlock)statusBlock {
+    dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+    dispatch_async(backgroundQueue, ^{
+        [self performUpdateWithCompletion:completion statusBlock:statusBlock];
+    });
+}
+- (void)performUpdateWithCompletion:(nullable SourcesUpdateCompletion)completion
+                        statusBlock:(SourcesUpdateStatusBlock)statusBlock {
     // remove any uncaught errors
     [APTErrorController popErrors];
     
@@ -122,6 +128,11 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     }
     
     LMXAptStatus *status = new LMXAptStatus();
+    LMXStatusUpdateBlock statusUpdate = ^(NSURL *url, LMXAptStatusUpdate status) {
+        statusBlock(url, (SourceUpdateStatus)status);
+    };
+    status->setUpdateBlock(statusUpdate);
+    
     APTDownloadScheduler *downloadScheduler;
     downloadScheduler = [[APTDownloadScheduler alloc] initWithStatusDelegate:status];
     APTRecords *records = [[APTRecords alloc] initWithCacheFile:cacheFile];
@@ -130,7 +141,6 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     void (^deleteVariables)() = ^void() {
         delete status;
     };
-    
     
     APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
     if (!sourceList) {
@@ -159,13 +169,16 @@ APT_SILENCE_DEPRECATIONS_BEGIN
     NSMutableArray *errors = [NSMutableArray new];
     pkgAcquire *fetcher = downloadScheduler.scheduler;
     for (pkgAcquire::ItemIterator item = fetcher->ItemsBegin(); item != fetcher->ItemsEnd(); item++) {
-        if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete)
+        std::string uri = (*item)->DescURI();
+        
+        if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete) {
             continue;
-        if ((*item)->Status == pkgAcquire::Item::StatIdle)
+        }
+        if ((*item)->Status == pkgAcquire::Item::StatIdle) {
             continue;
+        }
         
         failed = true;
-        std::string uri = (*item)->DescURI();
         std::string errorString = (*item)->ErrorText;
         
         NSLog(@"pAf:%s:%s\n", uri.c_str(), errorString.c_str());

@@ -11,5 +11,6 @@
 
 @property (nullable, nonatomic, copy) APTSource *source;
 @property (nonatomic) BOOL allSources;
+@property (nonatomic) BOOL isLoading;
 
 @end

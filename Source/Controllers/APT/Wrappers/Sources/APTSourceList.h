@@ -9,6 +9,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef enum : NSUInteger {
+    SourceUpdateStatusLoading,
+    SourceUpdateStatusFinished,
+    SourceUpdateStatusFailed
+} SourceUpdateStatus;
+
+typedef void (^SourcesUpdateStatusBlock)(NSURL *url, SourceUpdateStatus status);
 typedef void (^SourcesUpdateCompletion)(BOOL success, NSArray<NSError *> *errors);
 
 @interface APTSourceList : NSObject
@@ -20,6 +27,8 @@ typedef void (^SourcesUpdateCompletion)(BOOL success, NSArray<NSError *> *errors
 - (instancetype)initWithListFilePath:(NSString *)filePath;
 
 - (void)performUpdateInBackgroundWithCompletion:(nullable SourcesUpdateCompletion)completion;
+- (void)performUpdateInBackgroundWithCompletion:(nullable SourcesUpdateCompletion)completion
+                                    statusBlock:(nullable SourcesUpdateStatusBlock)statusBlock;
 
 @end
 

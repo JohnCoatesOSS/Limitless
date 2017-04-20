@@ -15,6 +15,7 @@
 @property UILabel *subtitleLabel;
 
 @property UIImageView *iconView;
+@property UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -41,6 +42,7 @@
 - (void)viewsSetup {
     [self iconViewSetup];
     [self textWrapperSetup];
+    [self activityIndicatorSetup];
 }
 
 - (void)iconViewSetup {
@@ -94,6 +96,16 @@
     [_textWrapper.rightAnchor constraintGreaterThanOrEqualToAnchor:_subtitleLabel.rightAnchor];
 }
 
+- (void)activityIndicatorSetup {
+    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _activityIndicator.translatesAutoresizingMaskIntoConstraints = false;
+    [self.contentView addSubview:_activityIndicator];
+    
+    [_activityIndicator.rightAnchor constraintEqualToAnchor:self.contentView.rightAnchor constant:-4].active = TRUE;
+    [_activityIndicator.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor].active = TRUE;
+    [_activityIndicator sizeToFit];
+}
+
 // MARK: - Property Setters
 
 - (void)setSource:(APTSource *)source {
@@ -110,6 +122,8 @@
     if (source.iconURL) {
         [self requestIconImage:source.iconURL];
     }
+    
+    self.isLoading = FALSE;
 }
 
 - (void)setAllSources:(BOOL)allSources {
@@ -122,6 +136,20 @@
     self.titleLabel.text = NSLocalizedString(@"ALL_SOURCES", "");
     self.subtitleLabel.text = @"";
     self.iconView.image = [UIImage imageNamed:@"folder.png"];
+    self.isLoading = FALSE;
+}
+
+- (void)setIsLoading:(BOOL)isLoading {
+    if (self.activityIndicator.isAnimating == isLoading) {
+        return;
+    }
+    
+    if (isLoading) {
+        [self.activityIndicator startAnimating];
+    } else {
+        [self.activityIndicator stopAnimating];
+    }
+    [self setNeedsLayout];
 }
 
 // MARK: - Hydration
