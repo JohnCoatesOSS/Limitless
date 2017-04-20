@@ -9,7 +9,7 @@
 
 @interface LMXSourceCell : UITableViewCell
 
-@property (nullable, nonatomic) APTSource *source;
+@property (nullable, nonatomic, copy) APTSource *source;
 @property (nonatomic) BOOL allSources;
 
 @end

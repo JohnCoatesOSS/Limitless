@@ -9,7 +9,7 @@
 
 @interface LMXSourcesDataSource : NSObject <UITableViewDataSource>
 
-@property (nonnull) NSArray <APTSource *> *sources;
+@property (nonnull, copy) NSArray <APTSource *> *sources;
 
 - (void)configureTableWithCellIdentifiers:(nonnull UITableView *)tableView;
 

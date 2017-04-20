@@ -29,6 +29,6 @@
 
 // Computed Properties
 
-@property (nonatomic) NSURL *iconURL;
+@property (nonatomic, readonly) NSURL *iconURL;
 
 @end
