@@ -119,6 +119,7 @@
     self.titleLabel.text = source.name;
     self.subtitleLabel.text = source.uri.absoluteString;
     
+    _iconView.image = nil;
     if (source.iconURL) {
         [self requestIconImage:source.iconURL];
     }
