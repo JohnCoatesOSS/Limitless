@@ -41,6 +41,7 @@
 #import "ConfirmationController.h"
 #import "LMXRespringController.h"
 #import "UIColor+CydiaColors.h"
+#import "APTManager.h"
 
 @interface Application () {
     _H<UIWindow> window_;
@@ -212,7 +213,7 @@
 #pragma mark - State
 
 - (void) saveState {
-    NSString *savedStatePath = [Paths.aptCache subpath:@"SavedState.plist"];
+    NSString *savedStatePath = [Paths.aptState subpath:@"SavedState.plist"];
     
     [[NSDictionary dictionaryWithObjectsAndKeys:
       @"InterfaceState", [tabbar_ navigationURLCollection],
@@ -517,7 +518,7 @@ errno == ENOTDIR \
     [self refreshIfPossible];
     [self disemulate];
     
-    NSString *savedStatePath = [Paths.aptCache subpath:@"SavedState.plist"];
+    NSString *savedStatePath = [Paths.aptState subpath:@"SavedState.plist"];
     NSDictionary *state = [NSDictionary dictionaryWithContentsOfFile:savedStatePath];
     
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
@@ -661,7 +662,7 @@ errno == ENOTDIR \
 - (void) _refreshIfPossible {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *cacheStatePath = [Paths.aptCache subpath:@"CacheState.plist"];
+    NSString *cacheStatePath = [Paths.aptState subpath:@"CacheState.plist"];
     NSDate *update([[NSDictionary dictionaryWithContentsOfFile:cacheStatePath] objectForKey:@"LastUpdate"]);
     
     bool recently = false;
@@ -676,7 +677,12 @@ errno == ENOTDIR \
     //  - We already auto-refreshed this launch.
     //  - Auto-refresh is disabled.
     //  - Cydia's server is not reachable
-    if (recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com")) {
+    BOOL skipRefresh = recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com");
+    
+    if ([APTManager debugMode]) {
+        skipRefresh = FALSE;
+    }
+    if (skipRefresh) {
         // If we are cancelling, we need to make sure it knows it's already loaded.
         loaded_ = true;
         
@@ -1138,11 +1144,11 @@ errno == ENOTDIR \
 
 
 - (void) resolve {
-    pkgProblemResolver *resolver = [database_ resolver];
-    
-    resolver->InstallProtect();
-    if (!resolver->Resolve(true))
-        _error->Discard();
+    APTPackageProblemResolver *problemResolver = database_.problemResolver;
+    [problemResolver installProtectedPackages];
+    if (![problemResolver resolveAndFixBroken:TRUE]) {
+        NSLog(@"Error: Failed to resolve: %@", [APTErrorController popErrors]);
+    }
 }
 
 - (bool) perform {

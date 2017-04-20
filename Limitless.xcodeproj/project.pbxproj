@@ -88,8 +88,12 @@
 		FA1AE6C21EA82D6300A126A4 /* APTSourcesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1AE6C01EA82D6300A126A4 /* APTSourcesManager.m */; };
 		FA1CAD731DF5CFF400B7766C /* LMXSourceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1CAD721DF5CFF400B7766C /* LMXSourceCell.m */; };
 		FA1CAD741DF5CFF400B7766C /* LMXSourceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1CAD721DF5CFF400B7766C /* LMXSourceCell.m */; };
-		FA1CAD781DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1CAD771DF5D0B200B7766C /* LMXSourcesDataSource.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-		FA1CAD791DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1CAD771DF5D0B200B7766C /* LMXSourcesDataSource.m */; };
+		FA1EB0B81E0639C7007C48A6 /* libapt-inst.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38F1DDEAE3600AA9B02 /* libapt-inst.tbd */; };
+		FA1EB0B91E0639C9007C48A6 /* libapt-pkg.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA06A38D1DDEADFD00AA9B02 /* libapt-pkg.tbd */; };
+		FA1EB0BD1E066CAB007C48A6 /* APTSourceList.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0BC1E066CAB007C48A6 /* APTSourceList.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FA1EB0BE1E066CAB007C48A6 /* APTSourceList.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0BC1E066CAB007C48A6 /* APTSourceList.mm */; };
+		FA1EB0CE1E068278007C48A6 /* APTErrorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0CD1E068278007C48A6 /* APTErrorController.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FA1EB0CF1E068278007C48A6 /* APTErrorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1EB0CD1E068278007C48A6 /* APTErrorController.mm */; };
 		FA1FE8C31D79D56D00CF5AAD /* error.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C21D79D56D00CF5AAD /* error.html */; };
 		FA1FE9201D79D58000CF5AAD /* localize.js in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C41D79D57F00CF5AAD /* localize.js */; };
 		FA1FE9211D79D58000CF5AAD /* changes.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA1FE8C51D79D57F00CF5AAD /* changes.png */; };
@@ -267,7 +271,6 @@
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
 		FA3A18361DEAB1F3000557AC /* runAsSuperuser.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3A18351DEAB1F3000557AC /* runAsSuperuser.m */; };
 		FA3D50DA1DED8C870046A0AC /* LMXLocalizedTableSections.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50D91DED8C870046A0AC /* LMXLocalizedTableSections.mm */; };
-		FA3D50DF1DED900E0046A0AC /* TestLocalizedTableSection.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA3D50DE1DED900E0046A0AC /* TestLocalizedTableSection.mm */; };
 		FA3D50E41DED9D050046A0AC /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3D50E31DED9D050046A0AC /* libicucore.tbd */; };
 		FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
 		FA5684891DF5FA6F000A4EBD /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = FA06A3BE1DDEE98000AA9B02 /* Platform.m */; };
@@ -298,15 +301,13 @@
 		FA5684A51DF5FB57000A4EBD /* zodttd.gpg in Copy APT trusted */ = {isa = PBXBuildFile; fileRef = FA06A3B81DDEE6B400AA9B02 /* zodttd.gpg */; };
 		FA5684AA1DF6026C000A4EBD /* NSError+Limitless.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */; };
 		FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */; };
-		FA5684AF1DF6040F000A4EBD /* LMXAPTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */; };
-		FA5684B01DF6040F000A4EBD /* LMXAPTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */; };
 		FA5684B41DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B31DF60448000A4EBD /* LMXAPTSource+APTLib.mm */; };
 		FA5684B51DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B31DF60448000A4EBD /* LMXAPTSource+APTLib.mm */; };
 		FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B81DF72B3F000A4EBD /* Paths+APT.m */; };
 		FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B81DF72B3F000A4EBD /* Paths+APT.m */; };
 		FA5684BD1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */; };
 		FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */; };
-		FA5684C11DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; };
+		FA5684C11DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684C01DF73BCA000A4EBD /* APTManager+Files.m */; };
 		FA6C862D1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C862C1D749C8100FB99CF /* UIWebDocumentView+BugFixes.mm */; };
 		FA6C86331D74A97100FB99CF /* NSString+Cydia.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86321D74A97100FB99CF /* NSString+Cydia.mm */; };
@@ -358,13 +359,40 @@
 		FA6C86F81D7625E700FB99CF /* StashController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86F71D7625E700FB99CF /* StashController.mm */; };
 		FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6C86FB1D7626B500FB99CF /* CYURLCache.mm */; };
 		FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6D8CAD1D74812500283EDB /* Profiling.mm */; };
-		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; };
+		FA7DB9021DE0276D00F874E6 /* APTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA7DB9011DE0276D00F874E6 /* APTManager.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FA9073FD1D7456A900BA0D1D /* GraphicsServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */; };
+		FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA03F281E06B65000071CC7 /* APTCacheFile.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAA03F2A1E06B65000071CC7 /* APTCacheFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA03F281E06B65000071CC7 /* APTCacheFile.mm */; };
 		FAA811AF1D745FF700C674C9 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAA811AE1D745FF700C674C9 /* main.mm */; };
 		FABC25FD1DF4CC9F0033F1E2 /* LMXSourcesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC25FC1DF4CC9F0033F1E2 /* LMXSourcesViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		FABC25FF1DF4CEC50033F1E2 /* LMXSourcesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC25FC1DF4CC9F0033F1E2 /* LMXSourcesViewController.m */; };
 		FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */; };
 		FAC3B0C81DE281DA000423DB /* Addons.png in Resources */ = {isa = PBXBuildFile; fileRef = FA1FE99A1D79D82000CF5AAD /* Addons.png */; };
+		FAD15D221EA8692200F5FD30 /* APTError.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D211EA8692200F5FD30 /* APTError.m */; };
+		FAD15D231EA8692200F5FD30 /* APTError.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D211EA8692200F5FD30 /* APTError.m */; };
+		FAD15D2A1EA8696200F5FD30 /* APTSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D291EA8696200F5FD30 /* APTSource.mm */; };
+		FAD15D2B1EA8696200F5FD30 /* APTSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D291EA8696200F5FD30 /* APTSource.mm */; };
+		FAD15D2F1EA869E400F5FD30 /* LMXSourcesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D2E1EA869E400F5FD30 /* LMXSourcesDataSource.m */; };
+		FAD15D301EA869E400F5FD30 /* LMXSourcesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D2E1EA869E400F5FD30 /* LMXSourcesDataSource.m */; };
+		FAD15D331EA86AA100F5FD30 /* APTDependencyCachePolicy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D321EA86AA100F5FD30 /* APTDependencyCachePolicy.mm */; };
+		FAD15D341EA86AA100F5FD30 /* APTDependencyCachePolicy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D321EA86AA100F5FD30 /* APTDependencyCachePolicy.mm */; };
+		FAD15D381EA86AE800F5FD30 /* LMXAPTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D371EA86AE800F5FD30 /* LMXAPTSource.m */; };
+		FAD15D391EA86AE800F5FD30 /* LMXAPTSource.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D371EA86AE800F5FD30 /* LMXAPTSource.m */; };
+		FAD15D3D1EA86C7200F5FD30 /* TestAPTSources.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D3B1EA86C7200F5FD30 /* TestAPTSources.m */; };
+		FAD15D3E1EA86C7200F5FD30 /* TestAPTVersionIterator.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD15D3C1EA86C7200F5FD30 /* TestAPTVersionIterator.mm */; };
+		FAD638991E07F667001E18DA /* APTPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638981E07F667001E18DA /* APTPackage.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD6389A1E07F667001E18DA /* APTPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638981E07F667001E18DA /* APTPackage.mm */; };
+		FAD6389F1E07FFAB001E18DA /* APTDownloadScheduler.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD6389E1E07FFAB001E18DA /* APTDownloadScheduler.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD638A01E07FFAB001E18DA /* APTDownloadScheduler.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD6389E1E07FFAB001E18DA /* APTDownloadScheduler.mm */; };
+		FAD638A41E08CFE7001E18DA /* APTRecords.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A31E08CFE7001E18DA /* APTRecords.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD638A51E08CFE7001E18DA /* APTRecords.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A31E08CFE7001E18DA /* APTRecords.mm */; };
+		FAD638AA1E0905D7001E18DA /* APTPackageManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A91E0905D7001E18DA /* APTPackageManager.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD638AB1E0905D7001E18DA /* APTPackageManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638A91E0905D7001E18DA /* APTPackageManager.mm */; };
+		FAD638B41E091F3A001E18DA /* APTDownloadItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */; };
+		FAD638B51E091F3A001E18DA /* APTDownloadItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */; };
+		FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD7CDE61E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		FAD7CDE71E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */; };
 		FADD1BC61DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FADD1BC71DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 		FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE642981DF13EC200E975B8 /* featureCatalogMain.m */; };
@@ -379,10 +407,16 @@
 		FAE642BC1DF151E600E975B8 /* SpringBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA03116E1D1B2B4D008690CA /* SpringBoardServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FAE642BF1DF153B900E975B8 /* FrontBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE642BE1DF153B900E975B8 /* FrontBoardServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		FAE642C01DF153B900E975B8 /* FrontBoardServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE642BE1DF153B900E975B8 /* FrontBoardServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		FAE6AB591DFCD6F9006F0CAA /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		FA1EB0DA1E0689C5007C48A6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA28E7021D1B21A5003D3724 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAE642941DF13EC200E975B8;
+			remoteInfo = FeatureCatalog;
+		};
 		FA3D50E01DED981D0046A0AC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA28E7021D1B21A5003D3724 /* Project object */;
@@ -692,8 +726,10 @@
 		FA1AE6C01EA82D6300A126A4 /* APTSourcesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APTSourcesManager.m; sourceTree = "<group>"; };
 		FA1CAD711DF5CFF400B7766C /* LMXSourceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSourceCell.h; sourceTree = "<group>"; };
 		FA1CAD721DF5CFF400B7766C /* LMXSourceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSourceCell.m; sourceTree = "<group>"; };
-		FA1CAD761DF5D0B200B7766C /* LMXSourcesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSourcesDataSource.h; sourceTree = "<group>"; };
-		FA1CAD771DF5D0B200B7766C /* LMXSourcesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSourcesDataSource.m; sourceTree = "<group>"; };
+		FA1EB0BB1E066CAB007C48A6 /* APTSourceList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APTSourceList.h; path = ../../Wrappers/Sources/APTSourceList.h; sourceTree = "<group>"; };
+		FA1EB0BC1E066CAB007C48A6 /* APTSourceList.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = APTSourceList.mm; path = ../../Wrappers/Sources/APTSourceList.mm; sourceTree = "<group>"; };
+		FA1EB0CC1E068278007C48A6 /* APTErrorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APTErrorController.h; path = ../APTErrorController.h; sourceTree = "<group>"; };
+		FA1EB0CD1E068278007C48A6 /* APTErrorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = APTErrorController.mm; path = ../APTErrorController.mm; sourceTree = "<group>"; };
 		FA1FE8C21D79D56D00CF5AAD /* error.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = error.html; sourceTree = "<group>"; };
 		FA1FE8C41D79D57F00CF5AAD /* localize.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = localize.js; sourceTree = "<group>"; };
 		FA1FE8C51D79D57F00CF5AAD /* changes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = changes.png; sourceTree = "<group>"; };
@@ -888,8 +924,6 @@
 		FA3D50E31DED9D050046A0AC /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		FA5684A81DF6026C000A4EBD /* NSError+Limitless.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Limitless.h"; sourceTree = "<group>"; };
 		FA5684A91DF6026C000A4EBD /* NSError+Limitless.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Limitless.m"; sourceTree = "<group>"; };
-		FA5684AD1DF6040F000A4EBD /* LMXAPTSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXAPTSource.h; sourceTree = "<group>"; };
-		FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXAPTSource.m; sourceTree = "<group>"; };
 		FA5684B21DF60448000A4EBD /* LMXAPTSource+APTLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LMXAPTSource+APTLib.h"; sourceTree = "<group>"; };
 		FA5684B31DF60448000A4EBD /* LMXAPTSource+APTLib.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "LMXAPTSource+APTLib.mm"; sourceTree = "<group>"; };
 		FA5684B71DF72B3F000A4EBD /* Paths+APT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Paths+APT.h"; sourceTree = "<group>"; };
@@ -1015,12 +1049,47 @@
 		FA9010FB1DE12B1C00A607AC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA9010FF1DE12B1C00A607AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA9073FC1D7456A900BA0D1D /* GraphicsServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GraphicsServices.framework; path = External/System/Library/PrivateFrameworks/GraphicsServices.framework; sourceTree = "<group>"; };
+		FAA03F271E06B65000071CC7 /* APTCacheFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTCacheFile.h; sourceTree = "<group>"; };
+		FAA03F281E06B65000071CC7 /* APTCacheFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTCacheFile.mm; sourceTree = "<group>"; };
+		FAA03F2B1E07B8FC00071CC7 /* APTCacheFile-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile-Private.h"; sourceTree = "<group>"; };
 		FAA811AE1D745FF700C674C9 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FAA811B41D74669600C674C9 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		FABC25FB1DF4CC9F0033F1E2 /* LMXSourcesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSourcesViewController.h; sourceTree = "<group>"; };
 		FABC25FC1DF4CC9F0033F1E2 /* LMXSourcesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSourcesViewController.m; sourceTree = "<group>"; };
 		FAC1A7291DEFA688008256A4 /* LMXLaunchProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXLaunchProcess.h; sourceTree = "<group>"; };
 		FAC1A72A1DEFA688008256A4 /* LMXLaunchProcess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXLaunchProcess.m; sourceTree = "<group>"; };
+		FAD15D201EA8692200F5FD30 /* APTError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTError.h; sourceTree = "<group>"; };
+		FAD15D211EA8692200F5FD30 /* APTError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APTError.m; sourceTree = "<group>"; };
+		FAD15D281EA8696200F5FD30 /* APTSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APTSource.h; path = Source/Controllers/APT/Models/APTSource.h; sourceTree = SOURCE_ROOT; };
+		FAD15D291EA8696200F5FD30 /* APTSource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = APTSource.mm; path = Source/Controllers/APT/Models/APTSource.mm; sourceTree = SOURCE_ROOT; };
+		FAD15D2D1EA869E400F5FD30 /* LMXSourcesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LMXSourcesDataSource.h; sourceTree = "<group>"; };
+		FAD15D2E1EA869E400F5FD30 /* LMXSourcesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMXSourcesDataSource.m; sourceTree = "<group>"; };
+		FAD15D311EA86AA100F5FD30 /* APTDependencyCachePolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APTDependencyCachePolicy.h; path = Source/Controllers/APT/Wrappers/APTDependencyCachePolicy.h; sourceTree = SOURCE_ROOT; };
+		FAD15D321EA86AA100F5FD30 /* APTDependencyCachePolicy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = APTDependencyCachePolicy.mm; path = Source/Controllers/APT/Wrappers/APTDependencyCachePolicy.mm; sourceTree = SOURCE_ROOT; };
+		FAD15D361EA86AE800F5FD30 /* LMXAPTSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LMXAPTSource.h; path = Source/Controllers/APT/Models/LMXAPTSource.h; sourceTree = SOURCE_ROOT; };
+		FAD15D371EA86AE800F5FD30 /* LMXAPTSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LMXAPTSource.m; path = Source/Controllers/APT/Models/LMXAPTSource.m; sourceTree = SOURCE_ROOT; };
+		FAD15D3B1EA86C7200F5FD30 /* TestAPTSources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAPTSources.m; sourceTree = "<group>"; };
+		FAD15D3C1EA86C7200F5FD30 /* TestAPTVersionIterator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = TestAPTVersionIterator.mm; path = Tests/TestAPTVersionIterator.mm; sourceTree = "<group>"; };
+		FAD638971E07F667001E18DA /* APTPackage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackage.h; sourceTree = "<group>"; };
+		FAD638981E07F667001E18DA /* APTPackage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackage.mm; sourceTree = "<group>"; };
+		FAD6389B1E07F7CD001E18DA /* APTPackage-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTPackage-Private.h"; sourceTree = "<group>"; };
+		FAD6389D1E07FFAB001E18DA /* APTDownloadScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTDownloadScheduler.h; sourceTree = "<group>"; };
+		FAD6389E1E07FFAB001E18DA /* APTDownloadScheduler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTDownloadScheduler.mm; sourceTree = "<group>"; };
+		FAD638A11E07FFFD001E18DA /* APTDownloadScheduler-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTDownloadScheduler-Private.h"; sourceTree = "<group>"; };
+		FAD638A21E08CFE7001E18DA /* APTRecords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTRecords.h; sourceTree = "<group>"; };
+		FAD638A31E08CFE7001E18DA /* APTRecords.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTRecords.mm; sourceTree = "<group>"; };
+		FAD638A61E0900EF001E18DA /* APTRecords-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTRecords-Private.h"; sourceTree = "<group>"; };
+		FAD638A81E0905D7001E18DA /* APTPackageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackageManager.h; sourceTree = "<group>"; };
+		FAD638A91E0905D7001E18DA /* APTPackageManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackageManager.mm; sourceTree = "<group>"; };
+		FAD638AF1E09128B001E18DA /* APTSource-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTSource-Private.h"; sourceTree = "<group>"; };
+		FAD638B01E0914CD001E18DA /* APTSourceList-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTSourceList-Private.h"; sourceTree = "<group>"; };
+		FAD638B21E091F3A001E18DA /* APTDownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTDownloadItem.h; sourceTree = "<group>"; };
+		FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTDownloadItem.mm; sourceTree = "<group>"; };
+		FAD638B61E0920FA001E18DA /* APTDownloadItem-Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APTDownloadItem-Private.h"; sourceTree = "<group>"; };
+		FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "APTCacheFile+Legacy.h"; sourceTree = "<group>"; };
+		FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "APTCacheFile+Legacy.mm"; sourceTree = "<group>"; };
+		FAD7CDE41E07F0AB00444344 /* APTPackageProblemResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APTPackageProblemResolver.h; sourceTree = "<group>"; };
+		FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = APTPackageProblemResolver.mm; sourceTree = "<group>"; };
 		FADD1BC41DF7B1D7009EA2C6 /* NSString+Paths.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Paths.h"; sourceTree = "<group>"; };
 		FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Paths.m"; sourceTree = "<group>"; };
 		FAE642951DF13EC200E975B8 /* FeatureCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FeatureCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1076,6 +1145,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA3D50E41DED9D050046A0AC /* libicucore.tbd in Frameworks */,
+				FA1EB0B81E0639C7007C48A6 /* libapt-inst.tbd in Frameworks */,
+				FA1EB0B91E0639C9007C48A6 /* libapt-pkg.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1259,6 +1330,7 @@
 		FA1AE6AC1EA75AD100A126A4 /* General */ = {
 			isa = PBXGroup;
 			children = (
+				FAD7CDE21E07F07100444344 /* Packages */,
 				FA1AE6AD1EA75AEC00A126A4 /* Theme */,
 			);
 			path = General;
@@ -1273,12 +1345,13 @@
 			path = Theme;
 			sourceTree = "<group>";
 		};
-		FA1AE6B91EA76FB700A126A4 /* Device */ = {
+		FA1AE6B91EA76FB700A126A4 /* Environment */ = {
 			isa = PBXGroup;
 			children = (
 				FA1AE6BA1EA76FF400A126A4 /* LMXDevice.h */,
 				FA1AE6BB1EA76FF500A126A4 /* LMXDevice.m */,
 			);
+			name = Environment;
 			path = Device;
 			sourceTree = "<group>";
 		};
@@ -1291,13 +1364,34 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		FA1CAD751DF5D08100B7766C /* Data Source */ = {
+		FA1EB0B01E06355B007C48A6 /* APT */ = {
 			isa = PBXGroup;
 			children = (
-				FA1CAD761DF5D0B200B7766C /* LMXSourcesDataSource.h */,
-				FA1CAD771DF5D0B200B7766C /* LMXSourcesDataSource.m */,
+				FAD15D3A1EA86C7200F5FD30 /* Sources */,
+				FAD15D3C1EA86C7200F5FD30 /* TestAPTVersionIterator.mm */,
 			);
-			path = "Data Source";
+			path = APT;
+			sourceTree = "<group>";
+		};
+		FA1EB0C71E06824F007C48A6 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638AD1E09125D001E18DA /* Sources */,
+				FAD638A71E0905C0001E18DA /* Packages */,
+				FAD6389C1E07FEBF001E18DA /* Downloading */,
+				FA1EB0D11E068338007C48A6 /* Error Handling */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FA1EB0D11E068338007C48A6 /* Error Handling */ = {
+			isa = PBXGroup;
+			children = (
+				FAD15D1F1EA8690900F5FD30 /* Models */,
+				FA1EB0CC1E068278007C48A6 /* APTErrorController.h */,
+				FA1EB0CD1E068278007C48A6 /* APTErrorController.mm */,
+			);
+			path = "Error Handling";
 			sourceTree = "<group>";
 		};
 		FA1FE97C1D79D58800CF5AAD /* Legacy */ = {
@@ -1684,9 +1778,10 @@
 		FA5684AC1DF603F2000A4EBD /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FAD15D351EA86AC900F5FD30 /* Sources */,
 				FA5684B11DF6041D000A4EBD /* Categories */,
-				FA5684AD1DF6040F000A4EBD /* LMXAPTSource.h */,
-				FA5684AE1DF6040F000A4EBD /* LMXAPTSource.m */,
+				FAD7CDE31E07F08F00444344 /* Packages */,
+				FAA03F261E06B62800071CC7 /* Cache */,
 				FA5684BB1DF7318F000A4EBD /* LMXAPTConfig.h */,
 				FA5684BC1DF7318F000A4EBD /* LMXAPTConfig.mm */,
 				FA5684C41DF7475E000A4EBD /* LMXAPTStatus.hpp */,
@@ -2096,7 +2191,7 @@
 		FA6C86EB1D76227000FB99CF /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				FA1CAD751DF5D08100B7766C /* Data Source */,
+				FAD15D2C1EA869CB00F5FD30 /* Data Source */,
 				FA6C86F01D76231400FB99CF /* View Controllers */,
 				FA6C86EC1D76227B00FB99CF /* Views */,
 			);
@@ -2169,7 +2264,6 @@
 		FA6D8CA41D746B7F00283EDB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				FA7DB8FF1DE0275000F874E6 /* APT */,
 				FA6C86F91D7626A300FB99CF /* Cache */,
 				FA6C86D51D761E1300FB99CF /* URL Handler */,
 				FA6C86621D74C48400FB99CF /* Database */,
@@ -2181,7 +2275,7 @@
 		FA6D8CA51D746BA000283EDB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				FA1AE6B91EA76FB700A126A4 /* Device */,
+				FA1AE6B91EA76FB700A126A4 /* Environment */,
 				FA1247E31D778CC900C21DAC /* Application */,
 				FA6C868F1D75905300FB99CF /* Scripting */,
 				FA6C868B1D758FA800FB99CF /* Networking */,
@@ -2230,18 +2324,21 @@
 		FA7DB8FF1DE0275000F874E6 /* APT */ = {
 			isa = PBXGroup;
 			children = (
+				FA1EB0C71E06824F007C48A6 /* Controllers */,
 				FA1AE6BE1EA82D4500A126A4 /* Sources */,
 				FA5684B61DF72AF7000A4EBD /* Categories */,
 				FA5684AC1DF603F2000A4EBD /* Models */,
 				FA7DB9001DE0276D00F874E6 /* APTManager.h */,
 				FA7DB9011DE0276D00F874E6 /* APTManager.mm */,
 			);
-			path = APT;
+			name = APT;
+			path = Controllers/APT;
 			sourceTree = "<group>";
 		};
 		FA9010FC1DE12B1C00A607AC /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				FA1EB0B01E06355B007C48A6 /* APT */,
 				FA3D50DB1DED8FBC0046A0AC /* Localization */,
 				FA9010FF1DE12B1C00A607AC /* Info.plist */,
 			);
@@ -2282,6 +2379,18 @@
 			path = Images/Purposes;
 			sourceTree = "<group>";
 		};
+		FAA03F261E06B62800071CC7 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				FAA03F271E06B65000071CC7 /* APTCacheFile.h */,
+				FAA03F281E06B65000071CC7 /* APTCacheFile.mm */,
+				FAA03F2B1E07B8FC00071CC7 /* APTCacheFile-Private.h */,
+				FAD7CDDE1E07EAE800444344 /* APTCacheFile+Legacy.h */,
+				FAD7CDDF1E07EAE800444344 /* APTCacheFile+Legacy.mm */,
+			);
+			path = Cache;
+			sourceTree = "<group>";
+		};
 		FAA811AB1D745FD100C674C9 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -2292,6 +2401,7 @@
 				FA6C86401D74ADAD00FB99CF /* Globals */,
 				FA6C86291D749C5300FB99CF /* Categories */,
 				FAA811B31D74667B00C674C9 /* Headers */,
+				FA7DB8FF1DE0275000F874E6 /* APT */,
 				FA6D8CA41D746B7F00283EDB /* Controllers */,
 				FA6D8CA51D746BA000283EDB /* Models */,
 				FA6D8CA31D746B6B00283EDB /* UI */,
@@ -2410,6 +2520,117 @@
 				FA1FE9971D79D80E00CF5AAD /* menes.js */,
 			);
 			path = Javascript;
+			sourceTree = "<group>";
+		};
+		FAD15D1F1EA8690900F5FD30 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FAD15D201EA8692200F5FD30 /* APTError.h */,
+				FAD15D211EA8692200F5FD30 /* APTError.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FAD15D2C1EA869CB00F5FD30 /* Data Source */ = {
+			isa = PBXGroup;
+			children = (
+				FAD15D2D1EA869E400F5FD30 /* LMXSourcesDataSource.h */,
+				FAD15D2E1EA869E400F5FD30 /* LMXSourcesDataSource.m */,
+			);
+			path = "Data Source";
+			sourceTree = "<group>";
+		};
+		FAD15D351EA86AC900F5FD30 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FAD15D281EA8696200F5FD30 /* APTSource.h */,
+				FAD15D291EA8696200F5FD30 /* APTSource.mm */,
+				FAD15D361EA86AE800F5FD30 /* LMXAPTSource.h */,
+				FAD15D371EA86AE800F5FD30 /* LMXAPTSource.m */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		FAD15D3A1EA86C7200F5FD30 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FAD15D3B1EA86C7200F5FD30 /* TestAPTSources.m */,
+			);
+			name = Sources;
+			path = Tests/Sources;
+			sourceTree = "<group>";
+		};
+		FAD6389C1E07FEBF001E18DA /* Downloading */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638B11E091F1E001E18DA /* Models */,
+				FAD6389D1E07FFAB001E18DA /* APTDownloadScheduler.h */,
+				FAD638A11E07FFFD001E18DA /* APTDownloadScheduler-Private.h */,
+				FAD6389E1E07FFAB001E18DA /* APTDownloadScheduler.mm */,
+			);
+			path = Downloading;
+			sourceTree = "<group>";
+		};
+		FAD638A71E0905C0001E18DA /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638A81E0905D7001E18DA /* APTPackageManager.h */,
+				FAD638A91E0905D7001E18DA /* APTPackageManager.mm */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		FAD638AD1E09125D001E18DA /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638AE1E091271001E18DA /* Models */,
+				FA1EB0BB1E066CAB007C48A6 /* APTSourceList.h */,
+				FAD638B01E0914CD001E18DA /* APTSourceList-Private.h */,
+				FA1EB0BC1E066CAB007C48A6 /* APTSourceList.mm */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		FAD638AE1E091271001E18DA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638AF1E09128B001E18DA /* APTSource-Private.h */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FAD638B11E091F1E001E18DA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FAD638B21E091F3A001E18DA /* APTDownloadItem.h */,
+				FAD638B61E0920FA001E18DA /* APTDownloadItem-Private.h */,
+				FAD638B31E091F3A001E18DA /* APTDownloadItem.mm */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FAD7CDE21E07F07100444344 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		FAD7CDE31E07F08F00444344 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				FAD15D311EA86AA100F5FD30 /* APTDependencyCachePolicy.h */,
+				FAD15D321EA86AA100F5FD30 /* APTDependencyCachePolicy.mm */,
+				FAD7CDE41E07F0AB00444344 /* APTPackageProblemResolver.h */,
+				FAD7CDE51E07F0AB00444344 /* APTPackageProblemResolver.mm */,
+				FAD638971E07F667001E18DA /* APTPackage.h */,
+				FAD6389B1E07F7CD001E18DA /* APTPackage-Private.h */,
+				FAD638981E07F667001E18DA /* APTPackage.mm */,
+				FAD638A21E08CFE7001E18DA /* APTRecords.h */,
+				FAD638A61E0900EF001E18DA /* APTRecords-Private.h */,
+				FAD638A31E08CFE7001E18DA /* APTRecords.mm */,
+			);
+			path = Packages;
 			sourceTree = "<group>";
 		};
 		FADD1BC31DF7B1BD009EA2C6 /* Categories */ = {
@@ -2536,6 +2757,7 @@
 			dependencies = (
 				FA9011011DE12B1C00A607AC /* PBXTargetDependency */,
 				FA3D50E11DED981D0046A0AC /* PBXTargetDependency */,
+				FA1EB0DB1E0689C5007C48A6 /* PBXTargetDependency */,
 			);
 			name = Tests;
 			productName = Tests;
@@ -2585,7 +2807,7 @@
 					FA9010FA1DE12B1C00A607AC = {
 						CreatedOnToolsVersion = 8.1;
 						ProvisioningStyle = Automatic;
-						TestTargetID = FA28E7091D1B21A5003D3724;
+						TestTargetID = FAE642941DF13EC200E975B8;
 					};
 					FAA88F061DE7738100039F54 = {
 						CreatedOnToolsVersion = 8.1;
@@ -2805,9 +3027,11 @@
 				FA0311AA1D1B2CBD008690CA /* TableViewCell.mm in Sources */,
 				FA6C86FC1D7626B500FB99CF /* CYURLCache.mm in Sources */,
 				FAE642B41DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
+				FAD15D381EA86AE800F5FD30 /* LMXAPTSource.m in Sources */,
 				FA6C86891D758DC700FB99CF /* Logging.mm in Sources */,
 				FAC1A72B1DEFA688008256A4 /* LMXLaunchProcess.m in Sources */,
 				FA5684B41DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */,
+				FAD15D221EA8692200F5FD30 /* APTError.m in Sources */,
 				FA6C86C01D76097400FB99CF /* CYPackageController.mm in Sources */,
 				FA1AE6BC1EA76FF500A126A4 /* LMXDevice.m in Sources */,
 				FA6C86E41D7620A900FB99CF /* SearchController.mm in Sources */,
@@ -2821,13 +3045,16 @@
 				FA6C86561D74BFD700FB99CF /* GeneralGlobals.mm in Sources */,
 				FA6C86D81D761E3900FB99CF /* CydiaURLProtocol.mm in Sources */,
 				FA01D2211D1B22B100B49E70 /* Sources.mm in Sources */,
+				FAD15D2A1EA8696200F5FD30 /* APTSource.mm in Sources */,
 				FA6C86D41D760CC600FB99CF /* CydiaTabBarController.mm in Sources */,
+				FAD638A41E08CFE7001E18DA /* APTRecords.mm in Sources */,
 				FA6C86781D75756800FB99CF /* CydiaOperation.mm in Sources */,
 				FA6C86A31D75967800FB99CF /* CydiaScript.mm in Sources */,
 				FA1247E71D778DB800C21DAC /* Paths.mm in Sources */,
 				FA6C867F1D7578D900FB99CF /* CydiaRelation.mm in Sources */,
 				FA6C86B91D75F6BA00FB99CF /* SectionCell.mm in Sources */,
 				FA0311A91D1B2CBD008690CA /* TabBarController.mm in Sources */,
+				FA1EB0CE1E068278007C48A6 /* APTErrorController.mm in Sources */,
 				FA23E2D11D776AC4001FBE4A /* NSUserDefaults+Hooks.mm in Sources */,
 				FADD1BC61DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FA6C86C31D760A1600FB99CF /* PackageListController.mm in Sources */,
@@ -2848,9 +3075,14 @@
 				FA6D8CAE1D74812500283EDB /* Profiling.mm in Sources */,
 				FAA811AF1D745FF700C674C9 /* main.mm in Sources */,
 				FA0311AE1D1B2CBD008690CA /* WebViewController.mm in Sources */,
+				FA1EB0BD1E066CAB007C48A6 /* APTSourceList.mm in Sources */,
 				FA6C86861D758D4000FB99CF /* Section.mm in Sources */,
 				FA6C866E1D75722D00FB99CF /* CytoreHelpers.mm in Sources */,
+				FAA03F291E06B65000071CC7 /* APTCacheFile.mm in Sources */,
+				FAD638B41E091F3A001E18DA /* APTDownloadItem.mm in Sources */,
+				FAD15D2F1EA869E400F5FD30 /* LMXSourcesDataSource.m in Sources */,
 				FABC25FD1DF4CC9F0033F1E2 /* LMXSourcesViewController.m in Sources */,
+				FAD7CDE01E07EAE800444344 /* APTCacheFile+Legacy.mm in Sources */,
 				FA6C86AE1D75EFF900FB99CF /* CydiaProgressData.mm in Sources */,
 				FA6C86741D7573D900FB99CF /* Source.mm in Sources */,
 				FA0311B21D1B2CBD008690CA /* yieldToSelector.mm in Sources */,
@@ -2858,13 +3090,13 @@
 				FA6C86BD1D76090800FB99CF /* FileTable.mm in Sources */,
 				FA6C864C1D74B26C00FB99CF /* SystemHelpers.mm in Sources */,
 				FA6C865E1D74C2AE00FB99CF /* Delegates.mm in Sources */,
-				FA5684AF1DF6040F000A4EBD /* LMXAPTSource.m in Sources */,
 				FA0311B01D1B2CBD008690CA /* invocationWithSelector.mm in Sources */,
 				FA6C86971D75910E00FB99CF /* CydiaWebViewController.mm in Sources */,
 				FA3D50DA1DED8C870046A0AC /* LMXLocalizedTableSections.mm in Sources */,
 				FA6C86DE1D761F3600FB99CF /* SectionsController.mm in Sources */,
 				FA6C863F1D74AC6E00FB99CF /* DisplayHelpers.mm in Sources */,
 				FA6C86EA1D7621CC00FB99CF /* InstalledController.mm in Sources */,
+				FAD638991E07F667001E18DA /* APTPackage.mm in Sources */,
 				FA6C86E71D76216300FB99CF /* PackageSettingsController.mm in Sources */,
 				FA6C86E11D76200200FB99CF /* ChangesController.mm in Sources */,
 				FA6C86471D74B04F00FB99CF /* CFArray+Sort.mm in Sources */,
@@ -2879,17 +3111,19 @@
 				FA1AE6B31EA75B2100A126A4 /* LMXTheme.m in Sources */,
 				FA6C86531D74BEC200FB99CF /* Networking.mm in Sources */,
 				FA6C86C61D760AC300FB99CF /* FilteredPackageListController.mm in Sources */,
+				FAD7CDE61E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */,
 				FA0311AD1D1B2CBD008690CA /* WebView.mm in Sources */,
 				FA23E2C51D775070001FBE4A /* Startup.mm in Sources */,
 				FA0311AF1D1B2CBD008690CA /* WebViewTableViewCell.mm in Sources */,
-				FA1CAD781DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */,
 				FA6C86831D75797700FB99CF /* Package.mm in Sources */,
 				FA23E2C81D7754A0001FBE4A /* Display.mm in Sources */,
-				FAE6AB591DFCD6F9006F0CAA /* NSString+Paths.m in Sources */,
 				FA5684B91DF72B3F000A4EBD /* Paths+APT.m in Sources */,
+				FAD6389F1E07FFAB001E18DA /* APTDownloadScheduler.mm in Sources */,
 				FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */,
+				FAD638AA1E0905D7001E18DA /* APTPackageManager.mm in Sources */,
 				FA0311A61D1B2CBD008690CA /* dispatchEvent.mm in Sources */,
 				FA0311A71D1B2CBD008690CA /* MFMailComposeViewController-MailToURL.mm in Sources */,
+				FAD15D331EA86AA100F5FD30 /* APTDependencyCachePolicy.mm in Sources */,
 				FA1CAD731DF5CFF400B7766C /* LMXSourceCell.m in Sources */,
 				FA01D21D1D1B22B100B49E70 /* lookup3.c in Sources */,
 				FA23E2CB1D776245001FBE4A /* Device.mm in Sources */,
@@ -2919,7 +3153,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA3D50DF1DED900E0046A0AC /* TestLocalizedTableSection.mm in Sources */,
+				FAD15D3E1EA86C7200F5FD30 /* TestAPTVersionIterator.mm in Sources */,
+				FAD15D3D1EA86C7200F5FD30 /* TestAPTSources.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2927,34 +3162,51 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAD15D2B1EA8696200F5FD30 /* APTSource.mm in Sources */,
 				FA1CAD741DF5CFF400B7766C /* LMXSourceCell.m in Sources */,
 				FA5684BE1DF7318F000A4EBD /* LMXAPTConfig.mm in Sources */,
+				FAD15D301EA869E400F5FD30 /* LMXSourcesDataSource.m in Sources */,
 				FADD1BC71DF7B1D7009EA2C6 /* NSString+Paths.m in Sources */,
 				FAE642B11DF1433100E975B8 /* LMXRespringViewController.m in Sources */,
+				FA1EB0CF1E068278007C48A6 /* APTErrorController.mm in Sources */,
+				FAD7CDE71E07F0AB00444344 /* APTPackageProblemResolver.mm in Sources */,
+				FAD638A01E07FFAB001E18DA /* APTDownloadScheduler.mm in Sources */,
 				FA5684BA1DF72B3F000A4EBD /* Paths+APT.m in Sources */,
+				FA1EB0BE1E066CAB007C48A6 /* APTSourceList.mm in Sources */,
 				FAE6429F1DF13EC200E975B8 /* CatalogTableViewController.m in Sources */,
+				FAA03F2A1E06B65000071CC7 /* APTCacheFile.mm in Sources */,
 				FA5684891DF5FA6F000A4EBD /* Platform.m in Sources */,
 				FA56848A1DF5FA74000A4EBD /* Device.mm in Sources */,
+				FAD638B51E091F3A001E18DA /* APTDownloadItem.mm in Sources */,
 				FA5684B51DF60448000A4EBD /* LMXAPTSource+APTLib.mm in Sources */,
+				FAD638AB1E0905D7001E18DA /* APTPackageManager.mm in Sources */,
+				FAD15D391EA86AE800F5FD30 /* LMXAPTSource.m in Sources */,
 				FAE6429C1DF13EC200E975B8 /* FeatureCatalogAppDelegate.m in Sources */,
 				FA5684881DF5FA48000A4EBD /* APTManager.mm in Sources */,
 				FA5684AB1DF6026C000A4EBD /* NSError+Limitless.m in Sources */,
-				FA1CAD791DF5D0B200B7766C /* LMXSourcesDataSource.m in Sources */,
 				FA1AE6B41EA75B2100A126A4 /* LMXTheme.m in Sources */,
 				FABC25FF1DF4CEC50033F1E2 /* LMXSourcesViewController.m in Sources */,
 				FA1AE6BD1EA76FF500A126A4 /* LMXDevice.m in Sources */,
 				FA1AE6C21EA82D6300A126A4 /* APTSourcesManager.m in Sources */,
 				FA56848B1DF5FA96000A4EBD /* Paths.mm in Sources */,
 				FAE642991DF13EC200E975B8 /* featureCatalogMain.m in Sources */,
+				FAD638A51E08CFE7001E18DA /* APTRecords.mm in Sources */,
+				FAD6389A1E07F667001E18DA /* APTPackage.mm in Sources */,
 				FA5684C21DF73BCA000A4EBD /* APTManager+Files.m in Sources */,
+				FAD15D341EA86AA100F5FD30 /* APTDependencyCachePolicy.mm in Sources */,
+				FAD15D231EA8692200F5FD30 /* APTError.m in Sources */,
 				FAE642B51DF14B9B00E975B8 /* LMXRespringController.m in Sources */,
-				FA5684B01DF6040F000A4EBD /* LMXAPTSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		FA1EB0DB1E0689C5007C48A6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAE642941DF13EC200E975B8 /* FeatureCatalog */;
+			targetProxy = FA1EB0DA1E0689C5007C48A6 /* PBXContainerItemProxy */;
+		};
 		FA3D50E11DED981D0046A0AC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FA3A18321DEAB1F3000557AC /* runAsSuperuser */;
@@ -3554,9 +3806,13 @@
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/External/usr/lib",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Limitless.app/Limitless";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FeatureCatalog.app/FeatureCatalog";
 			};
 			name = Debug;
 		};
@@ -3572,9 +3828,13 @@
 				GCC_PREFIX_HEADER = Source/Headers/Prefix.pch;
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/External/usr/lib",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = oss.Limitless.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Limitless.app/Limitless";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FeatureCatalog.app/FeatureCatalog";
 			};
 			name = Release;
 		};
@@ -3598,7 +3858,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_TESTABILITY = YES;
@@ -3609,7 +3869,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREFIX_HEADER = "Tools/Feature Catalog/FeatureCatalogPrefix.pch";
 				INFOPLIST_FILE = "Tools/Feature Catalog/FeatureCatalogInfo.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks @executable_path";
 				OTHER_CFLAGS = (
 					"-idirafter",
 					"\"$(SRCROOT)/External/icu/icuSources/common\"",
@@ -3626,7 +3885,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -3635,7 +3894,6 @@
 				);
 				GCC_PREFIX_HEADER = "Tools/Feature Catalog/FeatureCatalogPrefix.pch";
 				INFOPLIST_FILE = "Tools/Feature Catalog/FeatureCatalogInfo.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/SharedFrameworks @executable_path";
 				PRODUCT_BUNDLE_IDENTIFIER = "oss.Limitless.Feature-Catalog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

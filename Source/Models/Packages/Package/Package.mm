@@ -11,201 +11,18 @@
 #import "Source.h"
 #import "Standard.h"
 #import "LMXLocalizedTableSections.h"
+#import "APTCacheFile-Private.h"
+#import "APTPackage-Private.h"
+#import "APTRecords-Private.h"
 
 #include <fstream>
 
 @implementation Package
 
-- (NSString *) description {
-    return [NSString stringWithFormat:@"<Package:%@>", static_cast<NSString *>(name_)];
-}
-
-- (void) dealloc {
-    if (!pooled_)
-        delete pool_;
-    if (parsed_ != NULL)
-        delete parsed_;
-    [super dealloc];
-}
-
-+ (NSString *) webScriptNameForSelector:(SEL)selector {
-    if (false);
-    else if (selector == @selector(clear))
-        return @"clear";
-    else if (selector == @selector(getField:))
-        return @"getField";
-    else if (selector == @selector(getRecord))
-        return @"getRecord";
-    else if (selector == @selector(hasTag:))
-        return @"hasTag";
-    else if (selector == @selector(install))
-        return @"install";
-    else if (selector == @selector(remove))
-        return @"remove";
-    else
-        return nil;
-}
-
-+ (BOOL) isSelectorExcludedFromWebScript:(SEL)selector {
-    return [self webScriptNameForSelector:selector] == nil;
-}
-
-+ (NSArray *) _attributeKeys {
-    return [NSArray arrayWithObjects:
-            @"applications",
-            @"architecture",
-            @"author",
-            @"depiction",
-            @"essential",
-            @"homepage",
-            @"icon",
-            @"id",
-            @"installed",
-            @"latest",
-            @"longDescription",
-            @"longSection",
-            @"maintainer",
-            @"md5sum",
-            @"mode",
-            @"name",
-            @"purposes",
-            @"relations",
-            @"section",
-            @"selection",
-            @"shortDescription",
-            @"shortSection",
-            @"simpleSection",
-            @"size",
-            @"source",
-            @"state",
-            @"support",
-            @"tags",
-            @"upgraded",
-            @"warnings",
-            nil];
-}
-
-- (NSArray *) attributeKeys {
-    return [[self class] _attributeKeys];
-}
-
-+ (BOOL) isKeyExcludedFromWebScript:(const char *)name {
-    return ![[self _attributeKeys] containsObject:[NSString stringWithUTF8String:name]] && [super isKeyExcludedFromWebScript:name];
-}
-
-- (NSArray *) relations {
-    @synchronized (database_) {
-        NSMutableArray *relations([NSMutableArray arrayWithCapacity:16]);
-        for (pkgCache::DepIterator dep(version_.DependsList()); !dep.end(); ++dep)
-            [relations addObject:[[[CydiaRelation alloc] initWithIterator:dep] autorelease]];
-        return relations;
-    } }
-
-- (NSString *) architecture {
-    [self parse];
-    @synchronized (database_) {
-        return parsed_->architecture_.empty() ? [NSNull null] : (id) parsed_->architecture_;
-    } }
-
-- (NSString *) getField:(NSString *)name {
-    @synchronized (database_) {
-        if ([database_ era] != era_ || file_.end())
-            return nil;
-        
-        pkgRecords::Parser &parser([database_ records]->Lookup(file_));
-        
-        const char *start, *end;
-        if (!parser.Find([name UTF8String], start, end))
-            return (NSString *) [NSNull null];
-        
-        return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
-    } }
-
-- (NSString *) getRecord {
-    @synchronized (database_) {
-        if ([database_ era] != era_ || file_.end())
-            return nil;
-        
-        pkgRecords::Parser &parser([database_ records]->Lookup(file_));
-        
-        const char *start, *end;
-        parser.GetRec(start, end);
-        
-        return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
-    } }
-
-- (void) parse {
-    if (parsed_ != NULL)
-        return;
-    @synchronized (database_) {
-        if ([database_ era] != era_ || file_.end())
-            return;
-        
-        ParsedPackage *parsed(new ParsedPackage);
-        parsed_ = parsed;
-        
-        _profile(Package$parse)
-        pkgRecords::Parser *parser;
-        
-        _profile(Package$parse$Lookup)
-        parser = &[database_ records]->Lookup(file_);
-        _end
-        
-        CYString bugs;
-        CYString website;
-        
-        _profile(Package$parse$Find)
-        struct {
-            const char *name_;
-            CYString *value_;
-        } names[] = {
-            {"architecture", &parsed->architecture_},
-            {"icon", &parsed->icon_},
-            {"depiction", &parsed->depiction_},
-            {"homepage", &parsed->homepage_},
-            {"website", &website},
-            {"bugs", &bugs},
-            {"support", &parsed->support_},
-            {"author", &parsed->author_},
-            {"md5sum", &parsed->md5sum_},
-        };
-        
-        for (size_t i(0); i != sizeof(names) / sizeof(names[0]); ++i) {
-            const char *start, *end;
-            
-            if (parser->Find(names[i].name_, start, end)) {
-                CYString &value(*names[i].value_);
-                _profile(Package$parse$Value)
-                value.set(pool_, start, end - start);
-                _end
-            }
-        }
-        _end
-        
-        _profile(Package$parse$Tagline)
-        const char *start, *end;
-        if (parser->ShortDesc(start, end)) {
-            const char *stop(reinterpret_cast<const char *>(memchr(start, '\n', end - start)));
-            if (stop == NULL)
-                stop = end;
-            while (stop != start && stop[-1] == '\r')
-                --stop;
-            parsed->tagline_.set(pool_, start, stop - start);
-        }
-        _end
-        
-        _profile(Package$parse$Retain)
-        if (parsed->homepage_.empty())
-            parsed->homepage_ = website;
-        if (parsed->homepage_ == parsed->depiction_)
-            parsed->homepage_.clear();
-        if (parsed->support_.empty())
-            parsed->support_ = bugs;
-        _end
-        _end
-    } }
-
-- (Package *) initWithVersion:(pkgCache::VerIterator)version withZone:(NSZone *)zone inPool:(CYPool *)pool database:(Database *)database {
+- (Package *) initWithVersion:(pkgCache::VerIterator)version
+                     withZone:(NSZone *)zone
+                       inPool:(CYPool *)pool
+                     database:(Database *)database {
     if ((self = [super init]) != nil) {
         _profile(Package$initWithVersion)
         if (pool == NULL)
@@ -214,6 +31,8 @@
             pool_ = pool;
             pooled_ = true;
         }
+        
+        _package = [[APTPackage alloc] initWithVersionIterator:version];
         
         database_ = database;
         era_ = [database era];
@@ -331,7 +150,7 @@
     pkgCache::VerIterator version;
     
     _profile(Package$packageWithIterator$GetCandidateVer)
-    version = [database policy]->GetCandidateVer(iterator);
+    version = [database.policy versionIteratorForPackage:iterator];
     _end
     
     if (version.end())
@@ -358,6 +177,196 @@
     
     return package;
 }
+
+
+- (NSString *) description {
+    return [NSString stringWithFormat:@"<Package:%@>", static_cast<NSString *>(name_)];
+}
+
+- (void) dealloc {
+    if (!pooled_)
+        delete pool_;
+    if (parsed_ != NULL)
+        delete parsed_;
+    [super dealloc];
+}
+
++ (NSString *) webScriptNameForSelector:(SEL)selector {
+    if (false);
+    else if (selector == @selector(clear))
+        return @"clear";
+    else if (selector == @selector(getField:))
+        return @"getField";
+    else if (selector == @selector(getRecord))
+        return @"getRecord";
+    else if (selector == @selector(hasTag:))
+        return @"hasTag";
+    else if (selector == @selector(install))
+        return @"install";
+    else if (selector == @selector(remove))
+        return @"remove";
+    else
+        return nil;
+}
+
++ (BOOL) isSelectorExcludedFromWebScript:(SEL)selector {
+    return [self webScriptNameForSelector:selector] == nil;
+}
+
++ (NSArray *) _attributeKeys {
+    return [NSArray arrayWithObjects:
+            @"applications",
+            @"architecture",
+            @"author",
+            @"depiction",
+            @"essential",
+            @"homepage",
+            @"icon",
+            @"id",
+            @"installed",
+            @"latest",
+            @"longDescription",
+            @"longSection",
+            @"maintainer",
+            @"md5sum",
+            @"mode",
+            @"name",
+            @"purposes",
+            @"relations",
+            @"section",
+            @"selection",
+            @"shortDescription",
+            @"shortSection",
+            @"simpleSection",
+            @"size",
+            @"source",
+            @"state",
+            @"support",
+            @"tags",
+            @"upgraded",
+            @"warnings",
+            nil];
+}
+
+- (NSArray *) attributeKeys {
+    return [[self class] _attributeKeys];
+}
+
++ (BOOL) isKeyExcludedFromWebScript:(const char *)name {
+    return ![[self _attributeKeys] containsObject:[NSString stringWithUTF8String:name]] && [super isKeyExcludedFromWebScript:name];
+}
+
+- (NSArray *) relations {
+    @synchronized (database_) {
+        NSMutableArray *relations([NSMutableArray arrayWithCapacity:16]);
+        for (pkgCache::DepIterator dep(version_.DependsList()); !dep.end(); ++dep)
+            [relations addObject:[[[CydiaRelation alloc] initWithIterator:dep] autorelease]];
+        return relations;
+    } }
+
+- (NSString *) architecture {
+    [self parse];
+    @synchronized (database_) {
+        return parsed_->architecture_.empty() ? [NSNull null] : (id) parsed_->architecture_;
+    } }
+
+- (NSString *) getField:(NSString *)name {
+    @synchronized (database_) {
+        if ([database_ era] != era_ || file_.end())
+            return nil;
+        
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
+        const char *start, *end;
+        if (!parser->Find([name UTF8String], start, end))
+            return (NSString *) [NSNull null];
+        
+        return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
+    } }
+
+- (NSString *) getRecord {
+    @synchronized (database_) {
+        if ([database_ era] != era_ || file_.end())
+            return nil;
+        
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
+        
+        const char *start, *end;
+        parser->GetRec(start, end);
+        
+        return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
+    } }
+
+- (void) parse {
+    if (parsed_ != NULL)
+        return;
+    @synchronized (database_) {
+        if ([database_ era] != era_ || file_.end())
+            return;
+        
+        ParsedPackage *parsed(new ParsedPackage);
+        parsed_ = parsed;
+        
+        _profile(Package$parse)
+        pkgRecords::Parser *parser;
+        
+        _profile(Package$parse$Lookup)
+        parser = [database_.packageRecords lookUpVersionFileIterator:file_];
+        _end
+        
+        CYString bugs;
+        CYString website;
+        
+        _profile(Package$parse$Find)
+        struct {
+            const char *name_;
+            CYString *value_;
+        } names[] = {
+            {"architecture", &parsed->architecture_},
+            {"icon", &parsed->icon_},
+            {"depiction", &parsed->depiction_},
+            {"homepage", &parsed->homepage_},
+            {"website", &website},
+            {"bugs", &bugs},
+            {"support", &parsed->support_},
+            {"author", &parsed->author_},
+            {"md5sum", &parsed->md5sum_},
+        };
+        
+        for (size_t i(0); i != sizeof(names) / sizeof(names[0]); ++i) {
+            const char *start, *end;
+            
+            if (parser->Find(names[i].name_, start, end)) {
+                CYString &value(*names[i].value_);
+                _profile(Package$parse$Value)
+                value.set(pool_, start, end - start);
+                _end
+            }
+        }
+        _end
+        
+        _profile(Package$parse$Tagline)
+        const char *start, *end;
+        if (parser->ShortDesc(start, end)) {
+            const char *stop(reinterpret_cast<const char *>(memchr(start, '\n', end - start)));
+            if (stop == NULL)
+                stop = end;
+            while (stop != start && stop[-1] == '\r')
+                --stop;
+            parsed->tagline_.set(pool_, start, stop - start);
+        }
+        _end
+        
+        _profile(Package$parse$Retain)
+        if (parsed->homepage_.empty())
+            parsed->homepage_ = website;
+        if (parsed->homepage_ == parsed->depiction_)
+            parsed->homepage_.clear();
+        if (parsed->support_.empty())
+            parsed->support_ = bugs;
+        _end
+        _end
+    } }
+
 
 - (pkgCache::PkgIterator) iterator {
     return iterator_;
@@ -422,7 +431,7 @@
         if ([database_ era] != era_ || file_.end())
             return nil;
         
-        pkgRecords::Parser *parser = &[database_ records]->Lookup(file_);
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         const std::string &maintainer(parser->Maintainer());
         return maintainer.empty() ? nil : [MIMEAddress addressWithString:[NSString stringWithUTF8String:maintainer.c_str()]];
     } }
@@ -444,7 +453,7 @@
         if ([database_ era] != era_ || file_.end())
             return nil;
         
-        pkgRecords::Parser *parser = &[database_ records]->Lookup(file_);
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         NSString *description([NSString stringWithUTF8String:parser->LongDesc().c_str()]);
         
         NSArray *lines = [description componentsSeparatedByString:@"\n"];
@@ -466,10 +475,10 @@
         return static_cast<NSString *>(parsed_->tagline_);
     
     @synchronized (database_) {
-        pkgRecords::Parser &parser([database_ records]->Lookup(file_));
+        pkgRecords::Parser *parser = [database_.packageRecords lookUpVersionFileIterator:file_];
         
         const char *start, *end;
-        if (!parser.ShortDesc(start, end))
+        if (!parser->ShortDesc(start, end))
             return nil;
         
         if (end - start > 200)
@@ -550,7 +559,8 @@
 }
 
 - (BOOL) broken {
-    return [database_ cache][iterator_].InstBroken();
+    pkgCacheFile &cache = *database_.cacheFile.cacheFile;
+    return cache[iterator_].InstBroken();
 }
 
 - (BOOL) unfiltered {
@@ -603,7 +613,8 @@
         if ([database_ era] != era_ || iterator_.end())
             return NO;
         
-        pkgDepCache::StateCache &state([database_ cache][iterator_]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
+        pkgDepCache::StateCache &state = cache[iterator_];
         return state.Mode != pkgDepCache::ModeKeep;
     } }
 
@@ -612,7 +623,8 @@
         if ([database_ era] != era_ || iterator_.end())
             return nil;
         
-        pkgDepCache::StateCache &state([database_ cache][iterator_]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
+        pkgDepCache::StateCache &state = cache[iterator_];
         
         switch (state.Mode) {
             case pkgDepCache::ModeDelete:
@@ -1007,10 +1019,10 @@
         if ([database_ era] != era_ || file_.end())
             return;
         
-        pkgProblemResolver *resolver = [database_ resolver];
-        resolver->Clear(iterator_);
+        APTPackageProblemResolver *problemResolver = database_.problemResolver;
+        [problemResolver clearPackage:self.package];
         
-        pkgCacheFile &cache([database_ cache]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetReInstall(iterator_, false);
         cache->MarkKeep(iterator_, false);
     } }
@@ -1020,11 +1032,11 @@
         if ([database_ era] != era_ || file_.end())
             return;
         
-        pkgProblemResolver *resolver = [database_ resolver];
-        resolver->Clear(iterator_);
-        resolver->Protect(iterator_);
+        APTPackageProblemResolver *problemResolver = database_.problemResolver;
+        [problemResolver clearPackage:self.package];
+        [problemResolver protectPackage:self.package];
         
-        pkgCacheFile &cache([database_ cache]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetCandidateVersion(version_);
         cache->SetReInstall(iterator_, false);
         cache->MarkInstall(iterator_, false);
@@ -1043,12 +1055,12 @@
         if ([database_ era] != era_ || file_.end())
             return;
         
-        pkgProblemResolver *resolver = [database_ resolver];
-        resolver->Clear(iterator_);
-        resolver->Remove(iterator_);
-        resolver->Protect(iterator_);
+        APTPackageProblemResolver *problemResolver = database_.problemResolver;
+        [problemResolver clearPackage:self.package];
+        [problemResolver removePackage:self.package];
+        [problemResolver protectPackage:self.package];
         
-        pkgCacheFile &cache([database_ cache]);
+        pkgCacheFile &cache = *database_.cacheFile.cacheFile;
         cache->SetReInstall(iterator_, false);
         cache->MarkDelete(iterator_, true);
     } }

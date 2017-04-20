@@ -10,6 +10,7 @@
 
 @interface Platform : NSObject
 
++ (BOOL)isRelease;
 + (BOOL)isSandboxed;
 + (BOOL)shouldWaitForDebugger;
 @end

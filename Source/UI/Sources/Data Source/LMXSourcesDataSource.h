@@ -5,11 +5,11 @@
 //  Created on 12/5/16.
 //
 
-@class LMXAPTSource;
+@class APTSource;
 
 @interface LMXSourcesDataSource : NSObject <UITableViewDataSource>
 
-@property (nonnull) NSArray <LMXAPTSource *> *sources;
+@property (nonnull) NSArray <APTSource *> *sources;
 
 - (void)configureTableWithCellIdentifiers:(nonnull UITableView *)tableView;
 

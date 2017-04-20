@@ -6,7 +6,7 @@
 //
 
 #import "LMXSourceCell.h"
-#import "LMXAPTSource.h"
+#import "APTSource.h"
 
 @interface LMXSourceCell ()
 
@@ -96,7 +96,7 @@
 
 // MARK: - Property Setters
 
-- (void)setSource:(LMXAPTSource *)source {
+- (void)setSource:(APTSource *)source {
     if (!source) {
         return;
     }

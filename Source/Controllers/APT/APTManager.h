@@ -8,17 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
-@class LMXAPTSource;
-
+@class APTSource;
 @interface APTManager : NSObject
+
+@property (class, nonatomic) BOOL debugMode;
 
 + (instancetype)sharedInstance;
 - (void)setup;
 
-- (NSArray <LMXAPTSource *> *)readSourcesWithError:(NSError **)error;
+- (NSArray <APTSource *> *)readSourcesWithError:(NSError **)error;
 
 // MARK: - Debug
 
++ (void)clearAPTState;
 - (BOOL)performUpdate;
 
 @end

@@ -519,7 +519,7 @@
 // MARK: - Actions for Source Cell
 
 - (void)shareRepo:(Source *)source {
-    NSString *repoUrl = source.rooturi;
+    NSString *repoUrl = source.rootURI;
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[ repoUrl ] applicationActivities:nil];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self presentViewController:activityVC animated:YES completion:nil];

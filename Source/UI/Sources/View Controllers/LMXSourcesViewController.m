@@ -10,7 +10,7 @@
 #import "LMXSourcesDataSource.h"
 #import "LMXDevice.h"
 #import "APTSourcesManager.h"
-
+#import "APTSourceList.h"
 
 static NSString * const kSourceCellIdentifier = @"kSourceCellIdentifier";
 
@@ -308,6 +308,25 @@ typedef enum : NSUInteger {
     [self.tableView reloadData];
 }
 
+// MARK: - Refresh Sources
+
+
+- (void)refreshSources {    
+    APTSourceList *list = APTSourceList.main;
+    [list performUpdateInBackgroundWithCompletion:^(BOOL success, NSArray<NSError *> * _Nonnull errors) {
+        if (!success) {
+            NSLog(@"Loading sources errors: %@", errors);
+            return;
+        }
+        
+        NSLog(@"Finish refreshing sources");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.dataSource reloadData];
+            [self.tableView reloadData];
+        });
+    }];
+}
+
 // MARK: - Button Taps
 
 - (void)editTapped {
@@ -329,7 +348,7 @@ typedef enum : NSUInteger {
 }
 
 - (void)refreshTapped {
-    [self addSourceTapped];
+    [self refreshSources];
 }
 
 @end

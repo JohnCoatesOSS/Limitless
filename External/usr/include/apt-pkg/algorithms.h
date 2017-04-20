@@ -76,7 +76,7 @@ private:
    pkgSimulate(pkgDepCache *Cache);
 };
 									/*}}}*/
-class pkgProblemResolver						/*{{{*/
+class APT_DEPRECATED pkgProblemResolver						/*{{{*/
 {
    pkgDepCache &Cache;
    typedef pkgCache::PkgIterator PkgIterator;

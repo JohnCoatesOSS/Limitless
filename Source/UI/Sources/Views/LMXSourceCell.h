@@ -5,11 +5,11 @@
 //  Created on 12/5/16.
 //
 
-@class LMXAPTSource;
+@class APTSource;
 
 @interface LMXSourceCell : UITableViewCell
 
-@property (nullable, nonatomic) LMXAPTSource *source;
+@property (nullable, nonatomic) APTSource *source;
 @property (nonatomic) BOOL allSources;
 
 @end

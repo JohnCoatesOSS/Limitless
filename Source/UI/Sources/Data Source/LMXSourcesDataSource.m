@@ -8,7 +8,7 @@
 #import "LMXSourcesDataSource.h"
 #import "LMXSourceCell.h"
 #import "APTManager.h"
-#import "LMXAPTSource.h"
+#import "APTSource.h"
 
 @interface LMXSourcesDataSource ()
 
@@ -85,7 +85,7 @@ typedef enum : NSUInteger {
         return cell;
     }
     
-    LMXAPTSource *source = self.sources[indexPath.row];
+    APTSource *source = self.sources[indexPath.row];
     cell.source = source;
     
     return cell;
@@ -109,7 +109,7 @@ typedef enum : NSUInteger {
         return FALSE;
     }
     
-    LMXAPTSource *source = self.sources[indexPath.row];
+    APTSource *source = self.sources[indexPath.row];
     NSString *host = source.releaseBaseURL.host.lowercaseString;
     if ([host isEqualToString:@"apt.saurik.com"]) {
         return FALSE;
