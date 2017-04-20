@@ -43,14 +43,6 @@
     }
     [self updateExternalKeepAliveStatus:NO];
     [self setUpLegacyGlobals];
-    
-    if ([Device isSimulator]) {
-        setenv("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin", true);
-        unsetenv("DYLD_ROOT_PATH");
-        unsetenv("DYLD_INSERT_LIBRARIES");
-        unsetenv("DYLD_LIBRARY_PATH");
-        
-    }
 }
 
 #pragma mark - Logging

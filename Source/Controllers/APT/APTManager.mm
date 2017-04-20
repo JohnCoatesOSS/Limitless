@@ -116,6 +116,15 @@
     _config->Set("Dir::Bin::gpg", "/usr/local/bin/gpgv");
     _config->Set("Dir::Bin::lzma", "/usr/local/bin/lzma");
     _config->Set("Dir::Bin::bzip2", "/usr/bin/bzip2");
+    
+    [self fixMethodsNotRunningInSimulator];
+}
+
+- (void)fixMethodsNotRunningInSimulator {
+    setenv("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin", true);
+    unsetenv("DYLD_ROOT_PATH");
+    unsetenv("DYLD_INSERT_LIBRARIES");
+    unsetenv("DYLD_LIBRARY_PATH");
 }
 
 - (void)sandboxSetup {
