@@ -10,6 +10,7 @@
 #import "Apt.h"
 #import "Package.h"
 #import "CydiaScript.h"
+#import "APTCacheFile-Private.h"
 
 bool DepSubstrate(const pkgCache::VerIterator &iterator) {
     if (!iterator.end())
@@ -87,9 +88,11 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
         
         bool remove(false);
         
-        pkgCacheFile &cache([database_ cache]);
+        APTCacheFile *cacheFile = database.cacheFile;
+        pkgCacheFile &cache = *cacheFile.cacheFile;
+//        pkgCacheFile &cache([database_ cache]);
         NSArray *packages([database_ packages]);
-        pkgDepCache::Policy *policy([database_ policy]);
+        APTDependencyCachePolicy *policy = database.policy;
         
         issues_ = [NSMutableArray arrayWithCapacity:4];
         
@@ -204,7 +207,7 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                 [removes addObject:name];
             }
             
-            substrate_ |= DepSubstrate(policy->GetCandidateVer(iterator));
+            substrate_ |= [policy packageDependsOnMobileSubstrate:iterator];
             substrate_ |= DepSubstrate(iterator.CurrentVer());
         }
         
@@ -245,10 +248,10 @@ bool DepSubstrate(const pkgCache::VerIterator &iterator) {
                     removes, @"removes",
                     nil];
         
-        sizes_ = [NSDictionary dictionaryWithObjectsAndKeys:
-                  [NSNumber numberWithInteger:[database_ fetcher].FetchNeeded()], @"downloading",
-                  [NSNumber numberWithInteger:[database_ fetcher].PartialPresent()], @"resuming",
-                  nil];
+        sizes_ = @{
+                  @"downloading": @(database_.downloadScheduler.bytesDownloading),
+                  @"resuming": @(database_.downloadScheduler.bytesDownloaded)
+                  };
         
         [self setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/#!/confirm/", UI_]]];
     } return self;

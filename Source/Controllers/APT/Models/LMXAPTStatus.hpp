@@ -7,13 +7,29 @@
 #import "Apt.h"
 #import "CancelStatus.hpp"
 
+typedef enum : NSUInteger {
+    LMXAptStatusUpdateLoading,
+    LMXAptStatusUpdateFinished,
+    LMXAptStatusUpdateFailed
+    
+} LMXAptStatusUpdate;
+
+typedef void (^LMXStatusUpdateBlock)(NSURL *url, LMXAptStatusUpdate status);
+
 class LMXAptStatus : public CancelStatus {
 private:
     NSObject *delegate_;
     
 public:
+    LMXStatusUpdateBlock _updateBlock;
+    
     LMXAptStatus() {
         delegate_ = nil;
+        _updateBlock = nil;
+    }
+    
+    void setUpdateBlock(LMXStatusUpdateBlock block) {
+        _updateBlock = block;
     }
     
     void setDelegate(NSObject *delegate) {
@@ -21,16 +37,28 @@ public:
     }
     
     virtual void Fetch(pkgAcquire::ItemDesc &desc) {
-        NSString *name = @(desc.ShortDesc.c_str());
-        NSLog(@"fetch: %@", name);
+        NSString *urlString = @(desc.URI.c_str());
+        NSURL *url = [NSURL URLWithString:urlString];
+        if (_updateBlock) {
+            _updateBlock(url, LMXAptStatusUpdateLoading);
+        }
+        NSLog(@"fetching: %@", url);
+//        NSString *name = @(desc.ShortDesc.c_str());
+//        NSLog(@"fetch: %@", name);
 //        NSString *name([NSString stringWithUTF8String:desc.ShortDesc.c_str()]);
 //        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithFormat:UCLocalize("DOWNLOADING_"), name] ofType:kCydiaProgressEventTypeStatus forItemDesc:desc]);
 //        [delegate_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
     }
     
     virtual void Done(pkgAcquire::ItemDesc &desc) {
-        NSString *name = @(desc.ShortDesc.c_str());
-        NSLog(@"done: %@", name);
+        NSString *urlString = @(desc.URI.c_str());
+        NSURL *url = [NSURL URLWithString:urlString];
+        if (_updateBlock) {
+            _updateBlock(url, LMXAptStatusUpdateFinished);
+        }
+        NSLog(@"done: %@", url);
+//        NSString *name = @(desc.ShortDesc.c_str());
+//        NSLog(@"done: %@", name);
 //        NSString *name([NSString stringWithUTF8String:desc.ShortDesc.c_str()]);
 //        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithFormat:Colon_, UCLocalize("DONE"), name] ofType:kCydiaProgressEventTypeStatus forItemDesc:desc]);
 //        [delegate_ performSelectorOnMainThread:@selector(addProgressEvent:) withObject:event waitUntilDone:YES];
@@ -42,6 +70,13 @@ public:
             desc.Owner->Status == pkgAcquire::Item::StatDone
             )
             return;
+        
+        NSString *urlString = @(desc.URI.c_str());
+        NSURL *url = [NSURL URLWithString:urlString];
+        if (_updateBlock) {
+            _updateBlock(url, LMXAptStatusUpdateFailed);
+        }
+        NSLog(@"fail: %@", url);
         
         std::string &error(desc.Owner->ErrorText);
         if (error.empty()) {
@@ -57,10 +92,10 @@ public:
     }
     
     virtual bool Pulse_(pkgAcquire *Owner) {
-        double percent(
-                       double(CurrentBytes + CurrentItems) /
-                       double(TotalBytes + TotalItems)
-                       );
+//        double percent(
+//                       double(CurrentBytes + CurrentItems) /
+//                       double(TotalBytes + TotalItems)
+//                       );
         
 //        [delegate_ performSelectorOnMainThread:@selector(setProgressStatus:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
 //                                                                                         [NSNumber numberWithDouble:percent], @"Percent",

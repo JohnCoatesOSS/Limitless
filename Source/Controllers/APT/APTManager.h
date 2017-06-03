@@ -8,15 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+@class APTSource;
 @interface APTManager : NSObject
+
+@property (class, nonatomic) BOOL debugMode;
 
 + (instancetype)sharedInstance;
 - (void)setup;
 
-- (NSArray *)readSourcesWithError:(NSError **)error;
+- (NSArray <APTSource *> *)readSourcesWithError:(NSError **)error;
 
 // MARK: - Debug
 
-- (BOOL)performUpdate;
++ (void)clearAPTState;
 
 @end

@@ -6,10 +6,13 @@
 //
 
 #ifdef __OBJC__
+
+#define CYDIA_LEGACY_COMPATIBILITY
 #import <Compatibility/macOSToiOSBridge.h>
 #import "Device.h"
 #import "Platform.h"
 #import "NSError+Limitless.h"
+#import "LMXTheme.h"
 #endif
 
 #ifndef _assert

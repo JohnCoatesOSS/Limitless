@@ -30,7 +30,14 @@
 #import "GeneralGlobals.h"
 
 void CydiaWriteSources() {
-    NSString *sourcesListPath = [Paths.aptEtc subpath:@"sources.list"];
+    NSString *sourcesDirectory;
+    NSString *sourcesListPath;
+    if ([Platform isSandboxed]) {
+        sourcesDirectory = Paths.aptEtcSourceParts;
+    } else {
+        sourcesDirectory = Paths.aptState;
+    }
+    sourcesListPath = [sourcesDirectory subpath:@"sources.list"];
     const char *sourcesListPathCString = sourcesListPath.UTF8String;
     unlink(sourcesListPathCString);
     FILE *file(fopen(sourcesListPathCString, "w"));

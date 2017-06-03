@@ -79,6 +79,7 @@ static PackageValue *PackageFind(const char *name, size_t length, bool *fail = N
     return metadata;
 }
 
+#if !__has_feature(objc_arc)
 static inline void PackageImport(const void *key, const void *value, void *context) {
     bool &fail(*reinterpret_cast<bool *>(context));
     
@@ -121,6 +122,7 @@ static inline void PackageImport(const void *key, const void *value, void *conte
             }
     }
 }
+#endif
 
 static inline void SaveConfig(NSObject *lock) {
     @synchronized (lock) {

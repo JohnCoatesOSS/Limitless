@@ -1,23 +1,53 @@
 //
-//  LMXAPTSource+APTLib
+//  APTSource.m
 //  Limitless
 //
 //  Created on 12/5/16.
 //
 
-#import "LMXAPTSource+APTLib.h"
+#import "Apt.h"
+#import "APTSource-Private.h"
 
-@implementation LMXAPTSource (APTLib)
+@interface APTSource ()
 
-- (instancetype)initWithMetaIndex:(metaIndex *)metaIndex {
+@property metaIndex *metaIndex;
+
+@end
+
+@implementation APTSource
+
+- (instancetype)init {
     self = [super init];
 
     if (self) {
-        [self hydrateWithMetaIndex:metaIndex];
+
     }
 
     return self;
 }
+
+- (instancetype)initWithMetaIndex:(metaIndex *)metaIndex {
+    self = [super init];
+    
+    if (self) {
+        _metaIndex = metaIndex;
+        [self hydrateWithMetaIndex:metaIndex];
+    }
+    
+    return self;
+}
+
+// MARK: - Debugging
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@ %@ %@>",
+            NSStringFromClass([self class]),
+            self.name,
+            self.origin
+            ];
+}
+
+// MARK: - Private
 
 - (void)hydrateWithMetaIndex:(nonnull metaIndex *)metaIndex {
     self.isTrusted = metaIndex->IsTrusted();
@@ -31,9 +61,13 @@
     string type = metaIndex->GetType();
     self.type = @(type.c_str());
     
+    NSLog(@"uri: %@, distribution: %@, type: %@", self.uri, self.distribution, self.type);
+    
     debReleaseIndex *releaseIndex = dynamic_cast<debReleaseIndex *>(metaIndex);
     if (releaseIndex) {
         [self hydrateWithReleaseIndex:releaseIndex];
+    } else {
+        NSLog(@"Couldn't cast to release index");
     }
     
     self.host = self.uri.host.lowercaseString;
@@ -47,7 +81,7 @@
 - (void)hydrateWithReleaseIndex:(nonnull debReleaseIndex *)releaseIndex {
     string baseURI = releaseIndex->MetaIndexURI("");
     self.releaseBaseURL = [NSURL URLWithString:@(baseURI.c_str())];
-    self.files = [self filesAssociatedWithReleaseIndex:releaseIndex];
+    self.associatedURLs = [self urlsAssociatedWithReleaseIndex:releaseIndex];
     
     FileFd fileDescriptor;
     string releaseFile = releaseIndex->MetaIndexFile("Release");
@@ -55,7 +89,11 @@
     
     if (!fileOpened) {
         NSLog(@"Couldn't open release meta index at %s", releaseFile.c_str());
-        _error->Discard();
+        NSError *error = [APTErrorController popError];
+        if (error) {
+            NSLog(@"Meta index error: %@", error);
+        }
+        
         return;
     }
     
@@ -65,7 +103,7 @@
     
     self.icon = [self urlFromTagSection:&section tag:@"default-icon"];
     self.depiction = [self urlFromTagSection:&section tag:@"depiction"];
-    self.descriptionURL = [self urlFromTagSection:&section tag:@"description"];
+    self.shortDescription = [self stringFromTagSection:&section tag:@"description"];
     self.name = [self stringFromTagSection:&section tag:@"label"];
     self.origin = [self urlFromTagSection:&section tag:@"origin"];
     self.support = [self stringFromTagSection:&section tag:@"support"];
@@ -87,37 +125,48 @@
                                tag:(NSString *)tag {
     string tagValue = section->FindS(tag.UTF8String);
     if (tagValue.empty()) {
-        NSLog(@"No tag for %@", tag);
         return nil;
     } else {
-        NSLog(@"tag for section %@: %s",tag, tagValue.c_str());
         return @(tagValue.c_str());
     }
 }
 
-- (NSArray *)filesAssociatedWithReleaseIndex:(nonnull debReleaseIndex*)releaseIndex {
+- (NSArray *)urlsAssociatedWithReleaseIndex:(nonnull debReleaseIndex*)releaseIndex {
     pkgAcquire acquire;
     bool getAllIndexes = true;
     releaseIndex->GetIndexes(&acquire, getAllIndexes);
     
     pkgAcquire::ItemIterator itemIndex = acquire.ItemsBegin();
-    NSMutableArray *files = [NSMutableArray new];
+    NSMutableArray *urls = [NSMutableArray new];
     
     for (;itemIndex != acquire.ItemsEnd(); itemIndex += 1) {
         pkgAcquire::Item *item = *itemIndex;
         string descriptionURIString = item->DescURI();
         NSString *descriptionURI = @(descriptionURIString.c_str());
-        [files addObject:descriptionURI];
-        if (![descriptionURI hasSuffix:@"/Packages.bz2"]) {
+        NSURL *url = [NSURL URLWithString:descriptionURI];
+        [urls addObject:url];
+        
+        if (![url.lastPathComponent isEqualToString:@"Packages.bz2"]) {
             continue;
         }
-        
-        NSString *noExtension = [descriptionURI stringByDeletingPathExtension];
-        [files addObject:noExtension];
-        [files addObject:[noExtension stringByAppendingPathExtension:@"gz"]];
-        [files addObject:[noExtension stringByAppendingString:@"Index"]];
+        NSURL *baseURL = [url URLByDeletingLastPathComponent];
+        [urls addObject:[baseURL URLByAppendingPathComponent:@"Packages"]];
+        [urls addObject:[baseURL URLByAppendingPathComponent:@"Packages.gz"]];
+        [urls addObject:[baseURL URLByAppendingPathComponent:@"PackagesIndex"]];
     }
-    return files;
+    return urls;
+}
+
+
+// MARK: - Computed Properties
+
+- (NSURL *)iconURL {
+    NSURL *iconURL = self.icon;
+    if (iconURL) {
+        return iconURL;
+    }
+    
+    return [self.releaseBaseURL URLByAppendingPathComponent:@"CydiaIcon.png"];
 }
 
 @end

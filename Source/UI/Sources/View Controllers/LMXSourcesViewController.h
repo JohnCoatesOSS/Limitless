@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LMXSourcesViewController : UIViewController
+@interface LMXSourcesViewController : UIViewController <UITableViewDelegate>
 
 @end

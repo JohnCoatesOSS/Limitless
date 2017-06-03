@@ -8,28 +8,302 @@
 #import "Source.h"
 #import "Profiling.hpp"
 #import "NSString+Cydia.hpp"
+#import "APTSource-Private.h"
+
+@interface Source ()
+
+@property APTSource *modernSource;
+@property metaIndex *metaIndex;
+@property Database *database;
+@property int databaseEra;
+@property BOOL trusted;
+@property NSString *distribution;
+@property NSString *depiction;
+@property NSString *shortDescription;
+@property (nonatomic) NSString *label;
+@property NSString *origin;
+@property NSString *support;
+@property NSString *version;
+@property NSString *defaultIcon;
+@property NSString *authority;
+@property NSString *host;
+@property NSString *type;
+@property NSString *base;
+@property (retain, strong) NSMutableDictionary *record;
+@property (retain, strong) NSString *uri;
+@property (retain, strong) NSArray<NSURL *> *associatedURLs;
+@property NSSet<NSURL *> *urlsPendingFetch;
+
+@end
 
 @implementation Source
 
-+ (NSString *) webScriptNameForSelector:(SEL)selector {
-    if (false);
-    else if (selector == @selector(addSection:))
-        return @"addSection";
-    else if (selector == @selector(getField:))
-        return @"getField";
-    else if (selector == @selector(removeSection:))
-        return @"removeSection";
-    else if (selector == @selector(remove))
-        return @"remove";
-    else
-        return nil;
+// MARK: - Init
+
+- (Source *)initWithMetaIndex:(metaIndex *)index
+                   forDatabase:(Database *)database
+                        inPool:(CYPool *)pool {
+    if ((self = [super init]) != nil) {
+        _modernSource = [[APTSource alloc] initWithMetaIndex:index];
+        _databaseEra = [database era];
+        _database = database;
+        _metaIndex = index;
+        _urlsPendingFetch = [NSSet set];
+        
+        [self setMetaIndex:index inPool:pool];
+    } return self;
 }
 
-+ (BOOL) isSelectorExcludedFromWebScript:(SEL)selector {
+// MARK: - Setup
+
+- (void) setMetaIndex:(metaIndex *)index
+               inPool:(CYPool *)pool {
+    APTSource *modernSource = self.modernSource;
+    self.trusted = modernSource.isTrusted;
+    self.uri = modernSource.uri.absoluteString;
+    self.distribution = modernSource.distribution;
+    self.type = modernSource.type;
+    self.base = modernSource.releaseBaseURL.absoluteString;
+    self.associatedURLs = modernSource.associatedURLs;
+    
+    self.depiction = modernSource.depiction.absoluteString;
+    self.defaultIcon = modernSource.icon.absoluteString;
+    self.shortDescription = modernSource.shortDescription;
+    self.label = modernSource.name;
+    self.origin = modernSource.origin.absoluteString;
+    self.support = modernSource.support;
+    self.version = modernSource.version;
+    
+    self.record = [Sources_ objectForKey:self.key];
+    
+    self.authority = modernSource.authority;
+    self.host = modernSource.host;
+}
+
+// MARK: - Accessing Fields
+
+- (NSString *)getField:(NSString *)name {
+    @synchronized (self.database) {
+        BOOL sameDatabaseVersion = [self.database era] == self.databaseEra;
+        if (!sameDatabaseVersion || self.metaIndex == NULL) {
+            return nil;
+        }
+        
+        debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(self.metaIndex));
+        if (dindex == NULL) {
+            return nil;
+        }
+        
+        FileFd fd;
+        if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly)) {
+            _error->Discard();
+            return nil;
+        }
+        
+        pkgTagFile tags(&fd);
+        
+        pkgTagSection section;
+        tags.Step(section);
+        
+        const char *start, *end;
+        if (!section.Find([name UTF8String], start, end)) {
+            return (NSString *) [NSNull null];
+        }
+        return [NSString stringWithUTF8Bytes:start length:end - start];
+    }
+}
+
+// MARK: - Relative URLs
+
+- (NSString *)depictionForPackage:(NSString *)package {
+    if (!self.depiction || self.depiction.length == 0) {
+        return nil;
+    }
+    return [self.depiction stringByReplacingOccurrencesOfString:@"*"
+                                                withString:package];
+}
+
+- (NSString *)supportForPackage:(NSString *)package {
+    if (!self.support || self.support.length == 0) {
+        return nil;
+    }
+    
+    return [self.support stringByReplacingOccurrencesOfString:@"*"
+                                                     withString:package];
+}
+
+// MARK: - Deletion
+
+- (void)_remove {
+    [Sources_ removeObjectForKey:self.key];
+}
+
+- (BOOL)remove {
+    BOOL value = self.record != nil;
+    [self performSelectorOnMainThread:@selector(_remove)
+                           withObject:nil waitUntilDone:NO];
+    return value;
+}
+
+// MARK: - Property Accessors
+
+- (NSString *)rootURI {
+    return self.uri;
+}
+
+- (NSURL *)iconURL {
+    if (NSString *uri = [self iconuri])
+        return [NSURL URLWithString:uri];
+    return nil;
+}
+
+- (NSString *)key {
+    return [NSString stringWithFormat:@"%@:%@:%@",
+            self.type, self.uri, self.distribution];
+}
+
+- (NSString *)name {
+    if (self.origin.length == 0) {
+        return self.authority;
+    }
+    
+    return self.origin;
+}
+
+- (NSString *)label {
+    if (_label.length == 0) {
+        return self.authority;
+    } else {
+        return _label;
+    }
+}
+
+// MARK: - Fetching
+
+- (BOOL)fetch {
+    return self.urlsPendingFetch.count > 0;
+}
+
+- (void)setFetch:(BOOL)shouldAddToPending forURI:(const char *)uri {
+    NSURL *url = [NSURL URLWithString:@(uri)];
+    BOOL isAssociatedURL = [self.associatedURLs containsObject:url];
+    if (!shouldAddToPending) {
+        BOOL containsURL = [self.urlsPendingFetch containsObject:url];
+        if (!containsURL) {
+            return;
+        }
+        
+        NSMutableSet *mutableURLs = self.urlsPendingFetch.mutableCopy;
+        [mutableURLs removeObject:url];
+        self.urlsPendingFetch = mutableURLs;
+    } else if (!isAssociatedURL) {
+        return;
+    } else if (shouldAddToPending) {
+        if ([self.urlsPendingFetch containsObject:url]) {
+            return;
+        }
+        
+        NSMutableSet *mutableURLs = self.urlsPendingFetch.mutableCopy;
+        [mutableURLs addObject:url];
+        self.urlsPendingFetch = mutableURLs;
+    }
+    
+    [self.delegate performSelectorOnMainThread:@selector(setFetch:)
+                                withObject:@([self fetch])
+                             waitUntilDone:NO];
+}
+
+- (void)resetFetch {
+    self.urlsPendingFetch = [NSSet set];
+    [self.delegate performSelectorOnMainThread:@selector(setFetch:)
+                                    withObject:@(FALSE) waitUntilDone:NO];
+}
+
+// MARK: - Sections
+
+- (NSArray *)sections {
+    if (!self.record) {
+        return (id) [NSNull null];
+    }
+    
+    NSArray *sections = self.record[@"Sections"];
+    if (!sections) {
+        return @[];
+    }
+    
+    return sections;
+}
+
+- (void)_addSection:(NSString *)section {
+    if (!self.record) {
+        return;
+    }
+    
+    NSMutableArray *sections = self.record[@"Sections"];
+    if (sections) {
+        if (![sections containsObject:section]) {
+            [sections addObject:section];
+        }
+    } else {
+        self.record[@"Sections"] = @[section].mutableCopy;
+    }
+    
+}
+
+- (BOOL)addSection:(NSString *)section {
+    if (!self.record) {
+        return FALSE;
+    }
+    
+    [self performSelectorOnMainThread:@selector(_addSection:)
+                           withObject:section waitUntilDone:NO];
+    return FALSE;
+}
+
+- (void)_removeSection:(NSString *)section {
+    if (!self.record) {
+        return;
+    }
+    
+    NSMutableArray *sections = self.record[@"Sections"];
+    if (sections) {
+        if ([sections containsObject:section]) {
+            [sections removeObject:section];
+        }
+    }
+}
+
+- (BOOL)removeSection:(NSString *)section {
+    if (!self.record) {
+        return FALSE;
+    }
+    
+    [self performSelectorOnMainThread:@selector(_removeSection:)
+                           withObject:section waitUntilDone:NO];
+    return true;
+}
+
+// MARK: - Exposing To Javascript
+
++ (NSString *)webScriptNameForSelector:(SEL)selector {
+    if (selector == @selector(addSection:)) {
+        return @"addSection";
+    } else if (selector == @selector(getField:)) {
+        return @"getField";
+    } else if (selector == @selector(removeSection:)) {
+        return @"removeSection";
+    } else if (selector == @selector(remove)) {
+        return @"remove";
+    } else {
+        return nil;
+    }
+}
+
++ (BOOL)isSelectorExcludedFromWebScript:(SEL)selector {
     return [self webScriptNameForSelector:selector] == nil;
 }
 
-+ (NSArray *) _attributeKeys {
++ (NSArray *)_attributeKeys {
     return [NSArray arrayWithObjects:
             @"baseuri",
             @"distribution",
@@ -48,138 +322,40 @@
             nil];
 }
 
-- (NSArray *) attributeKeys {
+- (NSArray *)attributeKeys {
     return [[self class] _attributeKeys];
 }
 
-+ (BOOL) isKeyExcludedFromWebScript:(const char *)name {
-    return ![[self _attributeKeys] containsObject:[NSString stringWithUTF8String:name]] && [super isKeyExcludedFromWebScript:name];
++ (BOOL)isKeyExcludedFromWebScript:(const char *)keyCString {
+    NSString *key = @(keyCString);
+    NSArray *attributeKeys = [self _attributeKeys];
+    BOOL keyContainedInAttributes = [attributeKeys containsObject:key];
+    BOOL superAllowsKey = [super isKeyExcludedFromWebScript:keyCString];
+    
+    return !keyContainedInAttributes && !superAllowsKey;
 }
 
-- (metaIndex *) metaIndex {
-    return index_;
+// MARK: - Javascript Only Properties
+
+- (NSString *)baseuri {
+    return self.base;
 }
 
-- (void) setMetaIndex:(metaIndex *)index inPool:(CYPool *)pool {
-    trusted_ = index->IsTrusted();
-    
-    uri_.set(pool, index->GetURI());
-    distribution_.set(pool, index->GetDist());
-    type_.set(pool, index->GetType());
-    
-    debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(index));
-    if (dindex != NULL) {
-        std::string file(dindex->MetaIndexURI(""));
-        base_.set(pool, file);
-        
-        pkgAcquire acquire;
-        _profile(Source$setMetaIndex$GetIndexes)
-        dindex->GetIndexes(&acquire, true);
-        _end
-        _profile(Source$setMetaIndex$DescURI)
-        for (pkgAcquire::ItemIterator item(acquire.ItemsBegin()); item != acquire.ItemsEnd(); item++) {
-            std::string file((*item)->DescURI());
-            files_.insert(file);
-            if (file.length() < sizeof("Packages.bz2") || file.substr(file.length() - sizeof("Packages.bz2")) != "/Packages.bz2")
-                continue;
-            file = file.substr(0, file.length() - 4);
-            files_.insert(file);
-            files_.insert(file + ".gz");
-            files_.insert(file + "Index");
-        }
-        _end
-        
-        FileFd fd;
-        if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly))
-            _error->Discard();
-        else {
-            pkgTagFile tags(&fd);
-            
-            pkgTagSection section;
-            tags.Step(section);
-            
-            struct {
-                const char *name_;
-                CYString *value_;
-            } names[] = {
-                {"default-icon", &defaultIcon_},
-                {"depiction", &depiction_},
-                {"description", &description_},
-                {"label", &label_},
-                {"origin", &origin_},
-                {"support", &support_},
-                {"version", &version_},
-            };
-            
-            for (size_t i(0); i != sizeof(names) / sizeof(names[0]); ++i) {
-                const char *start, *end;
-                
-                if (section.Find(names[i].name_, start, end)) {
-                    CYString &value(*names[i].value_);
-                    value.set(pool, start, end - start);
-                }
-            }
-        }
+- (NSString *)iconuri {
+    if (NSString *base = self.base) {
+        return [base stringByAppendingPathComponent:@"CydiaIcon.png"];
     }
     
-    record_ = [Sources_ objectForKey:[self key]];
-    
-    NSURL *url([NSURL URLWithString:uri_]);
-    
-    host_ = [url host];
-    if (host_ != nil)
-        host_ = [host_ lowercaseString];
-    
-    if (host_ != nil)
-        authority_ = host_;
-    else
-        authority_ = [url path];
+    return nil;
 }
 
-- (Source *) initWithMetaIndex:(metaIndex *)index forDatabase:(Database *)database inPool:(CYPool *)pool {
-    if ((self = [super init]) != nil) {
-        era_ = [database era];
-        database_ = database;
-        index_ = index;
-        
-        _profile(Source$initWithMetaIndex$setMetaIndex)
-        [self setMetaIndex:index inPool:pool];
-        _end
-    } return self;
-}
+// MARK: - Comparisons
 
-- (NSString *) getField:(NSString *)name {
-    @synchronized (database_) {
-        if ([database_ era] != era_ || index_ == NULL)
-            return nil;
-        
-        debReleaseIndex *dindex(dynamic_cast<debReleaseIndex *>(index_));
-        if (dindex == NULL)
-            return nil;
-        
-        FileFd fd;
-        if (!fd.Open(dindex->MetaIndexFile("Release"), FileFd::ReadOnly)) {
-            _error->Discard();
-            return nil;
-        }
-        
-        pkgTagFile tags(&fd);
-        
-        pkgTagSection section;
-        tags.Step(section);
-        
-        const char *start, *end;
-        if (!section.Find([name UTF8String], start, end))
-            return (NSString *) [NSNull null];
-        
-        return [NSString stringWithString:[(NSString *) CYStringCreate(start, end - start) autorelease]];
-    } }
-
-- (NSComparisonResult) compareByName:(Source *)source {
-    NSString *lhs = [self name];
-    NSString *rhs = [source name];
+- (NSComparisonResult)compareByName:(Source *)source {
+    NSString *lhs = self.name;
+    NSString *rhs = source.name;
     
-    if ([lhs length] != 0 && [rhs length] != 0) {
+    if (lhs.length != 0 && rhs.length != 0) {
         unichar lhc = [lhs characterAtIndex:0];
         unichar rhc = [rhs characterAtIndex:0];
         
@@ -190,157 +366,6 @@
     }
     
     return [lhs compare:rhs options:LaxCompareOptions_];
-}
-
-- (NSString *) depictionForPackage:(NSString *)package {
-    return depiction_.empty() ? nil : [static_cast<id>(depiction_) stringByReplacingOccurrencesOfString:@"*" withString:package];
-}
-
-- (NSString *) supportForPackage:(NSString *)package {
-    return support_.empty() ? nil : [static_cast<id>(support_) stringByReplacingOccurrencesOfString:@"*" withString:package];
-}
-
-- (NSArray *) sections {
-    return record_ == nil ? (id) [NSNull null] : [record_ objectForKey:@"Sections"] ?: [NSArray array];
-}
-
-- (void) _addSection:(NSString *)section {
-    if (record_ == nil)
-        return;
-    else if (NSMutableArray *sections = [record_ objectForKey:@"Sections"]) {
-        if (![sections containsObject:section])
-            [sections addObject:section];
-    } else
-        [record_ setObject:[NSMutableArray arrayWithObject:section] forKey:@"Sections"];
-}
-
-- (bool) addSection:(NSString *)section {
-    if (record_ == nil)
-        return false;
-    
-    [self performSelectorOnMainThread:@selector(_addSection:) withObject:section waitUntilDone:NO];
-    return true;
-}
-
-- (void) _removeSection:(NSString *)section {
-    if (record_ == nil)
-        return;
-    
-    if (NSMutableArray *sections = [record_ objectForKey:@"Sections"])
-        if ([sections containsObject:section])
-            [sections removeObject:section];
-}
-
-- (bool) removeSection:(NSString *)section {
-    if (record_ == nil)
-        return false;
-    
-    [self performSelectorOnMainThread:@selector(_removeSection:) withObject:section waitUntilDone:NO];
-    return true;
-}
-
-- (void) _remove {
-    [Sources_ removeObjectForKey:[self key]];
-}
-
-- (bool) remove {
-    bool value(record_ != nil);
-    [self performSelectorOnMainThread:@selector(_remove) withObject:nil waitUntilDone:NO];
-    return value;
-}
-
-- (NSDictionary *) record {
-    return record_;
-}
-
-- (BOOL) trusted {
-    return trusted_;
-}
-
-- (NSString *) rooturi {
-    return uri_;
-}
-
-- (NSString *) distribution {
-    return distribution_;
-}
-
-- (NSString *) type {
-    return type_;
-}
-
-- (NSString *) baseuri {
-    return base_.empty() ? nil : (id) base_;
-}
-
-- (NSString *) iconuri {
-    if (NSString *base = [self baseuri])
-        return [base stringByAppendingString:@"CydiaIcon.png"];
-    
-    return nil;
-}
-
-- (NSURL *) iconURL {
-    if (NSString *uri = [self iconuri])
-        return [NSURL URLWithString:uri];
-    return nil;
-}
-
-- (NSString *) key {
-    return [NSString stringWithFormat:@"%@:%@:%@", (NSString *) type_, (NSString *) uri_, (NSString *) distribution_];
-}
-
-- (NSString *) host {
-    return host_;
-}
-
-- (NSString *) name {
-    return origin_.empty() ? (id) authority_ : origin_;
-}
-
-- (NSString *) shortDescription {
-    return description_;
-}
-
-- (NSString *) label {
-    return label_.empty() ? (id) authority_ : label_;
-}
-
-- (NSString *) origin {
-    return origin_;
-}
-
-- (NSString *) version {
-    return version_;
-}
-
-- (NSString *) defaultIcon {
-    return defaultIcon_;
-}
-
-- (void) setDelegate:(NSObject<SourceDelegate> *)delegate {
-    delegate_ = delegate;
-}
-
-- (bool) fetch {
-    return !fetches_.empty();
-}
-
-- (void) setFetch:(bool)fetch forURI:(const char *)uri {
-    if (!fetch) {
-        if (fetches_.erase(uri) == 0)
-            return;
-    } else if (files_.find(uri) == files_.end())
-        return;
-    else if (!fetches_.insert(uri).second)
-        return;
-    
-    [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:[self fetch]] waitUntilDone:NO];
-}
-
-- (void) resetFetch {
-    fetches_.clear();
-    [delegate_ performSelectorOnMainThread:@selector(setFetch:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
 }
 
 @end

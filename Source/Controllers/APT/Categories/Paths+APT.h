@@ -9,6 +9,8 @@
 
 @interface Paths (APT)
 
+@property (class, readonly, nonnull) NSString *aptDirectory;
+
 @property (class, readonly, nonnull) NSString *aptState;
 @property (class, readonly, nonnull) NSString *aptStateLists;
 @property (class, readonly, nonnull) NSString *aptStateListsPartial;

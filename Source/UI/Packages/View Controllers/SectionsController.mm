@@ -17,15 +17,65 @@
 
 @implementation SectionsController
 
-- (NSURL *) navigationURL {
+// MARK: - Init
+
+- (instancetype)initWithDatabase:(Database *)database
+                          source:(Source *)source {
+    self = [super init];
+    
+    if (self) {
+        database_ = database;
+        key_ = [source key];
+    }
+    
+    return self;
+}
+
+// MARK: - View Lifecycle
+
+- (void)loadView {
+    list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
+    [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
+    [list_ setRowHeight:46];
+    [(UITableView *) list_ setDataSource:self];
+    [list_ setDelegate:self];
+    [self setView:list_];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [[self navigationItem] setTitle:UCLocalize("SECTIONS")];
+}
+
+- (void)releaseSubviews {
+    list_ = nil;
+    
+    sections_ = nil;
+    filtered_ = nil;
+    
+    [super releaseSubviews];
+}
+
+// MARK: - View Events
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [list_ deselectRowAtIndexPath:[list_ indexPathForSelectedRow] animated:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self setEditing:NO];
+}
+
+// MARK: - Navigation
+
+- (NSURL *)navigationURL {
     return [NSURL URLWithString:[NSString stringWithFormat:@"cydia://sources/%@", [key_ stringByAddingPercentEscapesIncludingReserved]]];
 }
 
-- (Source *) source {
-    if (key_ == nil)
-        return nil;
-    return [database_ sourceWithKey:key_];
-}
+// MARK: - Navigation Items
 
 - (void) updateNavigationItem {
     [[self navigationItem] setTitle:[self isEditing] ? UCLocalize("SECTION_VISIBILITY") : UCLocalize("SECTIONS")];
@@ -40,39 +90,8 @@
     }
 }
 
-- (void) setEditing:(BOOL)editing animated:(BOOL)animated {
-    [super setEditing:editing animated:animated];
-    
-    if (editing)
-        [list_ reloadData];
-    else
-        [delegate_ updateData];
-    
-    [self updateNavigationItem];
-}
 
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [list_ deselectRowAtIndexPath:[list_ indexPathForSelectedRow] animated:animated];
-}
-
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [self setEditing:NO];
-}
-
-- (Section *) sectionAtIndexPath:(NSIndexPath *)indexPath {
-    Section *section = nil;
-    int index = [indexPath row];
-    if (![self isEditing]) {
-        index -= 1;
-        if (index >= 0)
-            section = [filtered_ objectAtIndex:index];
-    } else {
-        section = [sections_ objectAtIndex:index];
-    }
-    return section;
-}
+// MARK: - Table View Data Source
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if ([self isEditing])
@@ -81,11 +100,7 @@
         return [filtered_ count] + 1;
 }
 
-/*- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
- return 45.0f;
- }*/
-
-- (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *reuseIdentifier = @"SectionCell";
     
     SectionCell *cell = (SectionCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
@@ -99,7 +114,8 @@
     return cell;
 }
 
-- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self isEditing])
         return;
     
@@ -115,38 +131,9 @@
     [[self navigationController] pushViewController:controller animated:YES];
 }
 
-- (void) loadView {
-    list_ = [[[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]] autorelease];
-    [list_ setAutoresizingMask:UIViewAutoresizingFlexibleBoth];
-    [list_ setRowHeight:46];
-    [(UITableView *) list_ setDataSource:self];
-    [list_ setDelegate:self];
-    [self setView:list_];
-}
+// MARK: - Data Management
 
-- (void) viewDidLoad {
-    [super viewDidLoad];
-    
-    [[self navigationItem] setTitle:UCLocalize("SECTIONS")];
-}
-
-- (void) releaseSubviews {
-    list_ = nil;
-    
-    sections_ = nil;
-    filtered_ = nil;
-    
-    [super releaseSubviews];
-}
-
-- (id) initWithDatabase:(Database *)database source:(Source *)source {
-    if ((self = [super init]) != nil) {
-        database_ = database;
-        key_ = [source key];
-    } return self;
-}
-
-- (void) reloadData {
+- (void)reloadData {
     [super reloadData];
     
     NSArray *packages = [database_ packages];
@@ -208,8 +195,43 @@
     _trace();
 }
 
+
+- (Source *)source {
+    if (key_ == nil)
+        return nil;
+    return [database_ sourceWithKey:key_];
+}
+
+- (Section *)sectionAtIndexPath:(NSIndexPath *)indexPath {
+    Section *section = nil;
+    int index = [indexPath row];
+    if (![self isEditing]) {
+        index -= 1;
+        if (index >= 0)
+            section = [filtered_ objectAtIndex:index];
+    } else {
+        section = [sections_ objectAtIndex:index];
+    }
+    return section;
+}
+
+// MARK: - Editing Mode
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:editing animated:animated];
+    
+    if (editing)
+        [list_ reloadData];
+    else
+        [delegate_ updateData];
+    
+    [self updateNavigationItem];
+}
+
+// MARK: - Button Taps
+
 - (void) editButtonClicked {
-    [self setEditing:![self isEditing] animated:YES];
+    [self setEditing:!self.isEditing animated:YES];
 }
 
 @end

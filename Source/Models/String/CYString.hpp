@@ -112,9 +112,11 @@ public:
         return cache_;
     }
     
+    #if !__has_feature(objc_arc)
     _finline operator id() {
         return (NSString *) static_cast<CFStringRef>(*this);
     }
+    #endif
     
     _finline operator const char *() {
         return reinterpret_cast<const char *>(data_);

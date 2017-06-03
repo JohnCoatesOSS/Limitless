@@ -41,6 +41,7 @@
 #import "ConfirmationController.h"
 #import "LMXRespringController.h"
 #import "UIColor+CydiaColors.h"
+#import "APTManager.h"
 
 @interface Application () {
     _H<UIWindow> window_;
@@ -96,34 +97,7 @@
     [self setUpWindow];
 	[self setUpViewControllers];
 	[self setUpNavigationControllerAndTabBar];
-	
-	// - Homescreen Shortcut Start
-	
-	// If the app was opened from a shortcut
-	if (launchOptions[UIApplicationLaunchOptionsShortcutItemKey] != nil) {
-		// Handle it
-		UIApplicationShortcutItem *shortcutItem = (UIApplicationShortcutItem*)launchOptions[UIApplicationLaunchOptionsShortcutItemKey];
-		
-		if ([shortcutItem.type isEqualToString:@"respring"]) {
-			[self reloadSpringBoard];
-		} else if ([shortcutItem.type isEqualToString:@"safemode"]) {
-			[self enterSafeMode];
-			
-		// -(void)loadData has some pretty weird behaviour, so I have some code which sets the selectedIndex to 1 (sources), then have a function which selects the appropriate source based on the URL. Chances of URL conflict should be none.
-		} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
-			travelToRepo = YES;
-			repoURL = (NSString*)shortcutItem.userInfo[@"repoURL"];
-		}
-	}
-	
-	// If the shortcuts haven't been set before
-	if (application.shortcutItems.count == 0) {
-		UIMutableApplicationShortcutItem* firstRepo = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo1" localizedTitle:@"Cydia/Telesphoreo" localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": @"http://apt.saurik.com/"}];
-		UIMutableApplicationShortcutItem* secondRepo = [[UIMutableApplicationShortcutItem alloc] initWithType:@"repo2" localizedTitle:@"BigBoss" localizedSubtitle:nil icon:nil userInfo:@{@"repoURL": @"http://apt.thebigboss.org/repofiles/cydia/"}];
-			application.shortcutItems = @[firstRepo, secondRepo];
-	}
-	
-	// - Homescreen Shortcut End
+    
 	
     [self performSelector:@selector(loadData) withObject:nil afterDelay:0];
     _trace();
@@ -212,7 +186,7 @@
 #pragma mark - State
 
 - (void) saveState {
-    NSString *savedStatePath = [Paths.aptCache subpath:@"SavedState.plist"];
+    NSString *savedStatePath = [Paths.aptState subpath:@"SavedState.plist"];
     
     [[NSDictionary dictionaryWithObjectsAndKeys:
       @"InterfaceState", [tabbar_ navigationURLCollection],
@@ -517,7 +491,7 @@ errno == ENOTDIR \
     [self refreshIfPossible];
     [self disemulate];
     
-    NSString *savedStatePath = [Paths.aptCache subpath:@"SavedState.plist"];
+    NSString *savedStatePath = [Paths.aptState subpath:@"SavedState.plist"];
     NSDictionary *state = [NSDictionary dictionaryWithContentsOfFile:savedStatePath];
     
     int savedIndex = [[state objectForKey:@"InterfaceIndex"] intValue];
@@ -553,12 +527,6 @@ errno == ENOTDIR \
     }
     
     NSArray *items = nil;
-	
-	// If we need to go to the sources page, override what has been set before
-	if (travelToRepo) {
-		savedIndex = 1;
-		standardIndex = 1;
-	}
 
     if (valid) {
         [tabbar_ setSelectedIndex:savedIndex];
@@ -583,14 +551,6 @@ errno == ENOTDIR \
         
         [navigation setViewControllers:current];
     }
-	
-	// Get the sources controller, and call our function to select it when the VC + database loads
-	if (travelToRepo && ![repoURL isEqualToString:@""]) {
-		SourcesController *sVC = (SourcesController*)[[tabbar_ viewControllers] objectAtIndex:1].childViewControllers[0];
-		[sVC selectSourceWithURL:repoURL];
-		repoURL = @"";
-		travelToRepo = NO;
-	}
 	
     // (Try to) show the startup URL.
     if (starturl_ != nil) {
@@ -661,7 +621,7 @@ errno == ENOTDIR \
 - (void) _refreshIfPossible {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *cacheStatePath = [Paths.aptCache subpath:@"CacheState.plist"];
+    NSString *cacheStatePath = [Paths.aptState subpath:@"CacheState.plist"];
     NSDate *update([[NSDictionary dictionaryWithContentsOfFile:cacheStatePath] objectForKey:@"LastUpdate"]);
     
     bool recently = false;
@@ -676,7 +636,12 @@ errno == ENOTDIR \
     //  - We already auto-refreshed this launch.
     //  - Auto-refresh is disabled.
     //  - Cydia's server is not reachable
-    if (recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com")) {
+    BOOL skipRefresh = recently || loaded_ || ManualRefresh || !IsReachable("cydia.saurik.com");
+    
+    if ([APTManager debugMode]) {
+        skipRefresh = FALSE;
+    }
+    if (skipRefresh) {
         // If we are cancelling, we need to make sure it knows it's already loaded.
         loaded_ = true;
         
@@ -1138,11 +1103,11 @@ errno == ENOTDIR \
 
 
 - (void) resolve {
-    pkgProblemResolver *resolver = [database_ resolver];
-    
-    resolver->InstallProtect();
-    if (!resolver->Resolve(true))
-        _error->Discard();
+    APTPackageProblemResolver *problemResolver = database_.problemResolver;
+    [problemResolver installProtectedPackages];
+    if (![problemResolver resolveAndFixBroken:TRUE]) {
+        NSLog(@"Error: Failed to resolve: %@", [APTErrorController popErrors]);
+    }
 }
 
 - (bool) perform {
@@ -1358,49 +1323,6 @@ errno == ENOTDIR \
 - (void) applicationDidReceiveMemoryWarning:(UIApplication *)application {
     NSLog(@"--");
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
-}
-
-#pragma mark - 3D Touch
-
-BOOL travelToRepo(false);
-NSString* repoURL(@"");
-
-- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
-	
-	// This function is called while the app is already open. If it isn't, the shortcut handling is done in didFinishLaunchingWithOptions
-	if ([shortcutItem.type isEqualToString:@"respring"]) {
-		NSLog(@"Respringing through 3D Touch");
-		[self reloadSpringBoard];
-	} else if ([shortcutItem.type isEqualToString:@"safemode"]) {
-		NSLog(@"Entering Safe Mode through 3D Touch");
-		[self enterSafeMode];
-	} else if ([shortcutItem.type isEqualToString:@"repo1"] || [shortcutItem.type isEqualToString:@"repo2"]) {
-		NSLog(@"Travelling to a repo through 3D Touch");
-		[tabbar_ setSelectedIndex:1];
-        
-        NSArray *tabBarViewControllers = [tabbar_ viewControllers];
-        if (tabBarViewControllers.count < 2) {
-            NSLog(@"LMX Error: Tab bar expected to have at least two VCs, has: %d",
-                  (int)tabBarViewControllers.count);
-            return;
-        }
-        UINavigationController *sourcesTabVC = [tabBarViewControllers objectAtIndex:1];
-        NSArray<UIViewController *> *sourcesTabChildViewControllers = sourcesTabVC.childViewControllers;
-        if (sourcesTabChildViewControllers.count == 1) {
-            NSLog(@"LMX Error: Sources navigation controller expected to have at least one View Controller, has: %d",
-                  (int)sourcesTabChildViewControllers.count);
-        }
-        
-        SourcesController *sourcesVC = (id)sourcesTabChildViewControllers.firstObject;
-		NSString *currentRepoURL = (NSString *)shortcutItem.userInfo[@"repoURL"];
-        if (!currentRepoURL) {
-            NSLog(@"LMX Error: Missing repo URL in homescreen shortcut");
-            return;
-        }
-        
-		[sourcesVC selectSourceWithURL:[NSString stringWithFormat:@"%@", currentRepoURL]];
-	}
-	
 }
 
 @end
