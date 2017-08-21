@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:CustomLintingRules/CustomLintingRules.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:dev/build/oclint-rules/OCLINT_RULES.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:dev/build/oclint-core/OCLINT_CORE.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:dev/build/oclint-metrics/OCLINT_METRICS.xcodeproj">
+   </FileRef>
+</Workspace>

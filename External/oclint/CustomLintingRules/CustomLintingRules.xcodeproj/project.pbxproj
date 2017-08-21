@@ -1,0 +1,342 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA62273E1F4B806200BADF1A /* libExampleRule.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6227301F4B7A5400BADF1A /* libExampleRule.dylib */; };
+		FA6227591F4BA77E00BADF1A /* ExampleRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6227581F4BA77E00BADF1A /* ExampleRule.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA62273D1F4B805D00BADF1A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = $PROJECT_DIR/../lib/oclint/customRules;
+			dstSubfolderSpec = 0;
+			files = (
+				FA62273E1F4B806200BADF1A /* libExampleRule.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		FA6227301F4B7A5400BADF1A /* libExampleRule.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libExampleRule.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA62273C1F4B7B7700BADF1A /* BuildSettings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = BuildSettings.xcconfig; path = Configuration/BuildSettings.xcconfig; sourceTree = "<group>"; };
+		FA6227401F4B8AEE00BADF1A /* libclang_rt.asan_osx_dynamic.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang_rt.asan_osx_dynamic.dylib; path = ../lib/clang/5.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib; sourceTree = "<group>"; };
+		FA6227421F4B8C7400BADF1A /* libOCLintAbstractRule.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCLintAbstractRule.a; path = ../DerivedData/OCLint/Build/Products/Debug/libOCLintAbstractRule.a; sourceTree = "<group>"; };
+		FA6227441F4B8CB300BADF1A /* libOCLintHelper.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCLintHelper.a; path = ../DerivedData/OCLint/Build/Products/Debug/libOCLintHelper.a; sourceTree = "<group>"; };
+		FA6227461F4B8CBA00BADF1A /* libOCLintUtil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCLintUtil.a; path = ../DerivedData/OCLint/Build/Products/Debug/libOCLintUtil.a; sourceTree = "<group>"; };
+		FA6227531F4B92EF00BADF1A /* libOCLintCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCLintCore.a; path = "../dev/build/oclint-core/lib/Debug/libOCLintCore.a"; sourceTree = "<group>"; };
+		FA6227551F4B92FA00BADF1A /* libOCLintMetric.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCLintMetric.a; path = "../dev/build/oclint-metrics/lib/Debug/libOCLintMetric.a"; sourceTree = "<group>"; };
+		FA6227581F4BA77E00BADF1A /* ExampleRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExampleRule.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FA62272D1F4B7A5400BADF1A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FA6227271F4B7A5400BADF1A = {
+			isa = PBXGroup;
+			children = (
+				FA62273C1F4B7B7700BADF1A /* BuildSettings.xcconfig */,
+				FA6227571F4BA77E00BADF1A /* ExampleRule */,
+				FA6227311F4B7A5400BADF1A /* Products */,
+				FA62273F1F4B8AEE00BADF1A /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		FA6227311F4B7A5400BADF1A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA6227301F4B7A5400BADF1A /* libExampleRule.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FA62273F1F4B8AEE00BADF1A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA6227551F4B92FA00BADF1A /* libOCLintMetric.a */,
+				FA6227531F4B92EF00BADF1A /* libOCLintCore.a */,
+				FA6227461F4B8CBA00BADF1A /* libOCLintUtil.a */,
+				FA6227441F4B8CB300BADF1A /* libOCLintHelper.a */,
+				FA6227421F4B8C7400BADF1A /* libOCLintAbstractRule.a */,
+				FA6227401F4B8AEE00BADF1A /* libclang_rt.asan_osx_dynamic.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FA6227571F4BA77E00BADF1A /* ExampleRule */ = {
+			isa = PBXGroup;
+			children = (
+				FA6227581F4BA77E00BADF1A /* ExampleRule.cpp */,
+			);
+			path = ExampleRule;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		FA62272E1F4B7A5400BADF1A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		FA62272F1F4B7A5400BADF1A /* ExampleRule */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA6227391F4B7A5400BADF1A /* Build configuration list for PBXNativeTarget "ExampleRule" */;
+			buildPhases = (
+				FA62272C1F4B7A5400BADF1A /* Sources */,
+				FA62272D1F4B7A5400BADF1A /* Frameworks */,
+				FA62272E1F4B7A5400BADF1A /* Headers */,
+				FA62273D1F4B805D00BADF1A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ExampleRule;
+			productName = CustomLintingRules;
+			productReference = FA6227301F4B7A5400BADF1A /* libExampleRule.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FA6227281F4B7A5400BADF1A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = Limitless;
+				TargetAttributes = {
+					FA62272F1F4B7A5400BADF1A = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = FA62272B1F4B7A5400BADF1A /* Build configuration list for PBXProject "CustomLintingRules" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FA6227271F4B7A5400BADF1A;
+			productRefGroup = FA6227311F4B7A5400BADF1A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FA62272F1F4B7A5400BADF1A /* ExampleRule */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA62272C1F4B7A5400BADF1A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA6227591F4BA77E00BADF1A /* ExampleRule.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FA6227371F4B7A5400BADF1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FA62273C1F4B7B7700BADF1A /* BuildSettings.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$BUILD_ROOT/llvm-install/include",
+					"$OCLINT_ROOT/oclint-core/include",
+					"$OCLINT_ROOT/oclint-metrics/include",
+					"$OCLINT_ROOT/oclint-rules/include",
+					"$OCLINT_ROOT/oclint-rules",
+				);
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = "$BUILD_ROOT/llvm-install/lib $BUILD_ROOT/oclint-core/lib $BUILD_ROOT/oclint-metrics/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$BUILD_ROOT/llvm-install/lib",
+					"$BUILD_ROOT/oclint-core/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$BUILD_ROOT/oclint-core/lib",
+					"$BUILD_ROOT/oclint-metrics/lib/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$BUILD_ROOT/oclint-metrics/lib",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"-std=c++11",
+					"-stdlib=libc++",
+					"-fno-rtti",
+					"-Wno-c++11-extensions",
+					"-fPIC",
+					"-fcolor-diagnostics",
+					"-fvisibility-inlines-hidden",
+					"-mmacosx-version-min=10.12",
+					"-DLLVM_BUILD_GLOBAL_ISEL",
+					"-D_DEBUG",
+					"-D__STDC_CONSTANT_MACROS",
+					"-D__STDC_FORMAT_MACROS",
+					"-D__STDC_LIMIT_MACROS",
+				);
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+					"-lclangASTMatchers",
+					"-lOCLintMetric",
+					"-lOCLintCore",
+					"-lOCLintAbstractRule",
+					"-lOCLintUtil",
+					"-lOCLintHelper",
+				);
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = NO;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+					"$(inherited)",
+				);
+			};
+			name = Debug;
+		};
+		FA6227381F4B7A5400BADF1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FA62273C1F4B7B7700BADF1A /* BuildSettings.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$BUILD_ROOT/llvm-install/include",
+					"$OCLINT_ROOT/oclint-core/include",
+					"$OCLINT_ROOT/oclint-metrics/include",
+					"$OCLINT_ROOT/oclint-rules/include",
+					"$OCLINT_ROOT/oclint-rules",
+				);
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = "$BUILD_ROOT/llvm-install/lib $BUILD_ROOT/oclint-core/lib $BUILD_ROOT/oclint-metrics/lib";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = NO;
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+					"$(inherited)",
+				);
+			};
+			name = Release;
+		};
+		FA62273A1F4B7A5400BADF1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FA62273B1F4B7A5400BADF1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FA62272B1F4B7A5400BADF1A /* Build configuration list for PBXProject "CustomLintingRules" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA6227371F4B7A5400BADF1A /* Debug */,
+				FA6227381F4B7A5400BADF1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA6227391F4B7A5400BADF1A /* Build configuration list for PBXNativeTarget "ExampleRule" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA62273A1F4B7A5400BADF1A /* Debug */,
+				FA62273B1F4B7A5400BADF1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FA6227281F4B7A5400BADF1A /* Project object */;
+}
