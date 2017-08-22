@@ -5,7 +5,7 @@ export BUILD_ROOT=$SOURCE_ROOT/build
 
 # Get Latest OCLint
 
-git clone https://github.com/oclint/oclint $SOURCE_ROOT
+git clone https://github.com/johncoatesoss/oclint $SOURCE_ROOT
 
 # Build Clang
 
