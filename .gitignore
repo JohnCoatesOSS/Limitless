@@ -54,3 +54,7 @@ fastlane/screenshots
 Release
 app/Pods
 /compile_commands.json
+/External/oclint/dev
+/lintbuild.log
+/External/Headers/Linked/libkern
+/External/Headers/Linked/sys

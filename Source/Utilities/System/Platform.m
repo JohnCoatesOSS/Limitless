@@ -9,6 +9,10 @@
 
 @implementation Platform
 
++ (BOOL)isRelease {
+    return [self publicReleaseBuild];
+}
+
 + (BOOL)publicReleaseBuild {
     #ifdef RELEASE_BUILD
     return TRUE;

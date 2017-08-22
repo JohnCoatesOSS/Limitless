@@ -10,10 +10,15 @@
 #import "Startup.h"
 #import <signal.h>
 #import <csignal>
+#import "APTManager.h"
 
 int main(int argc, char *argv[]) {
     if ([Platform shouldWaitForDebugger]) {
         raise(SIGSTOP);
+    }
+    
+    if ([APTManager debugMode]) {
+        [APTManager clearAPTState];
     }
 
     @autoreleasepool {

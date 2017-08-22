@@ -22,6 +22,7 @@ extern "C" {
     CF_EXPORT CFHashCode CFStringHashNSString(CFStringRef str);
 }
 
+#if !__has_feature(objc_arc)
 struct NSStringMapHash :
 std::unary_function<NSString *, size_t>
 {
@@ -29,6 +30,7 @@ std::unary_function<NSString *, size_t>
         return CFStringHashNSString((CFStringRef) value);
     }
 };
+#endif
 
 struct NSStringMapLess :
 std::binary_function<NSString *, NSString *, bool>

@@ -97,6 +97,26 @@ class pkgCache::PkgIterator
 	 Pkg = Owner.PkgP;
    };
    inline PkgIterator() : Pkg(0), Owner(0), HashIndex(0) {};
+    
+    // MARK: - Limitless
+    
+    inline long getHashIndex() {
+        return HashIndex;
+    }
+    
+    inline Package *getPackage() {
+        return Pkg;
+    }
+    
+    inline pkgCache *getOwner() {
+        return Owner;
+    }
+    
+    inline PkgIterator(pkgCache *Owner, Package *package, long hashIndex) : Pkg(package), Owner(Owner), HashIndex(hashIndex) {
+        if (package == 0) {
+            Pkg = Owner->PkgP;
+        }
+    };
 };
 									/*}}}*/
 // Version Iterator							/*{{{*/

@@ -15,6 +15,11 @@
 #import "CFArray+Sort.h"
 #import "Logging.hpp"
 #import "Paths.h"
+#import "APTCacheFile+Legacy.h"
+#import "APTDownloadScheduler-Private.h"
+#import "APTRecords-Private.h"
+#import "APTSource-Private.h"
+#import "APTSourceList-Private.h"
 
 @implementation Database
 
@@ -31,7 +36,9 @@
 }
 
 - (void) releasePackages {
-    CFArrayApplyFunction(packages_, CFRangeMake(0, CFArrayGetCount(packages_)), reinterpret_cast<CFArrayApplierFunction>(&CFRelease), NULL);
+    CFArrayApplyFunction(packages_,
+                         CFRangeMake(0, CFArrayGetCount(packages_)),
+                         reinterpret_cast<CFArrayApplierFunction>(&CFRelease), NULL);
     CFArrayRemoveAllValues(packages_);
 }
 
@@ -146,21 +153,11 @@
 }
 
 - (Package *) packageWithName:(NSString *)name {
-    if (name == nil)
-        return nil;
-    @synchronized (self) {
-        if (static_cast<pkgDepCache *>(cache_) == NULL)
-            return nil;
-        pkgCache::PkgIterator iterator(cache_->FindPkg([name UTF8String]));
-        return iterator.end() ? nil : [Package packageWithIterator:iterator withZone:NULL inPool:NULL database:self];
-    } }
+    return [self.cacheFile packageWithName:name database:self];
+}
 
 - (id) init {
     if ((self = [super init]) != nil) {
-        policy_ = NULL;
-        records_ = NULL;
-        resolver_ = NULL;
-        fetcher_ = NULL;
         lock_ = NULL;
         status_ = new CydiaStatus();
         
@@ -216,30 +213,6 @@
     } return self;
 }
 
-- (pkgCacheFile &) cache {
-    return cache_;
-}
-
-- (pkgDepCache::Policy *) policy {
-    return policy_;
-}
-
-- (pkgRecords *) records {
-    return records_;
-}
-
-- (pkgProblemResolver *) resolver {
-    return resolver_;
-}
-
-- (pkgAcquire &) fetcher {
-    return *fetcher_;
-}
-
-- (pkgSourceList &) list {
-    return *list_;
-}
-
 - (NSArray *) packages {
     return (NSArray *) packages_;
 }
@@ -287,12 +260,6 @@
     return [self popErrorWithTitle:title] || !success;
 }
 
-- (bool) popErrorWithTitle:(NSString *)title forReadList:(pkgSourceList &)list {
-    if ([self popErrorWithTitle:title forOperation:list.ReadMainList()])
-        return true;
-    return false;
-}
-
 - (void) reloadDataWithInvocation:(NSInvocation *)invocation {
     @synchronized (self) {
         ++era_;
@@ -302,34 +269,19 @@
         sourceMap_.clear();
         [sourceList_ removeAllObjects];
         
-        _error->Discard();
-        if (list_) {
-            delete list_;
-        }
-        list_ = NULL;
-        manager_ = NULL;
+        [APTErrorController popErrors];
+        
+        self.sourceListController = nil;
+        self.packageManager = nil;
         if (lock_) {
             delete lock_;
         }
         lock_ = NULL;
-        if (fetcher_) {
-            delete fetcher_;
-        }
-        fetcher_ = NULL;
-        if (resolver_) {
-            delete resolver_;
-        }
-        resolver_ = NULL;
-        if (records_) {
-            delete records_;
-        }
-        records_ = NULL;
-        if (policy_) {
-            delete policy_;
-        }
-        policy_ = NULL;
-        
-        cache_.Close();
+        self.downloadScheduler = nil;
+        self.packageRecords = nil;
+        self.problemResolver = nil;
+        self.policy = nil;
+        self.cacheFile = nil;
         
         pool_.~CYPool();
         new (&pool_) CYPool();
@@ -346,55 +298,49 @@
         
         NSString *title(UCLocalize("DATABASE"));
         
-        list_ = new pkgSourceList();
-        _profile(reloadDataWithInvocation$ReadMainList)
-        if ([self popErrorWithTitle:title forReadList:*list_])
+        self.sourceListController = [[APTSourceList alloc] initWithMainList];
+        if (!self.sourceListController) {
+            [self popErrorWithTitle:title];
             return;
-        _end
-        
-        
-        
-        _profile(reloadDataWithInvocation$Source$initWithMetaIndex)
-        for (pkgSourceList::const_iterator source = list_->begin(); source != list_->end(); ++source) {
-            Source *object([[[Source alloc] initWithMetaIndex:*source forDatabase:self inPool:&pool_] autorelease]);
-            [sourceList_ addObject:object];
         }
-        _end
+        
+        for (APTSource *source in self.sourceListController.sources) {
+            Source *legacySource = [[Source alloc] initWithMetaIndex:source.metaIndex
+                                                        forDatabase:self
+                                                             inPool:&pool_];
+            [sourceList_ addObject:[legacySource autorelease]];
+        }
         
         _trace();
         OpProgress progress;
-        bool opened;
+        NSError *error = nil;
     open:
         delock_ = GetStatusDate();
         _profile(reloadDataWithInvocation$pkgCacheFile)
-        opened = cache_.Open(progress, false);
+        
+        self.cacheFile = [[APTCacheFile alloc] initWithError:&error];
+        
         _end
-        if (!opened) {
-            // XXX: what if there are errors, but Open() == true? this should be merged with popError:
-            while (!_error->empty()) {
-                std::string error;
-                bool warning(!_error->PopMessage(error));
-                
-                lprintf("cache_.Open():[%s]\n", error.c_str());
-                
-                [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:(warning ? kCydiaProgressEventTypeWarning : kCydiaProgressEventTypeError)] forTask:title];
-                
-                SEL repair(NULL);
-                if (false);
-                else if (error == "dpkg was interrupted, you must manually run 'dpkg --configure -a' to correct the problem. ")
-                    repair = @selector(configure);
-                //else if (error == "The package lists or status file could not be parsed or opened.")
-                //    repair = @selector(update);
-                // else if (error == "Could not get lock /var/lib/dpkg/lock - open (35 Resource temporarily unavailable)")
-                // else if (error == "Could not open lock file /var/lib/dpkg/lock - open (13 Permission denied)")
-                // else if (error == "Malformed Status line")
-                // else if (error == "The list of sources could not be read.")
-                
-                if (repair != NULL) {
-                    _error->Discard();
-                    [delegate_ repairWithSelector:repair];
-                    goto open;
-                }
+        if (!self.cacheFile) {
+            NSLog(@"cacheFile open failed: %@", error);
+            NSString *errorType;
+            if (error.code == APTErrorWarning) {
+                errorType = kCydiaProgressEventTypeWarning;
+            } else {
+                errorType = kCydiaProgressEventTypeError;
+            }
+            CydiaProgressEvent *event = [CydiaProgressEvent eventWithMessage:error.localizedDescription
+                                          ofType:errorType];
+            
+            [delegate_ addProgressEventOnMainThread:event forTask:title];
+            
+            SEL repair = NULL;
+            if ([error.localizedDescription isEqualToString:@"dpkg was interrupted, you must manually run 'dpkg --configure -a' to correct the problem. "]) {
+                repair = @selector(configure);
+            }
+            if (repair != NULL) {
+                [delegate_ repairWithSelector:repair];
+                goto open;
             }
             
             return;
@@ -405,46 +351,49 @@
         
         now_ = [[NSDate date] timeIntervalSince1970];
         
-        policy_ = new pkgDepCache::Policy();
-        records_ = new pkgRecords(cache_);
-        resolver_ = new pkgProblemResolver(cache_);
-        fetcher_ = new pkgAcquire(status_);
+        self.policy = [APTDependencyCachePolicy new];
+        pkgCacheFile &cache = *self.cacheFile.cacheFile;
+        self.packageRecords = [[APTRecords alloc] initWithCacheFile:self.cacheFile];
+        self.problemResolver = [[APTPackageProblemResolver alloc] initWithCacheFile:self.cacheFile];
+        self.downloadScheduler = [[APTDownloadScheduler alloc] initWithStatusDelegate:status_];
         lock_ = NULL;
         
-        if (cache_->DelCount() != 0 || cache_->InstCount() != 0) {
+        APTCacheFile *cacheFile = self.cacheFile;
+        
+        if (cacheFile.pendingDeletions != 0 || cacheFile.pendingInstalls != 0) {
             [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:UCLocalize("COUNTS_NONZERO_EX") ofType:kCydiaProgressEventTypeError] forTask:title];
             return;
         }
         
         _profile(reloadDataWithInvocation$pkgApplyStatus)
-        if ([self popErrorWithTitle:title forOperation:pkgApplyStatus(cache_)])
+        if ([self popErrorWithTitle:title forOperation:pkgApplyStatus(cache)])
             return;
         _end
         
-        if (cache_->BrokenCount() != 0) {
+        if (cacheFile.brokenPackages != 0) {
             _profile(pkgApplyStatus$pkgFixBroken)
-            if ([self popErrorWithTitle:title forOperation:pkgFixBroken(cache_)])
+            if ([self popErrorWithTitle:title forOperation:pkgFixBroken(cache)])
                 return;
             _end
             
-            if (cache_->BrokenCount() != 0) {
+            if (cacheFile.brokenPackages != 0) {
                 [delegate_ addProgressEventOnMainThread:[CydiaProgressEvent eventWithMessage:UCLocalize("STILL_BROKEN_EX") ofType:kCydiaProgressEventTypeError] forTask:title];
                 return;
             }
             
             _profile(pkgApplyStatus$pkgMinimizeUpgrade)
-            if ([self popErrorWithTitle:title forOperation:pkgMinimizeUpgrade(cache_)])
+            if ([self popErrorWithTitle:title forOperation:pkgMinimizeUpgrade(cache)])
                 return;
             _end
         }
         
         for (Source *object in (id) sourceList_) {
-            metaIndex *source([object metaIndex]);
+            metaIndex *source = object.metaIndex;
             std::vector<pkgIndexFile *> *indices = source->GetIndexFiles();
             for (std::vector<pkgIndexFile *>::const_iterator index = indices->begin(); index != indices->end(); ++index)
                 // XXX: this could be more intelligent
                 if (dynamic_cast<debPackagesIndex *>(*index) != NULL) {
-                    pkgCache::PkgFileIterator cached((*index)->FindInCache(cache_));
+                    pkgCache::PkgFileIterator cached((*index)->FindInCache(cache));
                     if (!cached.end())
                         sourceMap_[cached->ID] = object;
                 }
@@ -456,7 +405,7 @@
              packages_ = nil;*/
             
             _profile(reloadDataWithInvocation$packageWithIterator)
-            for (pkgCache::PkgIterator iterator = cache_->PkgBegin(); !iterator.end(); ++iterator)
+            for (pkgCache::PkgIterator iterator = cache->PkgBegin(); !iterator.end(); ++iterator)
                 if (Package *package = [Package packageWithIterator:iterator withZone:zone_ inPool:&pool_ database:self])
                     //packages.push_back(package);
                     CFArrayAppendValue(packages_, CFRetain(package));
@@ -511,14 +460,15 @@
 
 - (void) clear {
     @synchronized (self) {
-        delete resolver_;
-        resolver_ = new pkgProblemResolver(cache_);
+        self.problemResolver = nil;
+        pkgCacheFile &cache = *self.cacheFile.cacheFile;
+        self.problemResolver = [[APTPackageProblemResolver alloc] initWithCacheFile:self.cacheFile];
         
-        for (pkgCache::PkgIterator iterator(cache_->PkgBegin()); !iterator.end(); ++iterator)
-            if (!cache_[iterator].Keep())
-                cache_->MarkKeep(iterator, false);
-            else if ((cache_[iterator].iFlags & pkgDepCache::ReInstall) != 0)
-                cache_->SetReInstall(iterator, false);
+        for (pkgCache::PkgIterator iterator(cache->PkgBegin()); !iterator.end(); ++iterator)
+            if (!cache[iterator].Keep())
+                cache->MarkKeep(iterator, false);
+            else if ((cache[iterator].iFlags & pkgDepCache::ReInstall) != 0)
+                cache->SetReInstall(iterator, false);
     } }
 
 - (void) configure {
@@ -542,20 +492,24 @@
         if ([self popErrorWithTitle:title])
             return false;
         
-        pkgAcquire fetcher;
-        fetcher.Clean(_config->FindDir("Dir::Cache::Archives"));
+        string archivesPath = _config->FindDir("Dir::Cache::Archives");
+        NSString *archivesDirectory = @(archivesPath.c_str());
+        
+        [self.downloadScheduler
+         eraseFilesNotInOperationInDirectory:archivesDirectory];
         
         CydiaLogCleaner cleaner;
-        if ([self popErrorWithTitle:title forOperation:cleaner.Go(_config->FindDir("Dir::Cache::Archives") + "partial/", cache_)])
+        pkgCacheFile &cache = *self.cacheFile.cacheFile;
+        if ([self popErrorWithTitle:title forOperation:cleaner.Go(_config->FindDir("Dir::Cache::Archives") + "partial/", cache)])
             return false;
         
         return true;
     } }
 
 - (bool) prepare {
-    fetcher_->Shutdown();
+    [self.downloadScheduler terminate];
     
-    pkgRecords records(cache_);
+    APTRecords *packageRecords = [[APTRecords alloc] initWithCacheFile:self.cacheFile];
     
     lock_ = new FileFd();
     lock_->Fd(GetLock(_config->FindDir("Dir::Cache::Archives") + "lock"));
@@ -565,12 +519,18 @@
     if ([self popErrorWithTitle:title])
         return false;
     
-    pkgSourceList list;
-    if ([self popErrorWithTitle:title forReadList:list])
+    APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+    if (!sourceList) {
+        [self popErrorWithTitle:title];
         return false;
+    }
     
-    manager_ = (_system->CreatePM(cache_));
-    if ([self popErrorWithTitle:title forOperation:manager_->GetArchives(fetcher_, &list, &records)])
+    self.packageManager = [[APTPackageManager alloc] initWithCacheFile:self.cacheFile];
+    
+    BOOL queuedSuccessfully = [self.packageManager queueArchivesForDownloadWithScheduler:self.downloadScheduler
+                                                                              sourceList:sourceList
+                                                                          packageRecords:packageRecords];
+    if ([self popErrorWithTitle:title forOperation:queuedSuccessfully])
         return false;
     
     return true;
@@ -583,39 +543,52 @@
     NSString *title(UCLocalize("PERFORM_SELECTIONS"));
     
     NSMutableArray *before = [NSMutableArray arrayWithCapacity:16]; {
-        pkgSourceList list;
-        if ([self popErrorWithTitle:title forReadList:list])
+        APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+        if (!sourceList) {
+            [self popErrorWithTitle:title];
             return;
-        for (pkgSourceList::const_iterator source = list.begin(); source != list.end(); ++source)
-            [before addObject:[NSString stringWithUTF8String:(*source)->GetURI().c_str()]];
+        }
+        for (APTSource *source in sourceList.sources) {
+            [before addObject:source.uri.absoluteString];
+        }
     }
     
-    [delegate_ performSelectorOnMainThread:@selector(retainNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
+    [delegate_ performSelectorOnMainThread:@selector(retainNetworkActivityIndicator)
+                                withObject:nil waitUntilDone:YES];
     
-    if (fetcher_->Run(PulseInterval_) != pkgAcquire::Continue) {
-        _trace();
+    APTDownloadResult downloadResult = [self.downloadScheduler
+                                                    runWithDelegateInterval:PulseInterval_];
+    if (downloadResult != APTDownloadResultSuccess) {
         [self popErrorWithTitle:title];
         return;
     }
     
-    bool failed = false;
-    for (pkgAcquire::ItemIterator item = fetcher_->ItemsBegin(); item != fetcher_->ItemsEnd(); item++) {
-        if ((*item)->Status == pkgAcquire::Item::StatDone && (*item)->Complete)
+    BOOL failed = FALSE;
+    
+    // Report any errors
+    for (APTDownloadItem *item in self.downloadScheduler.items) {
+        APTDownloadState state = item.state;
+        if (state == APTDownloadStateDone && item.finished) {
             continue;
-        if ((*item)->Status == pkgAcquire::Item::StatIdle)
+        }
+        else if (state == APTDownloadStateIdle) {
             continue;
+        }
         
-        std::string uri = (*item)->DescURI();
-        std::string error = (*item)->ErrorText;
+        NSURL *url = item.url;
+        NSString *errorMessage = item.errorMessage;
         
-        lprintf("pAf:%s:%s\n", uri.c_str(), error.c_str());
-        failed = true;
+        NSLog(@"Downloading item %@ encountered error: %@", url, errorMessage);
+        failed = TRUE;
         
-        CydiaProgressEvent *event([CydiaProgressEvent eventWithMessage:[NSString stringWithUTF8String:error.c_str()] ofType:kCydiaProgressEventTypeError]);
+        CydiaProgressEvent *event;
+        event = [CydiaProgressEvent eventWithMessage:errorMessage
+                                              ofType:kCydiaProgressEventTypeError];
         [delegate_ addProgressEventOnMainThread:event forTask:title];
     }
-    
-    [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator) withObject:nil waitUntilDone:YES];
+        
+    [delegate_ performSelectorOnMainThread:@selector(releaseNetworkActivityIndicator)
+                                withObject:nil waitUntilDone:YES];
     
     if (failed) {
         _trace();
@@ -632,7 +605,7 @@
     
     delock_ = nil;
     
-    pkgPackageManager::OrderResult result(manager_->DoInstall(statusfd_));
+    APTInstallResult result = [self.packageManager performInstallationWithOutputToFileDescriptor:statusfd_];
     
     NSString *oextended(@"/var/lib/apt/extended_states");
     NSString *nextended(Cache("extended_states"));
@@ -651,26 +624,31 @@
     if ([self popErrorWithTitle:title])
         return;
     
-    if (result == pkgPackageManager::Failed) {
+    if (result == APTInstallResultFailed) {
         _trace();
         return;
     }
     
-    if (result != pkgPackageManager::Completed) {
+    if (result != APTInstallResultCompleted) {
         _trace();
         return;
     }
     
-    NSMutableArray *after = [NSMutableArray arrayWithCapacity:16]; {
-        pkgSourceList list;
-        if ([self popErrorWithTitle:title forReadList:list])
-            return;
-        for (pkgSourceList::const_iterator source = list.begin(); source != list.end(); ++source)
-            [after addObject:[NSString stringWithUTF8String:(*source)->GetURI().c_str()]];
+    NSMutableArray *after = [NSMutableArray arrayWithCapacity:16];
+    APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+    if (!sourceList) {
+        [self popErrorWithTitle:title];
+        return;
     }
     
-    if (![before isEqualToArray:after])
+    for (APTSource *source in sourceList.sources) {
+        [after addObject:source.uri.absoluteString];
+    }
+    
+    BOOL sourceListHasChanged = ![before isEqualToArray:after];
+    if (sourceListHasChanged) {
         [self update];
+    }
 }
 
 - (bool) delocked {
@@ -679,7 +657,8 @@
 
 - (bool) upgrade {
     NSString *title(UCLocalize("UPGRADE"));
-    if ([self popErrorWithTitle:title forOperation:pkgDistUpgrade(cache_)])
+    pkgCacheFile &cache = *self.cacheFile.cacheFile;
+    if ([self popErrorWithTitle:title forOperation:pkgDistUpgrade(cache)])
         return false;
     return true;
 }
@@ -691,9 +670,11 @@
 - (void) updateWithStatus:(CancelStatus &)status {
     NSString *title(UCLocalize("REFRESHING_DATA"));
     
-    pkgSourceList list;
-    if ([self popErrorWithTitle:title forReadList:list])
+    APTSourceList *sourceList = [[APTSourceList alloc] initWithMainList];
+    if (!sourceList) {
+        [self popErrorWithTitle:title];
         return;
+    }
     
     FileFd lock;
     lock.Fd(GetLock(_config->FindDir("Dir::State::Lists") + "lock"));
@@ -704,13 +685,13 @@
      performSelectorOnMainThread:@selector(retainNetworkActivityIndicator)
      withObject:nil waitUntilDone:YES];    
     
-    bool success(ListUpdate(status, list, PulseInterval_));
+    BOOL success = [sourceList updateWithStatusDelegate:status];
     if (status.WasCancelled())
         _error->Discard();
     else {
         [self popErrorWithTitle:title forOperation:success];
         
-        NSString *cacheStatePath = [Paths.aptCache subpath:@"CacheState.plist"];
+        NSString *cacheStatePath = [Paths.aptState subpath:@"CacheState.plist"];
         [[NSDictionary dictionaryWithObjectsAndKeys:
           [NSDate date], @"LastUpdate",
           nil] writeToFile:cacheStatePath atomically:YES];

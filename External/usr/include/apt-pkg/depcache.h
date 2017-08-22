@@ -261,7 +261,7 @@ class pkgDepCache : protected pkgCache::Namespace
    void UpdateVerState(PkgIterator Pkg);
 
    // User Policy control
-   class Policy
+   class APT_DEPRECATED Policy
    {
       public:
       

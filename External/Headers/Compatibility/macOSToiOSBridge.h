@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-// Define trickery to make classses defines for macOS available to iOS
+// Define trickery to make classes defines for macOS available to iOS
 
 #pragma push_macro("NS_CLASS_AVAILABLE_MAC")
 #undef NS_CLASS_AVAILABLE_MAC

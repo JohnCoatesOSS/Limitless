@@ -42,7 +42,7 @@ static BOOL _isFiltered = NO;
     return _isFiltered;
 }
 
-- (void)setIsFiltered:(BOOL)isFiltered {
++ (void)setIsFiltered:(BOOL)isFiltered {
     _isFiltered = isFiltered;
 }
 

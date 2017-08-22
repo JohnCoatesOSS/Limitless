@@ -61,13 +61,17 @@
 - (bool) decide {
     switch (decision_) {
         case CYWebPolicyDecisionUnknown:
-        default:
             NSLog(@"CYWebPolicyDecisionUnknown");
             return false;
-
-        case CYWebPolicyDecisionDownload: [listener_ download]; break;
-        case CYWebPolicyDecisionIgnore: [listener_ ignore]; break;
-        case CYWebPolicyDecisionUse: [listener_ use]; break;
+        case CYWebPolicyDecisionDownload:
+            [listener_ download];
+            break;
+        case CYWebPolicyDecisionIgnore:
+            [listener_ ignore];
+            break;
+        case CYWebPolicyDecisionUse:
+            [listener_ use];
+            break;
     }
 
     return true;

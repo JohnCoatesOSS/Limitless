@@ -36,7 +36,7 @@ class pkgDepCache;
 class pkgSourceList;
 class pkgOrderList;
 class pkgRecords;
-class pkgPackageManager : protected pkgCache::Namespace
+class APT_DEPRECATED pkgPackageManager : protected pkgCache::Namespace
 {
    public:
    

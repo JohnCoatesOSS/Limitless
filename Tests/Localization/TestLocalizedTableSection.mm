@@ -10,6 +10,8 @@
 #import "CYString.hpp"
 #import "UIGlobals.h"
 #import "LMXLocalizedTableSections.h"
+#import <unicode/ustring.h>
+#import <unicode/utrans.h>
 
 @interface LMXLocalizedTableSections ()
 

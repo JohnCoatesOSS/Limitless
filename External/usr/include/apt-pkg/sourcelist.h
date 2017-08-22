@@ -37,7 +37,7 @@ using std::vector;
     
 
 class pkgAquire;
-class pkgSourceList
+class APT_DEPRECATED pkgSourceList
 {
    public:
    

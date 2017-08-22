@@ -193,25 +193,27 @@
 - (NSArray *)tableView:(UITableView *)tableView
 editActionsForRowAtIndexPath:(NSIndexPath *)path {
     // FIXME: Favorites broken. Switching off for Beta 5
+    if (/* DISABLES CODE */ (0)) {
+        Package *package([self packageAtIndexPath:path]);
+        package = [database_ packageWithName:[package id]];
+        
+        _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
+        [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
+        favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        favoritesButton.backgroundColor = [UIColor systemDarkGreenColor];
+        UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+            
+            [tableView setEditing:NO animated:YES];
+            [database_ addPackageToFavoritesList:package];
+            [list_ reloadData];
+            
+        }];
+        [addToFavoritesAction _setButton:favoritesButton];
+        addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
+        return @[ addToFavoritesAction ];
+    }
     return @[];
     
-    Package *package([self packageAtIndexPath:path]);
-    package = [database_ packageWithName:[package id]];
-    
-    _UITableViewCellActionButton *favoritesButton = [_UITableViewCellActionButton buttonWithType:UIButtonTypeCustom];
-    [favoritesButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateNormal];
-    favoritesButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    favoritesButton.backgroundColor = [UIColor systemDarkGreenColor];
-    UITableViewRowAction *addToFavoritesAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault title:@"" handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-        
-        [tableView setEditing:NO animated:YES];
-        [database_ addPackageToFavoritesList:package];
-        [list_ reloadData];
-        
-    }];
-    [addToFavoritesAction _setButton:favoritesButton];
-    addToFavoritesAction.backgroundColor = [UIColor systemDarkGreenColor];
-    return @[ addToFavoritesAction ];
 }
 
 - (void) updateHeight {

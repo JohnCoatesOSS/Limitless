@@ -1,0 +1,10 @@
+//
+//  BuildSettings.xcconfig
+//  CustomLintingRules
+//
+//  Created by John Coates on 8/21/17.
+//  Copyright © 2017 Limitless. All rights reserved.
+//
+
+OCLINT_ROOT = $PROJECT_DIR/../dev
+BUILD_ROOT = $OCLINT_ROOT/build

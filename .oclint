@@ -16,13 +16,39 @@ disable-rules:
 - InvertedLogic
 - CollapsibleIfStatements
 - MissingBreakInSwitchStatement
-- HighNpathComplexity
+- HighNPathComplexity
 - HighCyclomaticComplexity
 - UnnecessaryElseStatement
 - HighNcssMethod
 - UseEarlyExitsAndContinue
 - EmptyIfStatement
-# - ObjectSubscripting
+- ParameterReassignment
+- ObjCBoxedExpressions
+- UseBoxedExpression
+- AssignIvarOutsideAccessors
+- InvertedLogic
+- UseContainerLiteral
+- UseObjectSubscripting
+- PreferEarlyExit
+- UnusedLocalVariable
+- UnusedMethodParameter
+- MethodDeclarationSpacing
+- ConstantIfExpression
+- RedundantLocalVariable
+- TooManyMethods
+- EmptyDoWhileStatement
+- LongVariableName
+- UseNumberLiteral
+- AvoidBranchingStatementAsLastInLoop
+- MissingDefaultStatement
+- DeadCode
+- MisplacedDefaultLabel
+- ConstantConditionalOperator
+- RedundantNilCheck
+- TooManyParameters
+- TooFewBranchesInSwitchStatement
+- EmptyWhileStatement
+
 rule-configurations:
   - key: CYCLOMATIC_COMPLEXITY
     value: 15
