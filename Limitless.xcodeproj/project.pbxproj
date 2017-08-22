@@ -3002,7 +3002,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "source ~/.bash_profile\necho $PATH\nxcodebuild -scheme Limitless clean\nset -o pipefail && xcodebuild -scheme Limitless | xcpretty -r json-compilation-database --output compile_commands.json\noclint-json-compilation-database -- -report-type xcode\n";
+			shellScript = "source ~/.bash_profile\n\n#xcodebuild -scheme Limitless clean\n#set -o pipefail && xcodebuild -scheme Limitless | tee lintbuild.log | xcpretty -r json-compilation-database --output compile_commands.json\n\"${PROJECT_DIR}/External/oclint/run.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
