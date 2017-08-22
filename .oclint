@@ -48,7 +48,6 @@ disable-rules:
 - TooManyParameters
 - TooFewBranchesInSwitchStatement
 - EmptyWhileStatement
-- UnnecessaryDefaultStatement
 
 rule-configurations:
   - key: CYCLOMATIC_COMPLEXITY
