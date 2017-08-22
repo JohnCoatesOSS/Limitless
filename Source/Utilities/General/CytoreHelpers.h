@@ -45,7 +45,7 @@ extern Cytore::File<MetaValue> MetaFile_;
 
 // Cytore Helper Functions
 
-static PackageValue *PackageFind(const char *name, size_t length, bool *fail = NULL) {
+static inline PackageValue *PackageFind(const char *name, size_t length, bool *fail = NULL) {
     SplitHash nhash = { hashlittle(name, length) };
     
     PackageValue *metadata;
