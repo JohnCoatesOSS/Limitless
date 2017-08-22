@@ -14,7 +14,22 @@ def macOSSDKPath()
   if File.exist?(sdkGenericPath)
     sdkPath = sdkGenericPath
   end
-  puts "SDK Path: #{sdkPath}"
+  puts "macOS SDK Path: #{sdkPath}"
+  return sdkPath
+end
+
+def getSimulatorSDKPath()
+    sdkPath = `xcodebuild -sdk iphonesimulator -version Path`.strip
+  # make sure path exists
+  if File.exist?(sdkPath) == false
+    raise "SDK path does not exist: #{sdkPath}"
+  end
+  # check and see if a non specific path exists
+  sdkGenericPath = File.expand_path(File.join(sdkPath, "../MacOSX.sdk"))
+  if File.exist?(sdkGenericPath)
+    sdkPath = sdkGenericPath
+  end
+  puts "iOS Simulator SDK Path: #{sdkPath}"
   return sdkPath
 end
 
@@ -65,6 +80,34 @@ def createSingleHeaderLinks(singleHeadersDirectory: nil, sdkFrameworksDirectory:
   end
 end
 
+def createLinksToSimulatorDirectories(headersDirectory: nil, simulatorSDKRoot: nil)
+  directories = {
+    libkern: "usr/include/libkern",
+    "sys/reboot.h" => "usr/include/sys/reboot.h"
+  }
+
+  directories.each_pair do |directoryName, target|
+    directory = File.join(headersDirectory, directoryName.to_s)
+    directory = File.expand_path(directory)
+    targetPath = File.join(simulatorSDKRoot, target)
+    targetPath = File.expand_path(targetPath)
+
+    extension = File.extname(directory)
+    
+    isDirectory = true
+    if !extension.empty?
+      containingDirectory = File.dirname(directory)
+       if !File.exist?(containingDirectory)
+        puts "Creating directory: #{containingDirectory}"
+        FileUtils.mkdir_p(containingDirectory)
+      end
+    end
+    
+    ensureSymlink(atPath: directory, targetPath: targetPath, targetIsADirectory: isDirectory)
+  end
+
+end
+
 def ensureSymlink(atPath: nil, targetPath: nil, targetIsADirectory: false)
   if !File.exists?(targetPath)
     raise "error: Error, couldn't find symlink destination: #{targetPath}"
@@ -107,11 +150,13 @@ end
 
 sdkPath = macOSSDKPath()
 sdkFrameworksDirectory = File.join(sdkPath, "System/Library/Frameworks")
+simulatorSDKRoot = getSimulatorSDKPath()
 scriptsDirectory = __dir__
 projectDirectory = File.expand_path(File.join(scriptsDirectory, ".."))
 headersDirectory = File.join(projectDirectory, "External/Headers/Linked")
 
 createFrameworkLinks(headersDirectory: headersDirectory, sdkFrameworksDirectory: sdkFrameworksDirectory)
+createLinksToSimulatorDirectories(headersDirectory: headersDirectory, simulatorSDKRoot: simulatorSDKRoot)
 
 singleHeadersDirectory = File.join(headersDirectory, "SingleHeaders")
 createSingleHeaderLinks(singleHeadersDirectory: singleHeadersDirectory, sdkFrameworksDirectory: sdkFrameworksDirectory)
