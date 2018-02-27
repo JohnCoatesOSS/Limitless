@@ -81,31 +81,44 @@ def createSingleHeaderLinks(singleHeadersDirectory: nil, sdkFrameworksDirectory:
 end
 
 def createLinksToSimulatorDirectories(headersDirectory: nil, simulatorSDKRoot: nil)
-  directories = {
-    libkern: "usr/include/libkern",
-    "sys/reboot.h" => "usr/include/sys/reboot.h"
+  files = {
+
   }
 
-  directories.each_pair do |directoryName, target|
-    directory = File.join(headersDirectory, directoryName.to_s)
-    directory = File.expand_path(directory)
-    targetPath = File.join(simulatorSDKRoot, target)
+  createSymlinksFor(headersDirectory: headersDirectory, sdkRoot: simulatorSDKRoot, files: files)
+
+end
+
+def createLinksToMacSDKDirectories(headersDirectory: nil, sdkRoot: nil)
+  files = {
+    "sys/reboot.h" => "usr/include/sys/reboot.h",
+    libkern: "usr/include/libkern"
+  }
+
+  createSymlinksFor(headersDirectory: headersDirectory, sdkRoot: sdkRoot, files: files)
+
+end
+
+def createSymlinksFor(headersDirectory: nil, sdkRoot: nil, files: nil)
+  files.each_pair do |filename, target|
+    filepath = File.join(headersDirectory, filename.to_s)
+    filepath = File.expand_path(filepath)
+    targetPath = File.join(sdkRoot, target)
     targetPath = File.expand_path(targetPath)
 
-    extension = File.extname(directory)
-    
+    extension = File.extname(filepath)
+
     isDirectory = true
     if !extension.empty?
-      containingDirectory = File.dirname(directory)
+      containingDirectory = File.dirname(filepath)
        if !File.exist?(containingDirectory)
-        puts "Creating directory: #{containingDirectory}"
+        puts "Creating symlink for: #{containingDirectory}"
         FileUtils.mkdir_p(containingDirectory)
       end
     end
-    
-    ensureSymlink(atPath: directory, targetPath: targetPath, targetIsADirectory: isDirectory)
-  end
 
+    ensureSymlink(atPath: filepath, targetPath: targetPath, targetIsADirectory: isDirectory)
+  end
 end
 
 def ensureSymlink(atPath: nil, targetPath: nil, targetIsADirectory: false)
@@ -157,6 +170,7 @@ headersDirectory = File.join(projectDirectory, "External/Headers/Linked")
 
 createFrameworkLinks(headersDirectory: headersDirectory, sdkFrameworksDirectory: sdkFrameworksDirectory)
 createLinksToSimulatorDirectories(headersDirectory: headersDirectory, simulatorSDKRoot: simulatorSDKRoot)
+createLinksToMacSDKDirectories(headersDirectory: headersDirectory, sdkRoot:sdkPath)
 
 singleHeadersDirectory = File.join(headersDirectory, "SingleHeaders")
 createSingleHeaderLinks(singleHeadersDirectory: singleHeadersDirectory, sdkFrameworksDirectory: sdkFrameworksDirectory)
