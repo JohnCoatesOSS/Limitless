@@ -1,3 +1,8 @@
+// Trickery to make the unavailable available
+#import <Availability.h>
+#undef __OS_AVAILABILITY
+#define __OS_AVAILABILITY(x, y)
+
 #import <UIKit/UIKit.h>
 // Define trickery to make classes defines for macOS available to iOS
 
