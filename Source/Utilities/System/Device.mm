@@ -6,6 +6,7 @@
 //
 
 #import "Device.h"
+#import <UIKit/UIKit.h>
 
 @interface Device ()
 

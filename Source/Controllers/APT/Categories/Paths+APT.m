@@ -7,6 +7,7 @@
 
 #import "Paths+APT.h"
 #import "NSString+Paths.h"
+#import "Platform.h"
 
 @implementation Paths (APT)
 

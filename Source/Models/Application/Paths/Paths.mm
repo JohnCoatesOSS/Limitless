@@ -6,6 +6,7 @@
 //
 
 #import "Paths.h"
+#import "Platform.h"
 #import <sys/stat.h>
 
 @interface Paths ()
@@ -13,6 +14,14 @@
 @end
 
 @implementation Paths
+
++ (NSURL *)applicationDirectory {
+    return [NSURL URLWithString:@"/Applications/Limitless.app"];
+}
+
++ (NSURL *)applicationBinary {
+    return [[self applicationDirectory] URLByAppendingPathComponent:@"Limitless"];
+}
 
 + (NSString *)sandboxDocumentsDirectory {
     NSFileManager *fileManager = [NSFileManager defaultManager];

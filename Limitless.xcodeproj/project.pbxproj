@@ -266,6 +266,12 @@
 		FA23E2D71D776C93001FBE4A /* WAKWindow+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2D61D776C93001FBE4A /* WAKWindow+Hooks.mm */; };
 		FA23E2DE1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2DD1D77734C001FBE4A /* NSDOMNodeList+Hooks.mm */; };
 		FA23E2DF1D7773D9001FBE4A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311751D1B2B6C008690CA /* WebKit.framework */; };
+		FA26C71720462BC100FAE035 /* Paths+APT.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5684B81DF72B3F000A4EBD /* Paths+APT.m */; };
+		FA26C71820462BC600FAE035 /* NSString+Paths.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD1BC51DF7B1D7009EA2C6 /* NSString+Paths.m */; };
+		FA26C71920462C0C00FAE035 /* Platform.m in Sources */ = {isa = PBXBuildFile; fileRef = FA06A3BE1DDEE98000AA9B02 /* Platform.m */; };
+		FA26C71A20462C1F00FAE035 /* Device.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA23E2CA1D776245001FBE4A /* Device.mm */; };
+		FA26C71B20462C9E00FAE035 /* Paths.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA1247E61D778DB800C21DAC /* Paths.mm */; };
+		FA26C71D20462CCC00FAE035 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0311C21D1B300E008690CA /* UIKit.framework */; };
 		FA27AACE1D78EFE600563529 /* libapt-inst.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACC1D78EFE600563529 /* libapt-inst.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FA27AACF1D78EFE600563529 /* libapt-pkg.dylib in Copy APT Dylibs */ = {isa = PBXBuildFile; fileRef = FA27AACD1D78EFE600563529 /* libapt-pkg.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		FA28E71A1D1B21A5003D3724 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA28E7191D1B21A5003D3724 /* Assets.xcassets */; };
@@ -1129,6 +1135,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA26C71D20462CCC00FAE035 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1688,6 +1695,13 @@
 			path = Hooks;
 			sourceTree = "<group>";
 		};
+		FA26C71C20462CCC00FAE035 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		FA28E7011D1B21A5003D3724 = {
 			isa = PBXGroup;
 			children = (
@@ -1699,6 +1713,7 @@
 				FA0311C41D1B5BBA008690CA /* Frameworks & Libraries */,
 				FAE642961DF13EC200E975B8 /* Feature Catalog */,
 				FA28E70B1D1B21A5003D3724 /* Products */,
+				FA26C71C20462CCC00FAE035 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -3131,6 +3146,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA26C71820462BC600FAE035 /* NSString+Paths.m in Sources */,
+				FA26C71A20462C1F00FAE035 /* Device.mm in Sources */,
+				FA26C71B20462C9E00FAE035 /* Paths.mm in Sources */,
+				FA26C71720462BC100FAE035 /* Paths+APT.m in Sources */,
+				FA26C71920462C0C00FAE035 /* Platform.m in Sources */,
 				FA3A18361DEAB1F3000557AC /* runAsSuperuser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

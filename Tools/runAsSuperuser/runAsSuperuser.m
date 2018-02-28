@@ -4,6 +4,9 @@
 
 #import <Foundation/Foundation.h>
 #import <sysexits.h>
+#import "Paths.h"
+
+@import Darwin.POSIX.sys.stat;
 
 char **dpkgArgvWithDebugArgumentAppended(int argc, char *argv[]) {
     char **newArgv = (char **)malloc((argc + 2) * sizeof(*newArgv));
@@ -34,6 +37,18 @@ int main(int argc, char *argv[]) {
     
     setuid(0);
     setgid(0);
+    
+    struct stat statResult;
+    const char *binaryPath = [Paths applicationBinary].path.UTF8String;
+    
+    if (lstat(binaryPath, &statResult) == -1) {
+        NSLog(@"Error: Couldn't lstat application binary at %s, error: %d", binaryPath, errno);
+        return EX_NOPERM;
+    }
+    
+    // TODO: Check binary patch matches parent process, without using private APIs
+    // references: https://stackoverflow.com/questions/12273546/get-name-from-pid
+    // https://github.com/JohnCoatesOSS/Limitless/commit/af7a541a90f647596ccf1309d0d77925b8c5f742
     
     if (argc < 2 || argv[1][0] != '/'){
         argv[0] = (char *)"/usr/bin/dpkg";

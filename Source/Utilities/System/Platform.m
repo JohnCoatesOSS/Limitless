@@ -6,6 +6,7 @@
 //
 
 #import "Platform.h"
+#import "Device.h"
 
 @implementation Platform
 

@@ -13,4 +13,5 @@
 + (BOOL)isRelease;
 + (BOOL)isSandboxed;
 + (BOOL)shouldWaitForDebugger;
+
 @end
