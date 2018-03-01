@@ -14,7 +14,6 @@
 #import "APTManager+Files.h"
 #import "LMXAPTStatus.hpp"
 #import "UIGlobals.h"
-#include "CyteKit/RegEx.hpp"
 
 @interface APTManager ()
 
@@ -127,14 +126,26 @@
     
     
     // XXX: this isn't really a language, but this is compatible with older Cydia builds
-    if (const char *language = [(NSString *) CFLocaleGetIdentifier(Locale_) UTF8String]) {
-        RegEx pattern("([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?");
-        if (pattern(language)) {
-            translation = strdup([pattern->*@"%1$@%2$@" UTF8String]);
-            [languages addObject:@(translation)];
+    if (NSString *language = (NSString *)CFLocaleGetIdentifier(Locale_)) {
+        NSString *pattern = @"([a-z][a-z])(?:-[A-Za-z]*)?(_[A-Z][A-Z])?";
+        NSError *error = nil;
+        NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:pattern
+                                                                          options:0 error:&error];
+        if (error) {
+            NSLog(@"Error creating regular expression: %@", error);
         }
-        
+        NSTextCheckingResult *match = [regex firstMatchInString:language options:0 range:NSMakeRange(0, language.length)];
+        if (match) {
+            NSString *translation = [language substringWithRange:[match rangeAtIndex:1]];
+            if ([match numberOfRanges] == 3) {
+                NSString *subgroup2 = [language substringWithRange:[match rangeAtIndex:2]];
+                translation = [translation stringByAppendingString:subgroup2];
+            }
+            
+            [languages addObject:translation];
+        }
     }
+    
     if (Languages_ != nil) {
         for (NSString *language : Languages_) {
             [languages addObject:language];
@@ -259,6 +270,7 @@ static BOOL _debugMode = false;
 - (NSArray *)popLatestErrors {
     NSMutableArray *errors = [NSMutableArray array];
     
+    // XXX: this block should probably be merged with popError: in some way
     while (!_error->empty()) {
         std::string message;
         bool isFatal = _error->PopMessage(message);
