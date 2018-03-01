@@ -231,6 +231,7 @@
 - (bool) popErrorWithTitle:(NSString *)title {
     bool fatal(false);
     
+    // XXX: this block should probably be merged with popError: in some way
     while (!_error->empty()) {
         std::string error;
         bool warning(!_error->PopMessage(error));
@@ -344,7 +345,10 @@
             }
             
             return;
+        } else if ([self popErrorWithTitle:title forOperation:true]) {
+            return;
         }
+        
         _trace();
         
         unlink("/tmp/cydia.chk");
